@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { Link } from 'react-router-dom';
 import image from '../../assets/1.png';
 import google from '../../assets/2.png';
 const LoginPage = () => {
