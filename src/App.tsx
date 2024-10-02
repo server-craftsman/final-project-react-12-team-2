@@ -1,10 +1,19 @@
-import React from 'react'
-
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import StudentLayout from './layout/student/StudentLayout'
+import HomePage from './pages/home/HomePage'
 const App = () => {
+
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <StudentLayout />,
+      children: [
+        { index: true, element: <HomePage /> },
+      ],
+    },
+  ])
   return (
-    <div className="bg-red-500 text-white">
-      Hello World
-    </div>
+    <RouterProvider router={router} />
   )
 }
 
