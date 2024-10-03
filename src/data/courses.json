@@ -1,0 +1,68 @@
+{
+    "courses": [
+      {
+        "id": "1",
+        "name": "Introduction to React",
+        "category_id": "web_development",
+        "user_id": "instructor_001",
+        "description": "Learn the basics of React development",
+        "content": "This course covers React fundamentals, including components, state, props, and hooks.",
+        "status": "PUBLISHED",
+        "video_url": "https://www.youtube.com/watch?v=Tn6-PIqc4UM",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1200px-React-icon.svg.png",
+        "price": 49.99,
+        "discount": 0,
+        "created_at": "2023-06-01T10:00:00Z",
+        "updated_at": "2023-06-01T10:00:00Z",
+        "is_deleted": false
+      },
+      {
+        "id": "2",
+        "name": "Advanced JavaScript",
+        "category_id": "programming",
+        "user_id": "instructor_002",
+        "description": "Master advanced JavaScript concepts",
+        "content": "Dive deep into JavaScript with topics like closures, prototypes, async programming, and more.",
+        "status": "PUBLISHED",
+        "video_url": "https://www.youtube.com/watch?v=W6NZfCO5SIk",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png",
+        "price": 79.99,
+        "discount": 10,
+        "created_at": "2023-05-15T14:30:00Z",
+        "updated_at": "2023-05-20T09:15:00Z",
+        "is_deleted": false
+      },
+      {
+        "id": "3",
+        "name": "Python for Data Science",
+        "category_id": "data_science",
+        "user_id": "instructor_003",
+        "description": "Explore data science with Python",
+        "content": "Learn how to use Python for data analysis, visualization, and machine learning.",
+        "status": "DRAFT",
+        "video_url": "https://www.youtube.com/watch?v=LHBE6Q9XlzI",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1200px-Python-logo-notext.svg.png",
+        "price": 89.99,
+        "discount": 0,
+        "created_at": "2023-06-10T11:45:00Z",
+        "updated_at": "2023-06-10T11:45:00Z",
+        "is_deleted": false
+      },
+      {
+        "id": "4",
+        "name": "Machine Learning Fundamentals",
+        "category_id": "artificial_intelligence",
+        "user_id": "instructor_004",
+        "description": "Get started with machine learning",
+        "content": "Understand the basics of machine learning algorithms and their applications.",
+        "status": "PUBLISHED",
+        "video_url": "https://www.youtube.com/watch?v=mJeNghZXtMo",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Hey_Machine_Learning_Logo.png",
+        "price": 99.99,
+        "discount": 15,
+        "created_at": "2023-05-01T08:00:00Z",
+        "updated_at": "2023-05-05T16:20:00Z",
+        "is_deleted": false
+      }
+    ]
+  }
