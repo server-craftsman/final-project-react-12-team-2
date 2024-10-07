@@ -3,6 +3,7 @@ import { lazy, Suspense, useState, useEffect } from 'react'
 import Loading from './components/generic/Loading'
 import { Button } from 'antd'
 import { UpOutlined } from '@ant-design/icons'
+import Profile from './pages/admin/Profile'
 const StudentLayout = lazy(() => import('./layout/student/StudentLayout'))
 const HomePage = lazy(() => import('./pages/home/HomePage'))
 const LoginPage = lazy(() => import('./pages/LoginPage/LoginPage'))
@@ -53,7 +54,8 @@ const App = () => {
       path: '/admin',
       element: <AdminLayout />,
       children: [
-        { path: 'dashboard', element: <Dashboard /> },
+        { index: true, element: <Dashboard /> },
+        {path: 'admininfo', element: <Profile /> },
       ],
     },
   ])

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Layout, Menu, Badge } from 'antd';
-import { UserOutlined, BellOutlined, DashboardOutlined, ProjectOutlined, MessageOutlined } from '@ant-design/icons';
+import { BankOutlined, TeamOutlined, BellOutlined, DashboardOutlined, UserOutlined, FileTextOutlined, BookOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 const { Sider } = Layout;
 
@@ -11,17 +11,17 @@ const AdminNavbar: React.FC = () => {
     {
       key: '1',
       icon: <DashboardOutlined />,
-      label: <Link to="/admin/dashboard">Dashboard</Link>,
+      label: <Link to="/admin">Dashboard</Link>,
     },
     {
       key: '2',
-      icon: <ProjectOutlined />,
-      label: <Link to="/admin/courses">Courses</Link>,
+      icon: <UserOutlined />,
+      label: <Link to="/admin/admininfo">Admin Info</Link>,
     },
     {
       key: '3',
-      icon: <UserOutlined />,
-      label: <Link to="/admin/users">Users</Link>,
+      icon: <TeamOutlined />,
+      label: <Link to="/admin/users">User Management</Link>,
     },
     {
       key: '4',
@@ -35,9 +35,19 @@ const AdminNavbar: React.FC = () => {
     },
     {
       key: '5',
-      icon: <MessageOutlined />,
-      label: <Link to="/admin/chat">Chat</Link>,
+      icon: <FileTextOutlined />,
+      label: <Link to="/admin/courses">Course Management</Link>,
     },
+    {
+      key: '6',
+      icon: <BookOutlined />,
+      label: <Link to="/admin/categories">Category Management</Link>,
+    },
+    {
+      key: '7',
+      icon: <BankOutlined />,
+      label: <Link to="/admin/payout">Payout Management</Link>,
+    }
   ];
 
   return (

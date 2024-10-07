@@ -3,7 +3,7 @@ export interface User {
     email: string
     password: string
     name: string
-    google_id: string
+    google_id: string | null
     role: string
     status: boolean
     description: string
