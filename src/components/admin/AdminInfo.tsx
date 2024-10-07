@@ -1,4 +1,3 @@
-import React from 'react'
 import usersData from '../../data/users.json' // Adjust the path as necessary
 import { User } from '../../models/User'
 import { Typography, Descriptions, Button } from 'antd'

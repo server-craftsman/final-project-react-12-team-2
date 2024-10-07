@@ -1,6 +1,5 @@
 // import { Category } from "../../models/Category"
 // import categoriesData from "../../data/categories.json"
-import PageNumber from "../generic/PageNumber"
 import { Typography } from "antd"
 const { Title } = Typography;
 
