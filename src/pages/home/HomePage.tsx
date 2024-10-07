@@ -12,6 +12,8 @@ import coursesData from '../../data/courses.json';
 import usersData from '../../data/users.json';
 import categoriesData from '../../data/categories.json';
 import { Category } from '../../models/Category';
+import IntructorSlider from '../../components/student/IntructorSlider';
+
 const { Title } = Typography;
 
 const HomePage: React.FC = () => {
@@ -166,6 +168,9 @@ const HomePage: React.FC = () => {
           onChange={handlePageChange}
         />
       </div>
+
+      <Divider className="my-16 border-indigo-200" />
+      <IntructorSlider />
 
       <motion.section 
         className="mt-24 text-center bg-gradient-to-b from-indigo-50 to-white py-16"

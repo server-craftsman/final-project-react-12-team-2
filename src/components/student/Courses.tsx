@@ -38,7 +38,7 @@ const Courses: React.FC<CoursesProps> = ({ courses, usersData }) => {
     <Row gutter={[32, 32]}>
       {courses.map((course: Course) => {
         return (
-          <Col xs={24} sm={12} md={8} key={course.id} className="h-full">
+          <Col xs={24} sm={12} md={8} key={course.id} className="h-full mx-auto">
             <motion.div variants={itemVariants} className="h-full">
               <Card
                 hoverable
