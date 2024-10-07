@@ -56,8 +56,8 @@ const App = () => {
       element: <AdminLayout />,
       children: [
         { index: true, element: <Dashboard /> },
-        {path: 'admininfo', element: <Profile /> },
-        {path: 'manageuser', element: <ManageUser /> },
+        {path: 'admin-info', element: <Profile /> },
+        {path: 'manage-user', element: <ManageUser /> },
       ],
     },
   ])

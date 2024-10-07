@@ -16,12 +16,12 @@ const AdminNavbar: React.FC = () => {
     {
       key: '2',
       icon: <UserOutlined />,
-      label: <Link to="/admin/admininfo">Admin Info</Link>,
+      label: <Link to="/admin/admin-info">Admin Info</Link>,
     },
     {
       key: '3',
       icon: <TeamOutlined />,
-      label: <Link to="/admin/manageuser">User Management</Link>,
+      label: <Link to="/admin/manage-user">User Management</Link>,
     },
     {
       key: '4',
