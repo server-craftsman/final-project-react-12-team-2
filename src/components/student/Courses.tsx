@@ -7,10 +7,13 @@ import { Course } from '../../models/Course';
 import { AuthContext } from '../../context/AuthContext';
 import { User } from '../../models/User';
 import { motion, AnimatePresence } from 'framer-motion';
+
 const { Title, Paragraph } = Typography;
 const { Meta } = Card;
+
 import usersData from '../../data/users.json';
 import PageNumber from '../generic/PageNumber';
+import CategoryFilter from '../generic/CategoryFilter';
 
 const Courses: React.FC = () => {
   const { user: _user } = useContext(AuthContext);
@@ -18,6 +21,11 @@ const Courses: React.FC = () => {
   const pageSize = 6;
   const totalCourses = coursesData.courses.length;
   const [isVisible, setIsVisible] = useState(false);
+  const [activeCategory, setActiveCategory] = useState('All Courses');
+
+  const handleCategoryChange = (category: string) => {
+    setActiveCategory(category);
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -31,8 +39,11 @@ const Courses: React.FC = () => {
     setIsVisible(false);
     setTimeout(() => setIsVisible(true), 300);
   };
+  const filteredCourses = activeCategory === 'All Courses'
+  ? coursesData.courses
+  : coursesData.courses.filter(course => course.category_id === activeCategory.toLowerCase().replace(' & ', '_'));
 
-  const paginatedCourses = coursesData.courses.slice(
+  const paginatedCourses = filteredCourses.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
   );
@@ -67,15 +78,18 @@ const Courses: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Title level={2} className="text-5xl font-bold text-indigo-900 mb-12 text-center">
+        <Title level={2} className="text-6xl font-extrabold text-indigo-900 mb-16 text-center font-serif tracking-wide">
           <motion.span
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
+            className="text-indigo-900 font-serif tracking-wide"
           >
-            Exclusive Courses
+            Exquisite Learning Experiences
           </motion.span>
         </Title>
+        <CategoryFilter activeCategory={activeCategory} onCategoryChange={handleCategoryChange} />
+
         <AnimatePresence>
           {isVisible && (
             <motion.div
