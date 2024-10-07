@@ -1,4 +1,3 @@
-import React from 'react'
 import { Table } from 'antd'
 import usersData from '../../data/users.json' // Adjust the path as necessary
 import { User } from '../../models/User'
