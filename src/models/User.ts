@@ -18,9 +18,9 @@ export interface User {
     balance: number
     balance_total: number
     withdrawn_amount: number
-    bank_name: string
-    bank_account_no: string
-    bank_account_name: string
+    bank_name: string | null
+    bank_account_no: string | null
+    bank_account_name: string | null
     created_at: string
     updated_at: string
     is_deleted: boolean
