@@ -50,7 +50,7 @@ const AdminNavbar: React.FC = () => {
       <div className="logo p-4">
         <h1 className="text-white text-xl font-bold">{collapsed ? 'Admin' : 'Admin Panel'}</h1>
       </div>
-      <Menu theme="dark" mode="vertical" defaultSelectedKeys={['1']} items={menuItems} />
+      <Menu theme="dark" mode="vertical" items={menuItems} />
     </Sider>
   );
 };
