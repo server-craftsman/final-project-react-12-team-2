@@ -15,6 +15,10 @@ interface CoursesProps {
 }
 
 const Courses: React.FC<CoursesProps> = ({ courses, usersData }) => {
+  if (courses.length === 0) {
+    return <div>No courses available.</div>;
+  }
+
   const instructor = usersData.users.find(user => user.id === courses[0].user_id) as User;
   const discountedPrice = (courses[0].price - (courses[0].price * courses[0].discount / 100)).toFixed(2);
 
@@ -34,13 +38,13 @@ const Courses: React.FC<CoursesProps> = ({ courses, usersData }) => {
     <Row gutter={[32, 32]}>
       {courses.map((course: Course) => {
         return (
-          <Col xs={24} sm={12} md={8} key={course.id}>
-            <motion.div variants={itemVariants}>
+          <Col xs={24} sm={12} md={8} key={course.id} className="h-full">
+            <motion.div variants={itemVariants} className="h-full">
               <Card
                 hoverable
                 cover={<img alt={course.name} src={course.image_url} className="h-48 object-cover w-full" />}
                 className="h-full flex flex-col shadow-lg hover:shadow-xl transition-all duration-300 bg-white rounded-lg overflow-hidden relative group"
-                styles={{ body: { height: '100%', display: 'flex', flexDirection: 'column' } }}
+                style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
               >
                 <motion.div 
                   className="absolute top-0 right-0 bg-[#8529ff] text-white px-3 py-1 rounded-bl-lg"
@@ -75,8 +79,8 @@ const Courses: React.FC<CoursesProps> = ({ courses, usersData }) => {
                     }
                     className="mb-4"
                   />
-                  <Title level={4} className="text-xl font-bold text-gray-800 mb-2 line-clamp-2">{course.name}</Title>
-                  <Paragraph className="text-gray-600 mb-4 flex-grow line-clamp-3">
+                  <Title level={4} className="text-xl font-bold text-gray-800 mb-2 line-clamp-2 h-14">{course.name}</Title>
+                  <Paragraph className="text-gray-600 mb-4 flex-grow line-clamp-3 h-18">
                     {course.description}
                   </Paragraph>
                   <div className="mt-auto">

@@ -1,12 +1,17 @@
 import Navbar from "./StudentNavbar";
 import StudentFooter from "./StudentFooter";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import Cover from "../../components/generic/Cover";
 
 const StudentLayout = () => {
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="container mx-auto flex-grow pt-20">
+      {isHomePage && <Cover />}
+      <main className={`container mx-auto flex-grow pt-[80px]`}>
         <Outlet />
       </main>
       <StudentFooter />

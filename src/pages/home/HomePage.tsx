@@ -10,7 +10,8 @@ import CategoryFilter from '../../components/generic/CategoryFilter';
 import { AuthContext } from '../../context/AuthContext';
 import coursesData from '../../data/courses.json';
 import usersData from '../../data/users.json';
-
+import categoriesData from '../../data/categories.json';
+import { Category } from '../../models/Category';
 const { Title } = Typography;
 
 const HomePage: React.FC = () => {
@@ -20,12 +21,45 @@ const HomePage: React.FC = () => {
   const totalCourses = coursesData.courses.length;
   const [isVisible, setIsVisible] = useState(false);
   const [activeCategory, setActiveCategory] = useState('All Courses');
+  const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+  const [sliderCategories, setSliderCategories] = useState<Category[][]>([]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(true);
     }, 500);
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentCategoryIndex((prevIndex) => (prevIndex + 1) % sliderCategories.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [sliderCategories]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const fetchedCategories: Category[] = categoriesData.categories.map(cat => ({
+        id: cat.id,
+        user_id: cat.user_id,
+        name: cat.name,
+        description: cat.description,
+        parent_category_id: cat.parent_category_id,
+        created_at: new Date(cat.created_at),
+        updated_at: new Date(cat.updated_at),
+        is_deleted: cat.is_deleted
+      }));
+      
+      // Divide categories into groups of 4
+      const groupedCategories = [];
+      for (let i = 0; i < fetchedCategories.length; i += 4) {
+        groupedCategories.push(fetchedCategories.slice(i, i + 4));
+      }
+      setSliderCategories(groupedCategories);
+    };
+
+    fetchCategories();
   }, []);
 
   const handlePageChange = (page: number) => {
@@ -61,9 +95,34 @@ const HomePage: React.FC = () => {
     <div className="container mx-auto px-4 py-12 bg-gradient-to-b from-indigo-50 to-white">
       <Introduction />
       <Divider className="my-16 border-indigo-200" />
-      <Categories />
-      <Divider className="my-16 border-indigo-200" />
-      
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-16 relative overflow-hidden"
+      >
+        <h1 className="text-center text-blue-500 text-2xl font-bold mb-8">Top Categories</h1>
+        <h1 className="text-4xl font-bold text-center mb-12">
+          Most demanding <span className="text-blue-500">Categories</span>.
+        </h1>
+        <div className="flex transition-transform duration-500 ease-in-out mb-12" style={{ transform: `translateX(-${currentCategoryIndex * 100}%)` }}>
+          {sliderCategories.map((categoryGroup, groupIndex) => (
+            <div key={groupIndex} className="w-full flex-shrink-0">
+              <Categories categories={categoryGroup} />
+            </div>
+          ))}
+        </div>
+        <div className="absolute left-1/2 transform -translate-x-1/2 flex space-x-2 mt-4 bottom-0">
+          {sliderCategories.map((_, index) => (
+            <button
+              key={index}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentCategoryIndex ? 'bg-indigo-600 w-4' : 'bg-indigo-200'}`}
+              onClick={() => setCurrentCategoryIndex(index)}
+            ></button>
+          ))}
+        </div>
+      </motion.div>
+
       <motion.section 
         className="bg-gradient-to-b from-indigo-50 to-white py-16"
         initial={{ opacity: 0, y: -50 }}
@@ -80,7 +139,10 @@ const HomePage: React.FC = () => {
             Exquisite Learning Experiences
           </motion.span>
         </Title>
-        <CategoryFilter activeCategory={activeCategory} onCategoryChange={handleCategoryChange} />
+        <CategoryFilter 
+          activeCategory={activeCategory} 
+          onCategoryChange={handleCategoryChange} 
+        />
 
         <AnimatePresence>
           {isVisible && (
