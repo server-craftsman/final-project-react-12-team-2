@@ -8,6 +8,23 @@ const LoginPage = () => {
     console.log('Received values of form: ', values);
   };
   
+  const validatePassword = (_: any, value: string) => {
+    const hasUpperCase = /[A-Z]/.test(value);
+    const hasNumber = /\d/.test(value);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value); // Added special character validation
+    if (!value || value.length < 8 || !hasUpperCase || !hasNumber || !hasSpecialChar) {
+      return Promise.reject(new Error('Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.'));
+    }
+    return Promise.resolve();
+  };
+
+  const validateUsername = (_: any, value: string) => {
+    if (!value || value.includes(' ') || value.length < 6) {
+      return Promise.reject(new Error('Username must be at least 6 characters long and contain no spaces.'));
+    }
+    return Promise.resolve();
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-purple-900/20 to-indigo-900/20 backdrop-blur-md">
       <div className="w-full max-w-5xl bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col md:flex-row relative">
@@ -36,13 +53,17 @@ const LoginPage = () => {
           >
             <Form.Item
               name="username"
-              rules={[{ required: true, message: 'Please input your Username or Email!' }]}
+              rules={[{ required: true, message: 'Please input your Username or Email!' },
+                {validator:validateUsername},
+              ]}
             >
               <Input prefix={<UserOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Username or Email" className="py-2 px-4 rounded-lg" />
             </Form.Item>
             <Form.Item
               name="password"
-              rules={[{ required: true, message: 'Please input your Password!' }]}
+              rules={[{ required: true, message: 'Please input your Password!' },
+                {validator:validatePassword},
+              ]}
             >
               <Input
                 prefix={<LockOutlined className="site-form-item-icon text-indigo-600" />}
