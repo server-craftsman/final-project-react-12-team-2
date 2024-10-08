@@ -1,12 +1,10 @@
-import { Modal, Form, Input, Button } from 'antd';
+import { Form, Input, Button } from 'antd';
 
 const ChangePasswordAdmin = ({
   visible,
-  onClose,
   currentPassword,
 }: {
   visible: boolean;
-  onClose: () => void;
   currentPassword: string;
 }) => {
   const [form] = Form.useForm();
@@ -15,7 +13,6 @@ const ChangePasswordAdmin = ({
     form.validateFields()
       .then(values => {
         console.log('Password changed:', values);
-        onClose();
       })
       .catch(info => {
         console.log('Validate Failed:', info);
@@ -40,20 +37,7 @@ const ChangePasswordAdmin = ({
   };
 
   return (
-    <Modal
-      title="Change Password"
-      open={visible}
-      onOk={handleOk}
-      onCancel={onClose}
-      footer={[
-        <Button key="back" onClick={onClose}>
-          Cancel
-        </Button>,
-        <Button key="submit" type="primary" onClick={handleOk}>
-          Change Password
-        </Button>,
-      ]}
-    >
+    <div className={`change-password-form ${visible ? 'visible' : 'hidden'}`}>
       <Form form={form} layout="vertical" name="change_password_form">
         <Form.Item
           name="currentPassword"
@@ -84,8 +68,13 @@ const ChangePasswordAdmin = ({
         >
           <Input.Password visibilityToggle={true} />
         </Form.Item>
+        <div className="form-footer">
+          <Button type="primary" onClick={handleOk}>
+            Change Password
+          </Button>
+        </div>
       </Form>
-    </Modal>
+    </div>
   );
 };
 

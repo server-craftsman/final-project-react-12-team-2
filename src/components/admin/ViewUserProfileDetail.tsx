@@ -3,13 +3,10 @@ import { useParams } from 'react-router-dom';
 import { Row, Col, Form, Input } from 'antd';
 import { User, UserRole } from '../../models/User';
 import usersData from '../../data/users.json';
-import EditUserProfile from './EditUserProfile';
-import ChangePasswordAdmin from './ChangePasswordAdmin';
 
 const ViewUserProfileDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [user, setUser] = useState<User | null>(null);
-  const [isChangePasswordVisible, setChangePasswordVisible] = useState(false);
 
   useEffect(() => {
     const userData = usersData.users.find(user => user.id === id);
@@ -39,16 +36,7 @@ const ViewUserProfileDetail = () => {
           />
           <h2 className="mt-2 text-lg font-semibold">{user.name}</h2>
           <div className="mt-4 flex justify-center">
-            <EditUserProfile />
             <button className="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
-            {user.role === UserRole.ADMIN && (
-              <button
-                className="bg-gradient-tone text-white px-4 py-2 mt-2 rounded"
-                onClick={() => setChangePasswordVisible(true)}
-              >
-                Change Password
-              </button>
-            )}
           </div>
         </Col>
         <Col span={18}>
@@ -102,11 +90,6 @@ const ViewUserProfileDetail = () => {
           </Form>
         </Col>
       </Row>
-      <ChangePasswordAdmin
-        visible={isChangePasswordVisible}
-        onClose={() => setChangePasswordVisible(false)}
-        currentPassword={user.password} // Assuming user object has a password field
-      />
     </div>
   );
 };

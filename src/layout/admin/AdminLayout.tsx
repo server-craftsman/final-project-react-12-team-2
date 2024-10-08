@@ -2,6 +2,7 @@ import React from 'react';
 import { Layout } from 'antd';
 import AdminNavbar from './AdminNavbar';
 import { Outlet } from 'react-router-dom';
+import StudentFooter from '../student/StudentFooter';
 
 const { Content } = Layout;
 
@@ -23,6 +24,7 @@ const Admin: React.FC = () => {
             <Outlet />
           </section>
         </Content>
+        <StudentFooter />
       </Layout>
     </Layout>
   );

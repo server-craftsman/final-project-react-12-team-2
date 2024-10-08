@@ -3,6 +3,7 @@ import { Layout } from 'antd';
 
 import { Outlet } from 'react-router-dom';
 import InstructorNavbar from './InstructorNavbar';
+import StudentFooter from '../student/StudentFooter';
 
 const { Content } = Layout;
 
@@ -24,6 +25,7 @@ const Instructor: React.FC = () => {
                         <Outlet />
                     </section>
                 </Content>
+                <StudentFooter />
             </Layout>
         </Layout>
     );

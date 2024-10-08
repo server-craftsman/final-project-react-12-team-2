@@ -2,6 +2,7 @@ import { Layout } from 'antd'
 import { Outlet } from 'react-router-dom'
 import StudentDashboardNavbar from './StudentDashboardNavbar'
 import { Content } from 'antd/es/layout/layout'
+import StudentFooter from '../StudentFooter'
 const StudentDashboard = () => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -20,6 +21,7 @@ const StudentDashboard = () => {
             <Outlet />
           </section>
         </Content>
+        <StudentFooter />
       </Layout>
     </Layout>
   )

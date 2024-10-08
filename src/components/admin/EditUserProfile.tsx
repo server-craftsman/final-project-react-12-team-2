@@ -5,6 +5,7 @@ import { User } from '../../models/User';
 import usersData from '../../data/users.json';
 import { Rule } from 'antd/es/form';
 import moment from 'moment';
+import { Editor } from '@tinymce/tinymce-react';
 
 const EditUserProfile = () => {
   const { id } = useParams<{ id: string }>();
@@ -84,7 +85,24 @@ const EditUserProfile = () => {
           <Input />
         </Form.Item>
         <Form.Item label="Description" name="description" rules={validationRules.description as Rule[]}>
-          <Input.TextArea />
+        <Editor
+            apiKey='ck3lwrqqoh4n7nuttaggpbfuwl9gx8ntcoo2zkfx7ms31hfr'
+              initialValue={user.description}
+              init={{
+                height: 300,
+                menubar: false,
+                plugins: [
+                  'advlist autolink lists link image charmap print preview anchor',
+                  'searchreplace visualblocks code fullscreen',
+                  'insertdatetime media table paste code help wordcount'
+                ],
+                toolbar:
+                  'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code',
+              }}
+            //   onEditorChange={(content, editor) => {
+            //     // Handle the content change
+            //   }}
+            />
         </Form.Item>
         <Form.Item label="Date of Birth" name="dob" rules={validationRules.dob as Rule[]}>
           <DatePicker format="YYYY-MM-DD" />

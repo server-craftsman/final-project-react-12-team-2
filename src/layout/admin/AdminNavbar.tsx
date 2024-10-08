@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Layout, Menu } from 'antd';
-import { BankOutlined, TeamOutlined, BellOutlined, DashboardOutlined, UserOutlined, FileTextOutlined, BookOutlined } from '@ant-design/icons';
+import { BankOutlined, TeamOutlined, BellOutlined, DashboardOutlined, SettingOutlined, FileTextOutlined, BookOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 const { Sider } = Layout;
 
@@ -15,8 +15,8 @@ const AdminNavbar: React.FC = () => {
     },
     {
       key: '2',
-      icon: <UserOutlined />,
-      label: <Link to="/admin/admin-info">Admin Info</Link>,
+      icon: <SettingOutlined />,
+      label: <Link to="/admin/admin-info">Setting</Link>,
     },
     {
       key: '3',
