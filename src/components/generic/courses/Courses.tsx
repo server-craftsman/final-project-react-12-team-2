@@ -4,7 +4,9 @@ import { Typography, Card, Row, Col, Button, Tag, Avatar, Rate } from 'antd';
 import { CrownOutlined, BookOutlined, PercentageOutlined } from '@ant-design/icons';
 import { Course } from '../../../models/Course';
 import { User } from '../../../models/User';
+import categoriesData from '../../../data/categories.json'; 
 import { motion } from 'framer-motion';
+import { Category } from '../../../models/Category';
 
 const { Title, Paragraph } = Typography;
 const { Meta } = Card;
@@ -12,6 +14,7 @@ const { Meta } = Card;
 interface CoursesProps {
   courses: Course[];
   usersData: { users: User[] };
+  categoriesData: { categories: Category[] };
 }
 
 const Courses: React.FC<CoursesProps> = ({ courses, usersData }) => {
@@ -69,7 +72,7 @@ const Courses: React.FC<CoursesProps> = ({ courses, usersData }) => {
                     description={
                       <div className="flex items-center text-sm mb-4">
                         <Tag className="mr-2 text-white bg-[#8529ff] px-2 py-1 rounded text-xs font-semibold uppercase">
-                          {course.category_id.replace('_', ' ')}
+                          {categoriesData.categories.find(category => category.id === course.category_id)?.name}
                         </Tag>
                         <div className="flex items-center">
                           <BookOutlined className="mr-1 text-gray-600" />
@@ -97,7 +100,7 @@ const Courses: React.FC<CoursesProps> = ({ courses, usersData }) => {
                   className="absolute inset-x-0 bottom-0 transform translate-y-full transition-all duration-300 group-hover:translate-y-0"
                   whileHover={{ scale: 1.05 }}
                 >
-                  <Link to={`/courses/${course.id}`}>
+                  <Link to={`/course/${course.id}`}>
                     <Button type="primary" block size="large" className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 border-none">
                       Preview This Course
                     </Button>

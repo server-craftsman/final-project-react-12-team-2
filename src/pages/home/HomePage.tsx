@@ -155,8 +155,17 @@ const HomePage: React.FC = () => {
               animate="visible"
               exit="hidden"
             >
-              <Courses courses={paginatedCourses} usersData={usersData} />
-            </motion.div>
+              <Courses 
+                courses={paginatedCourses} 
+                usersData={usersData} 
+                categoriesData={{
+                categories: categoriesData.categories.map(cat => ({
+                  ...cat,
+                  created_at: new Date(cat.created_at),
+                  updated_at: new Date(cat.updated_at)
+                }))
+              }}
+/>            </motion.div>
           )}
         </AnimatePresence>
       </motion.section>

@@ -3,7 +3,7 @@
       {
         "id": "1",
         "name": "Introduction to React",
-        "category_id": "web_development",
+        "category_id": "1",
         "user_id": "1",
         "description": "Learn the basics of React development",
         "content": "This course covers React fundamentals, including components, state, props, and hooks.",
@@ -19,7 +19,7 @@
       {
         "id": "2",
         "name": "Advanced JavaScript",
-        "category_id": "programming",
+        "category_id": "2",
         "user_id": "2",
         "description": "Master advanced JavaScript concepts",
         "content": "Dive deep into JavaScript with topics like closures, prototypes, async programming, and more.",
@@ -35,7 +35,7 @@
       {
         "id": "3",
         "name": "Python for Data Science",
-        "category_id": "data_science",
+        "category_id": "2",
         "user_id": "3",
         "description": "Explore data science with Python",
         "content": "Learn how to use Python for data analysis, visualization, and machine learning.",
@@ -51,7 +51,7 @@
       {
         "id": "4",
         "name": "Machine Learning Fundamentals",
-        "category_id": "artificial_intelligence",
+        "category_id": "3",
         "user_id": "4",
         "description": "Get started with machine learning",
         "content": "Understand the basics of machine learning algorithms and their applications.",
@@ -67,7 +67,7 @@
       {
         "id": "5",
         "name": "iOS App Development with Swift",
-        "category_id": "mobile_development",
+        "category_id": "5",
         "user_id": "5",
         "description": "Learn to build iOS apps using Swift",
         "content": "This course covers Swift programming and iOS app development fundamentals.",
@@ -83,7 +83,7 @@
       {
         "id": "6",
         "name": "Full Stack Web Development",
-        "category_id": "web_development",
+        "category_id": "6",
         "user_id": "6",
         "description": "Become a full stack web developer",
         "content": "Learn both front-end and back-end technologies to build complete web applications.",
@@ -99,7 +99,7 @@
       {
         "id": "7",
         "name": "Cybersecurity Fundamentals",
-        "category_id": "security",
+        "category_id": "7",
         "user_id": "7",
         "description": "Learn the basics of cybersecurity",
         "content": "Understand common security threats and how to protect against them.",
@@ -115,7 +115,7 @@
       {
         "id": "8",
         "name": "Cloud Computing with AWS",
-        "category_id": "cloud_computing",
+        "category_id": "8",
         "user_id": "8",
         "description": "Master cloud computing using Amazon Web Services",
         "content": "Learn to deploy and manage applications on AWS infrastructure.",
@@ -131,7 +131,7 @@
       {
         "id": "9",
         "name": "Data Structures and Algorithms",
-        "category_id": "programming",
+        "category_id": "9",
         "user_id": "9",
         "description": "Master essential computer science concepts",
         "content": "Learn about various data structures and algorithms crucial for efficient programming.",
@@ -147,7 +147,7 @@
       {
         "id": "10",
         "name": "UX/UI Design Principles",
-        "category_id": "design",
+        "category_id": "10",
         "user_id": "10",
         "description": "Learn to create user-friendly interfaces",
         "content": "Understand user experience and interface design principles for creating effective digital products.",
@@ -163,7 +163,7 @@
       {
         "id": "11",
         "name": "Blockchain Technology and Cryptocurrencies",
-        "category_id": "blockchain",
+        "category_id": "11",
         "user_id": "11",
         "description": "Understand blockchain technology and its applications",
         "content": "Learn about blockchain fundamentals, smart contracts, and cryptocurrency ecosystems.",
@@ -179,7 +179,7 @@
       {
         "id": "12",
         "name": "DevOps and Continuous Integration",
-        "category_id": "devops",
+        "category_id": "12",
         "user_id": "12",
         "description": "Master DevOps practices and tools",
         "content": "Learn about continuous integration, deployment, and popular DevOps tools like Jenkins and Docker.",
@@ -195,7 +195,7 @@
       {
         "id": "13",
         "name": "Game Development with Unity",
-        "category_id": "game_development",
+        "category_id": "13",
         "user_id": "13",
         "description": "Create your own games using Unity",
         "content": "Learn game development concepts and how to use Unity to build 2D and 3D games.",
@@ -211,7 +211,7 @@
       {
         "id": "14",
         "name": "Natural Language Processing",
-        "category_id": "artificial_intelligence",
+        "category_id": "14",
         "user_id": "14",
         "description": "Dive into the world of NLP",
         "content": "Explore techniques for processing and analyzing human language using machine learning.",
