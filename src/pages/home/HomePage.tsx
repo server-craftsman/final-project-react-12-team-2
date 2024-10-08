@@ -2,9 +2,9 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Typography, Divider, Button } from 'antd';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import Introduction from '../../components/student/Introduction';
-import Courses from '../../components/student/Courses';
-import Categories from '../../components/student/Categories';
+import Introduction from '../../components/generic/Introduction';
+import Courses from '../../components/generic/Courses';
+import Categories from '../../components/generic/Categories';
 import PageNumber from '../../components/generic/PageNumber';
 import CategoryFilter from '../../components/generic/CategoryFilter';
 import { AuthContext } from '../../context/AuthContext';
@@ -12,7 +12,7 @@ import coursesData from '../../data/courses.json';
 import usersData from '../../data/users.json';
 import categoriesData from '../../data/categories.json';
 import { Category } from '../../models/Category';
-import IntructorSlider from '../../components/student/IntructorSlider';
+import IntructorSlider from '../../components/generic/IntructorSlider';
 
 const { Title } = Typography;
 
