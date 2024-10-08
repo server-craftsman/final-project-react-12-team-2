@@ -3,7 +3,7 @@ import usersData from '../../../data/users.json'; // Adjust the path as necessar
 import { User } from '../../../models/User';
 import { Typography, Button, Modal, Form, Input, DatePicker } from 'antd';
 import moment from 'moment';
-import { Editor } from '@tinymce/tinymce-react'
+import { Editor } from '@tinymce/tinymce-react';
 
 const { Title } = Typography;
 
@@ -54,14 +54,38 @@ const StudentProfile = () => {
         Student Information
       </Title>
       <p className="text-left text-gray-500" style={{ fontSize: '16px' }}>
-       Manage Yours Information
+       Manage Your Information
       </p>
 
       {/* Basic Information */}
       <div className="mt-6 bg-white rounded-lg shadow-lg p-6">
         <Title level={5} style={{ fontSize: '20px' }}>
-         Basic Information
+          Basic Information
         </Title>
+
+        {/* Role and Status on the same line */}
+        <div className="flex justify-between p-4 border-b">
+          {/* Role */}
+          <div>
+            <span className="text-gray-600" style={{ fontSize: '16px' }}>Role</span>
+            <div className="text-black" style={{ fontSize: '18px' }}>{studentUser.role}</div>
+          </div>
+
+          {/* Status */}
+          <div>
+            <span className="text-gray-600" style={{ fontSize: '16px' }}>Status</span>
+            <div
+              className="text-black"
+              style={{
+                fontSize: '18px',
+                color: studentUser.status ? 'green' : 'red',
+                fontWeight: 'bold',
+              }}
+            >
+              {studentUser.status ? 'Active' : 'Inactive'}
+            </div>
+          </div>
+        </div>
 
         {/* Email */}
         <div className="flex flex-col p-4 border-b">
@@ -73,18 +97,6 @@ const StudentProfile = () => {
         <div className="flex flex-col p-4 border-b">
           <span className="text-gray-600" style={{ fontSize: '16px' }}>User Name</span>
           <span className="text-black" style={{ fontSize: '18px' }}>{studentUser.name}</span>
-        </div>
-
-        {/* Role */}
-        <div className="flex flex-col p-4 border-b">
-          <span className="text-gray-600" style={{ fontSize: '16px' }}>Role</span>
-          <span className="text-black" style={{ fontSize: '18px' }}>{studentUser.role}</span>
-        </div>
-
-        {/* Status */}
-        <div className="flex flex-col p-4 border-b">
-          <span className="text-gray-600" style={{ fontSize: '16px' }}>Status</span>
-          <span className="text-black" style={{ fontSize: '18px' }}>{studentUser.status ? 'Active' : 'Inactive'}</span>
         </div>
 
         {/* Description */}
@@ -136,7 +148,18 @@ const StudentProfile = () => {
           <Form.Item
             label="Email"
             name="email"
-            rules={[{ required: true, message: 'Please input your email!' }]}
+            rules={[{ required: true, message: 'Please input your email!' } ,
+            { 
+                type: 'email', 
+                message: 'Please enter a valid email address!' 
+              },
+              { 
+                validator: (_, value) => 
+                  value && value.endsWith('@gmail.com') 
+                    ? Promise.resolve() 
+                    : Promise.reject(new Error('Email must be a @gmail.com address!')),
+            }
+            ]}
           >
             <Input />
           </Form.Item>
@@ -144,7 +167,12 @@ const StudentProfile = () => {
           <Form.Item
             label="User Name"
             name="name"
-            rules={[{ required: true, message: 'Please input your name!' }]}
+            rules={[{ required: true, message: 'Please input your name!' },
+            {
+                pattern: /^[a-zA-Z0-9]+$/,
+                message: 'Name must not contain spaces or special characters!',
+            },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -156,15 +184,30 @@ const StudentProfile = () => {
           <Form.Item
             label="Date of Birth"
             name="dob"
-            rules={[{ required: true, message: 'Please select your date of birth!' }]}
+            rules={[{ required: true, message: 'Please select your date of birth!' },
+            {
+                validator: (_, value) => {
+                if (!value) return Promise.resolve()
+                    const today = moment()
+                    const hundredYearsAgo = moment().subtract(100, 'years')
+                if (value.isAfter(today)) {
+                    return Promise.reject(new Error('Date of birth cannot be in the future!'))
+                }
+                if (value.isBefore(hundredYearsAgo)) {
+                    return Promise.reject(new Error('Date of birth cannot be more than 100 years ago!'))
+                }
+                    return Promise.resolve()
+                },
+            },
+            ]}
           >
             <DatePicker format="YYYY-MM-DD" />
           </Form.Item>
 
           <Form.Item label="Description" name="description">
-            {/* Sử dụng TinyMCE Editor cho mô tả */}
+            {/* Use TinyMCE Editor for description */}
             <Editor
-              apiKey="your-tinymce-api-key" // Bạn có thể đăng ký và lấy key từ trang web của TinyMCE hoặc để trống để sử dụng miễn phí
+              apiKey="tic2mmjdwfswr8wv7gepwsc4uurf41i9pjoua75gifzxmdcr" // Add your TinyMCE API key here
               initialValue={studentUser.description}
               init={{
                 height: 300,

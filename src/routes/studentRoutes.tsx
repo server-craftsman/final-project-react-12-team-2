@@ -1,6 +1,5 @@
 import { lazy } from 'react'
 import { RouteObject } from 'react-router-dom'
-import ProfileManagement from '../pages/student/ProfileManagement'
 import DashboardStudent from '../pages/student/DashboardStudent'
 import StudentProfile from '../components/student/profile/StudentProfile'
 import StudentSubcription from '../components/student/profile/StudentSubcription'
