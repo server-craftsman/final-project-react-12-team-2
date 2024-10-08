@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Row, Col, Form, Input } from 'antd';
-import { User } from '../../models/User';
+import { User, UserRole } from '../../models/User';
 import usersData from '../../data/users.json';
 import EditUserProfile from './EditUserProfile';
 import ChangePasswordAdmin from './ChangePasswordAdmin';
@@ -13,7 +13,15 @@ const ViewUserProfileDetail = () => {
 
   useEffect(() => {
     const userData = usersData.users.find(user => user.id === id);
-    setUser(userData || null);
+    if (userData) {
+      setUser({
+        ...userData,
+        role: userData.role as UserRole,
+        dob: new Date(userData.dob)
+      });
+    } else {
+      setUser(null);
+    }
   }, [id]);
 
   if (!user) {
@@ -33,7 +41,7 @@ const ViewUserProfileDetail = () => {
           <div className="mt-4 flex justify-center">
             <EditUserProfile />
             <button className="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
-            {user.role === 'admin' && (
+            {user.role === UserRole.ADMIN && (
               <button
                 className="bg-gradient-tone text-white px-4 py-2 mt-2 rounded"
                 onClick={() => setChangePasswordVisible(true)}
@@ -53,7 +61,7 @@ const ViewUserProfileDetail = () => {
               </Col>
               <Col span={12}>
                 <Form.Item label="Role">
-                  <Input value={user.role.split(' ')[0]} readOnly />
+                  <Input value={user.role} readOnly />
                 </Form.Item>
               </Col>
             </Row>
@@ -82,7 +90,7 @@ const ViewUserProfileDetail = () => {
               </Col>
               <Col span={12}>
                 <Form.Item label="Date of Birth">
-                  <Input value={user.dob} readOnly />
+                  <Input value={user.dob.toDateString()} readOnly />
                 </Form.Item>
               </Col>
               <Col span={12}>

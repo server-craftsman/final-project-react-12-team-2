@@ -15,6 +15,7 @@ import { Category } from '../../models/Category';
 import InstructorSlider from '../../components/generic/InstructorSlider';
 import UtilityProgram from '../../components/generic/UtilityProgram';
 import UtilityRegisterInformation from '../../components/generic/UtilityRegisterInformation';
+import { UserRole } from '../../models/User';
 const { Title } = Typography;
 
 const HomePage: React.FC = () => {
@@ -157,7 +158,11 @@ const HomePage: React.FC = () => {
             >
               <Courses
                 courses={paginatedCourses}
-                usersData={usersData}
+                usersData={{ users: (usersData?.users || []).map(user => ({
+                  ...user,
+                  role: user.role as UserRole,
+                  dob: new Date(user.dob)
+                })) }}
                 categoriesData={{
                   categories: categoriesData.categories.map(cat => ({
                     ...cat,

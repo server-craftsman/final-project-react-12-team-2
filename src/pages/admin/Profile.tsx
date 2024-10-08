@@ -1,9 +1,9 @@
-import ViewAdminInfo from '../../components/admin/AdminInfo'
+import AdminInfo from '../../components/admin/AdminInfo'
 
 const Profile = () => {
   return (
     <div>
-      <ViewAdminInfo />
+      <AdminInfo />
     </div>
   )
 }

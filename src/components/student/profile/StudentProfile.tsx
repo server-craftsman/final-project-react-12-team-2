@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import usersData from '../../../data/users.json'; // Adjust the path as necessary
-import { User } from '../../../models/User';
+import { UserRole } from '../../../models/User';
 import { Typography, Button, Modal, Form, Input, DatePicker } from 'antd';
 import moment from 'moment';
 import { Editor } from '@tinymce/tinymce-react';
@@ -8,7 +8,7 @@ import { Editor } from '@tinymce/tinymce-react';
 const { Title } = Typography;
 
 const StudentProfile = () => {
-  const studentUser = usersData.users.find((user: User) => user.role === 'student');
+  const studentUser = usersData.users.find((user) => user.role === UserRole.STUDENT.toString());
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -114,7 +114,7 @@ const StudentProfile = () => {
         {/* Date of Birth */}
         <div className="flex flex-col p-4 border-b">
           <span className="text-gray-600" style={{ fontSize: '16px' }}>Date Of Birth</span>
-          <span className="text-black" style={{ fontSize: '18px' }}>{studentUser.dob}</span>
+          <span className="text-black" style={{ fontSize: '18px' }}>{new Date(studentUser.dob).toLocaleDateString()}</span>
         </div>
 
         {/* Created At */}

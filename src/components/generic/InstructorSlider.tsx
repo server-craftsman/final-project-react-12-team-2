@@ -2,14 +2,14 @@ import { useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Pagination, EffectCoverflow } from 'swiper/modules'
 import userData from '../../data/users.json'
-import { User } from '../../models/User'
+import { UserRole } from '../../models/User'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/effect-coverflow'
 
 const InstructorSlider = () => {
-  const instructors = userData.users.filter((user: User) => user.role === 'instructor')
+  const instructors = userData.users.filter((user) => user.role === UserRole.INSTRUCTOR)
   const [activeIndex, setActiveIndex] = useState(0)
 
   return (
@@ -33,7 +33,7 @@ const InstructorSlider = () => {
         onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
         className="py-12"
       >
-        {instructors.map((instructor: User, index: number) => (
+        {instructors.map((instructor, index: number) => (
           <SwiperSlide key={instructor.id}>
             <div className={`flex flex-col items-center transition-all duration-300 ${index === activeIndex ? 'scale-105 z-10' : 'scale-95 opacity-80'}`}>
               <div className="relative mb-4">

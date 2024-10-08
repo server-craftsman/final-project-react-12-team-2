@@ -1,16 +1,22 @@
+export enum UserRole {
+    ADMIN = 'admin',
+    STUDENT = 'student',
+    INSTRUCTOR = 'instructor'
+}
+
 export interface User {
     id: string
     email: string
     password: string
     name: string
     google_id: string | null
-    role: string
+    role: UserRole
     status: boolean
     description: string
     phone_number: string
     avatar_url: string | null
     video_url: string | null
-    dob: string
+    dob: Date
     is_verified: boolean
     verification_token: string | null
     verification_token_expires: string | null

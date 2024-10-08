@@ -1,15 +1,19 @@
 import usersData from '../../data/users.json' // Adjust the path as necessary
-import { User } from '../../models/User'
+import { UserRole } from '../../models/User'
 import { Typography, Descriptions, Button } from 'antd'
-
+import { useNavigate } from 'react-router-dom'
 const { Title } = Typography
 
 const AdminInfo = () => {
-  // Find the admin user directly from the imported data
-  const adminUser = usersData.users.find((user: User) => user.role === 'admin')
+  const navigate = useNavigate()
+  const adminUser = usersData.users.find((user) => user.role === UserRole.ADMIN)
 
   if (!adminUser) {
     return <div className="text-center text-red-500">No admin user found.</div>
+  }
+
+  const handleEdit = () => {
+    navigate(`/admin/edit-user/${adminUser.id}`)
   }
 
   return (
@@ -29,8 +33,8 @@ const AdminInfo = () => {
           <Descriptions.Item label="Updated At" className="text-sm md:text-base">{new Date(adminUser.updated_at).toLocaleString()}</Descriptions.Item>
         </Descriptions>
       </div>
-      <Button type="primary" className="mt-4 md:mt-2 md:-ml-0">
-        Edit
+      <Button type="primary" onClick={handleEdit} className="mt-4 md:mt-2 md:-ml-0">
+        Edit Profile
       </Button>
     </div>
   )

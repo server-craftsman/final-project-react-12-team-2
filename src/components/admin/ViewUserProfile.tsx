@@ -1,7 +1,7 @@
 import { Table } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import usersData from '../../data/users.json'; // Adjust the path as necessary
-import { User } from '../../models/User';
+import { User, UserRole } from '../../models/User';
 import { Key } from 'react';
 
 const ViewUserProfile = ({ searchQuery }: { searchQuery: string }) => {
@@ -14,9 +14,13 @@ const ViewUserProfile = ({ searchQuery }: { searchQuery: string }) => {
 
   const filteredUsers = usersData.users.filter((user) =>
     (user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())));
+    user.email.toLowerCase().includes(searchQuery.toLowerCase()))
+  ).map(user => ({
+    ...user,
+    role: user.role as UserRole
+  }));
 
-  const rolesToInclude = ['instructor', 'admin', 'student'];
+  const rolesToInclude = [UserRole.INSTRUCTOR, UserRole.ADMIN, UserRole.STUDENT];
   const columns = [
     {
       title: 'Name',
@@ -34,7 +38,7 @@ const ViewUserProfile = ({ searchQuery }: { searchQuery: string }) => {
       key: 'role',
       filters: rolesToInclude.map(role => ({ text: role.charAt(0).toUpperCase() + role.slice(1), value: role })),
       onFilter: (value: boolean | Key, record: User) => {
-        return record.role === value; // Adjust 'someProperty' to match your data structure
+        return record.role === value;
       },
     },
     {
@@ -49,7 +53,7 @@ const ViewUserProfile = ({ searchQuery }: { searchQuery: string }) => {
         if (typeof value === 'boolean') {
           return record.status === value;
         }
-      return false; // or some other logic
+        return false;
       },
       render: (status: boolean) => (status ? 'Active' : 'Inactive'),
     },
@@ -74,7 +78,7 @@ const ViewUserProfile = ({ searchQuery }: { searchQuery: string }) => {
       <Table<User>
         className="shadow-lg"
         columns={columns}
-        dataSource={filteredUsers}
+        dataSource={filteredUsers.map(user => ({...user, dob: new Date(user.dob)}))}
         rowKey="id"
         pagination={{ pageSize: 10 }}
       />
