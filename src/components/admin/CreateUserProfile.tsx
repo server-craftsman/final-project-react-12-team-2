@@ -3,6 +3,8 @@ import { Form, Input, Button, Modal } from 'antd';
 import { Editor } from '@tinymce/tinymce-react';
 
 const CreateUserProfile = () => {
+  const [form] = Form.useForm();
+
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
@@ -21,6 +23,43 @@ const CreateUserProfile = () => {
     console.log('Received values of form: ', values);
     // Add logic to handle form submission, e.g., sending data to an API
     handleOk(); // Close the modal after submission
+  };
+
+  const emailValidationRules = [
+    { 
+      required: true, 
+      message: 'Please input a valid email!' 
+    },
+    {
+      validator: (_: any, value: string) =>
+        value && value.endsWith('@gmail.com')
+          ? Promise.resolve()
+          : Promise.reject(new Error('Email must end with @gmail.com')),
+    },
+  ];
+
+  const phoneNumberValidationRules = [
+    {
+      pattern: /^\d{10}$/,
+      message: 'Phone number must be 10 digits!',
+    },
+  ];
+
+  const validatePassword = (_: any, value: string) => {
+    const hasUpperCase = /[A-Z]/.test(value);
+    const hasNumber = /\d/.test(value);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value); // Added special character validation
+    if (!value || value.length < 8 || !hasUpperCase || !hasNumber || !hasSpecialChar) {
+      return Promise.reject(new Error('Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.'));
+    }
+    return Promise.resolve();
+  };
+
+  const validateConfirmPassword = (_: any, value: string) => {
+    if (!value || value !== form.getFieldValue('password')) {
+      return Promise.reject(new Error('The two passwords that you entered do not match!'));
+    }
+    return Promise.resolve();
   };
 
   return (
@@ -43,7 +82,10 @@ const CreateUserProfile = () => {
           <Form.Item
             name="email"
             label="Email"
-            rules={[{ required: true, message: 'Please input the email!' }]}
+            rules={[
+              { required: true, message: 'Please input the email!' },
+              ...emailValidationRules,
+            ]}
           >
             <Input />
           </Form.Item>
@@ -51,7 +93,10 @@ const CreateUserProfile = () => {
           <Form.Item
             name="password"
             label="Password"
-            rules={[{ required: true, message: 'Please input the password!' }]}
+            rules={[
+              { required: true, message: 'Please input the password!' },
+              { validator: validatePassword },
+            ]}
           >
             <Input.Password />
           </Form.Item>
@@ -59,7 +104,9 @@ const CreateUserProfile = () => {
           <Form.Item
             name="confirm_password"
             label="Confirm Password"
-            rules={[{ required: true, message: 'Please confirm the password!' }]}
+            rules={[{ required: true, message: 'Please confirm the password!' },
+            { validator: validateConfirmPassword },
+            ]}
           >
             <Input.Password />
           </Form.Item>
@@ -92,7 +139,10 @@ const CreateUserProfile = () => {
           <Form.Item
             name="phone_number"
             label="Phone Number"
-            rules={[{ required: true, message: 'Please input the phone number!' }]}
+            rules={[
+              { required: true, message: 'Please input the phone number!' },
+              ...phoneNumberValidationRules,
+            ]}
           >
             <Input />
           </Form.Item>

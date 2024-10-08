@@ -14,9 +14,7 @@ const ViewUserProfile = ({ searchQuery }: { searchQuery: string }) => {
 
   const filteredUsers = usersData.users.filter((user) =>
     (user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
-    user.status === true // Filter for active users only
-  );
+    user.email.toLowerCase().includes(searchQuery.toLowerCase())));
 
   const rolesToInclude = ['instructor', 'admin', 'student'];
   const columns = [
