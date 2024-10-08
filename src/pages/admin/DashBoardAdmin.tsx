@@ -1,4 +1,4 @@
-import React from 'react'
+
 import DashBoard from '../../components/admin/DashBoard'
 
 const DashBoardAdmin = () => {
