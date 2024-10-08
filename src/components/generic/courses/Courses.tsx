@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Typography, Card, Row, Col, Button, Tag, Avatar, Rate } from 'antd';
 import { CrownOutlined, BookOutlined, PercentageOutlined } from '@ant-design/icons';
-import { Course } from '../../models/Course';
-import { User } from '../../models/User';
+import { Course } from '../../../models/Course';
+import { User } from '../../../models/User';
 import { motion } from 'framer-motion';
 
 const { Title, Paragraph } = Typography;
