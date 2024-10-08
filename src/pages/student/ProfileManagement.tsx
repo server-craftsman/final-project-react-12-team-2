@@ -1,4 +1,3 @@
-import React from 'react'
 import ViewStudentProfile from '../../components/student/profile/StudentProfile'
 
 const ProfileManagement = () => {

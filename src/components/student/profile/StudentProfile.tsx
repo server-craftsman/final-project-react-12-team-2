@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import usersData from '../../../data/users.json'; // Adjust the path as necessary
 import { User } from '../../../models/User';
 import { Typography, Button, Modal, Form, Input, DatePicker } from 'antd';

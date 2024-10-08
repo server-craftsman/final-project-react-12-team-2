@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Layout, Menu } from 'antd';
-import { BankOutlined, TeamOutlined, BellOutlined, DashboardOutlined, UserOutlined, FileTextOutlined, BookOutlined } from '@ant-design/icons';
+import {BellOutlined, DashboardOutlined, UserOutlined, FileTextOutlined} from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 const { Sider } = Layout;
 
