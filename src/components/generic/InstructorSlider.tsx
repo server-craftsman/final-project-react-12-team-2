@@ -8,7 +8,7 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/effect-coverflow'
 
-const IntructorSlider = () => {
+const InstructorSlider = () => {
   const instructors = userData.users.filter((user: User) => user.role === 'instructor')
   const [activeIndex, setActiveIndex] = useState(0)
 
@@ -60,4 +60,4 @@ const IntructorSlider = () => {
   )
 }
 
-export default IntructorSlider
+export default InstructorSlider

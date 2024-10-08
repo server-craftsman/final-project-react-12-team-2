@@ -7,12 +7,12 @@ import Courses from '../../components/generic/courses/Courses';
 import Categories from '../../components/generic/Categories';
 import PageNumber from '../../components/generic/PageNumber';
 import CategoryFilter from '../../components/generic/CategoryFilter';
-import { AuthContext } from '../../components/generic/context/AuthContext';
+import { AuthContext } from '../../context/AuthContext';
 import coursesData from '../../data/courses.json';
 import usersData from '../../data/users.json';
 import categoriesData from '../../data/categories.json';
 import { Category } from '../../models/Category';
-import IntructorSlider from '../../components/generic/IntructorSlider';
+import InstructorSlider from '../../components/generic/InstructorSlider';
 import UtilityProgram from '../../components/generic/UtilityProgram';
 import UtilityRegisterInformation from '../../components/generic/UtilityRegisterInformation';
 const { Title } = Typography;
@@ -180,7 +180,7 @@ const HomePage: React.FC = () => {
       </div>
 
       <Divider className="my-16 border-indigo-200" />
-      <IntructorSlider />
+      <InstructorSlider />
 
       <Divider className="my-16 border-indigo-200" />
       <UtilityProgram />
