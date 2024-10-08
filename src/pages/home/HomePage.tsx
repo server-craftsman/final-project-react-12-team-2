@@ -7,7 +7,7 @@ import Courses from '../../components/generic/courses/Courses';
 import Categories from '../../components/generic/Categories';
 import PageNumber from '../../components/generic/PageNumber';
 import CategoryFilter from '../../components/generic/CategoryFilter';
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../../components/generic/context/AuthContext';
 import coursesData from '../../data/courses.json';
 import usersData from '../../data/users.json';
 import categoriesData from '../../data/categories.json';
@@ -53,7 +53,7 @@ const HomePage: React.FC = () => {
         updated_at: new Date(cat.updated_at),
         is_deleted: cat.is_deleted
       }));
-      
+
       // Divide categories into groups of 4
       const groupedCategories = [];
       for (let i = 0; i < fetchedCategories.length; i += 4) {
@@ -126,7 +126,7 @@ const HomePage: React.FC = () => {
         </div>
       </motion.div>
 
-      <motion.section 
+      <motion.section
         className="bg-gradient-to-b from-indigo-50 to-white py-16"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -142,9 +142,9 @@ const HomePage: React.FC = () => {
             Exquisite Learning Experiences
           </motion.span>
         </Title>
-        <CategoryFilter 
-          activeCategory={activeCategory} 
-          onCategoryChange={handleCategoryChange} 
+        <CategoryFilter
+          activeCategory={activeCategory}
+          onCategoryChange={handleCategoryChange}
         />
 
         <AnimatePresence>
@@ -155,17 +155,17 @@ const HomePage: React.FC = () => {
               animate="visible"
               exit="hidden"
             >
-              <Courses 
-                courses={paginatedCourses} 
-                usersData={usersData} 
+              <Courses
+                courses={paginatedCourses}
+                usersData={usersData}
                 categoriesData={{
-                categories: categoriesData.categories.map(cat => ({
-                  ...cat,
-                  created_at: new Date(cat.created_at),
-                  updated_at: new Date(cat.updated_at)
-                }))
-              }}
-/>            </motion.div>
+                  categories: categoriesData.categories.map(cat => ({
+                    ...cat,
+                    created_at: new Date(cat.created_at),
+                    updated_at: new Date(cat.updated_at)
+                  }))
+                }}
+              />            </motion.div>
           )}
         </AnimatePresence>
       </motion.section>
@@ -189,7 +189,7 @@ const HomePage: React.FC = () => {
       <UtilityRegisterInformation />
 
       <Divider className="my-16 border-indigo-200" />
-      <motion.section 
+      <motion.section
         className="mt-24 text-center bg-gradient-to-b from-indigo-50 to-white py-16"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

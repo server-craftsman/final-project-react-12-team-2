@@ -7,6 +7,7 @@ import ScrollToTopButton from './components/generic/ScrollToTopButton'
 import authRoutes from './routes/authRoutes'
 import studentRoutes from './routes/studentRoutes'
 import adminRoutes from './routes/adminRoutes'
+import instructorRoutes from './routes/instructorRoutes'
 //==============================
 
 const App = () => {
@@ -14,6 +15,7 @@ const App = () => {
     ...authRoutes,
     ...studentRoutes,
     ...adminRoutes,
+    ...instructorRoutes,
   ])
 
   return (
