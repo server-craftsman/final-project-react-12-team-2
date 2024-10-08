@@ -13,7 +13,7 @@ import usersData from '../../data/users.json';
 import categoriesData from '../../data/categories.json';
 import { Category } from '../../models/Category';
 import IntructorSlider from '../../components/generic/IntructorSlider';
-
+import UtilityProgram from '../../components/generic/UtilityProgram';
 const { Title } = Typography;
 
 const HomePage: React.FC = () => {
@@ -172,6 +172,10 @@ const HomePage: React.FC = () => {
       <Divider className="my-16 border-indigo-200" />
       <IntructorSlider />
 
+      <Divider className="my-16 border-indigo-200" />
+      <UtilityProgram />
+      
+      <Divider className="my-16 border-indigo-200" />
       <motion.section 
         className="mt-24 text-center bg-gradient-to-b from-indigo-50 to-white py-16"
         initial={{ opacity: 0 }}
