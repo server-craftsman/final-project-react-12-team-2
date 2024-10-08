@@ -12,6 +12,36 @@ const RegisterPage = () => {
     console.log('Received values of form: ', values);
   };
 
+  const validateUsername = (_: any, value: string) => {
+    if (!value || value.includes(' ') || value.length < 6) {
+      return Promise.reject(new Error('Username must be at least 6 characters long and contain no spaces.'));
+    }
+    return Promise.resolve();
+  };
+
+  const validateEmail = (_: any, value: string) => {
+    if (!value || !value.endsWith('@gmail.com')) {
+      return Promise.reject(new Error('Email must end with @gmail.com.'));
+    }
+    return Promise.resolve();
+  };
+
+  const validatePassword = (_: any, value: string) => {
+    const hasUpperCase = /[A-Z]/.test(value);
+    const hasNumber = /\d/.test(value);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value); // Added special character validation
+    if (!value || value.length < 8 || !hasUpperCase || !hasNumber || !hasSpecialChar) {
+      return Promise.reject(new Error('Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.'));
+    }
+    return Promise.resolve();
+  };
+
+  const validateConfirmPassword = (_: any, value: string) => {
+    if (!value || value !== form.getFieldValue('password')) {
+      return Promise.reject(new Error('The two passwords that you entered do not match!'));
+    }
+    return Promise.resolve();
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-900/20 to-indigo-900/20 backdrop-blur-md">
       <div className="flex w-full max-w-5xl bg-white shadow-2xl rounded-2xl overflow-hidden">
@@ -37,7 +67,10 @@ const RegisterPage = () => {
           >
             <Form.Item
               name="username"
-              rules={[{ required: true, message: 'Please input your username!' }]}
+              rules={[
+                { required: true, message: 'Please input your username!' },
+                { validator: validateUsername },
+              ]}
             >
               <Input prefix={<UserOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Username" className="py-2 px-4 rounded-lg" />
             </Form.Item>
@@ -45,8 +78,8 @@ const RegisterPage = () => {
             <Form.Item
               name="email"
               rules={[
-                { type: 'email', message: 'The input is not valid E-mail!' },
                 { required: true, message: 'Please input your E-mail!' },
+                { validator: validateEmail },
               ]}
             >
               <Input prefix={<MailOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Email" className="py-2 px-4 rounded-lg" />
@@ -54,7 +87,10 @@ const RegisterPage = () => {
 
             <Form.Item
               name="password"
-              rules={[{ required: true, message: 'Please input your password!' }]}
+              rules={[
+                { required: true, message: 'Please input your password!' },
+                { validator: validatePassword },
+              ]}
               hasFeedback
             >
               <Input.Password prefix={<LockOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Password" className="py-2 px-4 rounded-lg" />
@@ -66,14 +102,7 @@ const RegisterPage = () => {
               hasFeedback
               rules={[
                 { required: true, message: 'Please confirm your password!' },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue('password') === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(new Error('The two passwords that you entered do not match!'));
-                  },
-                }),
+                { validator: validateConfirmPassword },
               ]}
             >
               <Input.Password prefix={<LockOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Confirm Password" className="py-2 px-4 rounded-lg" />
