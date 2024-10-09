@@ -99,9 +99,9 @@ const EditUserProfile = () => {
                             toolbar:
                                 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code',
                         }}
-                    //   onEditorChange={(content, editor) => {
-                    //     // Handle the content change
-                    //   }}
+                        onEditorChange={(content) => {
+                            form.setFieldsValue({ description: content });
+                        }}
                     />
                 </Form.Item>
                 <Form.Item label="Date of Birth" name="dob" rules={validationRules.dob as Rule[]}>
