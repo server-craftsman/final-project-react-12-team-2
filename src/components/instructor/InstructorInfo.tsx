@@ -1,147 +1,93 @@
-import { Form, Input, DatePicker, Button, Upload, Typography, message } from 'antd'
-import { UploadOutlined } from '@ant-design/icons'
-import { TINYMCE_API_KEY } from '../../services/config/apiClientofTiny'
-import { Editor } from '@tinymce/tinymce-react'
-import moment from 'moment'
+import usersData from "../../data/users.json"; // Adjust the path as necessary
+import { UserRole } from "../../models/User";
+import { Typography, Descriptions, Button } from "antd";
+import { useNavigate } from "react-router-dom";
 
-const { Title } = Typography
+const { Title } = Typography;
 
 const InstructorInfo = () => {
-    const [form] = Form.useForm()
+    const navigate = useNavigate();
+    const instructorUser = usersData.users.find(
+        (user) => user.role === UserRole.INSTRUCTOR
+    );
 
-    const onFinish = (values: any) => {
-        console.log('Form values:', values)
-        message.success('Profile updated successfully!')
-        // Add logic to handle form submission
+    if (!instructorUser) {
+        return <div className="text-center text-red-500">No instructor user found.</div>;
     }
 
-    const validateFullName = (_: any, value: string) => {
-        if (!value || value.trim() === '') {
-            return Promise.reject(new Error('Please input your full name!'))
-        }
-        return Promise.resolve()
-    }
-
-    const validatePhoneNumber = (_: any, value: string) => {
-        const phoneRegex = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/
-        if (!value || !phoneRegex.test(value)) {
-            return Promise.reject(new Error('Please input a valid phone number!'))
-        }
-        return Promise.resolve()
-    }
-
-    const validateDateOfBirth = (_: any, value: any) => {
-        if (!value) {
-            return Promise.reject(new Error('Please select your date of birth!'))
-        }
-        const currentDate = moment()
-        const hundredYearsAgo = moment().subtract(100, 'years')
-        if (value.isAfter(currentDate) || value.isBefore(hundredYearsAgo)) {
-            return Promise.reject(new Error('Date of birth is not valid. It should be within the last 100 years.'))
-        }
-        return Promise.resolve()
-    }
-
-    // const validateDescription = (_: any, value: string) => {
-    //     if (!value || value.trim() === '') {
-    //         return Promise.reject(new Error('Please input your description!'))
-    //     }
-    //     return Promise.resolve()
-    // }
+    const handleEdit = () => {
+        navigate(`/instructor/edit-user/${instructorUser.id}`);
+    };
 
     return (
-        <div className="instructor-profile">
-            <Title level={2}>Settings</Title>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                {/* Image upload */}
-                <Upload
-                    listType="picture-card"
-                    maxCount={1}
-                    beforeUpload={() => false} // Prevent auto upload
-                >
-                    <div>
-                        <UploadOutlined />
-                        <div style={{ marginTop: 8 }}>Upload Photo</div>
-                    </div>
-                </Upload>
+        <div className="min-h-screen bg-gray-100 p-5 md:p-10">
+            <div className="flex-col md:flex-row justify-between items-center">
+                <Title className="">Setting</Title>
 
-                {/* Video upload */}
-                <Upload
-                    listType="picture-card"
-                    maxCount={1}
-                    beforeUpload={() => false} // Prevent auto upload
-                >
-                    <div>
-                        <UploadOutlined />
-                        <div style={{ marginTop: 8 }}>Upload Video</div>
-                    </div>
-                </Upload>
-            </div>
-            {/* Profile Form */}
-            <Form
-                form={form}
-                layout="vertical"
-                onFinish={onFinish}
-                autoComplete="off"
-            >
-                <Form.Item
-                    name="fullName"
-                    label="Full Name"
-                    rules={[{ validator: validateFullName }]}
-                >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item
-                    name="phoneNumber"
-                    label="Phone Number"
-                    rules={[{ validator: validatePhoneNumber }]}
-                >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item
-                    name="dateOfBirth"
-                    label="Date of Birth"
-                    rules={[{ validator: validateDateOfBirth }]}
-                >
-                    <DatePicker style={{ width: '100%' }} />
-                </Form.Item>
-
-                <Form.Item
-                    name="description"
-                    label="Description"
-                // rules={[{ validator: validateDescription }]}
-                >
-                    <Editor
-                        apiKey={TINYMCE_API_KEY}
-                        initialValue=""
-                        init={{
-                            height: 300,
-                            menubar: false,
-                            plugins: [
-                                'advlist autolink lists link image charmap print preview anchor',
-                                'searchreplace visualblocks code fullscreen',
-                                'insertdatetime media table paste code help wordcount'
-                            ],
-                            toolbar:
-                                'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code',
-                        }}
-                    />
-                </Form.Item>
-
-                <Form.Item>
-                    <Button
-                        type="primary"
-                        htmlType="submit"
-                        className="bg-blue-500 hover:bg-blue-600 border-blue-500 hover:border-blue-600 text-white"
+                <Descriptions bordered column={1} className="mt-4">
+                    <Descriptions.Item label="Email" className="text-sm md:text-base">
+                        {instructorUser.email}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Name" className="text-sm md:text-base">
+                        {instructorUser.name}
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Role" className="text-sm md:text-base">
+                        {instructorUser.role}
+                    </Descriptions.Item>
+                    <Descriptions.Item
+                        label="Status"
+                        className="text-sm md:text-base"
                     >
-                        Save Profile
-                    </Button>
-                </Form.Item>
-            </Form>
+                        {instructorUser.status ? "Active" : "Inactive"}
+                    </Descriptions.Item>
+                    <Descriptions.Item
+                        label="Description"
+                        className="text-sm md:text-base"
+                    >
+                        {instructorUser.description}
+                    </Descriptions.Item>
+                    <Descriptions.Item
+                        label="Phone Number"
+                        className="text-sm md:text-base"
+                    >
+                        {instructorUser.phone_number}
+                    </Descriptions.Item>
+                    <Descriptions.Item
+                        label="Date of Birth"
+                        className="text-sm md:text-base"
+                    >
+                        {instructorUser.dob}
+                    </Descriptions.Item>
+                    <Descriptions.Item
+                        label="Verified"
+                        className="text-sm md:text-base"
+                    >
+                        {instructorUser.is_verified ? "Yes" : "No"}
+                    </Descriptions.Item>
+                    <Descriptions.Item
+                        label="Created At"
+                        className="text-sm md:text-base"
+                    >
+                        {new Date(instructorUser.created_at).toLocaleString()}
+                    </Descriptions.Item>
+                    <Descriptions.Item
+                        label="Updated At"
+                        className="text-sm md:text-base"
+                    >
+                        {new Date(instructorUser.updated_at).toLocaleString()}
+                    </Descriptions.Item>
+                </Descriptions>
+                <Button
+                    type="primary"
+                    onClick={handleEdit}
+                    className="mt-4 md:mt-2 md:-ml-0"
+                >
+                    Edit Profile
+                </Button>
+
+            </div>
         </div>
-    )
-}
+    );
+};
 
 export default InstructorInfo;
