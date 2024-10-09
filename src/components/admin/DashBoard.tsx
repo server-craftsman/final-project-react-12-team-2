@@ -1,33 +1,58 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReadOutlined, UserOutlined } from '@ant-design/icons';
+
 
 const DashBoard = () => {
   return (
     <>
-      <div className="flex justify-start items-center gap-10 p-10"> 
-        <div className="w-96 h-48 rounded-lg flex items-center p-4 shadow-2xl cursor-pointer box-border hover:box-content">
-          <div className='ml-4 flex-grow'>
-            <h3 className="text-lg font-medium text-black">Users</h3>
-            <p className="text-2xl font-bold text-black">150</p>
-            <span className="text-sm text-black">New Users</span>
+  
+      <div className='flex gap-4 w-full'>
+        <BoxWrapper>
+           <div className='rounded-full h-12 w-12 flex items-center justify-center bg-sky-500 cursor-pointer '>
+           <UserOutlined className="text-2xl text-white" /> 
+           </div>
+          <div className='pl-4'>
+           <span className='text-black font-medium ml-2'>User</span>
+           <div className='flex items-center'>
+           <strong className='text-xl text-gray-700 font-semibold' >50,000</strong>
+           <span className='text-sm text-green-500 pl-2'>+140</span>
+           </div>
+           </div>
+        </BoxWrapper>
+        <BoxWrapper>
+          <div className='rounded-full h-12 w-12 flex items-center justify-center bg-orange-500 cursor-pointer '>
+        <ReadOutlined className="text-2xl text-white" />
           </div>
-          <div className='flex justify-center items-center w-20 h-20 bg-orange-500 rounded-md mb-20'>
-            <UserOutlined className="text-3xl text-white" />
+          <div className='pl-4'>
+           <span className='text-black font-medium ml-2'>Course</span>
+           <div className='flex items-center'>
+           <strong className='text-xl text-gray-700 font-semibold' >50,000</strong>
+           <span className='text-sm text-green-500 pl-2'>+140</span>
+           </div>
+           </div>
+        </BoxWrapper>
+        <BoxWrapper >
+        <div className='rounded-full h-12 w-12 flex items-center justify-center bg-green-500 cursor-pointer '>
+        <ReadOutlined className="text-2xl text-white" />
           </div>
-        </div>
-
-        <div className="w-96 h-48 rounded-lg flex items-center p-4 shadow-2xl cursor-pointer box-border hover:box-content">
-          <div className='ml-4 flex-grow'>
-            <h3 className="text-lg font-medium text-black">Courses</h3>
-            <p className="text-2xl font-bold text-black">100,000</p>
-            <span className="text-sm text-black">Total Courses</span>
-          </div>
-          <div className='flex justify-center items-center w-20 h-20 bg-green-500 rounded-md mb-20'>
-            <ReadOutlined className="text-3xl text-white" />
-          </div>
-        </div>
+          <div className='pl-4'>
+           <span className='text-black font-medium ml-2'>Complete</span>
+           <div className='flex items-center'>
+           <strong className='text-xl text-gray-700 font-semibold' >50,000</strong>
+           <span className='text-sm text-green-500 pl-2'>+140</span>
+           </div>
+           </div>
+        </BoxWrapper>
+  
       </div>
     </>
   );
 }
 
 export default DashBoard;
+
+function BoxWrapper({ children }: any) {
+  return (
+    <div className='bg-white rounded-sm p-4 flex-1 border border-gray-200 flex items-center  '>{children}</div>
+  )
+}
