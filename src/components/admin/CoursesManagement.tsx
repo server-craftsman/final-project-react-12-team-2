@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react'
-import { getOrderStatus } from '../../lib/utils/index';
+import { getOrderStatus } from '../../utils/helper';
 import { Table } from 'antd';
 
 const CoursesManagement = () => {

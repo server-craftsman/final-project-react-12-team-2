@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Table, Typography } from 'antd';
-import { getOrderStatus } from '../../lib/utils/index';
+import { getOrderStatus } from '../../utils/helper';
 import {courses} from '../../data/courses.json';
 
 // Data for recent orders
