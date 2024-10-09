@@ -96,10 +96,10 @@ const LoginPage = () => {
               </Form.Item>
 
               <Divider plain className="text-gray-400">or continue with</Divider>
-              <GoogleOAuthProvider clientId={CLIENT_ID}>
-              <Form.Item>
-                <LoginGoogle onLoginError={handleGoogleLoginError} />
-              </Form.Item>
+              <GoogleOAuthProvider clientId={CLIENT_ID} onScriptLoadError={() => console.error('Google script failed to load')}>
+                <Form.Item>
+                  <LoginGoogle onLoginError={handleGoogleLoginError} />
+                </Form.Item>
               </GoogleOAuthProvider>
 
               {loginError && (
