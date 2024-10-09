@@ -6,7 +6,7 @@ import usersData from '../../data/users.json';
 import { Rule } from 'antd/es/form';
 import moment from 'moment';
 import { Editor } from '@tinymce/tinymce-react';
-
+import { TINYMCE_API_KEY } from '../../services/config/apiClientofTiny';
 const EditUserProfile = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -86,7 +86,7 @@ const EditUserProfile = () => {
         </Form.Item>
         <Form.Item label="Description" name="description" rules={validationRules.description as Rule[]}>
         <Editor
-            apiKey='ck3lwrqqoh4n7nuttaggpbfuwl9gx8ntcoo2zkfx7ms31hfr'
+            apiKey={TINYMCE_API_KEY}
               initialValue={user.description}
               init={{
                 height: 300,

@@ -4,7 +4,7 @@ import { UserRole } from '../../../models/User';
 import { Typography, Button, Modal, Form, Input, DatePicker } from 'antd';
 import moment from 'moment';
 import { Editor } from '@tinymce/tinymce-react';
-
+import { TINYMCE_API_KEY } from '../../../services/config/apiClientofTiny';
 const { Title } = Typography;
 
 const StudentProfile = () => {
@@ -207,7 +207,7 @@ const StudentProfile = () => {
           <Form.Item label="Description" name="description">
             {/* Use TinyMCE Editor for description */}
             <Editor
-              apiKey="tic2mmjdwfswr8wv7gepwsc4uurf41i9pjoua75gifzxmdcr" // Add your TinyMCE API key here
+              apiKey={TINYMCE_API_KEY} 
               initialValue={studentUser.description}
               init={{
                 height: 300,
