@@ -4,6 +4,7 @@ import DashBoardAdmin from "../pages/admin/DashBoardAdmin";
 import ManageCategory from "../pages/admin/ManageCategory";
 import DetailsCategory from "../components/admin/DetailsCategoty";
 import ManagePayment from "../pages/admin/ManagePayment";
+import ManagePurchase from "../pages/admin/ManagePurchase";
 const ViewUserProfileDetail = lazy(
   () => import("../components/admin/ViewUserProfileDetail")
 );
@@ -25,6 +26,7 @@ const adminRoutes: RouteObject[] = [
       { path: "view-user/:id", element: <ViewUserProfileDetail /> },
       { path: "edit-user/:id", element: <EditUserProfile /> },
       { path: "payout", element: <ManagePayment /> },
+      { path: "purchase", element: <ManagePurchase /> },
       { path: "categories", element: <ManageCategory /> },
       {
         path: "categories/details-category",

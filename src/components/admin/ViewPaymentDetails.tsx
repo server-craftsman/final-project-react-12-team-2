@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Row, Col, Form, Input } from 'antd';
-import paymentsData from '../../data/payments.json'; 
-import { Payment } from '../../models/Payment'; 
+import paymentsData from '../../data/payouts.json'; 
+import { Payment } from '../../models/Payout'; 
 
 const ViewPaymentDetails = () => {
   const { id } = useParams<{ id: string }>(); 

@@ -1,69 +1,130 @@
-import { Table } from 'antd';
+import { Table, Tag, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import paymentsData from '../../data/payments.json'; // Adjust the path to your payments data file
-import { Payment } from '../../models/Payment'; // Import the Payment interface
-import { Key } from 'react';
+import paymentsData from '../../data/payouts.json';
+import { Payment } from '../../models/Payout'; 
+import { Key, useState } from 'react';
 
 const ViewPayment = ({ searchQuery }: { searchQuery: string }) => {
   const navigate = useNavigate();
+  const [payments, setPayments] = useState(paymentsData.payments);
 
   const handleViewDetails = (paymentId: string) => {
-    // Navigate to the payment detail page
-    navigate(`/admin/view-payment/${paymentId}`);
+    navigate(`/admin/view-payment/${paymentId}`, { state: { paymentId } });
   };
 
-  // Filtering payments based on search query (searching in description or reference)
-  const filteredPayments = paymentsData.payments.filter((payment) =>
-    payment.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    payment.reference.toLowerCase().includes(searchQuery.toLowerCase())
+  const handleApprove = (paymentId: string, status: 'COMPLETED' | 'CANCELLED') => {
+    setPayments((prevPayments) =>
+      prevPayments.map((payment) =>
+        payment.id === paymentId ? { ...payment, status } : payment
+      )
+    );
+    message.success(`Payment ${status === 'COMPLETED' ? 'approved' : 'cancelled'} successfully.`);
+  };
+
+  const filteredPayments = payments.filter((payment) =>
+    payment.instructor_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    payment.payout_no.toLowerCase().includes(searchQuery.toLowerCase()) 
   );
 
   const columns = [
     {
-      title: 'Reference',
-      dataIndex: 'reference',
-      key: 'reference',
+      title: 'Payout No',
+      dataIndex: 'payout_no',
+      key: 'payout_no',
     },
     {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
+      title: 'Instructor ID',
+      dataIndex: 'instructor_id',
+      key: 'instructor_id',
+    }
+    ,
+    {
+      title: 'Transaction',
+      key: 'transaction',
+      render: (_: unknown, record: Payment) => (
+        <button
+          onClick={() => handleViewDetails(record.id)}
+          className='text-black px-4 py-2 rounded-md'
+          style={{ width: '100px', textAlign: 'left' }}
+        >
+          View Details
+        </button>
+      ),
+    },
+    // {
+    //   title: 'Instructor Ratio',
+    //   dataIndex: 'instructor_ratio',
+    //   key: 'instructor_ratio',
+    //   render: (ratio: number) => `${(ratio * 100).toFixed(2)}%`, 
+    // },
+    {
+      title: 'Balance Origin',
+      dataIndex: 'balance_origin',
+      key: 'balance_origin',
+      render: (amount: number) => `$${amount.toFixed(2)}`, 
     },
     {
-      title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
-      render: (amount: number) => `$${amount.toFixed(2)}`, // Format as currency
+      title: 'Balance Instructor Paid',
+      dataIndex: 'balance_instructor_paid',
+      key: 'balance_instructor_paid',
+      render: (amount: number) => `$${amount.toFixed(2)}`, 
+    },
+    {
+      title: 'Balance Instructor Received',
+      dataIndex: 'balance_instructor_received',
+      key: 'balance_instructor_received',
+      render: (amount: number) => `$${amount.toFixed(2)}`, 
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
       filters: [
-        { text: 'Completed', value: true },
-        { text: 'Pending', value: false },
+        { text: 'Completed', value: 'COMPLETED' },
+        { text: 'Pending', value: 'PENDING' },
+        { text: 'Cancelled', value: 'CANCELLED' },
       ],
-      onFilter: (value: boolean | Key, record: Payment) => {
+      onFilter: (value: string | Key, record: Payment) => {
         return record.status === value;
       },
-      render: (status: boolean) => (status ? 'Completed' : 'Pending'),
+      render: (status: string) => (
+        <Tag color={status === 'COMPLETED' ? 'green' : status === 'PENDING' ? 'orange' : 'volcano'}>
+          {status}
+        </Tag>
+      ),
     },
     {
-      title: 'Date',
-      dataIndex: 'date',
-      key: 'date',
-      render: (date: string) => new Date(date).toLocaleDateString(), // Format the date
+      title: 'Date Created',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      render: (date: string) => new Date(date).toLocaleDateString(),
     },
     {
       title: 'Action',
       key: 'action',
-    //   sử dụng unknow thay vì any
       render: (_: unknown, record: Payment) => (
-        <div>
-          <button onClick={() => handleViewDetails(record.id)} className='bg-gradient-tone text-white px-4 py-2 rounded-md'>View Details</button>
+        <div className='flex justify-between items-center' style={{ minHeight: '48px' }}>
+          {record.status === 'PENDING' && (
+            <>
+              <button
+                onClick={() => handleApprove(record.id, 'COMPLETED')}
+                className='bg-green-400 text-white px-4 py-2 rounded-md'
+                style={{ width: '85px' }}
+              >
+                Approve
+              </button>
+              <button
+                onClick={() => handleApprove(record.id, 'CANCELLED')}
+                className='bg-red-400 text-white px-4 py-2 rounded-md'
+                style={{ width: '85px' }}
+              >
+                Cancel
+              </button>
+            </>
+          )}
         </div>
       ),
-    },
+    }
   ];
 
   return (
@@ -74,6 +135,7 @@ const ViewPayment = ({ searchQuery }: { searchQuery: string }) => {
         dataSource={filteredPayments}
         rowKey="id"
         pagination={{ pageSize: 10 }}
+        rowClassName={() => 'align-middle'}
       />
     </div>
   );

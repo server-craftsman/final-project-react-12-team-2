@@ -1,0 +1,69 @@
+{
+  "payments": [
+    {
+      "id": "1",
+      "payout_no": "PAY-001",
+      "status": "COMPLETED",
+      "instructor_id": "14",
+      "instructor_ratio": 0.2,
+      "balance_origin": 1000.0,
+      "balance_instructor_paid": 200.0,
+      "balance_instructor_received": 200.0,
+      "created_at": "2023-10-01T10:00:00Z",
+      "updated_at": "2023-10-01T12:00:00Z",
+      "is_deleted": false
+    },
+    {
+      "id": "2",
+      "payout_no": "PAY-002",
+      "status": "PENDING",
+      "instructor_id": "2",
+      "instructor_ratio": 0.15,
+      "balance_origin": 800.0,
+      "balance_instructor_paid": 120.0,
+      "balance_instructor_received": 120.0,
+      "created_at": "2023-10-02T11:30:00Z",
+      "updated_at": "2023-10-02T11:30:00Z",
+      "is_deleted": false
+    },
+    {
+      "id": "3",
+      "payout_no": "PAY-003",
+      "status": "CANCELLED",
+      "instructor_id": "INSTRUCTOR-001",
+      "instructor_ratio": 0.25,
+      "balance_origin": 500.0,
+      "balance_instructor_paid": 100.0,
+      "balance_instructor_received": 0.0,
+      "created_at": "2023-10-03T09:15:00Z",
+      "updated_at": "2023-10-03T09:15:00Z",
+      "is_deleted": true
+    },
+    {
+      "id": "4",
+      "payout_no": "PAY-004",
+      "status": "COMPLETED",
+      "instructor_id": "INSTRUCTOR-003",
+      "instructor_ratio": 0.3,
+      "balance_origin": 1500.0,
+      "balance_instructor_paid": 450.0,
+      "balance_instructor_received": 450.0,
+      "created_at": "2023-10-04T14:00:00Z",
+      "updated_at": "2023-10-04T15:00:00Z",
+      "is_deleted": false
+    },
+    {
+      "id": "5",
+      "payout_no": "PAY-005",
+      "status": "PENDING",
+      "instructor_id": "INSTRUCTOR-002",
+      "instructor_ratio": 0.2,
+      "balance_origin": 600.0,
+      "balance_instructor_paid": 120.0,
+      "balance_instructor_received": 0.0,
+      "created_at": "2023-10-05T16:45:00Z",
+      "updated_at": "2023-10-05T16:45:00Z",
+      "is_deleted": false
+    }
+  ]
+}
