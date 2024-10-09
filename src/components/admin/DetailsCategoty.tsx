@@ -1,9 +1,11 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom"; // Remove useHistory
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import categoriesData from "../../data/categories.json";
 import { Button, Col, Form, Input, Row } from "antd";
 
 const DetailsCategory = () => {
   const { id } = useParams();
+  const navigate = useNavigate(); // Use useNavigate instead
 
   // Fetch the category data based on the id
   const category = categoriesData.categories.find((cat: any) => cat.id === id);
@@ -35,7 +37,7 @@ const DetailsCategory = () => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label="Descriptionr">
+              <Form.Item label="Description">
                 <Input value={category.description} readOnly />
               </Form.Item>
             </Col>
@@ -65,8 +67,16 @@ const DetailsCategory = () => {
         </Form>
       </Col>
 
-      <Button className="bg-yellow-400 mr-3">Edit</Button>
-      <Button className="bg-red-700">Delete</Button>
+      <Button
+        onClick={() => navigate(`/admin/editcategory/${id}`)}
+        className="bg-yellow-400 mr-3"
+      >
+        Edit
+      </Button>
+      <Button className="bg-red-700 mr-3">Delete</Button>
+      <Link to="/admin/categories">
+        <Button className="bg-gray-300">Back</Button>
+      </Link>
     </div>
   );
 };
