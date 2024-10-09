@@ -33,7 +33,7 @@ const EditUserProfile = () => {
     }
   }, [id, form]);
 
-  const handleFormSubmit = (values: any) => {
+  const handleFormSubmit = (values: unknown) => {
     console.log('Updated User Information:', values);
     message.success('Profile updated successfully');
     navigate('/admin/admin-info');
@@ -57,7 +57,7 @@ const EditUserProfile = () => {
     dob: [
       { required: true, message: 'Please enter the date of birth' },
       {
-        validator: (_: any, value: moment.Moment | null) => {
+        validator: (_: unknown, value: moment.Moment | null) => {
           if (!value || (value.isBefore(moment()) && value.isAfter(moment().subtract(100, 'years')))) {
             return Promise.resolve();
           }
@@ -87,7 +87,7 @@ const EditUserProfile = () => {
         <Form.Item label="Description" name="description" rules={validationRules.description as Rule[]}>
         <Editor
             apiKey={TINYMCE_API_KEY}
-              initialValue={user.description}
+              initialValue="description"
               init={{
                 height: 300,
                 menubar: false,
@@ -99,9 +99,9 @@ const EditUserProfile = () => {
                 toolbar:
                   'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code',
               }}
-            //   onEditorChange={(content, editor) => {
-            //     // Handle the content change
-            //   }}
+              // onEditorChange={(content, editor) => {
+              //   // Handle the content change
+              // }}
             />
         </Form.Item>
         <Form.Item label="Date of Birth" name="dob" rules={validationRules.dob as Rule[]}>
