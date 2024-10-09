@@ -59,10 +59,10 @@ const CourseList = () => {
     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
   };
 
-  const cardHoverStyle = {
-    transform: 'translateY(-10px)',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-  };
+  // const cardHoverStyle = {
+  //   transform: 'translateY(-10px)',
+  //   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+  // };
 
   const imgStyle = {
     borderRadius: '8px 8px 0 0', 
