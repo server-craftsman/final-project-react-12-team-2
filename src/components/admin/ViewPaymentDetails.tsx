@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Row, Col, Form, Input } from 'antd';
 import paymentsData from '../../data/payouts.json'; 
-import { Payment } from '../../models/Payout'; 
+import { Payout } from '../../models/Payout'; 
 
 const ViewPaymentDetails = () => {
   const { id } = useParams<{ id: string }>(); 
-  const [payment, setPayment] = useState<Payment | null>(null);
+  const [payment, setPayment] = useState<Payout | null>(null);
 
   // Fetch the payment details based on the ID
   useEffect(() => {

@@ -1,8 +1,8 @@
 import { Table, Tag, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import paymentsData from '../../data/payouts.json';
-import { Payment } from '../../models/Payout'; 
 import { Key, useState } from 'react';
+import { Payout } from '../../models/Payout';
 
 const ViewPayment = ({ searchQuery }: { searchQuery: string }) => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const ViewPayment = ({ searchQuery }: { searchQuery: string }) => {
         payment.id === paymentId ? { ...payment, status } : payment
       )
     );
-    message.success(`Payment ${status === 'COMPLETED' ? 'approved' : 'cancelled'} successfully.`);
+    message.success(`Payment ${status === 'COMPLETED' ? 'approved' : 'CANCELLED'} successfully.`);
   };
 
   const filteredPayments = payments.filter((payment) =>
@@ -41,7 +41,7 @@ const ViewPayment = ({ searchQuery }: { searchQuery: string }) => {
     {
       title: 'Transaction',
       key: 'transaction',
-      render: (_: unknown, record: Payment) => (
+      render: (_: unknown, record: Payout) => (
         <button
           onClick={() => handleViewDetails(record.id)}
           className='text-black px-4 py-2 rounded-md'
@@ -81,10 +81,10 @@ const ViewPayment = ({ searchQuery }: { searchQuery: string }) => {
       key: 'status',
       filters: [
         { text: 'Completed', value: 'COMPLETED' },
-        { text: 'Pending', value: 'PENDING' },
+        { text: 'Pending', value: 'pending' },
         { text: 'Cancelled', value: 'CANCELLED' },
       ],
-      onFilter: (value: string | Key, record: Payment) => {
+      onFilter: (value: string | Key, record: Payout) => {
         return record.status === value;
       },
       render: (status: string) => (
@@ -102,7 +102,7 @@ const ViewPayment = ({ searchQuery }: { searchQuery: string }) => {
     {
       title: 'Action',
       key: 'action',
-      render: (_: unknown, record: Payment) => (
+      render: (_: unknown, record: Payout) => (
         <div className='flex justify-between items-center' style={{ minHeight: '48px' }}>
           {record.status === 'PENDING' && (
             <>
@@ -129,7 +129,7 @@ const ViewPayment = ({ searchQuery }: { searchQuery: string }) => {
 
   return (
     <div className="p-4">
-      <Table<Payment>
+      <Table<Payout>
         className="shadow-lg"
         columns={columns}
         dataSource={filteredPayments}

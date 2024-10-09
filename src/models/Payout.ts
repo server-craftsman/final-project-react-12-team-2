@@ -1,8 +1,8 @@
 // models/Payment.ts
 export enum PayoutStatusEnum {
-  COMPLETED = 'completed',
-  PENDING = 'pending',
-  REJECT = 'reject'
+  COMPLETED = 'COMPLETED',
+  PENDING = 'PENDING',
+  REJECT = 'CANCELLED'
 }
 
 export interface Payout {
@@ -14,8 +14,8 @@ instructor_ratio: number
 balance_origin: number
 balance_instructor_paid: number
 balance_instructor_received: number
-created_at: Date
-updated_at: Date
+created_at: string
+updated_at: string
 is_deleted: boolean 
   }
   
