@@ -1,15 +1,19 @@
 import { lazy } from 'react'
 import { RouteObject } from 'react-router-dom'
-import DashboardStudent from '../pages/student/overview/DashboardStudent'
-import StudentProfile from '../components/student/setting/StudentProfile'
-import StudentSubcription from '../components/student/setting/StudentSubcription'
-import StudentOrders from '../components/student/setting/StudentOrders'
+
+//import lazy
+const DashboardStudent = lazy(() => import('../pages/student/overview/DashboardStudent'))
+const StudentProfile = lazy(() => import('../pages/student/setting/ProfileManagement'))
+const SubscriptionManagement = lazy(() => import('../pages/student/setting/SubscriptionManagement'))
+const OrderManagement = lazy(() => import('../pages/student/setting/OrderManagement'))
 const StudentLayout = lazy(() => import('../layout/student/StudentLayout'))
 const HomePage = lazy(() => import('../pages/home/HomePage'))
 const StudentDashboard = lazy(() => import('../layout/student/dashboard/StudentDashboard'))
 const CourseDetails = lazy(() => import('../components/generic/courses/CourseDetails'))
 const LessonDetails = lazy(() => import('../components/generic/lessons/LessonDetails'))
 const SessionDetails = lazy(() => import('../components/generic/sessions/SessionDetails'))
+//==============================================================
+
 const studentRoutes: RouteObject[] = [
   {
     path: '/',
@@ -27,9 +31,9 @@ const studentRoutes: RouteObject[] = [
     element: <StudentDashboard />,
     children: [
       {index: true, element: <DashboardStudent/>},
-      {path: "student-profile", element: <StudentProfile/>},
-      {path: "student-orders", element: <StudentOrders/>},
-      {path: "student-subcription", element: <StudentSubcription/>}
+      {path: "student-setting", element: <StudentProfile/>},
+      {path: "student-orders", element: <OrderManagement/>},
+      {path: "student-subscription", element: <SubscriptionManagement/>}
     ],
   },
 ]

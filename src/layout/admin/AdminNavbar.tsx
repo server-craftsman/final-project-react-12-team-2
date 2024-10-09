@@ -13,18 +13,14 @@ const AdminNavbar: React.FC = () => {
       icon: <DashboardOutlined />,
       label: <Link to="/admin">Dashboard</Link>,
     },
+   
     {
       key: '2',
-      icon: <SettingOutlined />,
-      label: <Link to="/admin/admin-info">Setting</Link>,
-    },
-    {
-      key: '3',
       icon: <TeamOutlined />,
       label: <Link to="/admin/manage-user">User Management</Link>,
     },
     {
-      key: '4',
+      key: '3',
       icon: <BellOutlined />,
       // label: (
       //   <Badge count={2} className='text-[#a6abb0]'>
@@ -34,20 +30,25 @@ const AdminNavbar: React.FC = () => {
       label: <Link to="/admin/orders">Orders</Link>,
     },
     {
-      key: '5',
+      key: '4',
       icon: <FileTextOutlined />,
       label: <Link to="/admin/courses">Course Management</Link>,
     },
     {
-      key: '6',
+      key: '5',
       icon: <BookOutlined />,
       label: <Link to="/admin/categories">Category Management</Link>,
     },
     {
-      key: '7',
+      key: '6',
       icon: <BankOutlined />,
       label: <Link to="/admin/payout">Payout Management</Link>,
-    }
+    },
+    {
+      key: '7',
+      icon: <SettingOutlined />,
+      label: <Link to="/admin/admin-info">Setting</Link>,
+    },
   ];
 
   return (

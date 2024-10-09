@@ -13,22 +13,22 @@ const InstructorNavbar: React.FC = () => {
             icon: <DashboardOutlined />,
             label: <Link to="/instructor/">Dashboard</Link>,
         },
+     
         {
             key: '2',
-            icon: <UserOutlined />,
-            label: <Link to="/instructor/setting">Setting</Link>,
-        },
-        {
-            key: '3',
             icon: <FileTextOutlined />,
             label: <Link to="/instructor/courses">My Courses</Link>,
         },
         {
-            key: '4',
+            key: '3',
             icon: <FileTextOutlined />,
             label: <Link to="/instructor/payout">Manage Payout</Link>,
         },
-
+        {
+            key: '4',   
+            icon: <UserOutlined />,
+            label: <Link to="/instructor/setting">Setting</Link>,
+        }
     ];
 
     return (
