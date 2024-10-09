@@ -3,6 +3,7 @@ import { RouteObject } from "react-router-dom";
 import DashBoardAdmin from "../pages/admin/DashBoardAdmin";
 import ManageCategory from "../pages/admin/ManageCategory";
 import DetailsCategory from "../components/admin/DetailsCategoty";
+import ManagePayment from "../pages/admin/ManagePayment";
 const ViewUserProfileDetail = lazy(
   () => import("../components/admin/ViewUserProfileDetail")
 );
@@ -23,6 +24,7 @@ const adminRoutes: RouteObject[] = [
       { path: "manage-user", element: <ManageUser /> },
       { path: "view-user/:id", element: <ViewUserProfileDetail /> },
       { path: "edit-user/:id", element: <EditUserProfile /> },
+      { path: "payout", element: <ManagePayment /> },
       { path: "categories", element: <ManageCategory /> },
       {
         path: "categories/details-category",
