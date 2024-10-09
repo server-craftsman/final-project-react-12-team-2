@@ -14,7 +14,7 @@ const AdminLayout = lazy(() => import("../layout/admin/AdminLayout"));
 const EditUserProfile = lazy(
   () => import("../components/admin/EditUserProfile")
 );
-
+const EditCategory = lazy(() => import("../components/admin/EditCategory"));
 const adminRoutes: RouteObject[] = [
   {
     path: "/admin",
@@ -28,6 +28,7 @@ const adminRoutes: RouteObject[] = [
       { path: "payout", element: <ManagePayment /> },
       { path: "purchase", element: <ManagePurchase /> },
       { path: "categories", element: <ManageCategory /> },
+      { path: "edit-category/:id", element: <EditCategory /> },
       {
         path: "categories/details-category",
         element: <DetailsCategory />,

@@ -4,13 +4,13 @@ import categoriesData from "../../data/categories.json";
 
 const EditCategory = () => {
   const { id } = useParams();
-  const category = categoriesData.categories.find((cat: any) => cat.id === id);
+  const category = categoriesData.categories.find((cat: { id: string }) => cat.id === id);
 
   if (!category) {
     return <div>Category not found.</div>;
   }
 
-  const onFinish = (values: any) => {
+  const onFinish = (values: unknown) => {
     // Logic để lưu thông tin chỉnh sửa (có thể là gọi API để cập nhật danh mục)
     console.log("Updated values:", values);
   };
