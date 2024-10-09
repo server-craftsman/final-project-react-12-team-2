@@ -1,9 +1,9 @@
 import { lazy } from 'react'
 import { RouteObject } from 'react-router-dom'
-import DashboardStudent from '../pages/student/DashboardStudent'
-import StudentProfile from '../components/student/profile/StudentProfile'
-import StudentSubcription from '../components/student/profile/StudentSubcription'
-import StudentOrders from '../components/student/profile/StudentOrders'
+import DashboardStudent from '../pages/student/overview/DashboardStudent'
+import StudentProfile from '../components/student/setting/StudentProfile'
+import StudentSubcription from '../components/student/setting/StudentSubcription'
+import StudentOrders from '../components/student/setting/StudentOrders'
 const StudentLayout = lazy(() => import('../layout/student/StudentLayout'))
 const HomePage = lazy(() => import('../pages/home/HomePage'))
 const StudentDashboard = lazy(() => import('../layout/student/dashboard/StudentDashboard'))

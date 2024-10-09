@@ -1,20 +1,20 @@
 import { lazy } from "react";
 import { RouteObject } from "react-router-dom";
-import DashBoardAdmin from "../pages/admin/DashBoardAdmin";
-import ManageCategory from "../pages/admin/ManageCategory";
-import DetailsCategory from "../components/admin/DetailsCategoty";
-import ManagePayment from "../pages/admin/ManagePayment";
-import ManagePurchase from "../pages/admin/ManagePurchase";
+import DashBoardAdmin from "../pages/admin/overview/DashBoardAdmin";
+import ManageCategory from "../pages/admin/category/ManageCategory";
+import DetailsCategory from "../components/admin/category/DetailsCategoty";
+import ManagePayment from "../pages/admin/payout/ManagePayment";
+import ManagePurchase from "../pages/admin/purchase/ManagePurchase";
 const ViewUserProfileDetail = lazy(
-  () => import("../components/admin/ViewUserProfileDetail")
+  () => import("../components/admin/user/ViewUserProfileDetail")
 );
-const Profile = lazy(() => import("../pages/admin/Setting"));
-const ManageUser = lazy(() => import("../pages/admin/ManageUser"));
+const Profile = lazy(() => import("../pages/admin/setting/Setting"));
+const ManageUser = lazy(() => import("../pages/admin/user/ManageUser"));
 const AdminLayout = lazy(() => import("../layout/admin/AdminLayout"));
 const EditUserProfile = lazy(
-  () => import("../components/admin/EditUserProfile")
+  () => import("../components/admin/setting/EditUserProfile")
 );
-const EditCategory = lazy(() => import("../components/admin/EditCategory"));
+const EditCategory = lazy(() => import("../components/admin/category/EditCategory"));
 const adminRoutes: RouteObject[] = [
   {
     path: "/admin",
