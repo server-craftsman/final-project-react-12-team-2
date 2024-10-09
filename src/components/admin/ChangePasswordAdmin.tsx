@@ -19,7 +19,7 @@ const ChangePasswordAdmin = ({
       });
   };
 
-  const validatePassword = (_: any, value: string) => {
+  const validatePassword = (_: unknown, value: string) => {
     const hasUpperCase = /[A-Z]/.test(value);
     const hasNumber = /\d/.test(value);
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value); // Added special character validation
@@ -29,8 +29,8 @@ const ChangePasswordAdmin = ({
     return Promise.resolve();
   };
 
-  const validateConfirmPassword = (_: any, value: string) => {
-    if (!value || value !== form.getFieldValue('password')) {
+  const validateConfirmPassword = (_: unknown, value: string) => {
+    if (!value || value !== form.getFieldValue('newPassword')) {
       return Promise.reject(new Error('The two passwords that you entered do not match!'));
     }
     return Promise.resolve();

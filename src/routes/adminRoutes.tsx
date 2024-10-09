@@ -8,7 +8,7 @@ import ManagePurchase from "../pages/admin/ManagePurchase";
 const ViewUserProfileDetail = lazy(
   () => import("../components/admin/ViewUserProfileDetail")
 );
-const Profile = lazy(() => import("../pages/admin/Profile"));
+const Profile = lazy(() => import("../pages/admin/Setting"));
 const ManageUser = lazy(() => import("../pages/admin/ManageUser"));
 const AdminLayout = lazy(() => import("../layout/admin/AdminLayout"));
 const EditUserProfile = lazy(
