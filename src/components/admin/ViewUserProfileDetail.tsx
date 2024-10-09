@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Row, Col, Form, Input } from 'antd';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Row, Col, Form, Input, Select, Popconfirm, Button } from 'antd';
 import { User, UserRole } from '../../models/User';
 import usersData from '../../data/users.json';
+import { HomeOutlined } from '@ant-design/icons';
 
 const ViewUserProfileDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const userData = usersData.users.find(user => user.id === id);
@@ -24,6 +26,7 @@ const ViewUserProfileDetail = () => {
   if (!user) {
     return <div>User not found</div>;
   }
+  const rolesToInclude = [UserRole.INSTRUCTOR, UserRole.ADMIN, UserRole.STUDENT];
 
   return (
     <div className="max-w-2xl mx-auto p-5">
@@ -36,7 +39,14 @@ const ViewUserProfileDetail = () => {
           />
           <h2 className="mt-2 text-lg font-semibold">{user.name}</h2>
           <div className="mt-4 flex justify-center">
-            <button className="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
+            <Popconfirm
+              title="Are you sure you want to delete this account?"
+              onConfirm={() => console.log('Account deleted')}
+              okText="Yes"
+              cancelText="No"
+            >
+              <button className="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
+            </Popconfirm>
           </div>
         </Col>
         <Col span={18}>
@@ -49,7 +59,13 @@ const ViewUserProfileDetail = () => {
               </Col>
               <Col span={12}>
                 <Form.Item label="Role">
-                  <Input value={user.role} readOnly />
+                  <Select value={user.role}>
+                    {rolesToInclude.map(role => (
+                      <Select.Option key={role} value={role}>
+                        {role.charAt(0).toUpperCase() + role.slice(1).toLowerCase()}
+                      </Select.Option>
+                    ))}
+                  </Select>
                 </Form.Item>
               </Col>
             </Row>
@@ -68,7 +84,10 @@ const ViewUserProfileDetail = () => {
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item label="Status">
-                  <Input value={user.status ? 'Active' : 'Inactive'} readOnly />
+                  <Select value={user.status ? 'Active' : 'Inactive'}>
+                    <Select.Option value="Active">Active</Select.Option>
+                    <Select.Option value="Inactive">Inactive</Select.Option>
+                  </Select>
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -90,6 +109,9 @@ const ViewUserProfileDetail = () => {
           </Form>
         </Col>
       </Row>
+      <Button type="primary" icon={<HomeOutlined />} onClick={() => navigate('/admin/manage-user')}>
+        Back to Home
+      </Button>
     </div>
   );
 };
