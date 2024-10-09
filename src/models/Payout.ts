@@ -5,8 +5,8 @@ export enum PayoutStatusEnum {
   REJECT = 'reject'
 }
 
-export interface Payment {
-  id: string
+export interface Payout {
+id: string
 payout_no: string
 status: PayoutStatusEnum
 instructor_id: string
