@@ -50,8 +50,8 @@ const HomePage: React.FC = () => {
         name: cat.name,
         description: cat.description,
         parent_category_id: cat.parent_category_id,
-        created_at: new Date(cat.created_at),
-        updated_at: new Date(cat.updated_at),
+        created_at: cat.created_at,
+        updated_at: cat.updated_at,
         is_deleted: cat.is_deleted
       }));
 
@@ -166,9 +166,8 @@ const HomePage: React.FC = () => {
                 categoriesData={{
                   categories: categoriesData.categories.map(cat => ({
                     ...cat,
-                    created_at: new Date(cat.created_at),
-                    updated_at: new Date(cat.updated_at)
-                  }))
+                    // Remove the Date conversion
+                  })),
                 }}
               />            </motion.div>
           )}

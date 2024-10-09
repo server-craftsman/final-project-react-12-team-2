@@ -20,7 +20,7 @@ const TextSlider: React.FC = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setIndex((prevIndex) => (prevIndex + 1) % phrases.length);
-    }, 8000);
+    }, 3000);
 
     return () => clearInterval(timer);
   }, []);

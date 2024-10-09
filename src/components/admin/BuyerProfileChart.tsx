@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react'
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from 'recharts'
 
 const data = [

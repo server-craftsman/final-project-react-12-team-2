@@ -3,7 +3,10 @@ import { Outlet } from 'react-router-dom'
 import StudentDashboardNavbar from './StudentDashboardNavbar'
 import { Content } from 'antd/es/layout/layout'
 import StudentFooter from '../StudentFooter'
+
+
 const StudentDashboard = () => {
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <StudentDashboardNavbar />
@@ -13,7 +16,7 @@ const StudentDashboard = () => {
           <header className="mb-4 p-6 bg-gradient-to-r from-indigo-600 to-indigo-800 rounded-lg shadow-lg flex justify-between items-center">
             {/* <h2 className="text-2xl font-bold text-white">Dashboard</h2> */}
             <div className="text-white">
-              Welcome, <span className="font-semibold">Student</span>
+              Welcome to EduLearner, <span className="font-semibold">Student</span>
             </div>
           </header>
 
