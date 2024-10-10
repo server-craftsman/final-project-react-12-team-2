@@ -1,5 +1,5 @@
 import { Card } from "antd";
-import { Category } from "../../models/Category";
+import { Category } from "../../../models/Category";
 
 const Categories = ({ categories }: { categories: Category[] }) => {
     return (

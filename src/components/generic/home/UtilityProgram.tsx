@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import utilBanner1 from '../../assets/cover/banner-2-thumb-1.png';
-import utilBanner2 from '../../assets/cover/banner-2-thumb-2.png';
+import utilBanner1 from '../../../assets/cover/banner-2-thumb-1.png';
+import utilBanner2 from '../../../assets/cover/banner-2-thumb-2.png';
 
 const UtilityProgram: React.FC = () => {
   return (

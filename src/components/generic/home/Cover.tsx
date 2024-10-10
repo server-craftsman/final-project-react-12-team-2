@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { motion, useAnimation, useInView } from 'framer-motion';
-import courseMockup from '../../assets/cover/tablet-showing-website.jpg';
-import mobileMockup from '../../assets/cover/phone-mobile-app.jpg';
+import courseMockup from '../../../assets/cover/tablet-showing-website.jpg';
+import mobileMockup from '../../../assets/cover/phone-mobile-app.jpg';
 import TextSlider from './TextSlider';
 
 const Cover: React.FC = () => {

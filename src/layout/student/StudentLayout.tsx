@@ -1,7 +1,7 @@
 import Navbar from "./StudentNavbar";
 import StudentFooter from "./StudentFooter";
 import { Outlet, useLocation } from "react-router-dom";
-import Cover from "../../components/generic/Cover";
+import Cover from "../../components/generic/home/Cover";
 
 const StudentLayout = () => {
   const location = useLocation();
