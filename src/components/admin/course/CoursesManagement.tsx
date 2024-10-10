@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react'
-import { getOrderStatus } from '../../../utils/helper';
+import { getOrderStatus, moneyFormat } from '../../../utils/helper';
 import { Table } from 'antd';
 import courseData from '../../../data/courses.json';
 import { Course } from '../../../models/Course'; // Import the Course model
@@ -34,7 +34,7 @@ const CoursesManagement = React.memo(() => {
             title: 'Price',
             dataIndex: 'price',
             key: 'price',
-            render: (price: any) => `$${price.toFixed(2)}`,
+            render: (money: number) => moneyFormat(money),
         },
         {
             title: 'Discount',
