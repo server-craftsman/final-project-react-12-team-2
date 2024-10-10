@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { RouteObject } from "react-router-dom";
 import ManageCourses from "../pages/admin/course/ManageCourses";
+import LessonManagement from "../components/admin/course/LessonManagement";
 
 //import lazy
 const DashBoardAdmin = lazy(() => import("../pages/admin/overview/DashBoardAdmin"));
@@ -31,6 +32,7 @@ const adminRoutes: RouteObject[] = [
       { path: "categories", element: <ManageCategory /> },
       { path: "edit-category/:id", element: <EditCategory /> },
       { path: "/admin/courses",element: <ManageCourses/>},
+      { path: "/admin/courses/lessons",element: <LessonManagement/>},
       {
         path: "categories/details-category",
         element: <DetailsCategory />,
