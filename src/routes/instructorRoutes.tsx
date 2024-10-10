@@ -18,6 +18,9 @@ const InstructorInfo = lazy(
   () => import("../components/instructor/setting/InstructorInfo")
 );
 const Review = lazy(() => import("../pages/instructor/review/Review"));
+const ReviewsDetail = lazy(
+  () => import("../components/instructor/review/ReviewsDetail")
+);
 //==============================================================
 
 const instructorRoutes: RouteObject[] = [
@@ -30,6 +33,7 @@ const instructorRoutes: RouteObject[] = [
       { path: "edit-user/:id", element: <EditUserProfile /> },
       { path: "instructor-info", element: <InstructorInfo /> },
       { path: "reviews", element: <Review /> },
+      { path: "reviews/:courseId", element: <ReviewsDetail /> },
       { path: "purchases", element: <Purchases /> },
       { path: "payout", element: <ManagePayout /> },
     ],
