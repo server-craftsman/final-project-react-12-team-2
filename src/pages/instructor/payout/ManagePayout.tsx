@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { Button, Table, Modal } from "antd";
+import { Button, Table } from "antd";
 import payoutData from "../../../data/payouts.json";
 import { formatDate, moneyFormat } from "../../../utils/helper";
 import { Link } from "react-router-dom";
