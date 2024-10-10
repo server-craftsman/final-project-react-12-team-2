@@ -11,7 +11,7 @@ export interface Carts{
  updated_at: Date
  is_deleted: boolean
 }
-enum CartStatusEnum {
+export enum CartStatusEnum {
     new,
     waiting_paid,
     cancel,

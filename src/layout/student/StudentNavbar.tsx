@@ -2,9 +2,11 @@ import { Link } from 'react-router-dom'
 import logo from '../../assets/logo.jpg'
 import { FaSearch, FaBell, FaUserCircle, FaBars } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
+import { useCart } from '../../context/CartContext'
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { cartItems } = useCart()
 
   useEffect(() => {
     const handleResize = () => {
@@ -60,12 +62,16 @@ const Navbar = () => {
               <input type="text" placeholder="Search..." className="bg-indigo-800 text-white placeholder-gray-400 rounded-full py-2 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-40 lg:w-64" />
               <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>
-            <button className="text-gray-300 hover:text-white relative hidden lg:block">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-            </svg>
-              <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
-            </button>
+            <Link to="/cart" className="text-gray-300 hover:text-white relative hidden lg:block">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+              </svg>
+              {cartItems.length > 0 && (
+                <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                  {cartItems.length}
+                </span>
+              )}
+            </Link>
             <Link to="/login" className="bg-gradient-to-r from-[#8529ff] to-[#5e17eb] hover:from-[#7020d9] hover:to-[#4c11c2] text-white font-medium py-2 px-4 lg:px-6 rounded-full text-sm transition-all duration-200 ease-in-out shadow-md hover:shadow-lg hidden lg:inline-block">
               Login
             </Link>

@@ -12,6 +12,7 @@ const StudentDashboard = lazy(() => import('../layout/student/dashboard/StudentD
 const CourseDetails = lazy(() => import('../components/generic/courses/main-display/CourseDetails'))
 const LessonDetails = lazy(() => import('../components/generic/lessons/LessonDetails'))
 const SessionDetails = lazy(() => import('../components/generic/sessions/SessionDetails'))
+const CartPage = lazy(() => import('../components/generic/cart/CartPage'))
 //==============================================================
 
 const studentRoutes: RouteObject[] = [
@@ -23,7 +24,8 @@ const studentRoutes: RouteObject[] = [
       { path: '/course/:id', element: <CourseDetails /> },
       { path: '/course/:courseId', element: <CourseDetails /> },
       { path: '/course/:courseId/session/:sessionId', element: <SessionDetails /> },
-      { path: '/course/:courseId/lesson/:lessonId', element: <LessonDetails /> }
+      { path: '/course/:courseId/lesson/:lessonId', element: <LessonDetails /> },
+      {path: "cart", element: <CartPage/>}
     ],
   },
   {
@@ -33,9 +35,9 @@ const studentRoutes: RouteObject[] = [
       {index: true, element: <DashboardStudent/>},
       {path: "student-setting", element: <StudentProfile/>},
       {path: "student-orders", element: <OrderManagement/>},
-      {path: "student-subscription", element: <SubscriptionManagement/>}
+      {path: "student-subscription", element: <SubscriptionManagement/>},
     ],
-  },
+  }
 ]
 
 export default studentRoutes
