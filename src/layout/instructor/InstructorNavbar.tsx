@@ -41,6 +41,11 @@ const InstructorNavbar: React.FC = () => {
       label: <Link to="/instructor/setting">Setting</Link>,
     },
     {
+      key: "6",
+      icon: <FileTextOutlined />,
+      label: <Link to="/instructor/subscription">Subscription</Link>,
+    },
+    {
       key: "8",
       icon: <FileTextOutlined />,
       label: <Link to="/instructor/purchases">Purchases</Link>,
