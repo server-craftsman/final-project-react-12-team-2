@@ -4,9 +4,11 @@ import lessonsData from '../../../data/lessons.json';
 import coursesData from '../../../data/courses.json';
 import usersData from '../../../data/users.json';
 import sessionsData from '../../../data/sessions.json';
-import { PlayCircleOutlined, ClockCircleOutlined, FileTextOutlined, RightOutlined, LeftOutlined, MenuOutlined, CloseOutlined } from '@ant-design/icons';
-import { Button, Card, Row, Col, Typography, Divider, Tag, Progress, Breadcrumb, Menu, Modal } from 'antd';
+import { PlayCircleOutlined, ClockCircleOutlined, FileTextOutlined, MenuOutlined, CloseOutlined } from '@ant-design/icons';
+import { Button, Card, Row, Col, Typography, Tag, Progress, Breadcrumb, Menu, Modal } from 'antd';
 import YouTube from 'react-youtube';
+import LessonSidebar from './LessonSidebar';
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 
 const { Title, Paragraph, Text } = Typography
 
@@ -21,6 +23,7 @@ const LessonDetails: React.FC = () => {
   const [openKeys, setOpenKeys] = useState<string[]>([]);
   const [menuCollapsed, setMenuCollapsed] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [sidebarVisible, setSidebarVisible] = useState(true);
   const lesson = lessonsData.lessons.find((lesson) => lesson.id === lessonId);
   const course = coursesData.courses.find((course) => course.id === courseId);
   const session = sessionsData.sessions.find((session) => session.id === sessionId);
@@ -30,7 +33,7 @@ const LessonDetails: React.FC = () => {
   const allLessons = lessonsData.lessons.filter((lesson) => lesson.course_id === courseId);
 
   useEffect(() => {
-    if (!lesson || !course || !session) {
+    if (!lesson || !course) {
       setError('Lesson, course, or session not found');
     }
     setLoading(false);
@@ -78,7 +81,8 @@ const LessonDetails: React.FC = () => {
   const handleLessonChange = (value: string) => {
     const selectedLesson = allLessons.find(lesson => lesson.id === value);
     if (selectedLesson) {
-      navigate(`/course/${courseId}/session/${selectedLesson.session_id}/lesson/${value}`);
+      // navigate(`/course/${courseId}/session/${selectedLesson.session_id}/lesson/${value}`);
+      navigate(`/course/${courseId}/lesson/${value}`);
     }
   };
 
@@ -88,14 +92,16 @@ const LessonDetails: React.FC = () => {
 
   const handlePreviousLesson = () => {
     if (previousLesson) {
-      navigate(`/course/${courseId}/session/${previousLesson.session_id}/lesson/${previousLesson.id}`);
+      // navigate(`/course/${courseId}/session/${previousLesson.session_id}/lesson/${previousLesson.id}`);
+      navigate(`/course/${courseId}/lesson/${previousLesson.id}`);
       window.scrollTo(0, 0);
     }
   };
 
   const handleNextLesson = () => {
     if (nextLesson) {
-      navigate(`/course/${courseId}/session/${nextLesson.session_id}/lesson/${nextLesson.id}`);
+      // navigate(`/course/${courseId}/session/${nextLesson.session_id}/lesson/${nextLesson.id}`);
+      navigate(`/course/${courseId}/lesson/${nextLesson.id}`);
       window.scrollTo(0, 0);
     }
   };
@@ -145,6 +151,10 @@ const LessonDetails: React.FC = () => {
     { title: lesson?.name },
   ];
 
+  const toggleSidebar = () => {
+    setSidebarVisible(!sidebarVisible);
+  };
+
   return (
     <div className="bg-gray-100 min-h-screen py-12">
       <div className="container mx-auto px-4">
@@ -156,6 +166,7 @@ const LessonDetails: React.FC = () => {
             className="text-gray-600 mr-4"
           />
           <Breadcrumb items={breadcrumbItems} className="flex-grow" />
+         
         </div>
 
         <Row gutter={[32, 32]}>
@@ -221,13 +232,25 @@ const LessonDetails: React.FC = () => {
                 </div>
                 <Paragraph className="text-gray-600 mb-6">{lesson?.description}</Paragraph>
                 <div className="flex items-center mb-6">
-                  <img src={instructor?.avatar_url || ''} className="mr-2 w-12 h-12 rounded-full" alt={instructor?.name || ''} />
-                  <Text strong className="text-gray-700">{instructor?.name}</Text>
+                  <img src={instructor?.avatar_url || ''} className="mr-4 w-16 h-16 rounded-full shadow-lg" alt={instructor?.name || ''} />
+                  <div className="flex-1">
+                    <Text strong className="text-gray-800 text-lg">{instructor?.name}</Text>
+                    <Text className="block text-gray-500 text-sm">{instructor?.description}</Text>
+                  </div>
+                  <Button
+                    type="primary"
+                    onClick={toggleSidebar}
+                    className="ml-4"
+                    icon={sidebarVisible ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}
+                  >
+                    {sidebarVisible ? 'Hide Sidebar' : 'Show Sidebar'}
+                  </Button>
                 </div>
+                
               </div>
             </Card>
             <Row gutter={[32, 32]}>
-              <Col xs={24} lg={16}>
+              <Col xs={24} lg={sidebarVisible ? 16 : 24}>
                 <Card className="shadow-lg rounded-lg">
                   <Title level={4} className="mb-4">Lesson Content</Title>
                   <Row gutter={[16, 16]}>
@@ -255,49 +278,20 @@ const LessonDetails: React.FC = () => {
                   </Row>
                 </Card>
               </Col>
-              <Col xs={24} lg={8}>
-                <Card className="shadow-lg rounded-lg sticky top-8">
-                  <Title level={4} className="mb-4">Course Progress</Title>
-                  <Progress percent={30} status="active" />
-                  <Button type="primary" size="large" block className="mb-4 h-12 text-lg bg-[#1a237e] text-white hover:bg-[#1a237e] hover:text-white" onClick={() => setIsModalVisible(true)}>
-                    Continue Lesson
-                  </Button>
-                  <Button size="large" block className="mb-6 h-12 text-lg">
-                    Mark as Complete
-                  </Button>
-                  <Divider />
-                  <Title level={4} className="mb-4">Lesson Details:</Title>
-                  <ul className="list-disc list-inside text-gray-600">
-                    <li>Course: {course?.name}</li>
-                    <li>Session: {session?.name}</li>
-                    <li>Position: {lesson?.position_order}</li>
-                    <li>Created: {new Date(lesson?.created_at || '').toLocaleDateString()}</li>
-                    <li>Updated: {new Date(lesson?.updated_at || '').toLocaleDateString()}</li>
-                  </ul>
-                  <Divider />
-                  <Title level={4} className="mb-4">Navigation Lesson</Title>
-                  <div className="flex w-50 justify-between">
-                    <Button 
-                      type="default" 
-                      size="small"
-                      className="flex-1 mr-1" 
-                      onClick={handlePreviousLesson}
-                      disabled={!previousLesson}
-                    >
-                      <LeftOutlined /> Previous
-                    </Button>
-                    <Button 
-                      type="primary" 
-                      size="small"
-                      className="flex-1"
-                      onClick={handleNextLesson}
-                      disabled={!nextLesson}
-                    >
-                      Next <RightOutlined />
-                    </Button>
-                  </div>
-                </Card>
-              </Col>
+              {sidebarVisible && (
+                <Col xs={24} lg={8}>
+                  <LessonSidebar
+                    course={course}
+                    session={session}
+                    lesson={lesson}
+                    onContinueLesson={() => setIsModalVisible(true)}
+                    onPreviousLesson={handlePreviousLesson}
+                    onNextLesson={handleNextLesson}
+                    previousLesson={!!previousLesson}
+                    nextLesson={!!nextLesson}
+                  />
+                </Col>
+              )}
             </Row>
           </Col>
         </Row>

@@ -52,7 +52,7 @@ const SessionDetails: React.FC = () => {
                 children: (
                   <div className="p-4">
                     <Paragraph>{lesson.description}</Paragraph>
-                    <Link to={`/course/${courseId}/session/${sessionId}/lesson/${lesson.id}`}>
+                    <Link to={`/course/${courseId}/lesson/${lesson.id}`}>
                       <Button type="primary">Go to Lesson</Button>
                     </Link>
                   </div>

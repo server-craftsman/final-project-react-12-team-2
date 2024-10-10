@@ -23,7 +23,7 @@ const studentRoutes: RouteObject[] = [
       { path: '/course/:id', element: <CourseDetails /> },
       { path: '/course/:courseId', element: <CourseDetails /> },
       { path: '/course/:courseId/session/:sessionId', element: <SessionDetails /> },
-      { path: '/course/:courseId/session/:sessionId/lesson/:lessonId', element: <LessonDetails /> }
+      { path: '/course/:courseId/lesson/:lessonId', element: <LessonDetails /> }
     ],
   },
   {

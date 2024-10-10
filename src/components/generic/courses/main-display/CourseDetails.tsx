@@ -78,7 +78,15 @@ const CourseDetails: React.FC = () => {
           <span className="font-semibold tracking-wide">Course Content</span>
         </span>
       ),
-      children: <CourseContent sessions={sessions} lessons={lessons} courseId={course.id} activeSessionId={activeSessionId} setActiveSessionId={setActiveSessionId} />,
+      children: (
+        <CourseContent 
+          sessions={sessions} 
+          lessons={lessons} 
+          courseId={course.id} 
+          activeSessionId={activeSessionId} 
+          setActiveSessionId={setActiveSessionId} 
+        />
+      ),
     },
     {
       key: '3',
@@ -101,14 +109,14 @@ const CourseDetails: React.FC = () => {
         </Link>
         <Row gutter={[32, 32]}>
           <Col xs={24} lg={16}>
-            <Card className="shadow-lg rounded-lg overflow-hidden">
+            <Card className="shadow-lg rounded-lg overflow-hidden text-left">
               <CourseHeader
                 course={course}
                 category={category}
                 instructor={instructor}
                 showVideoModal={showVideoModal}
               />
-              <div className="p-6">
+              <div className="p-6 text-left">
                 <Divider />
                 <Tabs
                   defaultActiveKey="1"

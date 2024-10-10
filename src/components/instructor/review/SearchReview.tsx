@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Input } from 'antd';
-import { SearchReviewProps } from '../../../models/Object/SearchReviewProps';
+import { SearchReviewProps } from '../../../models/objects/SearchReviewProps';
 
 const SearchReview: React.FC<SearchReviewProps> = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState<string>('');

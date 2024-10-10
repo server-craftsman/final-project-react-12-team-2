@@ -1,13 +1,9 @@
 import React from 'react';
 import { Button, Card, Typography, Divider } from 'antd';
 import { ShoppingCartOutlined, ShareAltOutlined, PlayCircleOutlined, ClockCircleOutlined, BarChartOutlined, GlobalOutlined, CalendarOutlined, TrophyOutlined } from '@ant-design/icons';
-
+import { CourseSidebarProps } from '../../../../models/objects/course/CourseSidebarProps';
 const { Title, Text } = Typography;
 
-interface CourseSidebarProps {
-  course: any;
-  discountedPrice: string;
-}
 
 const CourseSidebar: React.FC<CourseSidebarProps> = ({ course, discountedPrice }) => {
   return (

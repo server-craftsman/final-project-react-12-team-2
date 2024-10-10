@@ -1,13 +1,8 @@
 import React from 'react';
 import { Card, Typography, Rate } from 'antd';
 import { motion } from 'framer-motion';
-
+import { CourseReviewsProps } from '../../../../models/objects/course/CourseReviewsProps';
 const { Text, Paragraph } = Typography;
-
-interface CourseReviewsProps {
-  reviews: any[];
-  users: any[];
-}
 
 const CourseReviews: React.FC<CourseReviewsProps> = ({ reviews, users }) => {
   return (

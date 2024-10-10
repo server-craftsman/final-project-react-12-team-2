@@ -1,15 +1,8 @@
 import React from 'react';
 import { Tag, Typography } from 'antd';
 import { PlayCircleOutlined } from '@ant-design/icons';
-
+import { CourseHeaderProps } from '../../../../models/objects/course/CourseHeaderProps';
 const { Title, Paragraph, Text } = Typography;
-
-interface CourseHeaderProps {
-  course: any;
-  category: any;
-  instructor: any;
-  showVideoModal: () => void;
-}
 
 const CourseHeader: React.FC<CourseHeaderProps> = ({ course, category, instructor, showVideoModal }) => {
   return (

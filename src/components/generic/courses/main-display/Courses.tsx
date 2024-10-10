@@ -7,10 +7,8 @@ import { User } from '../../../../models/User';
 import categoriesData from '../../../../data/categories.json'; 
 import { motion } from 'framer-motion';
 import { Category } from '../../../../models/Category';
-
 const { Title, Paragraph } = Typography;
 const { Meta } = Card;
-
 interface CoursesProps {
   courses: Course[];
   usersData: { users: User[] };

@@ -2,13 +2,8 @@ import React from 'react';
 import { Card, Row, Col, Typography } from 'antd';
 import { PlayCircleOutlined, ClockCircleOutlined, FileTextOutlined, TrophyOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
-
+import { CourseInsightsProps } from '../../../../models/objects/course/CourseInsightsProps';
 const { Title, Paragraph, Text } = Typography;
-
-interface CourseInsightsProps {
-  course: any;
-  instructor: any;
-}
 
 const CourseInsights: React.FC<CourseInsightsProps> = ({ course, instructor }) => {
   return (

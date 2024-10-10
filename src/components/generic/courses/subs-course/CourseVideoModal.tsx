@@ -1,11 +1,6 @@
 import React from 'react';
 import { Modal } from 'antd';
-
-interface CourseVideoModalProps {
-  isModalVisible: boolean;
-  handleCancel: () => void;
-  videoId: string | null;
-}
+import { CourseVideoModalProps } from '../../../../models/objects/course/CourseVideoModalProps';
 
 const CourseVideoModal: React.FC<CourseVideoModalProps> = ({ isModalVisible, handleCancel, videoId }) => {
   return (
