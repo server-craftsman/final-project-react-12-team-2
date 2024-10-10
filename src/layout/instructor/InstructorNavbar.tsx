@@ -5,6 +5,7 @@ import {
   UserOutlined,
   FileTextOutlined,
   StarOutlined,
+  BellOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 const { Sider } = Layout;
@@ -43,6 +44,11 @@ const InstructorNavbar: React.FC = () => {
       key: "8",
       icon: <FileTextOutlined />,
       label: <Link to="/instructor/purchases">Purchases</Link>,
+    },
+    {
+      key: "9",
+      icon: <BellOutlined />,
+      label: <Link to="/instructor/orders">Orders</Link>,
     },
   ];
 
