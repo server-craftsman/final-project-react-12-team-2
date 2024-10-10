@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import { Lesson } from "../../../models/Lesson";
-import lessonData from "../../../data/lessons.json";
+import lessonsData from "../../../data/lessons.json";
 import { Table } from "antd";
-import { Course } from "../../../models/Course";
 import courseData from '../../../data/courses.json';
+import { Course } from '../../../models/Course';
 
 const LessonManagement = React.memo(() => {
-  const [lessons] = useState<Lesson[]>(lessonData.lessons);
-  const [courses] = useState<Course[]>(courseData.courses)
+  const [lessons] = useState<Lesson[]>(lessonsData.lessons as unknown as Lesson[]);
+  const [coursesData] = useState<Course[]>(courseData.courses as unknown as Course[]);
+
  
   const getCoursesNameBySessionId = (session_id: string) => {
-    const course = courses.find((course) => course.id === session_id);
+    const course = coursesData.find((course) => course.id === session_id);
     return course ? course.name : "Unknown Course";
   }
-  // Function to get session name by course ID
+ 
 
   const columns = [
     {

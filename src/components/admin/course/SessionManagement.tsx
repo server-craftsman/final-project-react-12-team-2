@@ -10,10 +10,11 @@ import courseData from '../../../data/courses.json';
 
 const SessionManagement = React.memo(() => {
   const [session] = useState<Session[]>(sessionsData.sessions)
-  const [courses] = useState<Course[]>(courseData.courses)
+  const [coursesData] = useState<Course[]>(courseData.courses as unknown as Course[]);
+
 
   const getCoursesNameBySessionId = (session_id: string) => {
-    const course = courses.find((course) => course.id === session_id);
+    const course = coursesData.find((course) => course.id === session_id);
     return course ? course.name : "Unknown Course";
   }
   const columns = [
