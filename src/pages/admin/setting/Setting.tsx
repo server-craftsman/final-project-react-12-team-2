@@ -10,22 +10,30 @@ const Profile = () => {
   const adminUser = usersData.users.find(
     (user) => user.role === UserRole.ADMIN
   );
+
+  const items = [
+    {
+      label: 'Information',
+      key: '1',
+      children: <AdminInfo />,
+    },
+    {
+      label: 'Change Password',
+      key: '2',
+      children: (
+        <ChangePasswordAdmin
+          visible={true}
+          currentPassword={adminUser ? adminUser.password : ""}
+        />
+      ),
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-100 p-5 md:p-10">
       <div className="flex-col md:flex-row justify-between items-center">
         <Title className="">Setting</Title>
-        <Tabs defaultActiveKey="1" className="mt-4">
-          <Tabs.TabPane tab="Information" key="1">
-            <AdminInfo />
-          </Tabs.TabPane>
-
-          <Tabs.TabPane tab="Change Password" key="2">
-            <ChangePasswordAdmin
-              visible={true}
-              currentPassword={adminUser ? adminUser.password : ""}
-            />
-          </Tabs.TabPane>
-        </Tabs>
+        <Tabs defaultActiveKey="1" className="mt-4" items={items} />
       </div>
     </div>
   );

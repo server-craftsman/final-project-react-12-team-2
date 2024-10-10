@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Table } from 'antd';
+import { Button, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { Review } from '../../../models/Review';
 import reviewsData from '../../../data/reviews.json';
@@ -72,7 +72,7 @@ const Reviews: React.FC<ReviewsProps> = ({ searchTerm }) => {
       title: 'Action',
       key: 'action',
       render: (_, record: Review) => (
-        <a onClick={() => handleViewDetails(record.id)}>View Details</a>
+        <Button onClick={() => handleViewDetails(record.id)} className='bg-gradient-tone text-white'>View Details</Button>
       ),
       onCell: (_, index) => {
         if (index === undefined || !searchedReviews || !Array.isArray(searchedReviews)) return { rowSpan: 0 }; // Ensure searchedReviews is defined and an array

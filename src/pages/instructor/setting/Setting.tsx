@@ -3,18 +3,22 @@ import { Tabs } from 'antd';
 import InstructorInfo from '../../../components/instructor/setting/InstructorInfo';
 import ChangePasswordInstructor from '../../../components/instructor/setting/ChangePasswordInstructor';
 
-const { TabPane } = Tabs;
-
 const Setting: React.FC = () => {
+    const items = [
+        {
+            label: 'Instructor Info',
+            key: '1',
+            children: <InstructorInfo />,
+        },
+        {
+            label: 'Change Password',
+            key: '2',
+            children: <ChangePasswordInstructor />,
+        },
+    ];
+
     return (
-        <Tabs defaultActiveKey="1">
-            <TabPane tab="Instructor Info" key="1">
-                <InstructorInfo />
-            </TabPane>
-            <TabPane tab="Change Password" key="2">
-                <ChangePasswordInstructor />
-            </TabPane>
-        </Tabs>
+        <Tabs defaultActiveKey="1" items={items} />
     );
 };
 

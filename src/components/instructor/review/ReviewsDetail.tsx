@@ -54,7 +54,7 @@ const ReviewsDetail = () => {
   return (
     <div>
       <Table dataSource={courseReviews} columns={columns} rowKey="id" />
-      <Button type="primary" onClick={() => history.back()}>
+      <Button type="primary" onClick={() => history.back()} className='bg-gradient-tone text-white'>
         Back
       </Button>
     </div>
