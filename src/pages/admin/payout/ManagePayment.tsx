@@ -13,7 +13,7 @@ const ManagePayment: React.FC = () => {
 
   return (
     <div className='p-4 justify-center items-center border-b border-gray-300'>
-      <SearchPayment onSearch={handleSearch} /> {/* Ô tìm kiếm payment */}
+      <SearchPayment onSearch={handleSearch} />
       <AmountPayment />
       <ViewPayment searchQuery={searchQuery} />
     </div>

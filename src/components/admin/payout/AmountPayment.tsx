@@ -1,20 +1,24 @@
 import { Row, Col } from 'antd';
 import React, { useEffect, useState } from 'react';
 import paymentsData from '../../../data/payouts.json';
+import { moneyFormat } from '../../../utils/helper';
 
 const AmountPayment: React.FC = () => {
-  const [totalPayment, setTotalPayment] = useState<number>(0); // Đặt kiểu cho state
+  const [totalPayment, setTotalPayment] = useState<string>('');
 
   useEffect(() => {
-    // Tính tổng số tiền từ các payment có status = true
+    // Tính tổng số tiền từ các payment origin
     const total = paymentsData.payments
-      .filter(payment => payment.status === 'true') // Lọc hoàn thành
-      .reduce((acc, payment) => acc + payment.balance_instructor_received, 0); // Tính tổng amount
+      .filter(payment => payment.balance_origin)
+      .reduce((acc, payment) => acc + payment.balance_origin, 0);
 
-    setTotalPayment(total);
+    const formattedTotal = moneyFormat(total);
+
+    setTotalPayment(formattedTotal);
   }, []);
 
-  const formattedTotalPayment = `$${totalPayment.toFixed(2)}`;
+
+
 
   return (
     <Row gutter={16}>
@@ -33,7 +37,7 @@ const AmountPayment: React.FC = () => {
         <Row gutter={[0, 16]}>
           <Col span={24} style={{ border: '1px solid #ccc', padding: '10px', textAlign: 'center' }}>
             <p style={{ color: 'green', textAlign: 'left', width: '150px', height: '100px', fontSize: '16px' }}>
-              Total Payment: {formattedTotalPayment}
+              Total Payment: {totalPayment}
             </p>
           </Col>
           <Col span={24} style={{ border: '1px solid #ccc', padding: '10px', textAlign: 'center' }}>
