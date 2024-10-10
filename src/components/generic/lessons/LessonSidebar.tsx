@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Card, Progress, Divider, Typography } from 'antd';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 interface LessonSidebarProps {
   course?: { name: string };

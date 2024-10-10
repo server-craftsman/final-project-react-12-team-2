@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { CourseInsightsProps } from '../../../../models/objects/course/CourseInsightsProps';
 const { Title, Paragraph, Text } = Typography;
 
-const CourseInsights: React.FC<CourseInsightsProps> = ({ course, instructor }) => {
+const CourseInsights: React.FC<CourseInsightsProps> = ({ instructor }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

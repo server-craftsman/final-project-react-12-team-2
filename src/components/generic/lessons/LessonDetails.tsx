@@ -147,7 +147,7 @@ const LessonDetails: React.FC = () => {
   const breadcrumbItems = [
     { title: <Link to="/">Home</Link> },
     { title: <Link to={`/course/${courseId}`}>{course?.name}</Link> },
-    { title: <Link to={`/course/${courseId}/session/${sessionId}`}>{session?.name}</Link> },
+    // { title: <Link to={`/course/${courseId}/session/${sessionId}`}>{session?.name}</Link> },
     { title: lesson?.name },
   ];
 
