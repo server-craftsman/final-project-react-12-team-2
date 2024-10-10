@@ -7,6 +7,7 @@ const InstructorLayout = lazy(() => import('../layout/instructor/InstructorLayou
 const Dashboard = lazy(() => import('../components/instructor/overview/Dashboard'))
 const Setting = lazy(() => import('../pages/instructor/setting/Setting'))
 const InstructorInfo = lazy(() => import('../components/instructor/setting/InstructorInfo'))
+const Review = lazy(() => import('../pages/instructor/review/Review'))
 //==============================================================
 
 const instructorRoutes: RouteObject[] = [
@@ -18,6 +19,7 @@ const instructorRoutes: RouteObject[] = [
             { path: 'setting', element: <Setting /> },
             { path: 'edit-user/:id', element: <EditUserProfile /> },
             { path: 'instructor-info', element: <InstructorInfo /> },
+            { path: 'reviews', element: <Review /> },
         ],
     },
 ]

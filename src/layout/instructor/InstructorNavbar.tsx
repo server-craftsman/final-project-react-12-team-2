@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Layout, Menu } from 'antd';
-import { DashboardOutlined, UserOutlined, FileTextOutlined } from '@ant-design/icons';
+import { DashboardOutlined, UserOutlined, FileTextOutlined, StarOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 const { Sider } = Layout;
 
@@ -25,7 +25,12 @@ const InstructorNavbar: React.FC = () => {
             label: <Link to="/instructor/payout">Manage Payout</Link>,
         },
         {
-            key: '4',   
+            key: '4',
+            icon: <StarOutlined />,
+            label: <Link to="/instructor/reviews">Reviews</Link>,
+        },
+        {
+            key: '5',   
             icon: <UserOutlined />,
             label: <Link to="/instructor/setting">Setting</Link>,
         }
