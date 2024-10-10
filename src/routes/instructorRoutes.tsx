@@ -11,7 +11,7 @@ const InstructorLayout = lazy(
   () => import("../layout/instructor/InstructorLayout")
 );
 const Dashboard = lazy(
-  () => import("../components/instructor/overview/Dashboard")
+  () => import("../pages/instructor/overview/Dashboard")
 );
 const Setting = lazy(() => import("../pages/instructor/setting/Setting"));
 const InstructorInfo = lazy(

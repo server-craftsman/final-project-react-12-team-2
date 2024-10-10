@@ -1,48 +1,31 @@
-[
+{
+  "transactions": [
     {
       "id": "1",
-      "price": 200.00,
-      "discount": 50.00,
-      "price_paid": 150.00,
+      "price": 100,
+      "discount": 10,
+      "price_paid": 90,
       "purchase_id": "1",
       "payout_id": "1",
-      "created_at": "2024-10-01T10:30:00Z"
+      "created_at": "2023-06-01T10:00:00Z"
     },
     {
       "id": "2",
-      "price": 100.00,
-      "discount": 20.00,
-      "price_paid": 80.00,
+      "price": 100,
+      "discount": 10,
+      "price_paid": 90,
       "purchase_id": "2",
       "payout_id": "2",
-      "created_at": "2024-09-25T09:45:00Z"
+      "created_at": "2023-05-01T10:00:00Z"
     },
     {
       "id": "3",
-      "price": 550.00,
-      "discount": 50.00,
-      "price_paid": 500.00,
+      "price": 100,
+      "discount": 10,
+      "price_paid": 90,
       "purchase_id": "3",
       "payout_id": "3",
-      "created_at": "2024-10-05T14:00:00Z"
-    },
-    {
-      "id": "4",
-      "price": 400.00,
-      "discount": 80.00,
-      "price_paid": 320.00,
-      "purchase_id": "4",
-      "payout_id": "4",
-      "created_at": "2024-10-03T13:15:00Z"
-    },
-    {
-      "id": "5",
-      "price": 700.00,
-      "discount": 100.00,
-      "price_paid": 600.00,
-      "purchase_id": "5",
-      "payout_id": "5",
-      "created_at": "2024-09-30T08:30:00Z"
+      "created_at": "2023-04-01T10:00:00Z"
     }
   ]
-  
+}
