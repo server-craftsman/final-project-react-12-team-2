@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Typography, Card, Row, Col, Button, Tag, Avatar, Rate } from 'antd';
 import { CrownOutlined, BookOutlined, PercentageOutlined } from '@ant-design/icons';
-import { Course } from '../../../../models/Course';
+import { Course, CourseStatusEnum } from '../../../../models/Course';
 import { User } from '../../../../models/User';
 import categoriesData from '../../../../data/categories.json'; 
 import { motion } from 'framer-motion';
@@ -52,7 +52,7 @@ const Courses: React.FC<CoursesProps> = ({ courses, usersData }) => {
                   whileHover={{ scale: 1.05 }}
                 >
                   <CrownOutlined className="mr-1" />
-                  {course.status === 'PUBLISHED' ? 'Premium' : 'Draft'}
+                  {course.status === CourseStatusEnum.active  ? 'Premium' : 'Draft'}
                 </motion.div>
                 {course.discount > 0 && (
                   <motion.div 

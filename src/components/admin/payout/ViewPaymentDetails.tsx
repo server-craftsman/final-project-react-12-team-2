@@ -14,7 +14,7 @@ const ViewPaymentDetails = () => {
     if (paymentItem) {
       setPayment({
         ...paymentItem,
-        status: paymentItem.status as PayoutStatusEnum
+        status: paymentItem.status as unknown as PayoutStatusEnum
       });
     } else {
       setPayment(null);

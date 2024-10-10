@@ -16,6 +16,7 @@ import InstructorSlider from '../../components/generic/home/InstructorSlider';
 import UtilityProgram from '../../components/generic/home/UtilityProgram';
 import UtilityRegisterInformation from '../../components/generic/home/UtilityRegisterInformation';
 import { UserRole } from '../../models/User';
+import { Course } from '../../models/Course';
 const { Title } = Typography;
 
 const HomePage: React.FC = () => {
@@ -157,7 +158,7 @@ const HomePage: React.FC = () => {
               exit="hidden"
             >
               <Courses
-                courses={paginatedCourses}
+                courses={paginatedCourses as unknown as Course[]}
                 usersData={{ users: (usersData?.users || []).map(user => ({
                   ...user,
                   role: user.role as UserRole,

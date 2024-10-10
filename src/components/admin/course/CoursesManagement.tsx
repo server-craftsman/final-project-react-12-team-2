@@ -6,7 +6,7 @@ import courseData from '../../../data/courses.json';
 import { Course } from '../../../models/Course'; // Import the Course model
 
 const CoursesManagement = React.memo(() => {
-    const [coursesData] = useState<Course[]>(courseData.courses);
+    const [coursesData] = useState<Course[]>(courseData.courses as unknown as Course[]);
 
     const columns = [
         {

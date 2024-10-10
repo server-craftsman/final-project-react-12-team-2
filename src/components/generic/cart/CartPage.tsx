@@ -10,7 +10,7 @@ const CartPage: React.FC = () => {
   const { cartItems, removeFromCart } = useCart();
   const navigate = useNavigate();
 
-  const totalPrice = cartItems.reduce((sum, item) => sum + item.discountedPrice, 0);
+//   const totalPrice = cartItems.reduce((sum, item) => sum + item.discountedPrice, 0);
 
   const handleBackToHome = () => {
     navigate('/');

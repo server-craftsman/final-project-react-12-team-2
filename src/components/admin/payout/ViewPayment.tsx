@@ -13,7 +13,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
   const [payments, setPayments] = useState<Payout[]>(() =>
     paymentsData.payments.map((payment) => ({
       ...payment,
-      status: payment.status as PayoutStatusEnum,
+      status: payment.status as unknown as PayoutStatusEnum,
     }))
   );
   const [selectedPayoutDetails, setSelectedPayoutDetails] = useState<unknown[]>([]); // Lưu chi tiết payout
@@ -27,7 +27,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
       )
       .map(payment => ({
         ...payment,
-        status: payment.status as PayoutStatusEnum,
+        status: payment.status as unknown as PayoutStatusEnum,
       }));
     setPayments(filteredPayments);
   }, [searchQuery]);
@@ -45,7 +45,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
         payment.id === id ? { ...payment, status } : payment
       )
     );
-    message.success(`Payment ${status === PayoutStatusEnum.COMPLETED ? 'complete' : 'rejected'} successfully.`);
+    message.success(`Payment ${status === PayoutStatusEnum.completed ? 'complete' : 'rejected'} successfully.`);
   };
 
   const columns = [
@@ -95,15 +95,15 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
       dataIndex: 'status',
       key: 'status',
       filters: [
-        { text: 'Completed', value: PayoutStatusEnum.COMPLETED },
-        { text: 'Request_Payout', value: PayoutStatusEnum.REQUEST_PAYOUT },
-        { text: 'Rejected', value: PayoutStatusEnum.REJECT },
+        { text: 'Completed', value: PayoutStatusEnum.completed },
+        { text: 'Request_Payout', value: PayoutStatusEnum.request_payout },
+        { text: 'Rejected', value: PayoutStatusEnum.rejected },
       ],
       onFilter: (value: unknown, record: Payout) => {
         return record.status === value;
       },
       render: (status: PayoutStatusEnum) => (
-        <Tag color={status === PayoutStatusEnum.COMPLETED ? 'green' : status === PayoutStatusEnum.REQUEST_PAYOUT ? 'orange' : 'volcano'}>
+        <Tag color={status === PayoutStatusEnum.completed ? 'green' : status === PayoutStatusEnum.request_payout ? 'orange' : 'volcano'}>
           {status}
         </Tag>
       ),
@@ -119,15 +119,15 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
       key: 'action',
       render: (_: unknown, record: Payout) => (
         <div className='flex justify-between items-center' style={{ minHeight: '48px' }}>
-          {record.status === PayoutStatusEnum.REQUEST_PAYOUT && (
+          {record.status === PayoutStatusEnum.request_payout && (
             <>
               <button
-                onClick={() => handleApprove(record.id, PayoutStatusEnum.COMPLETED)}
+                onClick={() => handleApprove(record.id, PayoutStatusEnum.completed)}
                 className='bg-green-400 text-white px-4 py-2 rounded-md'
                 style={{ width: '85px' }}
               >Approve</button>
               <button
-                onClick={() => handleApprove(record.id, PayoutStatusEnum.REJECT)}
+                onClick={() => handleApprove(record.id, PayoutStatusEnum.rejected)}
                 className='bg-red-400 text-white px-4 py-2 rounded-md'
                 style={{ width: '85px' }}>
                 Reject</button>
@@ -191,7 +191,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
         visible={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
-        width={800}
+        width={1000}
       >
         <Table
           columns={detailColumns}
