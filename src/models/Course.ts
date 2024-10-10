@@ -1,3 +1,11 @@
+export enum CourseStatusEnum {
+  new,
+  waiting_approve,
+  approve,
+  reject,
+  active,
+  inactive
+}
 export interface Course {
   id: string;
   name: string;
@@ -5,7 +13,7 @@ export interface Course {
   user_id: string;
   description: string;
   content: string;
-  status: string;
+  status: CourseStatusEnum;
   video_url: string;
   image_url: string;
   price: number;

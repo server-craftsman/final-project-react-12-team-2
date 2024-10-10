@@ -1,10 +1,10 @@
 // models/Payment.ts
 export enum PayoutStatusEnum {
-  COMPLETED = 'COMPLETED',
-  REQUEST_PAYOUT = 'REQUEST_PAYOUT',
-  REJECT = 'REJECTED'
+  new,
+  request_payout,
+  completed,
+  rejected
 }
-
 export interface Payout {
 id: string
 payout_no: string
@@ -17,9 +17,4 @@ balance_instructor_received: number
 created_at: string
 updated_at: string
 is_deleted: boolean 
-  }
-  
-  // export interface PaymentsData {
-  //   payments: Payment[];
-  // }
-  
+}

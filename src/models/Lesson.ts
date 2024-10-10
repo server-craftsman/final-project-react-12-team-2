@@ -1,8 +1,7 @@
 export enum LessonType {
-    VIDEO = 'VIDEO',
-    QUIZ = 'QUIZ',
-    ASSIGNMENT = 'ASSIGNMENT',
-    READING = 'READING'
+    video,
+    image,
+    text
 }
 
 export interface Lesson {
