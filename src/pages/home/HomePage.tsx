@@ -3,7 +3,7 @@ import { Typography, Divider, Button } from 'antd';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import Introduction from '../../components/generic/Introduction';
-import Courses from '../../components/generic/courses/Courses';
+import Courses from '../../components/generic/courses/main-display/Courses';
 import Categories from '../../components/generic/Categories';
 import PageNumber from '../../components/generic/PageNumber';
 import CategoryFilter from '../../components/generic/CategoryFilter';
@@ -166,7 +166,6 @@ const HomePage: React.FC = () => {
                 categoriesData={{
                   categories: categoriesData.categories.map(cat => ({
                     ...cat,
-                    // Remove the Date conversion
                   })),
                 }}
               />            </motion.div>

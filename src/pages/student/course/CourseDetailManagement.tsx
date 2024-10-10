@@ -1,5 +1,5 @@
 import React from 'react'
-import CourseDetails from '../../../components/generic/courses/CourseDetails'
+import CourseDetails from '../../../components/generic/courses/main-display/CourseDetails'
 const CourseDetailManagement: React.FC = () => {
   return (
     <div>

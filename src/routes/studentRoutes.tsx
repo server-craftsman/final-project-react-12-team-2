@@ -9,7 +9,7 @@ const OrderManagement = lazy(() => import('../pages/student/setting/OrderManagem
 const StudentLayout = lazy(() => import('../layout/student/StudentLayout'))
 const HomePage = lazy(() => import('../pages/home/HomePage'))
 const StudentDashboard = lazy(() => import('../layout/student/dashboard/StudentDashboard'))
-const CourseDetails = lazy(() => import('../components/generic/courses/CourseDetails'))
+const CourseDetails = lazy(() => import('../components/generic/courses/main-display/CourseDetails'))
 const LessonDetails = lazy(() => import('../components/generic/lessons/LessonDetails'))
 const SessionDetails = lazy(() => import('../components/generic/sessions/SessionDetails'))
 //==============================================================

@@ -2,11 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Typography, Card, Row, Col, Button, Tag, Avatar, Rate } from 'antd';
 import { CrownOutlined, BookOutlined, PercentageOutlined } from '@ant-design/icons';
-import { Course } from '../../../models/Course';
-import { User } from '../../../models/User';
-import categoriesData from '../../../data/categories.json'; 
+import { Course } from '../../../../models/Course';
+import { User } from '../../../../models/User';
+import categoriesData from '../../../../data/categories.json'; 
 import { motion } from 'framer-motion';
-import { Category } from '../../../models/Category';
+import { Category } from '../../../../models/Category';
 
 const { Title, Paragraph } = Typography;
 const { Meta } = Card;
