@@ -7,9 +7,10 @@ export const CourseDetails = lazy(() => import('../components/generic/courses/ma
 export const LessonDetails = lazy(() => import('../components/generic/lessons/LessonDetails'));
 export const SessionDetails = lazy(() => import('../components/generic/sessions/SessionDetails'));
 export const CartPage = lazy(() => import('../components/generic/cart/CartPage'));
-
+export const About = lazy(() => import('../components/generic/home/About'));
 //routes
 export const homeRoute = { index: true, element: <HomePage /> };
+export const aboutRoute = { path: '/about', element: <About /> };
 export const courseDetailsRoute = { path: '/course/:id', element: <CourseDetails /> };
 export const courseByIdRoute = { path: '/course/:courseId', element: <CourseDetails /> };
 export const sessionDetailsRoute = { path: '/course/:courseId/session/:sessionId', element: <SessionDetails /> };

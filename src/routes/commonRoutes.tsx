@@ -6,7 +6,8 @@ import {
   courseByIdRoute,
   sessionDetailsRoute,
   lessonDetailsRoute,
-  cartRoute
+  cartRoute,
+  aboutRoute
 } from '../const/constCommon'
 
 const commonRoutes: RouteObject[] = [
@@ -19,7 +20,8 @@ const commonRoutes: RouteObject[] = [
       courseByIdRoute,
       sessionDetailsRoute,
       lessonDetailsRoute,
-      cartRoute
+      cartRoute,
+      aboutRoute
     ],
   }
 ]
