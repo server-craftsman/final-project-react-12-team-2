@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Input } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 import { SearchReviewProps } from '../../../models/objects/SearchReviewProps';
 
 const SearchReview: React.FC<SearchReviewProps> = ({ onSearch }) => {
@@ -15,6 +16,7 @@ const SearchReview: React.FC<SearchReviewProps> = ({ onSearch }) => {
     <div>
       <Input
         placeholder="Search by Course Name"
+        suffix={<SearchOutlined />}
         value={searchTerm}
         onChange={handleSearchChange}
         style={{ marginBottom: 16 }}

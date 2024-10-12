@@ -41,7 +41,7 @@ const columns = [
   },
 ];
 
-const WaitingPaid = () => {
+const WaitingPaid = ({ searchTerm }: { searchTerm: string }) => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
@@ -62,10 +62,11 @@ const WaitingPaid = () => {
             pricePaid: `$${cart.price_paid}`,
             discount: `${cart.discount}%`,
           };
-        });
+        })
+        .filter((order: any) => order.courseName?.toLowerCase().includes(searchTerm.toLowerCase()));
   
       setData(completedOrders as any);
-    }, []);
+    }, [searchTerm]);
   
     return (
       <div>

@@ -47,11 +47,10 @@ const columns = [
   },
 ];
 
-const Completed = () => {
+const Completed = ({ searchTerm }: { searchTerm: string }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    // Simulate data fetching and joining
     const completedOrders = purchases
       .filter((purchase: any) => purchase.status === 'completed' && !purchase.is_deleted)
       .map((purchase: any) => {
@@ -70,10 +69,11 @@ const Completed = () => {
           pricePaid: `$${purchase.price_paid}`,
           discount: `${purchase.discount}%`,
         };
-      });
+      })
+      .filter((order: any) => order.courseName?.toLowerCase().includes(searchTerm.toLowerCase()));
 
     setData(completedOrders as any);
-  }, []);
+  }, [searchTerm]);
 
   return (
     <div>
