@@ -3,7 +3,7 @@ import { RouteObject } from 'react-router-dom'
 
 //import lazy
 const DashboardStudent = lazy(() => import('../pages/student/overview/DashboardStudent'))
-const StudentProfile = lazy(() => import('../pages/student/setting/ProfileManagement'))
+const Setting = lazy(() => import('../pages/student/setting/Setting'))
 const SubscriptionManagement = lazy(() => import('../pages/student/setting/SubscriptionManagement'))
 const OrderManagement = lazy(() => import('../pages/student/setting/OrderManagement'))
 const StudentLayout = lazy(() => import('../layout/main-layout/MainLayout'))
@@ -33,7 +33,7 @@ const studentRoutes: RouteObject[] = [
     element: <StudentDashboard />,
     children: [
       {index: true, element: <DashboardStudent/>},
-      {path: "student-setting", element: <StudentProfile/>},
+      {path: "student-setting", element: <Setting/>},
       {path: "student-orders", element: <OrderManagement/>},
       {path: "student-subscription", element: <SubscriptionManagement/>},
     ],

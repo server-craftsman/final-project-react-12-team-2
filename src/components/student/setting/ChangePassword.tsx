@@ -1,6 +1,5 @@
 import { Form, Input, Button } from 'antd';
-
-const ChangePasswordAdmin = ({
+const ChangePassword = ({
   visible,
   currentPassword,
 }: {
@@ -69,13 +68,13 @@ const ChangePasswordAdmin = ({
           <Input.Password visibilityToggle={true} />
         </Form.Item>
         <div className="form-footer">
-          <Button type="primary" onClick={handleOk}>
-            Change Password
-          </Button>
+            <Button type="primary" onClick={handleOk}>
+              Change Password
+            </Button>
         </div>
       </Form>
     </div>
   );
 };
 
-export default ChangePasswordAdmin
+export default ChangePassword;

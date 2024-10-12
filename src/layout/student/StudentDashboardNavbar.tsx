@@ -3,7 +3,7 @@ import { Layout, Menu } from 'antd';
 import {BellOutlined, DashboardOutlined, FileTextOutlined, SettingOutlined} from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 const { Sider } = Layout;
-
+import logo from "../../assets/logo.jpg"
 const StudentDashboardNavbar = () => {
     const [collapsed, setCollapsed] = useState(false);
 
@@ -42,9 +42,12 @@ const StudentDashboardNavbar = () => {
         onCollapse={(value) => setCollapsed(value)} 
         className="bg-gradient-to-r from-[#02005dc6] to-[#1a237e] min-h-screen"
       >
-        <div className="logo p-4">
-          <h1 className="text-white text-xl font-bold">{collapsed ? 'Student' : 'Student Panel'}</h1>
-        </div>
+        <Link to="/">
+          <div className="logo p-4 flex items-center space-x-4">
+            <img src={logo} alt="logo" className="w-12 h-12 rounded-full border-2 border-white" />
+            {!collapsed && <h1 className="text-white text-xl font-bold">Student Panel</h1>}
+          </div>
+        </Link>
         <Menu theme="dark" mode="vertical" items={menuItems} />
       </Sider>
     );
