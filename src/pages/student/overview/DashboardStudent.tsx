@@ -2,7 +2,7 @@
 import { DollarOutlined, UserAddOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import purchasesData from '../../../data/purchases.json'; // Adjust the path as necessary
-import subcriptionData from '../../../data/subcriptions.json';
+import subscriptionData from '../../../data/subscriptions.json';
 
 const DashboardStudent = () => {
     const navigate = useNavigate(); // Hook for navigation
@@ -11,15 +11,15 @@ const DashboardStudent = () => {
     const totalPurchases = purchasesData.length;
   
     // Count the total subscriptions
-    const totalSubscriptions = subcriptionData.length;
+    const totalSubscriptions = subscriptionData.length;
 
     // Function to handle clicking on the Purchased box
     const handlePurchasedClick = () => {
       navigate('/dashboard-student/student-orders'); // Navigate to Orders page
     };
     
-    const handleSubcriptionClick = () => {
-      navigate('/dashboard-student/student-subcription'); // Navigate to Subscription page
+    const handleSubscriptionClick = () => {
+      navigate('/dashboard-student/student-subscription'); // Navigate to Subscription page
     };
   
     return (
@@ -43,7 +43,7 @@ const DashboardStudent = () => {
           {/* Box for Total Subscriptions */}
           <div
             className="bg-white shadow-lg rounded-lg p-6 w-64 h-32 flex items-center justify-center border border-gray-400 cursor-pointer"
-            onClick={handleSubcriptionClick}
+            onClick={handleSubscriptionClick}
           >
             <div className="text-center">
               <h1 className="font-semibold text-xl mb-2"> <UserAddOutlined /> Subscribed</h1>
