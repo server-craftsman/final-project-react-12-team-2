@@ -1,10 +1,12 @@
 export enum CourseStatusEnum {
-  new,
-  waiting_approve,
-  approve,
-  reject,
-  active,
-  inactive
+  waiting_approve = "waiting_approve",
+  approve = "approve",
+  reject = "reject",
+  active = "active",
+  inactive = "inactive",
+  new = "new",
+  blocked = "blocked",
+
 }
 export interface Course {
   id: string;

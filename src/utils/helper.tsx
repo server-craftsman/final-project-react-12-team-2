@@ -13,6 +13,8 @@ export const moneyFormat = (money: number) => {
     .replace(/\./g, ",");
 };
 
+
+
 export function getOrderStatus(status: string) {
   // Normalize the status to uppercase for comparison
   const normalizedStatus = status?.toUpperCase();
@@ -31,6 +33,18 @@ export function getOrderStatus(status: string) {
           {normalizedStatus.replace("_", " ").toLowerCase()}
         </span>
       );
+    case "APPROVE":
+      return (
+        <span className="capitalize py-1 px-2 rounded-md text-xs text-green-600 bg-green-100">
+          {normalizedStatus.replace("_", " ").toLowerCase()}
+        </span>
+      );
+    case "BLOCK":
+      return (
+        <span className="capitalize py-1 px-2 rounded-md text-xs text-red-600 bg-red-100">
+          {normalizedStatus.replace("_", " ").toLowerCase()}
+        </span>
+      );
 
     default:
       return (
@@ -41,3 +55,5 @@ export function getOrderStatus(status: string) {
       );
   }
 }
+
+
