@@ -8,7 +8,7 @@ import {
   lessonDetailsRoute,
   cartRoute,
   aboutRoute
-} from '../const/constCommon'
+} from '../../const/constCommon'
 
 const commonRoutes: RouteObject[] = [
   {

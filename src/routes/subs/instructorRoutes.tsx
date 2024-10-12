@@ -1,29 +1,29 @@
 import { lazy } from "react";
 import { RouteObject } from "react-router-dom";
-import Purchases from "../pages/instructor/purchase/Purchases";
-import ManagePayout from "../pages/instructor/payout/ManagePayout";
+import Purchases from "../../pages/instructor/purchase/Purchases";
+import ManagePayout from "../../pages/instructor/payout/ManagePayout";
 
 //import lazy
 const EditUserProfile = lazy(
-  () => import("../components/instructor/setting/EditUserProfile")
+  () => import("../../components/instructor/setting/EditUserProfile")
 );
 const InstructorLayout = lazy(
-  () => import("../layout/instructor/InstructorLayout")
+  () => import("../../layout/instructor/InstructorLayout")
 );
 const Dashboard = lazy(
-  () => import("../pages/instructor/overview/Dashboard")
+  () => import("../../pages/instructor/overview/Dashboard")
 );
-const Setting = lazy(() => import("../pages/instructor/setting/Setting"));
+const Setting = lazy(() => import("../../pages/instructor/setting/Setting"));
 const InstructorInfo = lazy(
-  () => import("../components/instructor/setting/InstructorInfo")
+  () => import("../../components/instructor/setting/InstructorInfo")
 );
-const Review = lazy(() => import("../pages/instructor/review/Review"));
+const Review = lazy(() => import("../../pages/instructor/review/Review"));
 const ReviewsDetail = lazy(
-  () => import("../components/instructor/review/ReviewsDetail")
+  () => import("../../components/instructor/review/ReviewsDetail")
 );
-const OrderPage = lazy(() => import("../pages/instructor/order/OrderPage"));
+const OrderPage = lazy(() => import("../../pages/instructor/order/OrderPage"));
 const SubscriptionPage = lazy(
-  () => import("../pages/instructor/subscription/SubscriptionPage")
+  () => import("../../pages/instructor/subscription/SubscriptionPage")
 );
 
 //==============================================================

@@ -14,6 +14,11 @@ Edu Learn is a modern, feature-rich online learning platform built with React, T
 - **Admin Dashboard**: Comprehensive admin panel for managing users, courses, and site content.
 - **Instructor Tools**: Dedicated features for course creation and management.
 - **Student Dashboard**: Personalized learning experience with progress tracking.
+- **Dynamic Home Page**: Engaging cover section with animated text slider and course mockups.
+- **Advanced Search**: Efficient course search functionality.
+- **Shopping Cart**: Easy-to-use cart system for course purchases.
+- **Payout Management**: Streamlined payout process for instructors.
+- **Data Visualization**: Interactive charts for admin analytics.
 
 ## Technology Stack
 
@@ -24,6 +29,7 @@ Edu Learn is a modern, feature-rich online learning platform built with React, T
 - **Animations**: Framer Motion
 - **Routing**: React Router
 - **State Management**: React Context API
+- **Charts**: Recharts
 
 ## Getting Started
 
@@ -42,31 +48,57 @@ Edu Learn is a modern, feature-rich online learning platform built with React, T
 The project follows a modular structure:
 
 - `src/components`: Reusable UI components
+  - `generic`: Generic components for the website
+  - `instructor`: Instructor-specific components
+  - `student`: Student-specific components
+  - `admin`: Admin dashboard components
 - `src/pages`: Main page components
+  - `admin`: Admin dashboard pages
+  - `instructor`: Instructor dashboard pages
+  - `student`: Student dashboard pages
+  - `home`: Home page components
+  - `login`: Login page components
+  - `register`: Register page components
 - `src/layout`: Layout components for different user roles
 - `src/routes`: Route definitions
+  - `publish`: Publish routes
+  - `protected`: Protected routes
+  - `admin`: Admin routes
+  - `instructor`: Instructor routes
+  - `student`: Student routes
+  - `common`: Common routes
+- `src/utils`: Utility functions
 - `src/models`: TypeScript interfaces and types
 - `src/context`: React context for state management
 - `src/data`: Mock data for development
+- `src/const`: Constant values and lazy-loaded components
 
 ## Key Components
 
-### Student Experience
+### User Experience
 
-- **HomePage**: Showcases featured courses and categories
-- **Courses**: Displays course listings with filtering options
-- **StudentNavbar**: Navigation component for logged-in students
+- **MainNavbar**: Responsive navigation bar with dynamic menu items and search functionality.
+- **Cover**: Engaging hero section with animated text and course mockups.
+- **Courses**: Dynamic course listing with category filtering and pagination.
+- **InstructorSlider**: Showcase of top instructors.
 
 ### Admin Dashboard
 
-- **AdminLayout**: Main layout for the admin interface
-- **AdminNavbar**: Navigation component for admin users
-- **ViewUserProfile**: Component for managing user accounts
+- **AdminNavbar**: Comprehensive sidebar navigation for admin functions.
+- **DashBoard**: Overview of key metrics and recent activities.
+- **TransactionChart**: Visual representation of financial data.
+- **BuyerProfileChart**: Pie chart displaying user demographics.
 
-### Authentication
+### Instructor Tools
 
-- **LoginPage**: User login interface
-- **RegisterPage**: New user registration form
+- **CourseManagement**: Interface for creating and editing courses.
+- **PayoutManagement**: System for managing instructor earnings and withdrawals.
+
+### Student Dashboard
+
+- **StudentDashboardNavbar**: Navigation for student-specific features.
+- **OrderManagement**: View and manage course purchases.
+- **LearningProgress**: Track course completion and achievements.
 
 ## Styling
 

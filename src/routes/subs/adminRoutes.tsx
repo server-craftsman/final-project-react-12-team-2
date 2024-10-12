@@ -1,21 +1,21 @@
 import { lazy } from "react";
 import { RouteObject } from "react-router-dom";
-import ManageCourses from "../pages/admin/course/ManageCourses";
-import LessonManagement from "../components/admin/course/LessonManagement";
+import ManageCourses from "../../pages/admin/course/ManageCourses";
+import LessonManagement from "../../components/admin/course/LessonManagement";
 
 //import lazy
-const DashBoardAdmin = lazy(() => import("../pages/admin/overview/DashBoardAdmin"));
-const ManageCategory = lazy(() => import("../pages/admin/category/ManageCategory"));
-const DetailsCategory = lazy(() => import("../components/admin/category/DetailsCategoty"));
-const ManagePayment = lazy(() => import("../pages/admin/payout/ManagePayment"));
-const ManagePurchase = lazy(() => import("../pages/admin/purchase/ManagePurchase"));
-const ViewUserProfileDetail = lazy(() => import("../components/admin/user/ViewUserProfileDetail"));
-const ViewPurchaseDetails = lazy(() => import("../components/admin/purchases/ViewPurchaseDetails"));
-const Profile = lazy(() => import("../pages/admin/setting/Setting"));
-const ManageUser = lazy(() => import("../pages/admin/user/ManageUser"));
-const AdminLayout = lazy(() => import("../layout/admin/AdminLayout"));
-const EditUserProfile = lazy(() => import("../components/admin/setting/EditUserProfile"));
-const EditCategory = lazy(() => import("../components/admin/category/EditCategory"));
+const DashBoardAdmin = lazy(() => import("../../pages/admin/overview/DashBoardAdmin"));
+const ManageCategory = lazy(() => import("../../pages/admin/category/ManageCategory"));
+const DetailsCategory = lazy(() => import("../../components/admin/category/DetailsCategoty"));
+const ManagePayment = lazy(() => import("../../pages/admin/payout/ManagePayment"));
+const ManagePurchase = lazy(() => import("../../pages/admin/purchase/ManagePurchase"));
+const ViewUserProfileDetail = lazy(() => import("../../components/admin/user/ViewUserProfileDetail"));
+const ViewPurchaseDetails = lazy(() => import("../../components/admin/purchases/ViewPurchaseDetails"));
+const Profile = lazy(() => import("../../pages/admin/setting/Setting"));
+const ManageUser = lazy(() => import("../../pages/admin/user/ManageUser"));
+const AdminLayout = lazy(() => import("../../layout/admin/AdminLayout"));
+const EditUserProfile = lazy(() => import("../../components/admin/setting/EditUserProfile"));
+const EditCategory = lazy(() => import("../../components/admin/category/EditCategory"));
 //==============================================================
 
 const adminRoutes: RouteObject[] = [
