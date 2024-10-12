@@ -1,5 +1,6 @@
-import { lazy } from "react"
+import { lazy, useState } from "react"
 import { Tabs } from 'antd';
+import SearchOrder from '../../../components/instructor/order/SearchOrder';
 
 const WaitingPaid = lazy(
   () => import("../../../components/instructor/order/WaitingPaid")
@@ -9,22 +10,27 @@ const Completed = lazy(
 );
 
 const OrderPage = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+
   const items = [
     {
       label: 'Waiting Paid',
       key: '1',
-      children: <WaitingPaid />,
+      children: <WaitingPaid searchTerm={searchTerm} />,
     },
     {
       label: 'Completed',
       key: '2',
-      children: <Completed />,
+      children: <Completed searchTerm={searchTerm} />,
     },
   ];
 
   return (
-    <Tabs defaultActiveKey="1" items={items} />
-  )
-}
+    <div>
+      <SearchOrder onSearch={setSearchTerm} />
+      <Tabs defaultActiveKey="1" items={items} />
+    </div>
+  );
+};
 
-export default OrderPage
+export default OrderPage;
