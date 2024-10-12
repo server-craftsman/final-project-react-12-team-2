@@ -2,7 +2,7 @@ import React from 'react';
 import { Layout } from 'antd';
 import AdminNavbar from './AdminNavbar';
 import { Outlet } from 'react-router-dom';
-import StudentFooter from '../student/StudentFooter';
+import StudentFooter from '../main-layout/MainFooter';
 
 const { Content } = Layout;
 

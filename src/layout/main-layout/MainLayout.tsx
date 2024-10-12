@@ -1,5 +1,5 @@
-import Navbar from "./StudentNavbar";
-import StudentFooter from "./StudentFooter";
+import Navbar from "./MainNavbar";
+import StudentFooter from "./MainFooter";
 import { Outlet, useLocation } from "react-router-dom";
 import Cover from "../../components/generic/home/Cover";
 

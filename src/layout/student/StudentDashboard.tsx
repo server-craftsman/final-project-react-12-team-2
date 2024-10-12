@@ -2,8 +2,7 @@ import { Layout } from 'antd'
 import { Outlet } from 'react-router-dom'
 import StudentDashboardNavbar from './StudentDashboardNavbar'
 import { Content } from 'antd/es/layout/layout'
-import StudentFooter from '../StudentFooter'
-
+import StudentFooter from '../main-layout/MainFooter'
 
 const StudentDashboard = () => {
 
