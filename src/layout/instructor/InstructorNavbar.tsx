@@ -9,6 +9,7 @@ import {
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 const { Sider } = Layout;
+import logo from "../../assets/logo.jpg"
 
 const InstructorNavbar: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -64,11 +65,12 @@ const InstructorNavbar: React.FC = () => {
       onCollapse={(value) => setCollapsed(value)}
       className="bg-gradient-to-r from-[#1565c0] to-[#0d47a1] min-h-screen"
     >
-      <div className="logo p-4">
-        <h1 className="text-white text-xl font-bold">
-          {collapsed ? "Inst" : "Instructor Panel"}
-        </h1>
-      </div>
+      <Link to="/">
+          <div className="logo p-4 flex items-center space-x-4">
+            <img src={logo} alt="logo" className="w-12 h-12 rounded-full border-2 border-white" />
+            {!collapsed && <h1 className="text-white text-xl font-bold">Instructor Panel</h1>}
+          </div>
+        </Link>
       <Menu theme="dark" mode="vertical" items={menuItems} />
     </Sider>
   );
