@@ -10,6 +10,7 @@ const DetailsCategory = lazy(() => import("../components/admin/category/DetailsC
 const ManagePayment = lazy(() => import("../pages/admin/payout/ManagePayment"));
 const ManagePurchase = lazy(() => import("../pages/admin/purchase/ManagePurchase"));
 const ViewUserProfileDetail = lazy(() => import("../components/admin/user/ViewUserProfileDetail"));
+const ViewPurchaseDetails = lazy(() => import("../components/admin/purchases/ViewPurchaseDetails"));
 const Profile = lazy(() => import("../pages/admin/setting/Setting"));
 const ManageUser = lazy(() => import("../pages/admin/user/ManageUser"));
 const AdminLayout = lazy(() => import("../layout/admin/AdminLayout"));
@@ -29,6 +30,7 @@ const adminRoutes: RouteObject[] = [
       { path: "edit-user/:id", element: <EditUserProfile /> },
       { path: "payout", element: <ManagePayment /> },
       { path: "purchase", element: <ManagePurchase /> },
+      { path: "view-purchase/:id", element: <ViewPurchaseDetails /> },
       { path: "categories", element: <ManageCategory /> },
       { path: "edit-category/:id", element: <EditCategory /> },
       { path: "/admin/courses",element: <ManageCourses/>},

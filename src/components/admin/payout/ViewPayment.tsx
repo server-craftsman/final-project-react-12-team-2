@@ -1,6 +1,6 @@
 import { Table, Tag, message, Modal } from 'antd';
 import paymentsData from '../../../data/payouts.json';
-import transactionsData from '../../../data/admin_transactions.json'; 
+import transactionsData from '../../../data/admin_transactions.json';
 import { useState, useEffect } from 'react';
 import { Payout, PayoutStatusEnum } from '../../../models/Payout';
 import { moneyFormat } from '../../../utils/helper';
@@ -10,13 +10,25 @@ interface ViewPaymentProps {
 }
 
 const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
+  const mapStatusToEnum = (status: string): PayoutStatusEnum => {
+    switch (status) {
+      case 'COMPLETED':
+        return PayoutStatusEnum.completed;
+      case 'REQUEST_PAYOUT':
+        return PayoutStatusEnum.request_payout;
+      case 'REJECTED':
+        return PayoutStatusEnum.rejected;
+      default:
+        return PayoutStatusEnum.new;
+    }
+  };
   const [payments, setPayments] = useState<Payout[]>(() =>
     paymentsData.payments.map((payment) => ({
       ...payment,
-      status: payment.status as unknown as PayoutStatusEnum,
+      status: mapStatusToEnum(payment.status),
     }))
   );
-  const [selectedPayoutDetails, setSelectedPayoutDetails] = useState<unknown[]>([]); // Lưu chi tiết payout
+  const [selectedPayoutDetails, setSelectedPayoutDetails] = useState<unknown[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
@@ -27,15 +39,14 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
       )
       .map(payment => ({
         ...payment,
-        status: payment.status as unknown as PayoutStatusEnum,
+        status: mapStatusToEnum(payment.status),
       }));
     setPayments(filteredPayments);
   }, [searchQuery]);
 
   const handleViewDetails = (payoutId: string) => {
-    // Lọc dữ liệu chi tiết payout dựa trên payout_id từ admin_transactions.json
     const details = transactionsData.filter(detail => detail.payout_id === payoutId);
-    setSelectedPayoutDetails(details); // Cập nhật chi tiết payout
+    setSelectedPayoutDetails(details);
     setIsModalVisible(true);
   };
 
@@ -43,9 +54,8 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
     setPayments((prevPayments) =>
       prevPayments.map((payment) =>
         payment.id === id ? { ...payment, status } : payment
-      )
-    );
-    message.success(`Payment ${status === PayoutStatusEnum.completed ? 'complete' : 'rejected'} successfully.`);
+    ));
+    message.success(`Payment ${status === PayoutStatusEnum.completed ? 'completed' : 'rejected'} successfully.`);
   };
 
   const columns = [
@@ -64,9 +74,9 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
       key: 'transaction',
       render: (_: unknown, record: Payout) => (
         <button
-          onClick={() => handleViewDetails(record.id)} // Sử dụng hàm xử lý chi tiết payout
-          className='text-black px-4 py-2 rounded-md'
-          style={{ width: '100px', textAlign: 'left' }}
+          onClick={() => handleViewDetails(record.id)}
+          className='bg-gradient-tone text-white px-4 py-2 rounded-md'
+          style={{ width: '110px', textAlign: 'left' }}
         >
           View Details
         </button>
@@ -95,16 +105,16 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
       dataIndex: 'status',
       key: 'status',
       filters: [
-        { text: 'Completed', value: PayoutStatusEnum.completed },
-        { text: 'Request_Payout', value: PayoutStatusEnum.request_payout },
-        { text: 'Rejected', value: PayoutStatusEnum.rejected },
+        { text: 'COMPLETED', value: PayoutStatusEnum.completed },
+        { text: 'REQUEST_PAYOUT', value: PayoutStatusEnum.request_payout },
+        { text: 'REJECTED', value: PayoutStatusEnum.rejected },
       ],
       onFilter: (value: unknown, record: Payout) => {
         return record.status === value;
       },
       render: (status: PayoutStatusEnum) => (
         <Tag color={status === PayoutStatusEnum.completed ? 'green' : status === PayoutStatusEnum.request_payout ? 'orange' : 'volcano'}>
-          {status}
+          {PayoutStatusEnum[status].toUpperCase()}
         </Tag>
       ),
     },
@@ -130,8 +140,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
                 onClick={() => handleApprove(record.id, PayoutStatusEnum.rejected)}
                 className='bg-red-400 text-white px-4 py-2 rounded-md'
                 style={{ width: '85px' }}>
-                Reject</button>
-            </>
+                Reject</button>           </>
           )}
         </div>
       ),
@@ -183,22 +192,19 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
         dataSource={payments}
         rowKey="id"
         pagination={{ pageSize: 10 }}
-        rowClassName={() => 'align-middle'}
-      />
+        rowClassName={() => 'align-middle'}      />
 
       <Modal
         title="Payout Details"
         visible={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
-        width={1000}
-      >
+        width={1000}      >
         <Table
           columns={detailColumns}
           dataSource={selectedPayoutDetails}
           rowKey="id"
-          pagination={false}
-        />
+          pagination={false}        />
       </Modal>
     </div>
   );

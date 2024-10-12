@@ -8,7 +8,7 @@ const ViewPurchase = ({ searchQuery }: { searchQuery: string }) => {
   const navigate = useNavigate();
 
   const handleViewDetails = (purchaseId: string) => {
-    navigate(`/admin/view-purchase/${purchaseId}`);
+    navigate(`/admin/view-purchase/${purchaseId}`); // Điều hướng tới trang chi tiết với ID
   };
 
   const mapStatus = (status: string): PurchaseStatusEnum => {
@@ -110,7 +110,7 @@ const ViewPurchase = ({ searchQuery }: { searchQuery: string }) => {
       render: (_: unknown, record: Purchases) => (
         <div>
           <button
-            onClick={() => handleViewDetails(record.id)}
+            onClick={() => handleViewDetails(record.id)} // Khi nhấn, sẽ điều hướng tới trang chi tiết
             className="bg-gradient-tone text-white px-4 py-2 rounded-md"
           >
             View Details
