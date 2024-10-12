@@ -8,6 +8,7 @@ import authRoutes from './routes/authRoutes'
 import studentRoutes from './routes/studentRoutes'
 import adminRoutes from './routes/adminRoutes'
 import instructorRoutes from './routes/instructorRoutes'
+import commonRoutes from './routes/commonRoutes'
 import { CartProvider } from './context/CartContext'; // Add this import
 //==============================
 
@@ -17,6 +18,7 @@ const App = () => {
     ...studentRoutes,
     ...adminRoutes,
     ...instructorRoutes,
+    ...commonRoutes,
   ])
 
   return (

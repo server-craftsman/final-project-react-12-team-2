@@ -1,9 +1,8 @@
 import { Layout } from 'antd'
-import { Outlet, Link } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 import StudentDashboardNavbar from './StudentDashboardNavbar'
 import { Content } from 'antd/es/layout/layout'
 import StudentFooter from '../main-layout/MainFooter'
-import logo from "../../assets/logo.jpg"
 const StudentDashboard = () => {
 
   return (
