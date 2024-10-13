@@ -36,7 +36,7 @@ const ChangePassword = ({
   };
 
   return (
-    <div className={`change-password-form ${visible ? 'visible' : 'hidden'}`}>
+    <div className={`change-password-form ${visible ? 'visible' : 'hidden'}`} style={{ forcedColorAdjust: 'auto' }}>
       <Form form={form} layout="vertical" name="change_password_form">
         <Form.Item
           name="currentPassword"

@@ -2,24 +2,29 @@ import { Tabs } from 'antd'
 import CoursesManagement from '../../../components/admin/course/CoursesManagement'
 import LessonManagement from '../../../components/admin/course/LessonManagement'
 import SessionManagement from '../../../components/admin/course/SessionManagement'
-import TabPane from 'antd/es/tabs/TabPane'
 
 const ManageCourses = () => {
+  const items = [
+    {
+      key: '1',
+      label: 'Courses',
+      children: <CoursesManagement />,
+    },
+    {
+      key: '2',
+      label: 'Sessions',
+      children: <SessionManagement />,
+    },
+    {
+      key: '3',
+      label: 'Lessons',
+      children: <LessonManagement />,
+    },
+  ];
+
   return (
     <div className='w-full flex-col gap-4'>
-  
-      <Tabs defaultActiveKey="1">
-        <TabPane tab="Courses" key="1">
-          <CoursesManagement/>
-        </TabPane>
-        <TabPane tab="Sessions" key="2">
-          <SessionManagement />
-        </TabPane>
-        <TabPane tab="Lessons" key="3">
-          <LessonManagement />
-        </TabPane>
-      </Tabs>
-   
+      <Tabs defaultActiveKey="1" items={items} />
     </div>
   )
 }

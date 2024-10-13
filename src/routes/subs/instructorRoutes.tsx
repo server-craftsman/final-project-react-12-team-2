@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import { RouteObject } from "react-router-dom";
-import Purchases from "../../pages/instructor/purchase/Purchases";
+import Purchases from "../../pages/instructor/purchase/PurchasesManagement";
 import ManagePayout from "../../pages/instructor/payout/ManagePayout";
 
 //import lazy

@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReadOutlined, UserOutlined } from '@ant-design/icons';
 
-
 const DashBoard = () => {
   return (
     <>
-  
       <div className='flex gap-4 w-full'>
         <BoxWrapper>
            <div className='rounded-full h-12 w-12 flex items-center justify-center bg-sky-500 cursor-pointer '>

@@ -69,13 +69,13 @@ const DetailsCategory = () => {
 
       <Button
         onClick={() => navigate(`/admin/edit-category/${id}`)}
-        className="bg-yellow-400 mr-3"
+        className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white mr-3"
       >
         Edit
       </Button>
-      <Button className="bg-red-700 mr-3">Delete</Button>
+      <Button className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white mr-3">Delete</Button>
       <Link to="/admin/categories">
-        <Button className="bg-gray-300">Back</Button>
+        <Button className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">Back To Categories</Button>
       </Link>
     </div>
   );

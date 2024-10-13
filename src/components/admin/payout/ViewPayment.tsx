@@ -196,7 +196,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
 
       <Modal
         title="Payout Details"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
         width={1000}      >

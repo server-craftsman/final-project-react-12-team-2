@@ -1,21 +1,16 @@
-import { Button, Table } from "antd";
-import purchasesData from "../../../data/purchases.json";
-import Search from "antd/es/input/Search";
-import { useState } from "react";
-import { formatDate, moneyFormat } from "../../../utils/helper";
+import React from "react";
+import { Table } from "antd";
 import { Checkbox } from "antd";
+import SearchPurchase from "./SearchPurchase";
+import { formatDate, moneyFormat } from "../../../utils/helper";
 
-function Purchases() {
-  const [searchTerm, setSearchTerm] = useState("");
+interface ViewPurchaseProps {
+  filteredData: any[];
+  onSearch: (value: string) => void;
+  onRequest: () => void;
+}
 
-  const handleSearch = (value: string) => {
-    setSearchTerm(value);
-  };
-
-  const filteredData = purchasesData.filter((purchase) =>
-    purchase.purchase_no.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+const ViewPurchase: React.FC<ViewPurchaseProps> = ({ filteredData, onSearch, onRequest }) => {
   const columns = [
     {
       title: "Select",
@@ -68,16 +63,10 @@ function Purchases() {
 
   return (
     <div>
-      <Search
-        className="w-96"
-        placeholder="Search by purchase number"
-        onSearch={handleSearch}
-        style={{ marginBottom: 20 }}
-      />
-      <Button className="bg-gradient-tone  text-white ml-8">Request</Button>
-      <Table columns={columns} dataSource={filteredData} />
+      <SearchPurchase onSearch={onSearch} onRequest={onRequest} />
+      <Table columns={columns} dataSource={filteredData} rowKey="purchase_no" />
     </div>
   );
 }
 
-export default Purchases;
+export default ViewPurchase;

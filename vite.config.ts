@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -7,30 +8,30 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  resolve: {
+    alias: {
+      '@src': path.resolve(__dirname, './src')
+    }
+  },
   build: {
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('node_modules')) {
-            return 'vendor'; // Separate vendor chunks
-          }
-          if (id.includes('src/components')) {
-            return 'components';
-          }
-          if (id.includes('src/pages')) {
-            return 'pages';
-          }
-          if (id.includes('src/layout')) {
-            return 'layout';
-          }
-          if (id.includes('src/models')) {
-            return 'models';
-          }
-          if (id.includes('src/data')) {
-            return 'data';
-          }
-          if (id.includes('src/services')) {
-            return 'services';
+          const chunks = [
+            { name: 'vendor', condition: id.includes('node_modules') },
+            { name: 'components', condition: id.includes('@src/components') },
+            { name: 'context', condition: id.includes('@src/context') },
+            { name: 'const', condition: id.includes('@src/const') },
+            { name: 'utils', condition: id.includes('@src/utils') },
+            { name: 'routes', condition: id.includes('@src/routes') },
+            { name: 'hooks', condition: id.includes('@src/hooks') },
+            { name: 'pages', condition: id.includes('@src/pages') },
+            { name: 'layout', condition: id.includes('@src/layout') },
+            { name: 'models', condition: id.includes('@src/models') },
+            { name: 'services', condition: id.includes('@src/services') },
+          ];
+          for (const chunk of chunks) {
+            if (chunk.condition) return chunk.name;
           }
         },
       },

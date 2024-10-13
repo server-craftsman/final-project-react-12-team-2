@@ -1,10 +1,8 @@
-
 import { Table, Typography } from 'antd';
 import { getOrderStatus } from '../../../utils/helper';
 import { courses } from '../../../data/courses.json';
 
-
-const recentCourseData = courses.map((course) => ({
+const recentOrderData = courses.map((course) => ({
   id: course.id,
   name: course.name,
   category: course.category_id,
@@ -15,7 +13,6 @@ const recentCourseData = courses.map((course) => ({
   status: course.status,
   createdAt: new Date(course.created_at).toLocaleDateString(),
 }));
-
 
 const columns = [
   {
@@ -61,20 +58,17 @@ const columns = [
     title: 'Created At',
     dataIndex: 'createdAt',
     key: 'createdAt',
-
   },
 ];
 
-
-
-const RecentCourses = () => {
+const RecentOrder = () => {
   return (
     <div className='bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1'>
-      <Typography.Text strong className="text-gray-700">Recent Courses</Typography.Text>
+      <Typography.Text strong className="text-gray-700">Recent Orders</Typography.Text>
       <div className="mt-3">
         <Table
           columns={columns}
-          dataSource={recentCourseData}
+          dataSource={recentOrderData}
           rowKey="id"
           pagination={false}
         />
@@ -83,5 +77,4 @@ const RecentCourses = () => {
   );
 };
 
-export default RecentCourses;
-
+export default RecentOrder;
