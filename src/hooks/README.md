@@ -17,3 +17,7 @@ This hook is used to manage session data. It provides methods to get session det
 
 ## useUser
 This hook manages user data. It provides methods to fetch user details, update user information, and handle user-related actions.
+
+## useResponsiveCollapse
+This hook is used to handle responsive collapse. It provides methods to handle the collapse state based on the screen size.
+

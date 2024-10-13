@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Layout, Menu } from "antd";
 import {
   DashboardOutlined,
@@ -8,11 +8,12 @@ import {
   BellOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import useResponsiveCollapse from '../../hooks/useResponsiveCollapse';
 const { Sider } = Layout;
 import logo from "../../assets/logo.jpg"
 
 const InstructorNavbar: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useResponsiveCollapse();
 
   const menuItems = [
     {
@@ -64,13 +65,17 @@ const InstructorNavbar: React.FC = () => {
       collapsed={collapsed}
       onCollapse={(value) => setCollapsed(value)}
       className="bg-gradient-to-r from-[#1565c0] to-[#0d47a1] min-h-screen"
+      breakpoint="md"
+      onBreakpoint={(broken) => {
+        setCollapsed(broken);
+      }}
     >
       <Link to="/">
-          <div className="logo p-4 flex items-center space-x-4">
-            <img src={logo} alt="logo" className="w-12 h-12 rounded-full border-2 border-white" />
-            {!collapsed && <h1 className="text-white text-xl font-bold">Instructor Panel</h1>}
-          </div>
-        </Link>
+        <div className="logo p-4 flex items-center space-x-4">
+          <img src={logo} alt="logo" className="w-12 h-12 rounded-full border-2 border-white" />
+                   {!collapsed && <h1 className="text-white text-xl font-bold">Instructor Panel</h1>}
+        </div>
+      </Link>
       <Menu theme="dark" mode="vertical" items={menuItems} />
     </Sider>
   );

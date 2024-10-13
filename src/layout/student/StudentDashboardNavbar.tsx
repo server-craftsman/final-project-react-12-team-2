@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import useResponsiveCollapse from '../../hooks/useResponsiveCollapse';
 import { Layout, Menu } from 'antd';
 import {BellOutlined, DashboardOutlined, FileTextOutlined, SettingOutlined} from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 const { Sider } = Layout;
 import logo from "../../assets/logo.jpg"
+
 const StudentDashboardNavbar = () => {
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useResponsiveCollapse();
 
     const menuItems = [
       {
@@ -16,11 +17,6 @@ const StudentDashboardNavbar = () => {
       {
         key: '2',
         icon: <BellOutlined />,
-        // label: (
-        //   <Badge count={2} className='text-[#a6abb0]'>
-        //     <Link to="/admin/orders">Orders</Link>
-        //   </Badge>
-        // ),
         label: <Link to="student-orders">Orders</Link>,
       },
       {
@@ -41,6 +37,10 @@ const StudentDashboardNavbar = () => {
         collapsed={collapsed} 
         onCollapse={(value) => setCollapsed(value)} 
         className="bg-gradient-to-r from-[#02005dc6] to-[#1a237e] min-h-screen"
+        breakpoint="md"
+        onBreakpoint={(broken) => {
+            setCollapsed(broken);
+        }}
       >
         <Link to="/">
           <div className="logo p-4 flex items-center space-x-4">
