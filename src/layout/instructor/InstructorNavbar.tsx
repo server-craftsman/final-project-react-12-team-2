@@ -24,7 +24,7 @@ const InstructorNavbar: React.FC = () => {
     {
       key: "2",
       icon: <FileTextOutlined />,
-      label: <Link to="/instructor/courses">My Courses</Link>,
+      label: <Link to="/instructor/courses">Manage Courses</Link>,
     },
     {
       key: "3",
@@ -33,28 +33,28 @@ const InstructorNavbar: React.FC = () => {
     },
     {
       key: "4",
+      icon: <FileTextOutlined />,
+      label: <Link to="/instructor/purchases">Purchases</Link>,
+    },
+    {
+      key: "5",
+      icon: <BellOutlined />,
+      label: <Link to="/instructor/orders">Orders</Link>,
+    },
+    {
+      key: "6",
       icon: <StarOutlined />,
       label: <Link to="/instructor/reviews">Reviews</Link>,
     },
     {
-      key: "5",
-      icon: <UserOutlined />,
-      label: <Link to="/instructor/setting">Setting</Link>,
-    },
-    {
-      key: "6",
+      key: "7",
       icon: <FileTextOutlined />,
       label: <Link to="/instructor/subscription">Subscription</Link>,
     },
     {
       key: "8",
-      icon: <FileTextOutlined />,
-      label: <Link to="/instructor/purchases">Purchases</Link>,
-    },
-    {
-      key: "9",
-      icon: <BellOutlined />,
-      label: <Link to="/instructor/orders">Orders</Link>,
+      icon: <UserOutlined />,
+      label: <Link to="/instructor/setting">Setting</Link>,
     },
   ];
 
