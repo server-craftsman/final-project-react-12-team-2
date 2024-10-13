@@ -53,21 +53,38 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          const chunks = [
-            { name: 'vendor', condition: id.includes('node_modules') },
-            { name: 'components', condition: id.includes('@src/components') },
-            { name: 'context', condition: id.includes('@src/context') },
-            { name: 'const', condition: id.includes('@src/const') },
-            { name: 'utils', condition: id.includes('@src/utils') },
-            { name: 'routes', condition: id.includes('@src/routes') },
-            { name: 'hooks', condition: id.includes('@src/hooks') },
-            { name: 'pages', condition: id.includes('@src/pages') },
-            { name: 'layout', condition: id.includes('@src/layout') },
-            { name: 'models', condition: id.includes('@src/models') },
-            { name: 'services', condition: id.includes('@src/services') },
-          ];
-          for (const chunk of chunks) {
-            if (chunk.condition) return chunk.name;
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+          if (id.includes('@src/components')) {
+            return 'components';
+          }
+          if (id.includes('@src/context')) {
+            return 'context';
+          }
+          if (id.includes('@src/const')) {
+            return 'const';
+          }
+          if (id.includes('@src/utils')) {
+            return 'utils';
+          }
+          if (id.includes('@src/routes')) {
+            return 'routes';
+          }
+          if (id.includes('@src/hooks')) {
+            return 'hooks';
+          }
+          if (id.includes('@src/pages')) {
+            return 'pages';
+          }
+          if (id.includes('@src/layout')) {
+            return 'layout';
+          }
+          if (id.includes('@src/models')) {
+            return 'models';
+          }
+          if (id.includes('@src/services')) {
+            return 'services';
           }
         },
       },
