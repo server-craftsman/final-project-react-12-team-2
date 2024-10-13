@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Form, Input, Button, Modal } from 'antd';
-import { Editor } from '@tinymce/tinymce-react';
+import { useState } from "react";
+import { Form, Input, Button, Modal } from "antd";
+import { Editor } from "@tinymce/tinymce-react";
 
 const CreateUserProfile = () => {
   const [form] = Form.useForm();
@@ -20,28 +20,28 @@ const CreateUserProfile = () => {
   };
 
   const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
+    console.log("Received values of form: ", values);
     // Add logic to handle form submission, e.g., sending data to an API
     handleOk(); // Close the modal after submission
   };
 
   const emailValidationRules = [
-    { 
-      required: true, 
-      message: 'Please input a valid email!' 
+    {
+      required: true,
+      message: "Please input a valid email!",
     },
     {
       validator: (_: any, value: string) =>
-        value && value.endsWith('@gmail.com')
+        value && value.endsWith("@gmail.com")
           ? Promise.resolve()
-          : Promise.reject(new Error('Email must end with @gmail.com')),
+          : Promise.reject(new Error("Email must end with @gmail.com")),
     },
   ];
 
   const phoneNumberValidationRules = [
     {
       pattern: /^\d{10}$/,
-      message: 'Phone number must be 10 digits!',
+      message: "Phone number must be 10 digits!",
     },
   ];
 
@@ -49,22 +49,38 @@ const CreateUserProfile = () => {
     const hasUpperCase = /[A-Z]/.test(value);
     const hasNumber = /\d/.test(value);
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value); // Added special character validation
-    if (!value || value.length < 8 || !hasUpperCase || !hasNumber || !hasSpecialChar) {
-      return Promise.reject(new Error('Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.'));
+    if (
+      !value ||
+      value.length < 8 ||
+      !hasUpperCase ||
+      !hasNumber ||
+      !hasSpecialChar
+    ) {
+      return Promise.reject(
+        new Error(
+          "Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.",
+        ),
+      );
     }
     return Promise.resolve();
   };
 
   const validateConfirmPassword = (_: any, value: string) => {
-    if (!value || value !== form.getFieldValue('password')) {
-      return Promise.reject(new Error('The two passwords that you entered do not match!'));
+    if (!value || value !== form.getFieldValue("password")) {
+      return Promise.reject(
+        new Error("The two passwords that you entered do not match!"),
+      );
     }
     return Promise.resolve();
   };
 
   return (
-    <div className='mb-4'>
-      <Button type="primary" onClick={showModal} className='bg-gradient-tone text-white'>
+    <div className="mb-4">
+      <Button
+        type="primary"
+        onClick={showModal}
+        className="bg-gradient-tone text-white"
+      >
         Create User
       </Button>
       <Modal
@@ -74,16 +90,12 @@ const CreateUserProfile = () => {
         onCancel={handleCancel}
         footer={null} // Remove default footer buttons
       >
-        <Form
-          name="create_user"
-          onFinish={onFinish}
-          layout="vertical"
-        >
+        <Form name="create_user" onFinish={onFinish} layout="vertical">
           <Form.Item
             name="email"
             label="Email"
             rules={[
-              { required: true, message: 'Please input the email!' },
+              { required: true, message: "Please input the email!" },
               ...emailValidationRules,
             ]}
           >
@@ -94,7 +106,7 @@ const CreateUserProfile = () => {
             name="password"
             label="Password"
             rules={[
-              { required: true, message: 'Please input the password!' },
+              { required: true, message: "Please input the password!" },
               { validator: validatePassword },
             ]}
           >
@@ -104,8 +116,9 @@ const CreateUserProfile = () => {
           <Form.Item
             name="confirm_password"
             label="Confirm Password"
-            rules={[{ required: true, message: 'Please confirm the password!' },
-            { validator: validateConfirmPassword },
+            rules={[
+              { required: true, message: "Please confirm the password!" },
+              { validator: validateConfirmPassword },
             ]}
           >
             <Input.Password />
@@ -114,25 +127,27 @@ const CreateUserProfile = () => {
           <Form.Item
             name="description"
             label="Description"
-            rules={[{ required: true, message: 'Please input the description!' }]}
+            rules={[
+              { required: true, message: "Please input the description!" },
+            ]}
           >
             <Editor
-            apiKey='ck3lwrqqoh4n7nuttaggpbfuwl9gx8ntcoo2zkfx7ms31hfr'
+              apiKey="ck3lwrqqoh4n7nuttaggpbfuwl9gx8ntcoo2zkfx7ms31hfr"
               initialValue=""
               init={{
                 height: 300,
                 menubar: false,
                 plugins: [
-                  'advlist autolink lists link image charmap print preview anchor',
-                  'searchreplace visualblocks code fullscreen',
-                  'insertdatetime media table paste code help wordcount'
+                  "advlist autolink lists link image charmap print preview anchor",
+                  "searchreplace visualblocks code fullscreen",
+                  "insertdatetime media table paste code help wordcount",
                 ],
                 toolbar:
-                  'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code',
+                  "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code",
               }}
-            //   onEditorChange={(content, editor) => {
-            //     // Handle the content change
-            //   }}
+              //   onEditorChange={(content, editor) => {
+              //     // Handle the content change
+              //   }}
             />
           </Form.Item>
 
@@ -140,7 +155,7 @@ const CreateUserProfile = () => {
             name="phone_number"
             label="Phone Number"
             rules={[
-              { required: true, message: 'Please input the phone number!' },
+              { required: true, message: "Please input the phone number!" },
               ...phoneNumberValidationRules,
             ]}
           >
@@ -150,13 +165,19 @@ const CreateUserProfile = () => {
           <Form.Item
             name="avatar_url"
             label="Avatar URL"
-            rules={[{ required: true, message: 'Please input the avatar URL!' }]}
+            rules={[
+              { required: true, message: "Please input the avatar URL!" },
+            ]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" className='bg-gradient-tone text-white'>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="bg-gradient-tone text-white"
+            >
               Submit
             </Button>
           </Form.Item>

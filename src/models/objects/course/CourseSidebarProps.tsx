@@ -1,4 +1,4 @@
 export interface CourseSidebarProps {
-    course: any;
-    discountedPrice: string;
+  course: any;
+  discountedPrice: string;
 }

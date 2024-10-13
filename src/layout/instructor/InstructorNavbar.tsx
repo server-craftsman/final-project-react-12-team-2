@@ -8,9 +8,9 @@ import {
   BellOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import useResponsiveCollapse from '../../hooks/useResponsiveCollapse';
+import useResponsiveCollapse from "../../hooks/useResponsiveCollapse";
 const { Sider } = Layout;
-import logo from "../../assets/logo.jpg"
+import logo from "../../assets/logo.jpg";
 
 const InstructorNavbar: React.FC = () => {
   const [collapsed, setCollapsed] = useResponsiveCollapse();
@@ -64,16 +64,22 @@ const InstructorNavbar: React.FC = () => {
       collapsible
       collapsed={collapsed}
       onCollapse={(value) => setCollapsed(value)}
-      className="bg-gradient-to-r from-[#1565c0] to-[#0d47a1] min-h-screen"
+      className="min-h-screen bg-gradient-to-r from-[#1565c0] to-[#0d47a1]"
       breakpoint="md"
       onBreakpoint={(broken) => {
         setCollapsed(broken);
       }}
     >
       <Link to="/">
-        <div className="logo p-4 flex items-center space-x-4">
-          <img src={logo} alt="logo" className="w-12 h-12 rounded-full border-2 border-white" />
-                   {!collapsed && <h1 className="text-white text-xl font-bold">Instructor Panel</h1>}
+        <div className="logo flex items-center space-x-4 p-4">
+          <img
+            src={logo}
+            alt="logo"
+            className="h-12 w-12 rounded-full border-2 border-white"
+          />
+          {!collapsed && (
+            <h1 className="text-xl font-bold text-white">Instructor Panel</h1>
+          )}
         </div>
       </Link>
       <Menu theme="dark" mode="vertical" items={menuItems} />

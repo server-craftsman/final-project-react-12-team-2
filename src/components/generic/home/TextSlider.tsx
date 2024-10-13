@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const phrases = [
   "Anytime",
@@ -11,7 +11,7 @@ const phrases = [
   "Convenient",
   "Accessible",
   "Personalized",
-  "Adaptable"
+  "Adaptable",
 ];
 
 const TextSlider: React.FC = () => {
@@ -30,16 +30,16 @@ const TextSlider: React.FC = () => {
       <motion.span
         key={index}
         initial={{ opacity: 0, x: -100 }}
-        animate={{ 
-          opacity: 1, 
+        animate={{
+          opacity: 1,
           x: 0,
         }}
         exit={{ opacity: 0, x: 100 }}
-        transition={{ 
-          duration: 0.8, 
+        transition={{
+          duration: 0.8,
           ease: "easeInOut",
         }}
-        className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-500 text-3xl md:text-4xl font-bold"
+        className="block bg-gradient-to-r from-yellow-300 via-yellow-400 to-yellow-500 bg-clip-text text-3xl font-bold text-transparent md:text-4xl"
       >
         {phrases[index]}
       </motion.span>

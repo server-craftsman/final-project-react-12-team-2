@@ -1,9 +1,9 @@
-import { Table, Tag, message, Modal } from 'antd';
-import paymentsData from '../../../data/payouts.json';
-import transactionsData from '../../../data/admin_transactions.json';
-import { useState, useEffect } from 'react';
-import { Payout, PayoutStatusEnum } from '../../../models/Payout';
-import { moneyFormat } from '../../../utils/helper';
+import { Table, Tag, message, Modal } from "antd";
+import paymentsData from "../../../data/payouts.json";
+import transactionsData from "../../../data/admin_transactions.json";
+import { useState, useEffect } from "react";
+import { Payout, PayoutStatusEnum } from "../../../models/Payout";
+import { moneyFormat } from "../../../utils/helper";
 
 interface ViewPaymentProps {
   searchQuery: string;
@@ -12,11 +12,11 @@ interface ViewPaymentProps {
 const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
   const mapStatusToEnum = (status: string): PayoutStatusEnum => {
     switch (status) {
-      case 'COMPLETED':
+      case "COMPLETED":
         return PayoutStatusEnum.completed;
-      case 'REQUEST_PAYOUT':
+      case "REQUEST_PAYOUT":
         return PayoutStatusEnum.request_payout;
-      case 'REJECTED':
+      case "REJECTED":
         return PayoutStatusEnum.rejected;
       default:
         return PayoutStatusEnum.new;
@@ -26,18 +26,23 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
     paymentsData.payments.map((payment) => ({
       ...payment,
       status: mapStatusToEnum(payment.status),
-    }))
+    })),
   );
-  const [selectedPayoutDetails, setSelectedPayoutDetails] = useState<unknown[]>([]);
+  const [selectedPayoutDetails, setSelectedPayoutDetails] = useState<unknown[]>(
+    [],
+  );
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     const filteredPayments = paymentsData.payments
-      .filter(payment =>
-        payment.payout_no.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        payment.instructor_id.toLowerCase().includes(searchQuery.toLowerCase())
+      .filter(
+        (payment) =>
+          payment.payout_no.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          payment.instructor_id
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()),
       )
-      .map(payment => ({
+      .map((payment) => ({
         ...payment,
         status: mapStatusToEnum(payment.status),
       }));
@@ -45,7 +50,9 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
   }, [searchQuery]);
 
   const handleViewDetails = (payoutId: string) => {
-    const details = transactionsData.filter(detail => detail.payout_id === payoutId);
+    const details = transactionsData.filter(
+      (detail) => detail.payout_id === payoutId,
+    );
     setSelectedPayoutDetails(details);
     setIsModalVisible(true);
   };
@@ -53,94 +60,117 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
   const handleApprove = (id: string, status: PayoutStatusEnum) => {
     setPayments((prevPayments) =>
       prevPayments.map((payment) =>
-        payment.id === id ? { ...payment, status } : payment
-    ));
-    message.success(`Payment ${status === PayoutStatusEnum.completed ? 'completed' : 'rejected'} successfully.`);
+        payment.id === id ? { ...payment, status } : payment,
+      ),
+    );
+    message.success(
+      `Payment ${status === PayoutStatusEnum.completed ? "completed" : "rejected"} successfully.`,
+    );
   };
 
   const columns = [
     {
-      title: 'Payout No',
-      dataIndex: 'payout_no',
-      key: 'payout_no',
+      title: "Payout No",
+      dataIndex: "payout_no",
+      key: "payout_no",
     },
     {
-      title: 'Instructor ID',
-      dataIndex: 'instructor_id',
-      key: 'instructor_id',
+      title: "Instructor ID",
+      dataIndex: "instructor_id",
+      key: "instructor_id",
     },
     {
-      title: 'Transaction',
-      key: 'transaction',
+      title: "Transaction",
+      key: "transaction",
       render: (_: unknown, record: Payout) => (
         <button
           onClick={() => handleViewDetails(record.id)}
-          className='bg-gradient-tone text-white px-4 py-2 rounded-md'
-          style={{ width: '110px', textAlign: 'left' }}
+          className="bg-gradient-tone rounded-md px-4 py-2 text-white"
+          style={{ width: "110px", textAlign: "left" }}
         >
           View Details
         </button>
       ),
     },
     {
-      title: 'Balance Origin',
-      dataIndex: 'balance_origin',
-      key: 'balance_origin',
+      title: "Balance Origin",
+      dataIndex: "balance_origin",
+      key: "balance_origin",
       render: (money: number) => moneyFormat(money),
     },
     {
-      title: 'Balance Instructor Paid',
-      dataIndex: 'balance_instructor_paid',
-      key: 'balance_instructor_paid',
+      title: "Balance Instructor Paid",
+      dataIndex: "balance_instructor_paid",
+      key: "balance_instructor_paid",
       render: (money: number) => moneyFormat(money),
     },
     {
-      title: 'Balance Instructor Received',
-      dataIndex: 'balance_instructor_received',
-      key: 'balance_instructor_received',
+      title: "Balance Instructor Received",
+      dataIndex: "balance_instructor_received",
+      key: "balance_instructor_received",
       render: (money: number) => moneyFormat(money),
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
       filters: [
-        { text: 'COMPLETED', value: PayoutStatusEnum.completed },
-        { text: 'REQUEST_PAYOUT', value: PayoutStatusEnum.request_payout },
-        { text: 'REJECTED', value: PayoutStatusEnum.rejected },
+        { text: "COMPLETED", value: PayoutStatusEnum.completed },
+        { text: "REQUEST_PAYOUT", value: PayoutStatusEnum.request_payout },
+        { text: "REJECTED", value: PayoutStatusEnum.rejected },
       ],
       onFilter: (value: unknown, record: Payout) => {
         return record.status === value;
       },
       render: (status: PayoutStatusEnum) => (
-        <Tag color={status === PayoutStatusEnum.completed ? 'green' : status === PayoutStatusEnum.request_payout ? 'orange' : 'volcano'}>
+        <Tag
+          color={
+            status === PayoutStatusEnum.completed
+              ? "green"
+              : status === PayoutStatusEnum.request_payout
+                ? "orange"
+                : "volcano"
+          }
+        >
           {PayoutStatusEnum[status].toUpperCase()}
         </Tag>
       ),
     },
     {
-      title: 'Date Created',
-      dataIndex: 'created_at',
-      key: 'created_at',
+      title: "Date Created",
+      dataIndex: "created_at",
+      key: "created_at",
       render: (date: string) => new Date(date).toLocaleDateString(),
     },
     {
-      title: 'Action',
-      key: 'action',
+      title: "Action",
+      key: "action",
       render: (_: unknown, record: Payout) => (
-        <div className='flex justify-between items-center' style={{ minHeight: '48px' }}>
+        <div
+          className="flex items-center justify-between"
+          style={{ minHeight: "48px" }}
+        >
           {record.status === PayoutStatusEnum.request_payout && (
             <>
               <button
-                onClick={() => handleApprove(record.id, PayoutStatusEnum.completed)}
-                className='bg-green-400 text-white px-4 py-2 rounded-md'
-                style={{ width: '85px' }}
-              >Approve</button>
+                onClick={() =>
+                  handleApprove(record.id, PayoutStatusEnum.completed)
+                }
+                className="rounded-md bg-green-400 px-4 py-2 text-white"
+                style={{ width: "85px" }}
+              >
+                Approve
+              </button>
               <button
-                onClick={() => handleApprove(record.id, PayoutStatusEnum.rejected)}
-                className='bg-red-400 text-white px-4 py-2 rounded-md'
-                style={{ width: '85px' }}>
-                Reject</button>           </>
+                onClick={() =>
+                  handleApprove(record.id, PayoutStatusEnum.rejected)
+                }
+                className="rounded-md bg-red-400 px-4 py-2 text-white"
+                style={{ width: "85px" }}
+              >
+                Reject
+              </button>{" "}
+            </>
           )}
         </div>
       ),
@@ -149,38 +179,38 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
 
   const detailColumns = [
     {
-      title: 'Transaction ID',
-      dataIndex: 'id',
-      key: 'id',
+      title: "Transaction ID",
+      dataIndex: "id",
+      key: "id",
     },
     {
-      title: 'Payout ID',
-      dataIndex: 'payout_id',
-      key: 'payout_id',
+      title: "Payout ID",
+      dataIndex: "payout_id",
+      key: "payout_id",
     },
     {
-      title: 'Payout Amount',
-      dataIndex: 'payout_amount',
-      key: 'payout_amount',
+      title: "Payout Amount",
+      dataIndex: "payout_amount",
+      key: "payout_amount",
       render: (money: number) => moneyFormat(money),
     },
     {
-      title: 'Date Created',
-      dataIndex: 'created_at',
-      key: 'created_at',
+      title: "Date Created",
+      dataIndex: "created_at",
+      key: "created_at",
       render: (date: string) => new Date(date).toLocaleDateString(),
     },
     {
-      title: 'Date Updated',
-      dataIndex: 'updated_at',
-      key: 'updated_at',
+      title: "Date Updated",
+      dataIndex: "updated_at",
+      key: "updated_at",
       render: (date: string) => new Date(date).toLocaleDateString(),
     },
     {
-      title: 'Deleted',
-      dataIndex: 'is_deleted',
-      key: 'is_deleted',
-      render: (isDeleted: boolean) => (isDeleted ? 'Yes' : 'No'),
+      title: "Deleted",
+      dataIndex: "is_deleted",
+      key: "is_deleted",
+      render: (isDeleted: boolean) => (isDeleted ? "Yes" : "No"),
     },
   ];
 
@@ -192,19 +222,22 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
         dataSource={payments}
         rowKey="id"
         pagination={{ pageSize: 10 }}
-        rowClassName={() => 'align-middle'}      />
+        rowClassName={() => "align-middle"}
+      />
 
       <Modal
         title="Payout Details"
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
-        width={1000}      >
+        width={1000}
+      >
         <Table
           columns={detailColumns}
           dataSource={selectedPayoutDetails}
           rowKey="id"
-          pagination={false}        />
+          pagination={false}
+        />
       </Modal>
     </div>
   );

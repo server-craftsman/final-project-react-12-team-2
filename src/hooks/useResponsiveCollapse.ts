@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 const useResponsiveCollapse = (breakpoint: number = 768) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -10,7 +10,7 @@ const useResponsiveCollapse = (breakpoint: number = 768) => {
 
     window.addEventListener("resize", handleResize);
     handleResize(); // Call once to set initial state
-    
+
     return () => window.removeEventListener("resize", handleResize);
   }, [breakpoint]);
 

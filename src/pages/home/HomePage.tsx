@@ -1,22 +1,22 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { Typography, Divider, Button } from 'antd';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import Introduction from '../../components/generic/home/Introduction';
-import Courses from '../../components/generic/courses/main-display/Courses';
-import Categories from '../../components/generic/category/Categories';
-import PageNumber from '../../components/generic/home/PageNumber';
-import CategoryFilter from '../../components/generic/category/CategoryFilter';
-import { AuthContext } from '../../context/AuthContext';
-import coursesData from '../../data/courses.json';
-import usersData from '../../data/users.json';
-import categoriesData from '../../data/categories.json';
-import { Category } from '../../models/Category';
-import InstructorSlider from '../../components/generic/home/InstructorSlider';
-import UtilityProgram from '../../components/generic/home/UtilityProgram';
-import UtilityRegisterInformation from '../../components/generic/home/UtilityRegisterInformation';
-import { UserRole } from '../../models/User';
-import { Course } from '../../models/Course';
+import React, { useState, useContext, useEffect } from "react";
+import { Typography, Divider, Button } from "antd";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
+import Introduction from "../../components/generic/home/Introduction";
+import Courses from "../../components/generic/courses/main-display/Courses";
+import Categories from "../../components/generic/category/Categories";
+import PageNumber from "../../components/generic/home/PageNumber";
+import CategoryFilter from "../../components/generic/category/CategoryFilter";
+import { AuthContext } from "../../context/AuthContext";
+import coursesData from "../../data/courses.json";
+import usersData from "../../data/users.json";
+import categoriesData from "../../data/categories.json";
+import { Category } from "../../models/Category";
+import InstructorSlider from "../../components/generic/home/InstructorSlider";
+import UtilityProgram from "../../components/generic/home/UtilityProgram";
+import UtilityRegisterInformation from "../../components/generic/home/UtilityRegisterInformation";
+import { UserRole } from "../../models/User";
+import { Course } from "../../models/Course";
 const { Title } = Typography;
 
 const HomePage: React.FC = () => {
@@ -25,7 +25,7 @@ const HomePage: React.FC = () => {
   const pageSize = 6;
   const totalCourses = coursesData.courses.length;
   const [isVisible, setIsVisible] = useState(false);
-  const [activeCategory, setActiveCategory] = useState('All Courses');
+  const [activeCategory, setActiveCategory] = useState("All Courses");
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
   const [sliderCategories, setSliderCategories] = useState<Category[][]>([]);
 
@@ -38,23 +38,27 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentCategoryIndex((prevIndex) => (prevIndex + 1) % sliderCategories.length);
+      setCurrentCategoryIndex(
+        (prevIndex) => (prevIndex + 1) % sliderCategories.length,
+      );
     }, 5000);
     return () => clearInterval(interval);
   }, [sliderCategories]);
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const fetchedCategories: Category[] = categoriesData.categories.map(cat => ({
-        id: cat.id,
-        user_id: cat.user_id,
-        name: cat.name,
-        description: cat.description,
-        parent_category_id: cat.parent_category_id,
-        created_at: cat.created_at,
-        updated_at: cat.updated_at,
-        is_deleted: cat.is_deleted
-      }));
+      const fetchedCategories: Category[] = categoriesData.categories.map(
+        (cat) => ({
+          id: cat.id,
+          user_id: cat.user_id,
+          name: cat.name,
+          description: cat.description,
+          parent_category_id: cat.parent_category_id,
+          created_at: cat.created_at,
+          updated_at: cat.updated_at,
+          is_deleted: cat.is_deleted,
+        }),
+      );
 
       // Divide categories into groups of 4
       const groupedCategories = [];
@@ -77,13 +81,18 @@ const HomePage: React.FC = () => {
     setActiveCategory(category);
   };
 
-  const filteredCourses = activeCategory === 'All Courses'
-    ? coursesData.courses
-    : coursesData.courses.filter(course => course.category_id === activeCategory.toLowerCase().replace(' & ', '_'));
+  const filteredCourses =
+    activeCategory === "All Courses"
+      ? coursesData.courses
+      : coursesData.courses.filter(
+          (course) =>
+            course.category_id ===
+            activeCategory.toLowerCase().replace(" & ", "_"),
+        );
 
   const paginatedCourses = filteredCourses.slice(
     (currentPage - 1) * pageSize,
-    currentPage * pageSize
+    currentPage * pageSize,
   );
 
   const containerVariants = {
@@ -91,37 +100,42 @@ const HomePage: React.FC = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   return (
-    <div className="container mx-auto px-4 py-12 bg-gradient-to-b from-indigo-50 to-white">
+    <div className="container mx-auto bg-gradient-to-b from-indigo-50 to-white px-4 py-12">
       <Introduction />
       <Divider className="my-16 border-indigo-200" />
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="mb-16 relative overflow-hidden"
+        className="relative mb-16 overflow-hidden"
       >
-        <h1 className="text-center text-blue-500 text-2xl font-bold mb-8">Top Categories</h1>
-        <h1 className="text-4xl font-bold text-center mb-12">
+        <h1 className="mb-8 text-center text-2xl font-bold text-blue-500">
+          Top Categories
+        </h1>
+        <h1 className="mb-12 text-center text-4xl font-bold">
           Most demanding <span className="text-blue-500">Categories</span>.
         </h1>
-        <div className="flex transition-transform duration-500 ease-in-out mb-12" style={{ transform: `translateX(-${currentCategoryIndex * 100}%)` }}>
+        <div
+          className="mb-12 flex transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateX(-${currentCategoryIndex * 100}%)` }}
+        >
           {sliderCategories.map((categoryGroup, groupIndex) => (
             <div key={groupIndex} className="w-full flex-shrink-0">
               <Categories categories={categoryGroup} />
             </div>
           ))}
         </div>
-        <div className="absolute left-1/2 transform -translate-x-1/2 flex space-x-2 mt-4 bottom-0">
+        <div className="absolute bottom-0 left-1/2 mt-4 flex -translate-x-1/2 transform space-x-2">
           {sliderCategories.map((_, index) => (
             <button
               key={index}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentCategoryIndex ? 'bg-indigo-600 w-4' : 'bg-indigo-200'}`}
+              className={`h-2 w-2 rounded-full transition-all duration-300 ${index === currentCategoryIndex ? "w-4 bg-indigo-600" : "bg-indigo-200"}`}
               onClick={() => setCurrentCategoryIndex(index)}
             ></button>
           ))}
@@ -134,12 +148,15 @@ const HomePage: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Title level={2} className="text-6xl font-extrabold text-indigo-900 mb-16 text-center font-serif tracking-wide">
+        <Title
+          level={2}
+          className="mb-16 text-center font-serif text-6xl font-extrabold tracking-wide text-indigo-900"
+        >
           <motion.span
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="text-indigo-900 font-serif tracking-wide"
+            className="font-serif tracking-wide text-indigo-900"
           >
             Exquisite Learning Experiences
           </motion.span>
@@ -159,17 +176,20 @@ const HomePage: React.FC = () => {
             >
               <Courses
                 courses={paginatedCourses as unknown as Course[]}
-                usersData={{ users: (usersData?.users || []).map(user => ({
-                  ...user,
-                  role: user.role as UserRole,
-                  dob: new Date(user.dob)
-                })) }}
+                usersData={{
+                  users: (usersData?.users || []).map((user) => ({
+                    ...user,
+                    role: user.role as UserRole,
+                    dob: new Date(user.dob),
+                  })),
+                }}
                 categoriesData={{
-                  categories: categoriesData.categories.map(cat => ({
+                  categories: categoriesData.categories.map((cat) => ({
                     ...cat,
                   })),
                 }}
-              />            </motion.div>
+              />{" "}
+            </motion.div>
           )}
         </AnimatePresence>
       </motion.section>
@@ -194,7 +214,7 @@ const HomePage: React.FC = () => {
 
       <Divider className="my-16 border-indigo-200" />
       <motion.section
-        className="mt-24 text-center bg-gradient-to-b from-indigo-50 to-white py-16"
+        className="mt-24 bg-gradient-to-b from-indigo-50 to-white py-16 text-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
@@ -204,12 +224,16 @@ const HomePage: React.FC = () => {
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
         >
-          <Title level={2} className="text-5xl font-bold text-indigo-900 mb-8">
+          <Title level={2} className="mb-8 text-5xl font-bold text-indigo-900">
             Elevate Your Expertise
           </Title>
           <Link to="/courses">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button type="primary" size="large" className="bg-gradient-to-r from-[#ffd700] to-[#ffa500] hover:from-[#ffcc00] hover:to-[#ff9500] text-indigo-900 font-medium py-2 px-4 lg:px-6 rounded-full text-sm transition-all duration-200 ease-in-out shadow-md hover:shadow-lg hidden lg:inline-block">
+              <Button
+                type="primary"
+                size="large"
+                className="hidden rounded-full bg-gradient-to-r from-[#ffd700] to-[#ffa500] px-4 py-2 text-sm font-medium text-indigo-900 shadow-md transition-all duration-200 ease-in-out hover:from-[#ffcc00] hover:to-[#ff9500] hover:shadow-lg lg:inline-block lg:px-6"
+              >
                 Explore All Premium Courses
               </Button>
             </motion.div>

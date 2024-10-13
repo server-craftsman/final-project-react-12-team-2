@@ -25,7 +25,7 @@ function CreateCategory() {
   return (
     <div>
       <Button
-        className=" mb-4 bg-gradient-tone  text-white"
+        className="bg-gradient-tone mb-4 text-white"
         onClick={() => setOpen(true)}
       >
         Create New Categoty

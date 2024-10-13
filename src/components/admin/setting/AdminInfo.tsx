@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const AdminInfo = () => {
   const navigate = useNavigate();
   const adminUser = usersData.users.find(
-    (user) => user.role === UserRole.ADMIN
+    (user) => user.role === UserRole.ADMIN,
   );
 
   if (!adminUser) {
@@ -60,7 +60,7 @@ const AdminInfo = () => {
       <Button
         type="primary"
         onClick={handleEdit}
-        className="mt-4 md:mt-2 md:-ml-0"
+        className="mt-4 md:-ml-0 md:mt-2"
       >
         Edit Profile
       </Button>

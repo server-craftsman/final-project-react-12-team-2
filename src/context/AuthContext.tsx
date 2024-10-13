@@ -1,5 +1,5 @@
-import { createContext, useState } from 'react';
-import { User } from '../models/User'; // Import the User type
+import { createContext, useState } from "react";
+import { User } from "../models/User"; // Import the User type
 
 // Update the context type
 const AuthContext = createContext<{

@@ -10,7 +10,11 @@ interface ViewPurchaseProps {
   onRequest: () => void;
 }
 
-const ViewPurchase: React.FC<ViewPurchaseProps> = ({ filteredData, onSearch, onRequest }) => {
+const ViewPurchase: React.FC<ViewPurchaseProps> = ({
+  filteredData,
+  onSearch,
+  onRequest,
+}) => {
   const columns = [
     {
       title: "Select",
@@ -67,6 +71,6 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ filteredData, onSearch, onR
       <Table columns={columns} dataSource={filteredData} rowKey="purchase_no" />
     </div>
   );
-}
+};
 
 export default ViewPurchase;

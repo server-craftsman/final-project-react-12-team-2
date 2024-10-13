@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import Reviews from '../../../components/instructor/review/Reviews';
-import SearchReview from '../../../components/instructor/review/SearchReview';
+import { useState } from "react";
+import Reviews from "../../../components/instructor/review/Reviews";
+import SearchReview from "../../../components/instructor/review/SearchReview";
 
 const Review = () => {
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   return (
     <div>

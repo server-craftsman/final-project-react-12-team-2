@@ -1,18 +1,24 @@
-import { lazy, useState } from 'react';
+import { lazy, useState } from "react";
 
-const SearchPayment = lazy(() => import('../../../components/admin/payout/SearchPayment'));
-const AmountPayment = lazy(() => import('../../../components/admin/payout/AmountPayment'));
-const ViewPayment = lazy(() => import('../../../components/admin/payout/ViewPayment'));
+const SearchPayment = lazy(
+  () => import("../../../components/admin/payout/SearchPayment"),
+);
+const AmountPayment = lazy(
+  () => import("../../../components/admin/payout/AmountPayment"),
+);
+const ViewPayment = lazy(
+  () => import("../../../components/admin/payout/ViewPayment"),
+);
 
 const ManagePayment: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
   };
 
   return (
-    <div className='p-4 justify-center items-center border-b border-gray-300'>
+    <div className="items-center justify-center border-b border-gray-300 p-4">
       <SearchPayment onSearch={handleSearch} />
       <AmountPayment />
       <ViewPayment searchQuery={searchQuery} />

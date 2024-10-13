@@ -1,4 +1,4 @@
 export interface CourseInsightsProps {
-    course: any;
-    instructor: any;
-  }
+  course: any;
+  instructor: any;
+}

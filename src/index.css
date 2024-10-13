@@ -4,20 +4,20 @@
 
 /* Gradient background for tone color all website */
 .bg-gradient-tone {
-    @apply bg-gradient-to-r from-[#02005dc6] to-[#1a237e];
+  @apply bg-gradient-to-r from-[#02005dc6] to-[#1a237e];
 }
 
 /* Float animation */
 @keyframes floatUpDown {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-20px);
-    }
+  0%,
+  100% {
+    transform: translateY(0);
   }
-  
-  .animate-float {
-    animation: floatUpDown 3s ease-in-out infinite;
+  50% {
+    transform: translateY(-20px);
   }
+}
 
+.animate-float {
+  animation: floatUpDown 3s ease-in-out infinite;
+}

@@ -1,26 +1,26 @@
-import { lazy, useState } from "react"
-import { Tabs } from 'antd';
-import SearchOrder from '../../../components/instructor/order/SearchOrder';
+import { lazy, useState } from "react";
+import { Tabs } from "antd";
+import SearchOrder from "../../../components/instructor/order/SearchOrder";
 
 const WaitingPaid = lazy(
-  () => import("../../../components/instructor/order/WaitingPaid")
+  () => import("../../../components/instructor/order/WaitingPaid"),
 );
 const Completed = lazy(
-  () => import("../../../components/instructor/order/Completed")
+  () => import("../../../components/instructor/order/Completed"),
 );
 
 const OrderPage = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   const items = [
     {
-      label: 'Waiting Paid',
-      key: '1',
+      label: "Waiting Paid",
+      key: "1",
       children: <WaitingPaid searchTerm={searchTerm} />,
     },
     {
-      label: 'Completed',
-      key: '2',
+      label: "Completed",
+      key: "2",
       children: <Completed searchTerm={searchTerm} />,
     },
   ];

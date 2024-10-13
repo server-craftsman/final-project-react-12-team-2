@@ -1,51 +1,50 @@
 [
-    {
-      "id": "1",
-      "payout_id": "1",
-      "payout_amount": 200.00,
-      "created_at": "2023-10-01T10:00:00Z",
-      "updated_at": "2023-10-01T12:00:00Z",
-      "is_deleted": false
-    },
-    {
-      "id": "2",
-      "payout_id": "2",
-      "payout_amount": 120.00,
-      "created_at": "2023-10-02T11:30:00Z",
-      "updated_at": "2023-10-02T11:30:00Z",
-      "is_deleted": false
-    },
-    {
-      "id": "3",
-      "payout_id": "3",
-      "payout_amount": 100.00,
-      "created_at": "2023-10-03T09:15:00Z",
-      "updated_at": "2023-10-03T09:15:00Z",
-      "is_deleted": true
-    },
-    {
-      "id": "4",
-      "payout_id": "4",
-      "payout_amount": 450.00,
-      "created_at": "2023-10-04T14:00:00Z",
-      "updated_at": "2023-10-04T15:00:00Z",
-      "is_deleted": false
-    },
-    {
-      "id": "5",
-      "payout_id": "5",
-      "payout_amount": 120.00,
-      "created_at": "2023-10-05T16:45:00Z",
-      "updated_at": "2023-10-05T16:45:00Z",
-      "is_deleted": false
-    },
-    {
-        "id": "6",
-        "payout_id": "5",
-        "payout_amount": 120.00,
-        "created_at": "2023-10-05T16:45:00Z",
-        "updated_at": "2023-10-05T16:45:00Z",
-        "is_deleted": false
-      }
-  ]
-  
+  {
+    "id": "1",
+    "payout_id": "1",
+    "payout_amount": 200.0,
+    "created_at": "2023-10-01T10:00:00Z",
+    "updated_at": "2023-10-01T12:00:00Z",
+    "is_deleted": false
+  },
+  {
+    "id": "2",
+    "payout_id": "2",
+    "payout_amount": 120.0,
+    "created_at": "2023-10-02T11:30:00Z",
+    "updated_at": "2023-10-02T11:30:00Z",
+    "is_deleted": false
+  },
+  {
+    "id": "3",
+    "payout_id": "3",
+    "payout_amount": 100.0,
+    "created_at": "2023-10-03T09:15:00Z",
+    "updated_at": "2023-10-03T09:15:00Z",
+    "is_deleted": true
+  },
+  {
+    "id": "4",
+    "payout_id": "4",
+    "payout_amount": 450.0,
+    "created_at": "2023-10-04T14:00:00Z",
+    "updated_at": "2023-10-04T15:00:00Z",
+    "is_deleted": false
+  },
+  {
+    "id": "5",
+    "payout_id": "5",
+    "payout_amount": 120.0,
+    "created_at": "2023-10-05T16:45:00Z",
+    "updated_at": "2023-10-05T16:45:00Z",
+    "is_deleted": false
+  },
+  {
+    "id": "6",
+    "payout_id": "5",
+    "payout_amount": 120.0,
+    "created_at": "2023-10-05T16:45:00Z",
+    "updated_at": "2023-10-05T16:45:00Z",
+    "is_deleted": false
+  }
+]

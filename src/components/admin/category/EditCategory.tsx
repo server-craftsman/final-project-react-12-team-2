@@ -4,7 +4,9 @@ import categoriesData from "../../../data/categories.json";
 
 const EditCategory = () => {
   const { id } = useParams();
-  const category = categoriesData.categories.find((cat: { id: string }) => cat.id === id);
+  const category = categoriesData.categories.find(
+    (cat: { id: string }) => cat.id === id,
+  );
 
   if (!category) {
     return <div>Category not found.</div>;

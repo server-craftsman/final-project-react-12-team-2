@@ -6,7 +6,7 @@ const Dashboard = () => {
       <Introduction />
       <LatestTransaction />
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

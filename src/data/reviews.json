@@ -1,144 +1,144 @@
 {
-    "reviews": [
-        {
-            "id": "1",
-            "course_id": "1",
-            "user_id": "1",
-            "rating": 4,
-            "comment": "Great course!",
-            "created_at": "2021-01-01",
-            "updated_at": "2021-01-01",
-            "is_deleted": false
-        },
-        {
-            "id": "2",
-            "course_id": "2",
-            "user_id": "2",
-            "rating": 5,
-            "comment": "Excellent course!",
-            "created_at": "2021-01-02",
-            "updated_at": "2021-01-02",
-            "is_deleted": false
-        },
-        {
-            "id": "3",
-            "course_id": "3",
-            "user_id": "3",
-            "rating": 3,
-            "comment": "Good course!",
-            "created_at": "2021-01-03",
-            "updated_at": "2021-01-03",
-            "is_deleted": false
-        },
-        {
-            "id": "4",
-            "course_id": "4",
-            "user_id": "4",
-            "rating": 2,
-            "comment": "Average course!",
-            "created_at": "2021-01-04",
-            "updated_at": "2021-01-04",
-            "is_deleted": false
-        },
-        {
-            "id": "5",
-            "course_id": "5",
-            "user_id": "5",
-            "rating": 1,
-            "comment": "Terrible course!",
-            "created_at": "2021-01-05",
-            "updated_at": "2021-01-05",
-            "is_deleted": false
-        },
-        {
-            "id": "6",
-            "course_id": "6",
-            "user_id": "6",
-            "rating": 3,
-            "comment": "Good course!",
-            "created_at": "2021-01-06",
-            "updated_at": "2021-01-06",
-            "is_deleted": false
-        },
-        {
-            "id": "7",
-            "course_id": "7",
-            "user_id": "7",
-            "rating": 2,
-            "comment": "Average course!",
-            "created_at": "2021-01-07",
-            "updated_at": "2021-01-07",
-            "is_deleted": false
-        },
-        {
-            "id": "8",
-            "course_id": "8",
-            "user_id": "8",
-            "rating": 1,
-            "comment": "Terrible course!",
-            "created_at": "2021-01-08",
-            "updated_at": "2021-01-08",
-            "is_deleted": false
-        },
-        {
-            "id": "9",
-            "course_id": "9",
-            "user_id": "9",
-            "rating": 4,
-            "comment": "Great course!",
-            "created_at": "2021-01-09",
-            "updated_at": "2021-01-09",
-            "is_deleted": false
-        },
-        {
-            "id": "10",
-            "course_id": "10",
-            "user_id": "10",
-            "rating": 5,
-            "comment": "Excellent course!",
-            "created_at": "2021-01-10",
-            "updated_at": "2021-01-10",
-            "is_deleted": false
-        },
-        {
-            "id": "11",
-            "course_id": "11",
-            "user_id": "11",
-            "rating": 3,
-            "comment": "Good course!",
-            "created_at": "2021-01-11",
-            "updated_at": "2021-01-11",
-            "is_deleted": false
-        },
-        {
-            "id": "12",
-            "course_id": "12",
-            "user_id": "12",
-            "rating": 2,
-            "comment": "Average course!",
-            "created_at": "2021-01-12",
-            "updated_at": "2021-01-12",
-            "is_deleted": false
-        },
-        {
-            "id": "13",
-            "course_id": "13",
-            "user_id": "13",
-            "rating": 1,
-            "comment": "Terrible course!",
-            "created_at": "2021-01-13",
-            "updated_at": "2021-01-13",
-            "is_deleted": false
-        },
-        {
-            "id": "14",
-            "course_id": "14",
-            "user_id": "14",
-            "rating": 4,
-            "comment": "Great course!",
-            "created_at": "2021-01-14",
-            "updated_at": "2021-01-14",
-            "is_deleted": false
-        }
-    ]
+  "reviews": [
+    {
+      "id": "1",
+      "course_id": "1",
+      "user_id": "1",
+      "rating": 4,
+      "comment": "Great course!",
+      "created_at": "2021-01-01",
+      "updated_at": "2021-01-01",
+      "is_deleted": false
+    },
+    {
+      "id": "2",
+      "course_id": "2",
+      "user_id": "2",
+      "rating": 5,
+      "comment": "Excellent course!",
+      "created_at": "2021-01-02",
+      "updated_at": "2021-01-02",
+      "is_deleted": false
+    },
+    {
+      "id": "3",
+      "course_id": "3",
+      "user_id": "3",
+      "rating": 3,
+      "comment": "Good course!",
+      "created_at": "2021-01-03",
+      "updated_at": "2021-01-03",
+      "is_deleted": false
+    },
+    {
+      "id": "4",
+      "course_id": "4",
+      "user_id": "4",
+      "rating": 2,
+      "comment": "Average course!",
+      "created_at": "2021-01-04",
+      "updated_at": "2021-01-04",
+      "is_deleted": false
+    },
+    {
+      "id": "5",
+      "course_id": "5",
+      "user_id": "5",
+      "rating": 1,
+      "comment": "Terrible course!",
+      "created_at": "2021-01-05",
+      "updated_at": "2021-01-05",
+      "is_deleted": false
+    },
+    {
+      "id": "6",
+      "course_id": "6",
+      "user_id": "6",
+      "rating": 3,
+      "comment": "Good course!",
+      "created_at": "2021-01-06",
+      "updated_at": "2021-01-06",
+      "is_deleted": false
+    },
+    {
+      "id": "7",
+      "course_id": "7",
+      "user_id": "7",
+      "rating": 2,
+      "comment": "Average course!",
+      "created_at": "2021-01-07",
+      "updated_at": "2021-01-07",
+      "is_deleted": false
+    },
+    {
+      "id": "8",
+      "course_id": "8",
+      "user_id": "8",
+      "rating": 1,
+      "comment": "Terrible course!",
+      "created_at": "2021-01-08",
+      "updated_at": "2021-01-08",
+      "is_deleted": false
+    },
+    {
+      "id": "9",
+      "course_id": "9",
+      "user_id": "9",
+      "rating": 4,
+      "comment": "Great course!",
+      "created_at": "2021-01-09",
+      "updated_at": "2021-01-09",
+      "is_deleted": false
+    },
+    {
+      "id": "10",
+      "course_id": "10",
+      "user_id": "10",
+      "rating": 5,
+      "comment": "Excellent course!",
+      "created_at": "2021-01-10",
+      "updated_at": "2021-01-10",
+      "is_deleted": false
+    },
+    {
+      "id": "11",
+      "course_id": "11",
+      "user_id": "11",
+      "rating": 3,
+      "comment": "Good course!",
+      "created_at": "2021-01-11",
+      "updated_at": "2021-01-11",
+      "is_deleted": false
+    },
+    {
+      "id": "12",
+      "course_id": "12",
+      "user_id": "12",
+      "rating": 2,
+      "comment": "Average course!",
+      "created_at": "2021-01-12",
+      "updated_at": "2021-01-12",
+      "is_deleted": false
+    },
+    {
+      "id": "13",
+      "course_id": "13",
+      "user_id": "13",
+      "rating": 1,
+      "comment": "Terrible course!",
+      "created_at": "2021-01-13",
+      "updated_at": "2021-01-13",
+      "is_deleted": false
+    },
+    {
+      "id": "14",
+      "course_id": "14",
+      "user_id": "14",
+      "rating": 4,
+      "comment": "Great course!",
+      "created_at": "2021-01-14",
+      "updated_at": "2021-01-14",
+      "is_deleted": false
+    }
+  ]
 }

@@ -1,6 +1,6 @@
-import React from 'react';
-import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
+import React from "react";
+import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 interface LoginGoogleProps {
   onLoginError: (error: string) => void;
 }
@@ -27,7 +27,8 @@ const LoginGoogle: React.FC<LoginGoogleProps> = ({ onLoginError }) => {
   };
 
   const onError = () => {
-    const errorMessage = "Google Login Failed. This may be due to ad-blocking or privacy protection software.";
+    const errorMessage =
+      "Google Login Failed. This may be due to ad-blocking or privacy protection software.";
     console.error(errorMessage);
     onLoginError(errorMessage + " (ERR_BLOCKED_BY_CLIENT)");
   };
@@ -37,7 +38,7 @@ const LoginGoogle: React.FC<LoginGoogleProps> = ({ onLoginError }) => {
       <GoogleLogin
         onSuccess={onSuccess}
         onError={onError}
-        useOneTap={false} 
+        useOneTap={false}
         auto_select={false}
         context="signin"
       />

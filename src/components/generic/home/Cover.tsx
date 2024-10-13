@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
-import { motion, useAnimation, useInView } from 'framer-motion';
-import courseMockup from '../../../assets/cover/tablet-showing-website.jpg';
-import mobileMockup from '../../../assets/cover/phone-mobile-app.jpg';
-import TextSlider from './TextSlider';
+import React, { useEffect, useRef } from "react";
+import { motion, useAnimation, useInView } from "framer-motion";
+import courseMockup from "../../../assets/cover/tablet-showing-website.jpg";
+import mobileMockup from "../../../assets/cover/phone-mobile-app.jpg";
+import TextSlider from "./TextSlider";
 
 const Cover: React.FC = () => {
   const controls = useAnimation();
@@ -11,7 +11,7 @@ const Cover: React.FC = () => {
 
   useEffect(() => {
     if (isInView) {
-      controls.start('visible');
+      controls.start("visible");
     }
   }, [controls, isInView]);
 
@@ -31,7 +31,7 @@ const Cover: React.FC = () => {
       y: 0,
       opacity: 1,
       transition: {
-        type: 'spring',
+        type: "spring",
         stiffness: 100,
       },
     },
@@ -43,69 +43,81 @@ const Cover: React.FC = () => {
       initial="hidden"
       animate={controls}
       variants={containerVariants}
-      className="bg-gradient-tone text-white min-h-screen flex items-center overflow-hidden w-full m-0 py-[120px]"
+      className="bg-gradient-tone m-0 flex min-h-screen w-full items-center overflow-hidden py-[120px] text-white"
     >
-      <div className="w-full px-6 relative z-10 flex flex-col lg:flex-row items-center justify-between">
+      <div className="relative z-10 flex w-full flex-col items-center justify-between px-6 lg:flex-row">
         {/* Left content */}
-        <motion.div variants={itemVariants} className="lg:w-1/2 text-center lg:text-left mb-12 lg:mb-0">
+        <motion.div
+          variants={itemVariants}
+          className="mb-12 text-center lg:mb-0 lg:w-1/2 lg:text-left"
+        >
           <motion.h1
             variants={itemVariants}
-            className="text-4xl md:text-6xl font-extrabold mb-6 bg-clip-text text-transparent text-white"
+            className="mb-6 bg-clip-text text-4xl font-extrabold text-transparent text-white md:text-6xl"
           >
             Learn With Edu Learn
           </motion.h1>
-          <div className="h-[1.5em] mb-6">
+          <div className="mb-6 h-[1.5em]">
             <TextSlider />
           </div>
-          <motion.h2 variants={itemVariants} className="text-3xl md:text-4xl font-bold mb-4">
+          <motion.h2
+            variants={itemVariants}
+            className="mb-4 text-3xl font-bold md:text-4xl"
+          >
             Expand Your Knowledge
           </motion.h2>
-          <motion.p variants={itemVariants} className="text-xl mb-8">
+          <motion.p variants={itemVariants} className="mb-8 text-xl">
             Access thousands of high-quality courses from expert instructors.
           </motion.p>
           <motion.button
             variants={itemVariants}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-gradient-to-r from-[#ffd700] to-[#ffa500] hover:from-[#ffcc00] hover:to-[#ff9500] text-indigo-900 font-bold py-3 px-8 rounded-full transition duration-300 shadow-lg hover:shadow-xl"
+            className="rounded-full bg-gradient-to-r from-[#ffd700] to-[#ffa500] px-8 py-3 font-bold text-indigo-900 shadow-lg transition duration-300 hover:from-[#ffcc00] hover:to-[#ff9500] hover:shadow-xl"
           >
             Explore Courses
           </motion.button>
-          
+
           {/* Trust badges */}
-          <motion.div variants={itemVariants} className="mt-12 flex flex-col sm:flex-row justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-8">
+          <motion.div
+            variants={itemVariants}
+            className="mt-12 flex flex-col justify-center space-y-4 sm:flex-row sm:space-x-8 sm:space-y-0 lg:justify-start"
+          >
             <motion.div
               whileHover={{ scale: 1.05 }}
-              className="flex items-center justify-center lg:justify-start bg-opacity-20 bg-white backdrop-filter backdrop-blur-lg rounded-lg p-3"
+              className="flex items-center justify-center rounded-lg bg-white bg-opacity-20 p-3 backdrop-blur-lg backdrop-filter lg:justify-start"
             >
-              <span className="text-[#ffd700] text-2xl mr-2">★★★★★</span>
+              <span className="mr-2 text-2xl text-[#ffd700]">★★★★★</span>
               <span>50,000+ Satisfied Students</span>
             </motion.div>
             <motion.div
               whileHover={{ scale: 1.05 }}
-              className="flex items-center justify-center lg:justify-start bg-opacity-20 bg-white backdrop-filter backdrop-blur-lg rounded-lg p-3"
+              className="flex items-center justify-center rounded-lg bg-white bg-opacity-20 p-3 backdrop-blur-lg backdrop-filter lg:justify-start"
             >
-              <span className="text-[#ffd700] text-2xl mr-2">🏆</span>
+              <span className="mr-2 text-2xl text-[#ffd700]">🏆</span>
               <span>Top-Rated Instructors</span>
             </motion.div>
           </motion.div>
         </motion.div>
-        
+
         {/* Right content - Course mockups */}
-        <motion.div variants={itemVariants} className="lg:w-1/2 relative mt-12 lg:mt-0">
-          <div className="relative w-full max-w-2xl mx-auto">
+        <motion.div
+          variants={itemVariants}
+          className="relative mt-12 lg:mt-0 lg:w-1/2"
+        >
+          <div className="relative mx-auto w-full max-w-2xl">
             {/* Desktop course mockup */}
             <motion.div
               whileHover={{ scale: 1.05 }}
-              transition={{ type: 'spring', stiffness: 300 }}
-              className="overflow-hidden rounded-lg shadow-2xl relative"
+              transition={{ type: "spring", stiffness: 300 }}
+              className="relative overflow-hidden rounded-lg shadow-2xl"
             >
               <img
                 src={courseMockup}
                 alt="Course on desktop"
-                className="w-full h-auto transition-transform duration-300 hover:scale-110 cursor-pointer"
+                className="h-auto w-full cursor-pointer transition-transform duration-300 hover:scale-110"
               />
-              <div className="absolute bottom-0 right-0 w-4 h-4 bg-gray-300 cursor-se-resize"></div>
+              <div className="absolute bottom-0 right-0 h-4 w-4 cursor-se-resize bg-gray-300"></div>
             </motion.div>
             {/* Mobile app mockup */}
             <motion.div
@@ -115,14 +127,14 @@ const Cover: React.FC = () => {
               transition={{
                 duration: 4,
                 repeat: Infinity,
-                repeatType: 'reverse',
+                repeatType: "reverse",
               }}
               className="absolute -bottom-7 -right-5 w-1/3 overflow-hidden"
             >
               <img
                 src={mobileMockup}
                 alt="Mobile app interface"
-                className="shadow-xl w-full h-auto border-1 border-white rounded-3xl"
+                className="border-1 h-auto w-full rounded-3xl border-white shadow-xl"
               />
             </motion.div>
           </div>

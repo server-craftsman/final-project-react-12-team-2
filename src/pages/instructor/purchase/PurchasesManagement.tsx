@@ -13,12 +13,13 @@ const PurchasesManagement: React.FC = () => {
     console.log("Request button clicked");
   };
 
-  const filteredData = purchasesData.filter((purchase) =>
-    purchase.purchase_no.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const filteredData = purchasesData.filter(
+    (purchase) =>
+      purchase.purchase_no.toLowerCase().includes(searchTerm.toLowerCase()) ||
       purchase.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
       purchase.price_paid.toString().includes(searchTerm) ||
       purchase.price.toString().includes(searchTerm) ||
-      purchase.discount.toString().includes(searchTerm)
+      purchase.discount.toString().includes(searchTerm),
   );
 
   return (

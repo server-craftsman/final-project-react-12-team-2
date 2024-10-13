@@ -6,7 +6,6 @@ export enum CourseStatusEnum {
   inactive = "inactive",
   new = "new",
   blocked = "blocked",
-
 }
 export interface Course {
   id: string;

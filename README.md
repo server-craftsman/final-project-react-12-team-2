@@ -3,6 +3,7 @@
 Edu Learn is a modern, feature-rich online learning platform built with React, TypeScript, and Vite. It offers a seamless experience for both students and instructors, with a focus on interactive learning and course management.
 
 ## Demo
+
 [![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://final-project-react-12-team-2.vercel.app/)
 
 ## Features

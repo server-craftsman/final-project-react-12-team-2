@@ -1,22 +1,22 @@
-import React, { useState } from 'react'
-import { Input } from 'antd'
+import React, { useState } from "react";
+import { Input } from "antd";
 
-const { Search } = Input
+const { Search } = Input;
 
 interface SearchSubscribeProps {
-  onSearch: (value: string) => void
+  onSearch: (value: string) => void;
 }
 
 const SearchSubscribe: React.FC<SearchSubscribeProps> = ({ onSearch }) => {
-  const [searchValue, setSearchValue] = useState('')
+  const [searchValue, setSearchValue] = useState("");
 
   const handleSearch = (value: string) => {
-    setSearchValue(value)
-    onSearch(value)
-  }
+    setSearchValue(value);
+    onSearch(value);
+  };
 
   return (
-    <div style={{ margin: '20px 0' }}>
+    <div style={{ margin: "20px 0" }}>
       <Search
         placeholder="Search by instructor name or email"
         allowClear
@@ -27,7 +27,7 @@ const SearchSubscribe: React.FC<SearchSubscribeProps> = ({ onSearch }) => {
         onSearch={handleSearch}
       />
     </div>
-  )
-}
+  );
+};
 
-export default SearchSubscribe
+export default SearchSubscribe;

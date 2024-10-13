@@ -8,7 +8,9 @@ const DetailsCategory = () => {
   const navigate = useNavigate(); // Use useNavigate instead
 
   // Fetch the category data based on the id
-  const category = categoriesData.categories.find((cat: { id: string }) => cat.id === id);
+  const category = categoriesData.categories.find(
+    (cat: { id: string }) => cat.id === id,
+  );
 
   if (!category) {
     return <div>Category not found.</div>;
@@ -69,13 +71,17 @@ const DetailsCategory = () => {
 
       <Button
         onClick={() => navigate(`/admin/edit-category/${id}`)}
-        className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white mr-3"
+        className="mr-3 bg-gradient-to-r from-indigo-600 to-indigo-800 text-white"
       >
         Edit
       </Button>
-      <Button className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white mr-3">Delete</Button>
+      <Button className="mr-3 bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
+        Delete
+      </Button>
       <Link to="/admin/categories">
-        <Button className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">Back To Categories</Button>
+        <Button className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
+          Back To Categories
+        </Button>
       </Link>
     </div>
   );

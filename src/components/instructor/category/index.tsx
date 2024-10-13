@@ -1,9 +1,5 @@
 const index = () => {
-  return (
-    <div>
-      Divide folder category
-    </div>
-  )
-}
+  return <div>Divide folder category</div>;
+};
 
-export default index
+export default index;

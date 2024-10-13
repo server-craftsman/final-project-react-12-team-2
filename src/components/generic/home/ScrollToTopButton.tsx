@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from 'antd';
-import { UpOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from "react";
+import { Button } from "antd";
+import { UpOutlined } from "@ant-design/icons";
 
 const ScrollToTopButton: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -16,13 +16,13 @@ const ScrollToTopButton: React.FC = () => {
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
   };
 
   useEffect(() => {
-    window.addEventListener('scroll', toggleVisibility);
-    return () => window.removeEventListener('scroll', toggleVisibility);
+    window.addEventListener("scroll", toggleVisibility);
+    return () => window.removeEventListener("scroll", toggleVisibility);
   }, []);
 
   if (!isVisible) {
@@ -37,13 +37,13 @@ const ScrollToTopButton: React.FC = () => {
       size="large"
       onClick={scrollToTop}
       style={{
-        position: 'fixed',
-        bottom: '20px',
-        right: '20px',
+        position: "fixed",
+        bottom: "20px",
+        right: "20px",
         zIndex: 1000,
-        backgroundColor: '#857aff',
-        color: 'white',
-        border: 'none',
+        backgroundColor: "#857aff",
+        color: "white",
+        border: "none",
       }}
     />
   );

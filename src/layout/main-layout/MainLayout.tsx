@@ -8,7 +8,7 @@ const StudentLayout = () => {
   const isHomePage = location.pathname === "/";
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex min-h-screen flex-col">
       <Navbar />
       {isHomePage && <Cover />}
       <main className={`container mx-auto flex-grow pt-[80px]`}>

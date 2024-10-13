@@ -1,4 +1,4 @@
-import { RouteObject } from 'react-router-dom'
+import { RouteObject } from "react-router-dom";
 import {
   MainLayout,
   homeRoute,
@@ -7,12 +7,12 @@ import {
   sessionDetailsRoute,
   lessonDetailsRoute,
   cartRoute,
-  aboutRoute
-} from '../../const/constCommon'
+  aboutRoute,
+} from "../../const/constCommon";
 
 const commonRoutes: RouteObject[] = [
   {
-    path: '/',
+    path: "/",
     element: <MainLayout />,
     children: [
       homeRoute,
@@ -21,9 +21,9 @@ const commonRoutes: RouteObject[] = [
       sessionDetailsRoute,
       lessonDetailsRoute,
       cartRoute,
-      aboutRoute
+      aboutRoute,
     ],
-  }
-]
+  },
+];
 
-export default commonRoutes
+export default commonRoutes;

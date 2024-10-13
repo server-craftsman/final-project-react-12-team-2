@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const InstructorSubscriber: React.FC = () => {
-    return (
-        <div>InstructorSubscriber</div>
-    )
-}
+  return <div>InstructorSubscriber</div>;
+};
 
-export default InstructorSubscriber
+export default InstructorSubscriber;

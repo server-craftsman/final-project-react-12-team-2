@@ -1,6 +1,6 @@
-import { Table, Typography } from 'antd';
-import { getOrderStatus } from '../../../utils/helper';
-import { courses } from '../../../data/courses.json';
+import { Table, Typography } from "antd";
+import { getOrderStatus } from "../../../utils/helper";
+import { courses } from "../../../data/courses.json";
 
 const recentOrderData = courses.map((course) => ({
   id: course.id,
@@ -16,55 +16,57 @@ const recentOrderData = courses.map((course) => ({
 
 const columns = [
   {
-    title: 'ID',
-    dataIndex: 'id',
-    key: 'id',
+    title: "ID",
+    dataIndex: "id",
+    key: "id",
     render: (text: string) => `#${text}`,
   },
   {
-    title: 'Course Name',
-    dataIndex: 'name',
-    key: 'name',
+    title: "Course Name",
+    dataIndex: "name",
+    key: "name",
   },
   {
-    title: 'Category ID',
-    dataIndex: 'category',
-    key: 'category',
+    title: "Category ID",
+    dataIndex: "category",
+    key: "category",
   },
   {
-    title: 'User ID',
-    dataIndex: 'user',
-    key: 'user',
+    title: "User ID",
+    dataIndex: "user",
+    key: "user",
   },
   {
-    title: 'Price',
-    dataIndex: 'price',
-    key: 'price',
+    title: "Price",
+    dataIndex: "price",
+    key: "price",
     render: (price: number) => `$${price.toFixed(2)}`,
   },
   {
-    title: 'Discount',
-    dataIndex: 'discount',
-    key: 'discount',
+    title: "Discount",
+    dataIndex: "discount",
+    key: "discount",
     render: (discount: string) => `${discount}%`,
   },
   {
-    title: 'Status',
-    dataIndex: 'status',
-    key: 'status',
+    title: "Status",
+    dataIndex: "status",
+    key: "status",
     render: (status: string) => getOrderStatus(status),
   },
   {
-    title: 'Created At',
-    dataIndex: 'createdAt',
-    key: 'createdAt',
+    title: "Created At",
+    dataIndex: "createdAt",
+    key: "createdAt",
   },
 ];
 
 const RecentOrder = () => {
   return (
-    <div className='bg-white px-4 pt-3 pb-4 rounded-sm border border-gray-200 flex-1'>
-      <Typography.Text strong className="text-gray-700">Recent Orders</Typography.Text>
+    <div className="flex-1 rounded-sm border border-gray-200 bg-white px-4 pb-4 pt-3">
+      <Typography.Text strong className="text-gray-700">
+        Recent Orders
+      </Typography.Text>
       <div className="mt-3">
         <Table
           columns={columns}

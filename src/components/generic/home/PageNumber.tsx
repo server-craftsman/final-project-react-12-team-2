@@ -1,5 +1,5 @@
-import { Pagination } from 'antd';
-import React from 'react';
+import { Pagination } from "antd";
+import React from "react";
 
 interface PageNumberProps {
   currentPage: number;
@@ -8,10 +8,15 @@ interface PageNumberProps {
   onChange: (page: number) => void;
 }
 
-const PageNumber: React.FC<PageNumberProps> = ({ currentPage, total, pageSize, onChange }) => {
+const PageNumber: React.FC<PageNumberProps> = ({
+  currentPage,
+  total,
+  pageSize,
+  onChange,
+}) => {
   return (
     <div>
-      <Pagination 
+      <Pagination
         current={currentPage}
         total={total}
         pageSize={pageSize}
@@ -19,13 +24,13 @@ const PageNumber: React.FC<PageNumberProps> = ({ currentPage, total, pageSize, o
         showSizeChanger={false}
         className="luxury-pagination"
         style={{
-          fontFamily: 'Playfair Display, serif',
-          fontSize: '16px',
-          color: '#4a4a4a',
+          fontFamily: "Playfair Display, serif",
+          fontSize: "16px",
+          color: "#4a4a4a",
         }}
       />
     </div>
-  )
-}
+  );
+};
 
-export default PageNumber
+export default PageNumber;

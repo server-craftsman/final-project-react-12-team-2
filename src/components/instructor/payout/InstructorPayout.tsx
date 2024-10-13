@@ -54,7 +54,11 @@ const InstructorPayout = () => {
 
   return (
     <div>
-      <Table columns={columns} dataSource={payoutData.payments as unknown as Payout[]} rowKey="id" />
+      <Table
+        columns={columns}
+        dataSource={payoutData.payments as unknown as Payout[]}
+        rowKey="id"
+      />
     </div>
   );
 };

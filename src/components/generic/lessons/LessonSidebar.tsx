@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button, Card, Progress, Divider, Typography } from 'antd';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import React from "react";
+import { Button, Card, Progress, Divider, Typography } from "antd";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 
@@ -30,38 +30,54 @@ const LessonSidebar: React.FC<LessonSidebarProps> = ({
   nextLesson,
 }) => {
   return (
-    <Card className="shadow-lg rounded-lg sticky top-8">
-      <Title level={4} className="mb-4">Course Progress</Title>
+    <Card className="sticky top-8 rounded-lg shadow-lg">
+      <Title level={4} className="mb-4">
+        Course Progress
+      </Title>
       <Progress percent={30} status="active" />
-      <Button type="primary" size="large" block className="mb-4 h-12 text-lg bg-[#1a237e] text-white hover:bg-[#1a237e] hover:text-white" onClick={onContinueLesson}>
+      <Button
+        type="primary"
+        size="large"
+        block
+        className="mb-4 h-12 bg-[#1a237e] text-lg text-white hover:bg-[#1a237e] hover:text-white"
+        onClick={onContinueLesson}
+      >
         Continue Lesson
       </Button>
       <Button size="large" block className="mb-6 h-12 text-lg">
         Mark as Complete
       </Button>
       <Divider />
-      <Title level={4} className="mb-4">Lesson Details:</Title>
-      <ul className="list-disc list-inside text-gray-600">
+      <Title level={4} className="mb-4">
+        Lesson Details:
+      </Title>
+      <ul className="list-inside list-disc text-gray-600">
         <li>Course: {course?.name}</li>
         <li>Session: {session?.name}</li>
         <li>Position: {lesson?.position_order}</li>
-        <li>Created: {new Date(lesson?.created_at || '').toLocaleDateString()}</li>
-        <li>Updated: {new Date(lesson?.updated_at || '').toLocaleDateString()}</li>
+        <li>
+          Created: {new Date(lesson?.created_at || "").toLocaleDateString()}
+        </li>
+        <li>
+          Updated: {new Date(lesson?.updated_at || "").toLocaleDateString()}
+        </li>
       </ul>
       <Divider />
-      <Title level={4} className="mb-4">Navigation Lesson</Title>
-      <div className="flex w-50 justify-between">
-        <Button 
-          type="default" 
+      <Title level={4} className="mb-4">
+        Navigation Lesson
+      </Title>
+      <div className="w-50 flex justify-between">
+        <Button
+          type="default"
           size="small"
-          className="flex-1 mr-1" 
+          className="mr-1 flex-1"
           onClick={onPreviousLesson}
           disabled={!previousLesson}
         >
           <LeftOutlined /> Previous
         </Button>
-        <Button 
-          type="primary" 
+        <Button
+          type="primary"
           size="small"
           className="flex-1"
           onClick={onNextLesson}

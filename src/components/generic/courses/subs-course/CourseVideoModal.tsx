@@ -1,8 +1,12 @@
-import React from 'react';
-import { Modal } from 'antd';
-import { CourseVideoModalProps } from '../../../../models/objects/course/CourseVideoModalProps';
+import React from "react";
+import { Modal } from "antd";
+import { CourseVideoModalProps } from "../../../../models/objects/course/CourseVideoModalProps";
 
-const CourseVideoModal: React.FC<CourseVideoModalProps> = ({ isModalVisible, handleCancel, videoId }) => {
+const CourseVideoModal: React.FC<CourseVideoModalProps> = ({
+  isModalVisible,
+  handleCancel,
+  videoId,
+}) => {
   return (
     <Modal
       title="Course Video"
@@ -18,7 +22,7 @@ const CourseVideoModal: React.FC<CourseVideoModalProps> = ({ isModalVisible, han
             height="100%"
             src={`https://www.youtube.com/embed/${videoId}`}
             title="Course Video"
-            style={{ border: 'none' }}
+            style={{ border: "none" }}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           ></iframe>

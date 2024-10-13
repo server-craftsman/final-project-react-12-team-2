@@ -8,18 +8,18 @@ const { Title } = Typography;
 
 const Profile = () => {
   const adminUser = usersData.users.find(
-    (user) => user.role === UserRole.ADMIN
+    (user) => user.role === UserRole.ADMIN,
   );
 
   const items = [
     {
-      label: 'Information',
-      key: '1',
+      label: "Information",
+      key: "1",
       children: <AdminInfo />,
     },
     {
-      label: 'Change Password',
-      key: '2',
+      label: "Change Password",
+      key: "2",
       children: (
         <ChangePasswordAdmin
           visible={true}
@@ -31,7 +31,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-5 md:p-10">
-      <div className="flex-col md:flex-row justify-between items-center">
+      <div className="flex-col items-center justify-between md:flex-row">
         <Title className="">Setting</Title>
         <Tabs defaultActiveKey="1" className="mt-4" items={items} />
       </div>

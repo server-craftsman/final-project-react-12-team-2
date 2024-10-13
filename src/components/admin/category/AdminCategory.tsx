@@ -25,7 +25,7 @@ const AdminCategory = () => {
         category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         category.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
-    }
+    },
   );
 
   const columns = [
@@ -68,7 +68,7 @@ const AdminCategory = () => {
           <Button
             type="primary"
             onClick={() => handleViewDetails(record.id)}
-            className="bg-gradient-tone  text-white"
+            className="bg-gradient-tone text-white"
           >
             View Details
           </Button>

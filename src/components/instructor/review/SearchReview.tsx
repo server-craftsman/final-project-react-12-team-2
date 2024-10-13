@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
-import { SearchReviewProps } from '../../../models/objects/SearchReviewProps';
+import { useState } from "react";
+import { Input } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
+import { SearchReviewProps } from "../../../models/objects/SearchReviewProps";
 
 const SearchReview: React.FC<SearchReviewProps> = ({ onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const term = e.target.value;

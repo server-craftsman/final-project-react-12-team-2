@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { useState, useEffect } from "react";
+import { Input } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 
 const SearchUser = ({ onSearch }: { onSearch: (query: string) => void }) => {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -20,7 +20,7 @@ const SearchUser = ({ onSearch }: { onSearch: (query: string) => void }) => {
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search user ..."
         suffix={<SearchOutlined />}
-        className="border rounded-md"
+        className="rounded-md border"
       />
     </div>
   );

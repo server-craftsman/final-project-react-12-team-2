@@ -7,15 +7,18 @@ interface SearchPurchaseProps {
   onRequest: () => void;
 }
 
-const SearchPurchase: React.FC<SearchPurchaseProps> = ({ onSearch, onRequest }) => {
+const SearchPurchase: React.FC<SearchPurchaseProps> = ({
+  onSearch,
+  onRequest,
+}) => {
   return (
-    <div className="flex items-center mb-5">
+    <div className="mb-5 flex items-center">
       <Search
         className="w-96"
         placeholder="Search by purchase number"
         onSearch={onSearch}
       />
-      <Button className="bg-gradient-tone text-white ml-8" onClick={onRequest}>
+      <Button className="bg-gradient-tone ml-8 text-white" onClick={onRequest}>
         Request
       </Button>
     </div>

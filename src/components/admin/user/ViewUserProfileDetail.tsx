@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Row, Col, Form, Input, Select, Popconfirm, Button } from 'antd';
-import { User, UserRole } from '../../../models/User';
-import usersData from '../../../data/users.json';
-import { HomeOutlined } from '@ant-design/icons';
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Row, Col, Form, Input, Select, Popconfirm, Button } from "antd";
+import { User, UserRole } from "../../../models/User";
+import usersData from "../../../data/users.json";
+import { HomeOutlined } from "@ant-design/icons";
 
 const ViewUserProfileDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -11,12 +11,12 @@ const ViewUserProfileDetail = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const userData = usersData.users.find(user => user.id === id);
+    const userData = usersData.users.find((user) => user.id === id);
     if (userData) {
       setUser({
         ...userData,
         role: userData.role as UserRole,
-        dob: new Date(userData.dob)
+        dob: new Date(userData.dob),
       });
     } else {
       setUser(null);
@@ -26,26 +26,32 @@ const ViewUserProfileDetail = () => {
   if (!user) {
     return <div>User not found</div>;
   }
-  const rolesToInclude = [UserRole.INSTRUCTOR, UserRole.ADMIN, UserRole.STUDENT];
+  const rolesToInclude = [
+    UserRole.INSTRUCTOR,
+    UserRole.ADMIN,
+    UserRole.STUDENT,
+  ];
 
   return (
-    <div className="max-w-2xl mx-auto p-5">
+    <div className="mx-auto max-w-2xl p-5">
       <Row gutter={16} align="middle">
-        <Col span={6} className="text-center pl-40">
+        <Col span={6} className="pl-40 text-center">
           <img
-            src={user.avatar_url || ''}
+            src={user.avatar_url || ""}
             alt={`${user.name}'s avatar`}
-            className="w-36 h-36 rounded-full mx-auto"
+            className="mx-auto h-36 w-36 rounded-full"
           />
           <h2 className="mt-2 text-lg font-semibold">{user.name}</h2>
           <div className="mt-4 flex justify-center">
             <Popconfirm
               title="Are you sure you want to delete this account?"
-              onConfirm={() => console.log('Account deleted')}
+              onConfirm={() => console.log("Account deleted")}
               okText="Yes"
               cancelText="No"
             >
-              <button className="bg-red-500 text-white px-4 py-2 rounded">Delete</button>
+              <button className="rounded bg-red-500 px-4 py-2 text-white">
+                Delete
+              </button>
             </Popconfirm>
           </div>
         </Col>
@@ -54,15 +60,16 @@ const ViewUserProfileDetail = () => {
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item label="Name">
-                  <Input value={user.name.split(' ')[0]} readOnly />
+                  <Input value={user.name.split(" ")[0]} readOnly />
                 </Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item label="Role">
                   <Select value={user.role}>
-                    {rolesToInclude.map(role => (
+                    {rolesToInclude.map((role) => (
                       <Select.Option key={role} value={role}>
-                        {role.charAt(0).toUpperCase() + role.slice(1).toLowerCase()}
+                        {role.charAt(0).toUpperCase() +
+                          role.slice(1).toLowerCase()}
                       </Select.Option>
                     ))}
                   </Select>
@@ -84,7 +91,7 @@ const ViewUserProfileDetail = () => {
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item label="Status">
-                  <Select value={user.status ? 'Active' : 'Inactive'}>
+                  <Select value={user.status ? "Active" : "Inactive"}>
                     <Select.Option value="Active">Active</Select.Option>
                     <Select.Option value="Inactive">Inactive</Select.Option>
                   </Select>
@@ -109,7 +116,11 @@ const ViewUserProfileDetail = () => {
           </Form>
         </Col>
       </Row>
-      <Button type="primary" icon={<HomeOutlined />} onClick={() => navigate('/admin/manage-user')}>
+      <Button
+        type="primary"
+        icon={<HomeOutlined />}
+        onClick={() => navigate("/admin/manage-user")}
+      >
         Back to Home
       </Button>
     </div>
