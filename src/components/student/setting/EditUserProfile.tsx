@@ -6,7 +6,7 @@ import usersData from "../../../data/users.json";
 import { Rule } from "antd/es/form";
 import moment from "moment";
 import { Editor } from "@tinymce/tinymce-react";
-import { TINY_API_KEY } from "../../../services/config/apiClientOfTiny";
+import { TINY_API_KEY } from "../../../services/config/apiClientTiny";
 
 const EditUserProfile = () => {
   const { id } = useParams<{ id: string }>();
