@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import React, { useState } from "react";
+import { Input } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 
 interface SearchProps {
   onSearch: (searchTerm: string) => void;
@@ -8,7 +8,11 @@ interface SearchProps {
   className?: string;
 }
 
-const CustomSearch: React.FC<SearchProps> = ({ onSearch, placeholder = "Search...", className }) => {
+const CustomSearch: React.FC<SearchProps> = ({
+  onSearch,
+  placeholder = "Search...",
+  className,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {

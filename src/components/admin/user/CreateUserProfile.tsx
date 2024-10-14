@@ -68,10 +68,10 @@ const CreateUserProfile = () => {
 
   const validateConfirmPassword = ({ getFieldValue }: any) => ({
     validator(_: any, value: string) {
-      if (!value || getFieldValue('password') === value) {
+      if (!value || getFieldValue("password") === value) {
         return Promise.resolve();
       }
-      return Promise.reject(new Error('The two passwords do not match!'));
+      return Promise.reject(new Error("The two passwords do not match!"));
     },
   });
 

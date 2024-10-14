@@ -132,7 +132,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
                 : "volcano"
           }
         >
-          {PayoutStatusEnum[status].toUpperCase()}
+          {PayoutStatusEnum[status.toLowerCase() as keyof typeof PayoutStatusEnum]}
         </Tag>
       ),
     },

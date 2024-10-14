@@ -32,7 +32,7 @@ const CoursesManagement = React.memo(() => {
   const handleBlock = (id: string) => {
     const updatedCourses = coursesData.map((course) => {
       if (course.id === id) {
-        return { ...course, status: CourseStatusEnum.blocked };
+        return { ...course, status: CourseStatusEnum.reject };
       }
       return course;
     });
@@ -82,15 +82,15 @@ const CoursesManagement = React.memo(() => {
         <span
           style={{
             color:
-              status === CourseStatusEnum.blocked
+              status === CourseStatusEnum.reject
                 ? "red"
                 : status === CourseStatusEnum.approve
                   ? "green"
                   : "black",
           }}
         >
-          {status === CourseStatusEnum.blocked
-            ? "Blocked"
+          {status === CourseStatusEnum.reject
+            ? "Reject"
             : getOrderStatus(status)}
         </span>
       ),

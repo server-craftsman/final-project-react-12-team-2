@@ -57,7 +57,7 @@ const AdminNavbar: React.FC = () => {
       key: "8",
       icon: <BookOutlined />,
       label: <Link to="/admin/courses-log">Course Log</Link>,
-    }
+    },
   ];
 
   return (
