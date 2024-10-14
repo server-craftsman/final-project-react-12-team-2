@@ -14,7 +14,7 @@ const SearchUser = ({ onSearch }: { onSearch: (query: string) => void }) => {
   }, [query, onSearch]);
 
   return (
-    <div className="mb-4 flex items-center">
+    <div className="mb-4 flex items-center justify-end">
       <Input
         value={query}
         onChange={(e) => setQuery(e.target.value)}
