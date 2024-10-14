@@ -75,7 +75,7 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({
       title: "Discount",
       dataIndex: "discount",
       key: "discount",
-      render: (money: number) => moneyFormat(money),
+      render: (money: number) => money + "%",
     },
 
     {
