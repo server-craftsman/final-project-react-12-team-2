@@ -1,9 +1,9 @@
 // models/Payment.ts
 export enum PayoutStatusEnum {
-  new,
-  request_payout,
-  completed,
-  rejected,
+  new = "NEW",
+  request_payout = "REQUEST_PAYOUT",
+  completed = "COMPLETED",
+  rejected = "REJECTED",
 }
 export interface Payout {
   id: string;

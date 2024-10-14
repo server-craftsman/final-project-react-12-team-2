@@ -1,8 +1,8 @@
-import { Button, Table } from "antd";
+import { Button, Table, Tag } from "antd";
 import payoutData from "../../../data/payouts.json";
 import { formatDate, moneyFormat } from "../../../utils/helper";
 import { Link } from "react-router-dom";
-import { Payout } from "../../../models/Payout";
+import { Payout, PayoutStatusEnum } from "../../../models/Payout";
 
 const InstructorPayout = () => {
   const columns = [
@@ -25,6 +25,35 @@ const InstructorPayout = () => {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      render: (status: string) => {
+        let color = "";
+        let text = "";
+
+        switch (status) {
+          case PayoutStatusEnum.new:
+            color = "blue";
+            text = "NEW";
+            break;
+          case PayoutStatusEnum.request_payout:
+            color = "orange";
+            text = "REQUEST_PAYOUT";
+            break;
+          case PayoutStatusEnum.completed:
+            color = "green";
+            text = "COMPLETED";
+            break;
+          case PayoutStatusEnum.rejected:
+            color = "red";
+            text = "REJECTED";
+            break;
+          default:
+            color = "gray";
+            text = "Unknown Status";
+            break;
+        }
+
+        return <Tag color={color}>{text}</Tag>;
+      },
     },
     {
       title: "Balance Origin",
