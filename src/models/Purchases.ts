@@ -1,7 +1,7 @@
 export enum PurchaseStatusEnum {
-  new,
-  request_paid,
-  completed,
+  new = "new",
+  request_paid = "request_paid",
+  completed = "completed",
 }
 
 export interface Purchases {

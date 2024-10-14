@@ -3,11 +3,11 @@ import { Layout, Menu } from "antd";
 import {
   BankOutlined,
   TeamOutlined,
-  BellOutlined,
   DashboardOutlined,
   SettingOutlined,
   FileTextOutlined,
   BookOutlined,
+  ShoppingCartOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import useResponsiveCollapse from "../../hooks/useResponsiveCollapse";
@@ -30,8 +30,8 @@ const AdminNavbar: React.FC = () => {
     },
     {
       key: "3",
-      icon: <BellOutlined />,
-      label: <Link to="/admin/orders">Orders</Link>,
+      icon: <ShoppingCartOutlined />,
+      label: <Link to="/admin/purchases-log">Purchases Log</Link>,
     },
     {
       key: "4",
@@ -53,11 +53,6 @@ const AdminNavbar: React.FC = () => {
       icon: <SettingOutlined />,
       label: <Link to="/admin/admin-info">Setting</Link>,
     },
-    {
-      key: "8",
-      icon: <SettingOutlined />,
-      label: <Link to="/admin/courses-log">Course Log</Link>,
-    }
   ];
 
   return (

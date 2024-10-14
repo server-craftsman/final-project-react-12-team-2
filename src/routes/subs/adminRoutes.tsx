@@ -34,7 +34,10 @@ const EditUserProfile = lazy(
 const EditCategory = lazy(
   () => import("../../components/admin/category/EditCategory"),
 );
-const CoursesLog = lazy(() => import("../../pages/admin/course-log/CoursesLog"));
+
+const PurchasesLog = lazy(
+  () => import("../../pages/admin/purchasesLog/PurchasesLogManagement"),
+)
 //==============================================================
 
 const adminRoutes: RouteObject[] = [
@@ -54,6 +57,7 @@ const adminRoutes: RouteObject[] = [
       { path: "edit-category/:id", element: <EditCategory /> },
       { path: "/admin/courses", element: <ManageCourses /> },
       { path: "/admin/courses/lessons", element: <LessonManagement /> },
+      { path: "/admin/purchases-log", element: <PurchasesLog /> },
       {
         path: "categories/details-category",
         element: <DetailsCategory />,
@@ -62,7 +66,6 @@ const adminRoutes: RouteObject[] = [
         path: "categories/categories-details/:id",
         element: <DetailsCategory />,
       },
-      { path: "courses-log", element: <CoursesLog /> },
     ],
   },
 ];

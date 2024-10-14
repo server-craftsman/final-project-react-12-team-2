@@ -1,4 +1,5 @@
-[
+{
+  "purchases": [
   {
     "id": "1",
     "purchase_no": "1",
@@ -120,3 +121,4 @@
     "is_deleted": false
   }
 ]
+}
