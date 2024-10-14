@@ -1,8 +1,9 @@
 import React from "react";
-import { Table } from "antd";
+import { Table, Tag } from "antd";
 import { Checkbox } from "antd";
 import SearchPurchase from "./SearchPurchase";
 import { formatDate, moneyFormat } from "../../../utils/helper";
+import { PurchaseStatusEnum } from "../../../models/Purchases";
 
 interface ViewPurchaseProps {
   filteredData: any[];
@@ -31,6 +32,32 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({
       title: "Status",
       dataIndex: "status",
       key: "status",
+      render: (status: string) => {
+        let color = "";
+        let text = "";
+
+        switch (status) {
+          case PurchaseStatusEnum.new:
+            color = "blue";
+            text = "new";
+            break;
+          case PurchaseStatusEnum.request_paid:
+            color = "orange";
+            text = "request_paid";
+            break;
+          case PurchaseStatusEnum.completed:
+            color = "green";
+            text = "completed";
+            break;
+
+          default:
+            color = "gray";
+            text = "Unknown Status";
+            break;
+        }
+
+        return <Tag color={color}>{text}</Tag>;
+      },
     },
     {
       title: "Price Paid",
