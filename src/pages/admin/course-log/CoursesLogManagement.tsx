@@ -5,12 +5,7 @@ import { Course } from "../../../models/Course";
 import coursesData from "../../../data/courses.json";
 import reviewsData from "../../../data/reviews.json";
 
-interface CoursesLogProps {
-  data: Course[];
-  searchTerm: string;
-}
-
-const CoursesLogManagement: React.FC<CoursesLogProps> = () => {
+const CoursesLogManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [data, setData] = useState<Course[]>([]);
 
