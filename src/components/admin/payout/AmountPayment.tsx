@@ -30,12 +30,12 @@ const AmountPayment: React.FC = () => {
   }, []);
 
   return (
-    <Row gutter={16}>
+    <Row gutter={2}>
       <Col
         span={10}
         style={{
           backgroundColor: "#f0f2f5",
-          padding: "20px",
+          padding: "25px",
           border: "1px solid #ccc",
           borderRadius: "8px",
         }}

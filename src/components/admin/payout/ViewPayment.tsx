@@ -7,9 +7,10 @@ import { moneyFormat } from "../../../utils/helper";
 
 interface ViewPaymentProps {
   searchQuery: string;
+  status: string; // Accepting status as a prop
 }
 
-const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
+const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status }) => {
   const mapStatusToEnum = (status: string): PayoutStatusEnum => {
     switch (status) {
       case "COMPLETED":
@@ -22,15 +23,9 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
         return PayoutStatusEnum.new;
     }
   };
-  const [payments, setPayments] = useState<Payout[]>(() =>
-    paymentsData.payments.map((payment) => ({
-      ...payment,
-      status: mapStatusToEnum(payment.status),
-    })),
-  );
-  const [selectedPayoutDetails, setSelectedPayoutDetails] = useState<unknown[]>(
-    [],
-  );
+
+  const [payments, setPayments] = useState<Payout[]>([]);
+  const [selectedPayoutDetails, setSelectedPayoutDetails] = useState<unknown[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
@@ -38,33 +33,30 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
       .filter(
         (payment) =>
           payment.payout_no.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          payment.instructor_id
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()),
+          payment.instructor_id.toLowerCase().includes(searchQuery.toLowerCase())
       )
       .map((payment) => ({
         ...payment,
         status: mapStatusToEnum(payment.status),
-      }));
+      }))
+      .filter((payment) => mapStatusToEnum(payment.status) === mapStatusToEnum(status)); // Filter by status
     setPayments(filteredPayments);
-  }, [searchQuery]);
+  }, [searchQuery, status]); // Add status to the dependency array
 
   const handleViewDetails = (payoutId: string) => {
-    const details = transactionsData.filter(
-      (detail) => detail.payout_id === payoutId,
-    );
+    const details = transactionsData.filter((detail) => detail.payout_id === payoutId);
     setSelectedPayoutDetails(details);
     setIsModalVisible(true);
   };
 
-  const handleApprove = (id: string, status: PayoutStatusEnum) => {
+  const handleApprove = (id: string, newStatus: PayoutStatusEnum) => {
     setPayments((prevPayments) =>
       prevPayments.map((payment) =>
-        payment.id === id ? { ...payment, status } : payment,
-      ),
+        payment.id === id ? { ...payment, status: newStatus } : payment
+      )
     );
     message.success(
-      `Payment ${status === PayoutStatusEnum.completed ? "completed" : "rejected"} successfully.`,
+      `Payment ${newStatus === PayoutStatusEnum.completed ? "completed" : "rejected"} successfully.`
     );
   };
 
@@ -114,14 +106,6 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      filters: [
-        { text: "COMPLETED", value: PayoutStatusEnum.completed },
-        { text: "REQUEST_PAYOUT", value: PayoutStatusEnum.request_payout },
-        { text: "REJECTED", value: PayoutStatusEnum.rejected },
-      ],
-      onFilter: (value: unknown, record: Payout) => {
-        return record.status === value;
-      },
       render: (status: PayoutStatusEnum) => (
         <Tag
           color={
@@ -146,30 +130,23 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
       title: "Action",
       key: "action",
       render: (_: unknown, record: Payout) => (
-        <div
-          className="flex items-center justify-between"
-          style={{ minHeight: "48px" }}
-        >
+        <div className="flex items-center justify-between" style={{ minHeight: "48px" }}>
           {record.status === PayoutStatusEnum.request_payout && (
             <>
               <button
-                onClick={() =>
-                  handleApprove(record.id, PayoutStatusEnum.completed)
-                }
+                onClick={() => handleApprove(record.id, PayoutStatusEnum.completed)}
                 className="rounded-md bg-blue-500 px-4 py-2 text-white"
                 style={{ width: "100px" }}
               >
                 Approve
               </button>
               <button
-                onClick={() =>
-                  handleApprove(record.id, PayoutStatusEnum.rejected)
-                }
+                onClick={() => handleApprove(record.id, PayoutStatusEnum.rejected)}
                 className="rounded-md bg-red-500 px-4 py-2 text-white ml-1"
                 style={{ width: "70px" }}
               >
                 Reject
-              </button>{" "}
+              </button>
             </>
           )}
         </div>
@@ -215,7 +192,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
   ];
 
   return (
-    <div className="p-4">
+    <div className="p-0">
       <Table<Payout>
         className="shadow-lg"
         columns={columns}
