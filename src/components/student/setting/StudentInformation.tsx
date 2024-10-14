@@ -1,3 +1,4 @@
+
 import usersData from "../../../data/users.json"; // Adjust the path as necessary
 import { UserRole } from "../../../models/User";
 import { Descriptions, Button } from "antd";
@@ -11,7 +12,7 @@ const StudentInformation = () => {
   );
 
   const handleEdit = () => {
-    navigate(`/student/edit-user/${studentUser?.id}`);
+    navigate(`/dashboard-student/student/edit-user/${studentUser?.id}`);
   };
 
   if (studentUser) {

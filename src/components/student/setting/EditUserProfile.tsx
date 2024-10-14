@@ -37,7 +37,7 @@ const EditUserProfile = () => {
   const handleFormSubmit = (values: unknown) => {
     console.log("Updated User Information:", values);
     message.success("Profile updated successfully");
-    navigate("/student/setting");
+    navigate("/dashboard-student/student-setting");
   };
 
   const validationRules = {
@@ -141,7 +141,7 @@ const EditUserProfile = () => {
               Update
             </Button>
             <Button
-              onClick={() => navigate("/admin/admin-info")}
+              onClick={() => navigate("/dashboard-student/student-setting")}
               className="ml-2"
             >
               Cancel

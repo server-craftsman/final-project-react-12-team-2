@@ -1,5 +1,6 @@
 import { lazy } from "react";
 import { RouteObject } from "react-router-dom";
+import EditUserProfile from "../../components/student/setting/EditUserProfile";
 
 //import lazy
 const DashboardStudent = lazy(
@@ -26,8 +27,10 @@ const studentRoutes: RouteObject[] = [
       { path: "student-setting", element: <Setting /> },
       { path: "student-orders", element: <OrderManagement /> },
       { path: "student-subscription", element: <SubscriptionManagement /> },
+      { path: "student/edit-user/:id", element: <EditUserProfile /> },
     ],
   },
+
 ];
 
 export default studentRoutes;
