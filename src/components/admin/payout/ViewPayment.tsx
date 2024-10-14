@@ -156,8 +156,8 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
                 onClick={() =>
                   handleApprove(record.id, PayoutStatusEnum.completed)
                 }
-                className="rounded-md bg-green-400 px-4 py-2 text-white"
-                style={{ width: "85px" }}
+                className="rounded-md bg-blue-500 px-4 py-2 text-white"
+                style={{ width: "100px" }}
               >
                 Approve
               </button>
@@ -165,8 +165,8 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery }) => {
                 onClick={() =>
                   handleApprove(record.id, PayoutStatusEnum.rejected)
                 }
-                className="rounded-md bg-red-400 px-4 py-2 text-white"
-                style={{ width: "85px" }}
+                className="rounded-md bg-red-500 px-4 py-2 text-white ml-1"
+                style={{ width: "70px" }}
               >
                 Reject
               </button>{" "}
