@@ -17,10 +17,12 @@ const ManageUser = () => {
   };
 
   return (
-    <div className="items-center justify-center border-b border-gray-300 p-4">
-      <CreateUserProfile />
+    <div className="items-center justify-center border-b border-gray-300">
+      <div className="flex flex-col md:flex-row items-center p-4">
       <SearchUser onSearch={handleSearch} />
-      <ViewUserProfile searchQuery={searchQuery} />
+      <CreateUserProfile />
+      </div>
+      <ViewUserProfile searchQuery={searchQuery}/>
     </div>
   );
 };
