@@ -65,14 +65,14 @@ const CreateUserProfile = () => {
     return Promise.resolve();
   };
 
-  const validateConfirmPassword = (_: any, value: string) => {
-    if (!value || value !== form.getFieldValue("password")) {
-      return Promise.reject(
-        new Error("The two passwords that you entered do not match!"),
-      );
-    }
-    return Promise.resolve();
-  };
+  const validateConfirmPassword = ({ getFieldValue }: any) => ({
+    validator(_: any, value: string) {
+      if (!value || getFieldValue('password') === value) {
+        return Promise.resolve();
+      }
+      return Promise.reject(new Error('The two passwords do not match!'));
+    },
+  });
 
   return (
     <div className="mb-4">
@@ -118,7 +118,7 @@ const CreateUserProfile = () => {
             label="Confirm Password"
             rules={[
               { required: true, message: "Please confirm the password!" },
-              { validator: validateConfirmPassword },
+              validateConfirmPassword,
             ]}
           >
             <Input.Password />
