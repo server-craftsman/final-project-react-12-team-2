@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Form, Input, Button, Modal } from "antd";
 import { Editor } from "@tinymce/tinymce-react";
+import { TINY_API_KEY } from "../../../services/config/apiClientTiny";
 
 const CreateUserProfile = () => {
   // const [form] = Form.useForm();
@@ -132,8 +133,8 @@ const CreateUserProfile = () => {
             ]}
           >
             <Editor
-              apiKey="ck3lwrqqoh4n7nuttaggpbfuwl9gx8ntcoo2zkfx7ms31hfr"
-              initialValue=""
+              apiKey={TINY_API_KEY}
+              initialValue="description"
               init={{
                 height: 300,
                 menubar: false,

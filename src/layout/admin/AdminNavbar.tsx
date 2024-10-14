@@ -53,6 +53,11 @@ const AdminNavbar: React.FC = () => {
       icon: <SettingOutlined />,
       label: <Link to="/admin/admin-info">Setting</Link>,
     },
+    {
+      key: "8",
+      icon: <SettingOutlined />,
+      label: <Link to="/admin/courses-log">Course Log</Link>,
+    }
   ];
 
   return (
