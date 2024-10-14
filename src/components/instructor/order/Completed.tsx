@@ -51,13 +51,13 @@ const Completed = ({ searchTerm }: { searchTerm: string }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    const completedOrders = purchases
+    const completedOrders = purchases.purchases
       .filter(
-        (purchase: any) =>
+        (purchase) =>
           purchase.status === "completed" && !purchase.is_deleted,
       )
       .map((purchase: any) => {
-        const cart = carts.find((cart: any) => cart.id === purchase.cart_id);
+        const cart = carts.carts.find((cart: any) => cart.id === purchase.cart_id);
         const course = courses.courses.find(
           (course: any) => course.id === cart?.course_id,
         );

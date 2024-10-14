@@ -46,7 +46,7 @@ const WaitingPaid = ({ searchTerm }: { searchTerm: string }) => {
 
   useEffect(() => {
     // Simulate data fetching and joining
-    const completedOrders = carts
+    const completedOrders = carts.carts
       .filter((cart: any) => cart.status === "waiting_paid" && !cart.is_deleted)
       .map((cart: any) => {
         const course = courses.courses.find(

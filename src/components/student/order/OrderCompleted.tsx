@@ -45,12 +45,12 @@ const OrderCompleted: React.FC<{ searchTerm: string }> = ({ searchTerm }) => {
     },
   ];
 
-  const dataSource = purchaseData
+  const dataSource = purchaseData.purchases
     .filter(
       (purchase) => purchase.status === PurchaseStatusEnum.completed.toString(),
     )
     .map((purchase) => {
-      const cart = cartData.find((cart) => cart.id === purchase.cart_id);
+      const cart = cartData.carts.find((cart) => cart.id === purchase.cart_id);
       const course = courseData.courses.find(
         (course) => course.id === cart?.course_id,
       );

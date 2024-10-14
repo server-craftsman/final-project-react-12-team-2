@@ -13,7 +13,7 @@ const PurchasesManagement: React.FC = () => {
     console.log("Request button clicked");
   };
 
-  const filteredData = purchasesData.filter(
+  const filteredData = purchasesData.purchases.filter(
     (purchase) =>
       purchase.purchase_no.toLowerCase().includes(searchTerm.toLowerCase()) ||
       purchase.status.toLowerCase().includes(searchTerm.toLowerCase()) ||

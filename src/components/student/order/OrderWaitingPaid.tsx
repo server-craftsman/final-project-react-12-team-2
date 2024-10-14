@@ -46,29 +46,29 @@ const OrderWaitingPaid: React.FC<{ searchTerm: string }> = ({ searchTerm }) => {
     },
   ];
 
-  const dataSource = purchaseData
+  const dataSource = purchaseData.purchases
     .filter(
-      (purchase) =>
+      (purchase: Record<string, unknown>) =>
         purchase.status === PurchaseStatusEnum.request_paid.toString(),
     )
-    .map((purchase) => {
-      const cart = cartData.find((cart) => cart.id === purchase.cart_id);
+    .map((purchase: Record<string, unknown>) => {
+      const cart = cartData.carts.find((cart) => cart.id === purchase.cart_id);
       const course = courseData.courses.find(
         (course) => course.id === cart?.course_id,
       );
-      const user = userData.users.find((user) => user.id === cart?.student_id);
+      const user = userData.users.find((user: Record<string, unknown>) => user.id === cart?.student_id);
       return {
         key: purchase.id,
         courseName: course?.name,
         purchasedNumber: purchase.purchase_no,
-        createdDate: purchase.created_at.toString(),
+        createdDate: purchase.created_at,
         studentName: user?.name,
         instructorName: user?.name,
         pricePaid: purchase.price_paid,
         discount: purchase.discount,
       };
     })
-    .filter((item) =>
+    .filter((item: Record<string, unknown>) =>
       Object.values(item).some((value) =>
         String(value).toLowerCase().includes(searchTerm.toLowerCase()),
       ),

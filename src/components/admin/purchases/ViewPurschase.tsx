@@ -24,7 +24,7 @@ const ViewPurchase = ({ searchQuery }: { searchQuery: string }) => {
     }
   };
 
-  const convertedPurchasesData = purchasesData.map((purchase) => ({
+  const convertedPurchasesData = purchasesData.purchases.map((purchase) => ({
     ...purchase,
     status: mapStatus(purchase.status), // Convert status to enum
     created_at: new Date(purchase.created_at),

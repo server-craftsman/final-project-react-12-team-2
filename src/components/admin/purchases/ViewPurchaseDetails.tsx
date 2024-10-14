@@ -6,12 +6,9 @@ import { HomeOutlined } from "@ant-design/icons";
 const ViewPurchaseDetails = () => {
   const { id } = useParams<{ id: string }>(); // Get ID from URL
 
-  const purchaseDetails = cartData.find((purchase) => purchase.id === id); // Find cart details by ID
+  const purchaseDetails = cartData.carts.find((purchase) => purchase.id === id); // Find cart details by ID
 
-  if (!purchaseDetails) {
-    return;
-  }
-
+  if(purchaseDetails){
   return (
     <div className="mx-auto max-w-2xl p-5">
       <Card
@@ -93,6 +90,9 @@ const ViewPurchaseDetails = () => {
       </Button>
     </div>
   );
+} else {
+  return <div>Purchase not found</div>;
+}
 };
 
 export default ViewPurchaseDetails;

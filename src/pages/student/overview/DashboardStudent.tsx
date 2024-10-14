@@ -7,7 +7,7 @@ const DashboardStudent = () => {
   const navigate = useNavigate(); // Hook for navigation
 
   // Count the total purchases
-  const totalPurchases = purchasesData.length;
+  const totalPurchases = purchasesData.purchases.length;
 
   // Count the total subscriptions
   const totalSubscriptions = subscriptionData.length;
