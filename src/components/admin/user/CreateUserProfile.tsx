@@ -76,7 +76,7 @@ const CreateUserProfile = () => {
   });
 
   return (
-    <div className="mb-4">
+    <div className="mb-3">
       <Button
         type="primary"
         onClick={showModal}
