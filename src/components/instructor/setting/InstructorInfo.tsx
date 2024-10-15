@@ -2,7 +2,7 @@ import usersData from "../../../data/users.json"; // Adjust the path as necessar
 import { UserRole } from "../../../models/User";
 import { Typography, Descriptions, Button } from "antd";
 import { useNavigate } from "react-router-dom";
-
+import { formatDate } from "../../../utils/helper";
 const { Title } = Typography;
 
 const InstructorInfo = () => {
@@ -22,9 +22,9 @@ const InstructorInfo = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-5 md:p-10">
+    <div className="min-h-screen bg-gray-100 md:p-10">
       <div className="flex-col items-center justify-between md:flex-row">
-        <Title className="">Setting</Title>
+        <Title className="text-2xl font-bold">Setting</Title>
 
         <Descriptions bordered column={1} className="mt-4">
           <Descriptions.Item label="Email" className="text-sm md:text-base">
@@ -64,13 +64,13 @@ const InstructorInfo = () => {
             label="Created At"
             className="text-sm md:text-base"
           >
-            {new Date(instructorUser.created_at).toLocaleString()}
+            {formatDate(new Date(instructorUser.created_at))}
           </Descriptions.Item>
           <Descriptions.Item
             label="Updated At"
             className="text-sm md:text-base"
           >
-            {new Date(instructorUser.updated_at).toLocaleString()}
+            {formatDate(new Date(instructorUser.updated_at))}
           </Descriptions.Item>
         </Descriptions>
         <Button
