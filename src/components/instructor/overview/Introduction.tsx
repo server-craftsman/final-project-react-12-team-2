@@ -10,8 +10,8 @@ const { Title } = Typography;
 
 const Introduction = () => {
   return (
-    <div className="p-6">
-      <Title level={2} className="mb-6">
+    <div className="pb-4">
+      <Title level={2} className="mb-6 text-4xl font-bold text-gold">
         Dashboard
       </Title>
       <Row gutter={[16, 16]}>

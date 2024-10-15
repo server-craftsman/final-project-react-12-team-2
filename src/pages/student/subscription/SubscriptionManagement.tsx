@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import StudentSubscription from "../../../components/student/subscription/StudentSubcription";
-import SearchSubscribe from "../../../components/student/subscription/SearchSubscribe";
+// import SearchSubscribe from "../../../components/student/subscription/SearchSubscribe";
+import CustomSearch from "../../../components/generic/search/CustomSearch";
 import { Subscriptions } from "../../../models/Subscriptions";
 import { UserRole } from "../../../models/User";
 import subscriptionData from "../../../data/subscriptions.json";
@@ -59,7 +60,11 @@ const SubscriptionManagement: React.FC = () => {
 
   return (
     <>
-      <SearchSubscribe onSearch={handleSearch} />
+      <CustomSearch
+        onSearch={handleSearch}
+        className="search-input"
+        placeholder="Search by course name or instructor..."
+      />
       <StudentSubscription
         subscriptions={subscriptionsWithUserData}
         users={data.users as unknown as User[]}
