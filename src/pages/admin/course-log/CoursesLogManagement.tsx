@@ -1,16 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import CoursesLog from '../../../components/admin/courses-log/CoursesLog';
-import CustomSearch from '../../../components/generic/search/CustomSearch';
-import { Course } from '../../../models/Course';
-import coursesData from '../../../data/courses.json';
-import reviewsData from '../../../data/reviews.json';
+import React, { useEffect, useState } from "react";
+import CoursesLog from "../../../components/admin/courses-log/CoursesLog";
+import CustomSearch from "../../../components/generic/search/CustomSearch";
+import { Course } from "../../../models/Course";
+import coursesData from "../../../data/courses.json";
+import reviewsData from "../../../data/reviews.json";
 
-interface CoursesLogProps {
-  data: Course[];
-  searchTerm: string;
-}
-
-const CoursesLogManagement: React.FC<CoursesLogProps> = () => {
+const CoursesLogManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [data, setData] = useState<Course[]>([]);
 
@@ -18,34 +13,34 @@ const CoursesLogManagement: React.FC<CoursesLogProps> = () => {
     const courses = coursesData.courses;
     const reviews = reviewsData.reviews;
 
-    const mergedData = courses.map(course => {
-      const review = reviews.find(r => r.course_id === course.id);
+    const mergedData = courses.map((course) => {
+      const review = reviews.find((r) => r.course_id === course.id);
       return {
         ...course,
         newStatus: course.status,
-        oldStatus: review ? 'Updated' : course.status,
-        comment: review ? review.comment : 'No comment',
+        oldStatus: review ? "Updated" : course.status,
+        comment: review ? review.comment : "No comment",
       };
     });
 
     // Filter courses based on the searchTerm
-    const filteredData = mergedData.filter(course =>
-      course.name.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredData = mergedData.filter((course) =>
+      course.name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
     setData(filteredData as Course[]);
   }, [searchTerm]); // Add searchTerm as a dependency
-  
+
   return (
     <div>
       <CustomSearch
-        className='mb-4'
-        placeholder='Search by course name'
+        className="mb-4"
+        placeholder="Search by course name"
         onSearch={(value) => setSearchTerm(value)}
       />
-      <CoursesLog data={data}/>
+      <CoursesLog data={data} />
     </div>
-  )
-}
+  );
+};
 
 export default CoursesLogManagement;

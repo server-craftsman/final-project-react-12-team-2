@@ -76,7 +76,7 @@ const ViewUserProfile = ({ searchQuery }: { searchQuery: string }) => {
   ];
 
   return (
-    <div className="p-4">
+    <div className="p-4 mb-64 -mt-3">
       <div className="mb-4">
         <Select
           placeholder="Select Role"

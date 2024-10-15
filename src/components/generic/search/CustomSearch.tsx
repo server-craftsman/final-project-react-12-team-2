@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Input } from 'antd';
-// import { SearchOutlined } from '@ant-design/icons';
 
 interface SearchProps {
   onSearch: (searchTerm: string) => void;

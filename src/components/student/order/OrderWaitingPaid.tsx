@@ -58,7 +58,9 @@ const OrderWaitingPaid: React.FC<{ searchTerm: string }> = ({ searchTerm }) => {
       const course = courseData.courses.find(
         (course) => course.id === cart?.course_id,
       );
-      const user = userData.users.find((user: Record<string, unknown>) => user.id === cart?.student_id);
+      const user = userData.users.find(
+        (user: Record<string, unknown>) => user.id === cart?.student_id,
+      );
       return {
         key: purchase.id,
         courseName: course?.name,

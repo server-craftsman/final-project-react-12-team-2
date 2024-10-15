@@ -2,117 +2,77 @@ import { PureComponent } from "react";
 import {
   BarChart,
   Bar,
-  Rectangle,
   CartesianGrid,
+  XAxis,
+  YAxis,
   Tooltip,
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import payouts from "../../../data/payouts.json"; // Assuming the payouts.json is in the same directory
+import { Payout } from "../../../models/Payout";
 
-const data = [
-  {
-    name: "T1",
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
-  },
-  {
-    name: "T2",
-    uv: 3000,
-    pv: 1398,
-    amt: 2210,
-  },
-  {
-    name: "T3",
-    uv: 2000,
-    pv: 9800,
-    amt: 2290,
-  },
-  {
-    name: "T4",
-    uv: 2780,
-    pv: 3908,
-    amt: 2000,
-  },
-  {
-    name: "T5",
-    uv: 1890,
-    pv: 4800,
-    amt: 2181,
-  },
-  {
-    name: "T6",
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
-  },
-  {
-    name: "T7",
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-  {
-    name: "T8",
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-  {
-    name: "T9",
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-  {
-    name: "T10",
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-  {
-    name: "T11",
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-  {
-    name: "T12",
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-];
+// Function to group payouts by month and calculate totals
+const groupByMonth = (payments: Payout[]) => {
+  const groupedData: { [key: string]: { balance_origin: number; balance_instructor_received: number } } = {};
+
+  payments.forEach((payment) => {
+    const date = new Date(payment.created_at);
+    const month = `${date.getFullYear()}-${date.getMonth() + 1}`; // Format: YYYY-MM
+
+    if (!groupedData[month]) {
+      groupedData[month] = { balance_origin: 0, balance_instructor_received: 0 };
+    }
+
+    groupedData[month].balance_origin += payment.balance_origin;
+    groupedData[month].balance_instructor_received += payment.balance_instructor_received;
+  });
+
+  // Convert grouped data to array format for chart
+  const dataArray = Object.entries(groupedData).map(([name, values]) => ({
+    name,
+    balance_origin: values.balance_origin,
+    balance_instructor_received: values.balance_instructor_received,
+  }));
+
+  // Sort the dataArray by month (ascending order)
+  return dataArray.sort((a, b) => {
+    const [yearA, monthA] = a.name.split("-");
+    const [yearB, monthB] = b.name.split("-");
+    return new Date(Number(yearA), Number(monthA) - 1).getTime() - new Date(Number(yearB), Number(monthB) - 1).getTime();
+  });
+};
+
+// Access the payments array correctly from the payouts object
+const data = groupByMonth(payouts.payments as Payout[]);
 
 export default class Example extends PureComponent {
-  static demoUrl = "https://codesandbox.io/p/sandbox/simple-bar-chart-72d7y5";
-
   render() {
     return (
-      <ResponsiveContainer width="94%" height="94%">
+      <ResponsiveContainer width="100%" height={500}>
         <BarChart
-          width={500}
-          height={300}
           data={data}
           margin={{
-            top: 10,
+            top: 20,
             right: 30,
             left: 20,
             bottom: 5,
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" label={{ value: 'Month', position: 'insideBottom', offset: -5 }} />
+          <YAxis label={{ value: 'Amount', angle: -90, position: 'insideLeft' }} />
           <Tooltip />
           <Legend />
           <Bar
-            dataKey="pv"
-            fill="blue"
-            activeBar={<Rectangle fill="pink" stroke="blue" />}
+            dataKey="balance_origin"
+            fill="green"
+            name="Balance Origin"
           />
           <Bar
-            dataKey="uv"
-            fill="green"
-            activeBar={<Rectangle fill="gold" stroke="purple" />}
+            dataKey="balance_instructor_received"
+            fill="blue"
+            name="Instructor Received"
           />
         </BarChart>
       </ResponsiveContainer>
