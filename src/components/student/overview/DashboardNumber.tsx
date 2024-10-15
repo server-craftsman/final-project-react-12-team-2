@@ -1,4 +1,8 @@
-import { DollarOutlined, UserAddOutlined, BookOutlined } from "@ant-design/icons";
+import {
+  DollarOutlined,
+  UserAddOutlined,
+  BookOutlined,
+} from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import purchasesData from "../../../data/purchases.json"; // Adjust the path as necessary
 import subscriptionData from "../../../data/subscriptions.json";
@@ -47,7 +51,6 @@ const DashboardNumber = () => {
               <DollarOutlined /> Purchased Courses
             </h1>
             <p className="text-3xl font-bold">{totalPurchases}</p>
-           
           </div>
         </div>
 

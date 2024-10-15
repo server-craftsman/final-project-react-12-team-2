@@ -80,7 +80,7 @@ const CreateUserProfile = () => {
       <Button
         type="primary"
         onClick={showModal}
-        className="bg-gradient-tone text-white ml-4"
+        className="bg-gradient-tone ml-4 text-white"
       >
         Create User
       </Button>

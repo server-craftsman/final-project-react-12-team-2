@@ -2,13 +2,13 @@ import { lazy, Suspense, useState } from "react";
 import { Tabs } from "antd";
 
 const SearchPayment = lazy(
-  () => import("../../../components/admin/payout/SearchPayment")
+  () => import("../../../components/admin/payout/SearchPayment"),
 );
 const AmountPayment = lazy(
-  () => import("../../../components/admin/payout/AmountPayment")
+  () => import("../../../components/admin/payout/AmountPayment"),
 );
 const ViewPayment = lazy(
-  () => import("../../../components/admin/payout/ViewPayment")
+  () => import("../../../components/admin/payout/ViewPayment"),
 );
 
 const ManagePayment: React.FC = () => {

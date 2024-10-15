@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import DashboardNumber from "../../../components/student/overview/DashboardNumber";
 
 const DashboardStudent: React.FC = () => {
@@ -7,6 +7,6 @@ const DashboardStudent: React.FC = () => {
       <DashboardNumber />
     </div>
   );
-}
+};
 
-export default DashboardStudent
+export default DashboardStudent;

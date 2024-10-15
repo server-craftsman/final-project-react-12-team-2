@@ -14,18 +14,27 @@ import { Payout } from "../../../models/Payout";
 
 // Function to group payouts by month and calculate totals
 const groupByMonth = (payments: Payout[]) => {
-  const groupedData: { [key: string]: { balance_origin: number; balance_instructor_received: number } } = {};
+  const groupedData: {
+    [key: string]: {
+      balance_origin: number;
+      balance_instructor_received: number;
+    };
+  } = {};
 
   payments.forEach((payment) => {
     const date = new Date(payment.created_at);
     const month = `${date.getFullYear()}-${date.getMonth() + 1}`; // Format: YYYY-MM
 
     if (!groupedData[month]) {
-      groupedData[month] = { balance_origin: 0, balance_instructor_received: 0 };
+      groupedData[month] = {
+        balance_origin: 0,
+        balance_instructor_received: 0,
+      };
     }
 
     groupedData[month].balance_origin += payment.balance_origin;
-    groupedData[month].balance_instructor_received += payment.balance_instructor_received;
+    groupedData[month].balance_instructor_received +=
+      payment.balance_instructor_received;
   });
 
   // Convert grouped data to array format for chart
@@ -39,7 +48,10 @@ const groupByMonth = (payments: Payout[]) => {
   return dataArray.sort((a, b) => {
     const [yearA, monthA] = a.name.split("-");
     const [yearB, monthB] = b.name.split("-");
-    return new Date(Number(yearA), Number(monthA) - 1).getTime() - new Date(Number(yearB), Number(monthB) - 1).getTime();
+    return (
+      new Date(Number(yearA), Number(monthA) - 1).getTime() -
+      new Date(Number(yearB), Number(monthB) - 1).getTime()
+    );
   });
 };
 
@@ -60,15 +72,16 @@ export default class Example extends PureComponent {
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="name" label={{ value: 'Month', position: 'insideBottom', offset: -5 }} />
-          <YAxis label={{ value: 'Amount', angle: -90, position: 'insideLeft' }} />
+          <XAxis
+            dataKey="name"
+            label={{ value: "Month", position: "insideBottom", offset: -5 }}
+          />
+          <YAxis
+            label={{ value: "Amount", angle: -90, position: "insideLeft" }}
+          />
           <Tooltip />
           <Legend />
-          <Bar
-            dataKey="balance_origin"
-            fill="green"
-            name="Balance Origin"
-          />
+          <Bar dataKey="balance_origin" fill="green" name="Balance Origin" />
           <Bar
             dataKey="balance_instructor_received"
             fill="blue"

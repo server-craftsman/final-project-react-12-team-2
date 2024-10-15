@@ -59,7 +59,14 @@ const AmountPayment: React.FC = () => {
               <DollarCircleOutlined style={{ marginRight: 8 }} />
               Total Payment
             </Title>
-            <h1 style={{ textAlign: "center", marginTop: "10px", padding: "10px", fontSize:"30px" }}>
+            <h1
+              style={{
+                textAlign: "center",
+                marginTop: "10px",
+                padding: "10px",
+                fontSize: "30px",
+              }}
+            >
               <strong>{totalPayment}</strong>
             </h1>
           </Col>
@@ -78,7 +85,14 @@ const AmountPayment: React.FC = () => {
               <CheckCircleOutlined style={{ marginRight: 8 }} />
               Instructor Received (Completed)
             </Title>
-            <h1 style={{ textAlign: "center", marginTop: "10px", padding: "10px", fontSize:"30px" }}>
+            <h1
+              style={{
+                textAlign: "center",
+                marginTop: "10px",
+                padding: "10px",
+                fontSize: "30px",
+              }}
+            >
               <strong>{completedInstructorPayment}</strong>
             </h1>
           </Col>

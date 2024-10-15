@@ -9,7 +9,7 @@
 
 /* Search input */
 .search-input {
-  @apply mb-4 text-2xl w-1/4;
+  @apply mb-4 w-1/4 text-2xl;
 }
 
 /* Float animation */
