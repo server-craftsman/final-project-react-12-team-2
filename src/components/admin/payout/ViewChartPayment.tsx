@@ -3,8 +3,6 @@ import {
   BarChart,
   Bar,
   CartesianGrid,
-  XAxis,
-  YAxis,
   Tooltip,
   Legend,
   ResponsiveContainer,
@@ -72,13 +70,6 @@ export default class Example extends PureComponent {
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="name"
-            label={{ value: "Month", position: "insideBottom", offset: -5 }}
-          />
-          <YAxis
-            label={{ value: "Amount", angle: -90, position: "insideLeft" }}
-          />
           <Tooltip />
           <Legend />
           <Bar dataKey="balance_origin" fill="green" name="Balance Origin" />

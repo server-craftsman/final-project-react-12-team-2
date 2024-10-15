@@ -1,12 +1,16 @@
 import { lazy, Suspense, useState } from "react";
 import { Tabs } from "antd";
 
-const SearchPayment = lazy(
-  () => import("../../../components/admin/payout/SearchPayment"),
+// const SearchPayment = lazy(
+//   () => import("../../../components/admin/payout/SearchPayment"),
+// );
+
+const CustomSearch = lazy(
+  () => import("../../../components/generic/search/CustomSearch"),
 );
-const AmountPayment = lazy(
-  () => import("../../../components/admin/payout/AmountPayment"),
-);
+// const AmountPayment = lazy(
+//   () => import("../../../components/admin/payout/AmountPayment"),
+// );
 const ViewPayment = lazy(
   () => import("../../../components/admin/payout/ViewPayment"),
 );
@@ -50,12 +54,10 @@ const ManagePayment: React.FC = () => {
 
   return (
     <div className="w-full flex-col gap-4">
-      <Suspense fallback={<div>Loading Search...</div>}>
-        <SearchPayment onSearch={handleSearch} />
-      </Suspense>
-      <Suspense fallback={<div>Loading Amount...</div>}>
+      <CustomSearch onSearch={handleSearch} placeholder="Search Payment" className="search-input" />
+      {/* <Suspense fallback={<div>Loading Amount...</div>}>
         <AmountPayment />
-      </Suspense>
+      </Suspense> */}
       <Tabs defaultActiveKey="1" items={items} />
     </div>
   );

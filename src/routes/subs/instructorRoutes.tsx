@@ -25,6 +25,10 @@ const OrderPage = lazy(() => import("../../pages/instructor/order/OrderPage"));
 const SubscriptionPage = lazy(
   () => import("../../pages/instructor/subscription/SubscriptionPage"),
 );
+const ViewTransactions = lazy(
+  () => import("../../components/instructor/payout/ViewTransactions"),
+);
+
 
 //==============================================================
 
@@ -41,6 +45,7 @@ const instructorRoutes: RouteObject[] = [
       { path: "reviews/:courseId", element: <ReviewsDetail /> },
       { path: "purchases", element: <Purchases /> },
       { path: "payout", element: <ManagePayout /> },
+      { path: "payout/view-transactions/:id", element: <ViewTransactions /> },
       { path: "orders", element: <OrderPage /> },
       { path: "subscription", element: <SubscriptionPage /> },
     ],

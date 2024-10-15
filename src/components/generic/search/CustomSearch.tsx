@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { Input } from "antd";
 
 interface SearchProps {
@@ -14,16 +14,21 @@ const CustomSearch: React.FC<SearchProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchTerm(value);
-    onSearch(value);
-  };
+  const handleSearch = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setSearchTerm(value);
+      onSearch(value);
+    },
+    [onSearch]
+  );
+
+  const memoizedPlaceholder = useMemo(() => `🔍 ${placeholder}`, [placeholder]);
 
   return (
     <div className={className}>
       <Input
-        placeholder={`🔍 ${placeholder}`}
+        placeholder={memoizedPlaceholder}
         value={searchTerm}
         onChange={handleSearch}
       />
@@ -31,4 +36,4 @@ const CustomSearch: React.FC<SearchProps> = ({
   );
 };
 
-export default CustomSearch;
+export default React.memo(CustomSearch);
