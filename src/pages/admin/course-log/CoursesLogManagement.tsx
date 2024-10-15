@@ -6,7 +6,7 @@ import { Course } from "../../../models/Course";
 import coursesData from "../../../data/courses.json";
 import reviewsData from "../../../data/reviews.json";
 import { Content } from "antd/es/layout/layout";
-import { Card, Space } from "antd";
+import { Card } from "antd";
 
 const CoursesLogManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");

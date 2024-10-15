@@ -1,4 +1,4 @@
-import { Table, Input, Space, Modal, message } from "antd";
+import { Table, Space, Modal, message } from "antd";
 import { useState } from "react";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import categoriesData from "../../../data/categories.json";
