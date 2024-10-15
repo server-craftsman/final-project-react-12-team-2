@@ -8,6 +8,7 @@ import {
   FileTextOutlined,
   BookOutlined,
   ShoppingCartOutlined,
+  ClockCircleOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import useResponsiveCollapse from "../../hooks/useResponsiveCollapse";
@@ -30,7 +31,7 @@ const AdminNavbar: React.FC = () => {
     },
     {
       key: "3",
-      icon: <TeamOutlined />,
+      icon: <ClockCircleOutlined />,
       label: <Link to="/admin/request-account">Request Account</Link>,
     },
     {

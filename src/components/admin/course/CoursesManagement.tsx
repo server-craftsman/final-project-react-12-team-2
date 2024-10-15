@@ -1,21 +1,14 @@
 import React, { useState } from "react";
-import { getOrderStatus, moneyFormat } from "../../../utils/helper";
-import { Button, Input, message, Popconfirm, Table } from "antd";
+import { moneyFormat, formatDate } from "../../../utils/helper";
+import { courseStatusColor } from "../../../utils/courseStatus";
+import { message, Popconfirm, Table } from "antd";
+import { CheckOutlined, StopOutlined } from "@ant-design/icons";
 import courseData from "../../../data/courses.json";
 import { Course, CourseStatusEnum } from "../../../models/Course"; // Import the Course model
 
-const CoursesManagement = React.memo(() => {
+const CoursesManagement: React.FC<{ searchTerm: string; statusFilter: CourseStatusEnum | '' }> = ({ searchTerm, statusFilter }) => {
   const [coursesData, setCourses] = useState<Course[]>(
     courseData.courses as unknown as Course[],
-  );
-  const [searchTerm, setSearchTerm] = useState<string>("");
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const filteredCourses = coursesData.filter((course) =>
-    course.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const handleApprove = (id: string) => {
@@ -53,16 +46,6 @@ const CoursesManagement = React.memo(() => {
       key: "name",
     },
     {
-      title: "Category",
-      dataIndex: "category_id",
-      key: "category_id",
-    },
-    {
-      title: "User ID",
-      dataIndex: "user_id",
-      key: "user_id",
-    },
-    {
       title: "Price",
       dataIndex: "price",
       key: "price",
@@ -79,19 +62,10 @@ const CoursesManagement = React.memo(() => {
       dataIndex: "status",
       key: "status",
       render: (status: CourseStatusEnum) => (
-        <span
-          style={{
-            color:
-              status === CourseStatusEnum.reject
-                ? "red"
-                : status === CourseStatusEnum.approve
-                  ? "green"
-                  : "black",
-          }}
-        >
+        <span className={courseStatusColor(status)}>
           {status === CourseStatusEnum.reject
             ? "Reject"
-            : getOrderStatus(status)}
+            : status}
         </span>
       ),
     },
@@ -99,19 +73,17 @@ const CoursesManagement = React.memo(() => {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
+      render: (date: string) => formatDate(new Date(date)),
     },
     {
       title: "Action",
       key: "action",
       render: (record: Course) => (
         <div>
-          <Button
-            type="primary"
+          <CheckOutlined
+            style={{ color: "green", marginRight: 8, cursor: "pointer" }}
             onClick={() => handleApprove(record.id)}
-            style={{ marginRight: 8 }}
-          >
-            Approve
-          </Button>
+          />
           <Popconfirm
             title="Block the course?"
             description="Are you sure to block this course?"
@@ -119,25 +91,23 @@ const CoursesManagement = React.memo(() => {
             okText="Yes"
             cancelText="No"
           >
-            <Button danger>Block</Button>
+            <StopOutlined style={{ color: "red", cursor: "pointer" }} />
           </Popconfirm>
         </div>
       ),
     },
   ];
 
-  return (
-    <div>
-      <Input.Search
-        placeholder="Search course name"
-        allowClear
-        value={searchTerm}
-        onChange={handleSearchChange}
-        style={{ width: 300, marginBottom: 16 }}
-      />
-      <Table columns={columns} dataSource={filteredCourses} rowKey="id" />
-    </div>
+  const filteredCourses = coursesData.filter(course =>
+    course.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (statusFilter === '' || course.status === statusFilter) 
   );
-});
+
+  return (
+    <>
+      <Table columns={columns} dataSource={filteredCourses} rowKey="id" />
+    </>
+  );
+};
 
 export default CoursesManagement;
