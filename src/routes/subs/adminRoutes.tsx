@@ -45,6 +45,9 @@ const CoursesLog = lazy(
 const SubscriptionPage = lazy(
   () => import("../../pages/instructor/subscription/SubscriptionPage"),
 );
+const RequestAccountManagement = lazy(
+  () => import("../../pages/admin/request-account/RequestAccountManagement"),
+);
 //==============================================================
 
 const adminRoutes: RouteObject[] = [
@@ -75,6 +78,7 @@ const adminRoutes: RouteObject[] = [
       },
       { path: "/admin/courses-log", element: <CoursesLog /> },
       { path: "/admin/subscription", element: <SubscriptionPage /> },
+      { path: "/admin/request-account", element: <RequestAccountManagement /> },
     ],
   },
 ];

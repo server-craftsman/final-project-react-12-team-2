@@ -30,8 +30,8 @@ const AdminNavbar: React.FC = () => {
     },
     {
       key: "3",
-      icon: <ShoppingCartOutlined />,
-      label: <Link to="/admin/purchases-log">Purchases Log</Link>,
+      icon: <TeamOutlined />,
+      label: <Link to="/admin/request-account">Request Account</Link>,
     },
     {
       key: "4",
@@ -48,15 +48,21 @@ const AdminNavbar: React.FC = () => {
       icon: <BankOutlined />,
       label: <Link to="/admin/payout">Payout Management</Link>,
     },
+   
     {
       key: "7",
-      icon: <SettingOutlined />,
-      label: <Link to="/admin/admin-info">Setting</Link>,
+      icon: <BookOutlined />,
+      label: <Link to="/admin/courses-log">Courses Log</Link>,
     },
     {
       key: "8",
-      icon: <BookOutlined />,
-      label: <Link to="/admin/courses-log">Course Log</Link>,
+      icon: <ShoppingCartOutlined />,
+      label: <Link to="/admin/purchases-log">Purchases Log</Link>,
+    },
+    {
+      key: "9",
+      icon: <SettingOutlined />,
+      label: <Link to="/admin/admin-info">Setting</Link>,
     },
   ];
 
