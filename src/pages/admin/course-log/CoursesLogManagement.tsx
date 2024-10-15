@@ -4,6 +4,8 @@ import CustomSearch from "../../../components/generic/search/CustomSearch";
 import { Course } from "../../../models/Course";
 import coursesData from "../../../data/courses.json";
 import reviewsData from "../../../data/reviews.json";
+import { Content } from "antd/es/layout/layout";
+import { Card } from "antd";
 
 const CoursesLogManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -32,14 +34,16 @@ const CoursesLogManagement: React.FC = () => {
   }, [searchTerm]); // Add searchTerm as a dependency
 
   return (
-    <div>
+    <Content>
+      <Card>
       <CustomSearch
-        className="mb-4"
+        className="search-input mb-4"
         placeholder="Search by course name"
         onSearch={(value) => setSearchTerm(value)}
-      />
-      <CoursesLog data={data} />
-    </div>
+        />
+        <CoursesLog data={data} />
+      </Card>
+    </Content>
   );
 };
 

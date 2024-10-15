@@ -1,5 +1,6 @@
 import { lazy, Suspense, useState } from "react";
-import { Tabs } from "antd";
+import { Card, Tabs } from "antd";
+import { Content } from "antd/es/layout/layout";
 
 // const SearchPayment = lazy(
 //   () => import("../../../components/admin/payout/SearchPayment"),
@@ -53,13 +54,15 @@ const ManagePayment: React.FC = () => {
   ];
 
   return (
-    <div className="w-full flex-col gap-4">
-      <CustomSearch onSearch={handleSearch} placeholder="Search Payment" className="search-input" />
-      {/* <Suspense fallback={<div>Loading Amount...</div>}>
-        <AmountPayment />
-      </Suspense> */}
-      <Tabs defaultActiveKey="1" items={items} />
-    </div>
+    <Content>
+      <Card>
+        <CustomSearch onSearch={handleSearch} placeholder="Search Payment" className="search-input" />
+        {/* <Suspense fallback={<div>Loading Amount...</div>}>
+          <AmountPayment />
+        </Suspense> */}
+        <Tabs defaultActiveKey="1" items={items} />
+      </Card>
+    </Content>
   );
 };
 
