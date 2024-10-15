@@ -16,7 +16,10 @@ interface PurchasesLogProps {
   statusFilter: string;
 }
 
-const PurchasesLog: React.FC<PurchasesLogProps> = ({ searchQuery, statusFilter }) => {
+const PurchasesLog: React.FC<PurchasesLogProps> = ({
+  searchQuery,
+  statusFilter,
+}) => {
   const [purchasesLogData] = useState<Purchases[]>(
     purchaseLogData.purchases as unknown as Purchases[],
   );
@@ -47,21 +50,31 @@ const PurchasesLog: React.FC<PurchasesLogProps> = ({ searchQuery, statusFilter }
           student_name: student_name || "Unknown student",
           instructor_name: instructor_name || "Unknown instructor",
         };
-      }
+      },
     );
 
-    const filtered = purchasesWithCourseNameAndStudentName.filter((purchase) => {
-      const matchesSearchQuery = Object.values(purchase).some(
-        (value) =>
-          typeof value === "string" &&
-          value.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      const matchesStatus = statusFilter === "all" || purchase.status === statusFilter;
-      return matchesSearchQuery && matchesStatus;
-    });
+    const filtered = purchasesWithCourseNameAndStudentName.filter(
+      (purchase) => {
+        const matchesSearchQuery = Object.values(purchase).some(
+          (value) =>
+            typeof value === "string" &&
+            value.toLowerCase().includes(searchQuery.toLowerCase()),
+        );
+        const matchesStatus =
+          statusFilter === "all" || purchase.status === statusFilter;
+        return matchesSearchQuery && matchesStatus;
+      },
+    );
 
     setFilteredPurchases(filtered);
-  }, [searchQuery, statusFilter, purchasesLogData, cartsData, coursesData, usersData]);
+  }, [
+    searchQuery,
+    statusFilter,
+    purchasesLogData,
+    cartsData,
+    coursesData,
+    usersData,
+  ]);
 
   const columns = [
     {
@@ -79,7 +92,11 @@ const PurchasesLog: React.FC<PurchasesLogProps> = ({ searchQuery, statusFilter }
       dataIndex: "status",
       key: "status",
       render: (status: PurchaseStatusEnum) => {
-        return <Tag color={ColorPurchaseStatusEnum[status]}>{PurchaseStatusEnum[status]}</Tag>;
+        return (
+          <Tag color={ColorPurchaseStatusEnum[status]}>
+            {PurchaseStatusEnum[status]}
+          </Tag>
+        );
       },
     },
     {
@@ -114,11 +131,7 @@ const PurchasesLog: React.FC<PurchasesLogProps> = ({ searchQuery, statusFilter }
 
   return (
     <div>
-      <Table
-        columns={columns}
-        dataSource={filteredPurchases}
-        rowKey="id"
-      />
+      <Table columns={columns} dataSource={filteredPurchases} rowKey="id" />
     </div>
   );
 };

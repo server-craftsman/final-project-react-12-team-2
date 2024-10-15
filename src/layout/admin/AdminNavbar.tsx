@@ -49,7 +49,7 @@ const AdminNavbar: React.FC = () => {
       icon: <BankOutlined />,
       label: <Link to="/admin/payout">Payout Management</Link>,
     },
-   
+
     {
       key: "7",
       icon: <BookOutlined />,

@@ -22,15 +22,25 @@ const PurchasesManagement: React.FC = () => {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-        <CustomSearch onSearch={handleSearch} placeholder="Search Purchases" className="search-input"/>
-        <FilterStatusPurchases onFilterChange={handleFilterChange} filterStatus={filterStatus} />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: "1rem",
+        }}
+      >
+        <CustomSearch
+          onSearch={handleSearch}
+          placeholder="Search Purchases"
+          className="search-input"
+        />
+        <FilterStatusPurchases
+          onFilterChange={handleFilterChange}
+          filterStatus={filterStatus}
+        />
         <RequestPurchases onRequestComplete={handleRequestComplete} />
       </div>
-      <ViewPurchase
-        searchQuery={searchQuery}
-        filterStatus={filterStatus}
-      />
+      <ViewPurchase searchQuery={searchQuery} filterStatus={filterStatus} />
     </div>
   );
 };

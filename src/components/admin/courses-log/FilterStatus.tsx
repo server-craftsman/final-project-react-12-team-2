@@ -1,6 +1,6 @@
-import { Select } from 'antd';
-import React from 'react'
-import { CourseStatusEnum } from '../../../models/Course';
+import { Select } from "antd";
+import React from "react";
+import { CourseStatusEnum } from "../../../models/Course";
 
 const renameStatus = (status: string) => {
   switch (status) {
@@ -40,7 +40,7 @@ const FilterStatus: React.FC<{
         ))}
       </Select>
     </div>
-  )
-}
+  );
+};
 
-export default FilterStatus
+export default FilterStatus;

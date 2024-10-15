@@ -10,7 +10,9 @@ interface SessionManagementProps {
   searchTerm: string;
 }
 
-const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm }) => {
+const SessionManagement: React.FC<SessionManagementProps> = ({
+  searchTerm,
+}) => {
   const [sessionData] = useState<Session[]>(sessionsData.sessions);
   const [coursesData] = useState<Course[]>(
     courseData.courses as unknown as Course[],
@@ -41,9 +43,12 @@ const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm }) => 
     },
   ];
 
-  const filteredSessions = sessionData.filter(session =>
-    session.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    getCoursesNameBySessionId(session.course_id).toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredSessions = sessionData.filter(
+    (session) =>
+      session.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      getCoursesNameBySessionId(session.course_id)
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()),
   );
 
   return <Table columns={columns} dataSource={filteredSessions} rowKey="id" />;

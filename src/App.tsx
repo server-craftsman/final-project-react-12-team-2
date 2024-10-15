@@ -1,4 +1,8 @@
-import { createBrowserRouter, RouteObject, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouteObject,
+  RouterProvider,
+} from "react-router-dom";
 import { Suspense } from "react";
 import Loading from "./components/generic/home/Loading";
 import ScrollToTopButton from "./components/generic/home/ScrollToTopButton";

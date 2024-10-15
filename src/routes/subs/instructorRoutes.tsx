@@ -27,25 +27,36 @@ const ViewTransactions = lazy(
   () => import("../../components/instructor/payout/ViewTransactions"),
 );
 
-
 //==============================================================
 
 const instructorRoutes: RouteObject[] = [
   {
     path: "/instructor",
     element: <InstructorLayout />,
-    children: wrapRoutesWithProtection([
-      { index: true, element: <Dashboard /> },
-      { path: "setting", element: <Setting /> },
-      { path: "edit-user/:id", element: <EditUserProfile /> },
-      { path: "instructor-info", element: <InstructorInfo /> },
-      { path: "reviews", element: <Review /> },
-      { path: "purchases", element: <Purchases /> },
-      { path: "payout", element: <ManagePayout /> },
-      { path: "payout/view-transactions/:id", element: <ViewTransactions isVisible={true} onClose={() => {}} transactions={[]} /> },
-      { path: "orders", element: <OrderPage /> },
-      { path: "subscription", element: <SubscriptionPage /> },
-    ], ['INSTRUCTOR']),
+    children: wrapRoutesWithProtection(
+      [
+        { index: true, element: <Dashboard /> },
+        { path: "setting", element: <Setting /> },
+        { path: "edit-user/:id", element: <EditUserProfile /> },
+        { path: "instructor-info", element: <InstructorInfo /> },
+        { path: "reviews", element: <Review /> },
+        { path: "purchases", element: <Purchases /> },
+        { path: "payout", element: <ManagePayout /> },
+        {
+          path: "payout/view-transactions/:id",
+          element: (
+            <ViewTransactions
+              isVisible={true}
+              onClose={() => {}}
+              transactions={[]}
+            />
+          ),
+        },
+        { path: "orders", element: <OrderPage /> },
+        { path: "subscription", element: <SubscriptionPage /> },
+      ],
+      ["INSTRUCTOR"],
+    ),
   },
 ];
 

@@ -15,7 +15,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-
   useEffect(() => {
     if (user) {
       localStorage.setItem("user", JSON.stringify(user));
@@ -26,7 +25,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = (email: string, password: string): User | null => {
     const foundUser = usersData.users.find(
-      (u) => u.email === email && u.password === password
+      (u) => u.email === email && u.password === password,
     );
     if (foundUser) {
       const userWithCorrectRole: User = {

@@ -18,21 +18,21 @@ const AdminCategory = ({ searchTerm }: { searchTerm: string }) => {
     Modal.confirm({
       title: "Are you sure you want to delete this category?",
       onOk: () => {
-        setCategories(categories.filter((category: Category) => category.id !== id));
+        setCategories(
+          categories.filter((category: Category) => category.id !== id),
+        );
         message.success("Category deleted successfully");
       },
     });
   };
 
   // Filter categories based on the search term
-  const filteredData = categories.filter(
-    (category: Category) => {
-      return (
-        category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        category.description.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    },
-  );
+  const filteredData = categories.filter((category: Category) => {
+    return (
+      category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      category.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
   const columns = [
     {
@@ -64,9 +64,7 @@ const AdminCategory = ({ searchTerm }: { searchTerm: string }) => {
     },
   ];
 
-  return (
-    <Table columns={columns} dataSource={filteredData} rowKey="id" />
-  );
+  return <Table columns={columns} dataSource={filteredData} rowKey="id" />;
 };
 
 export default AdminCategory;

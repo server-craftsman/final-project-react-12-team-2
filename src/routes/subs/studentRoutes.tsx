@@ -22,12 +22,15 @@ const studentRoutes: RouteObject[] = [
   {
     path: "/dashboard-student",
     element: <StudentDashboard />,
-    children: wrapRoutesWithProtection([
-      { index: true, element: <DashboardStudent /> },
-      { path: "student-setting", element: <Setting /> },
-      { path: "student-orders", element: <OrderManagement /> },
-      { path: "student-subscription", element: <SubscriptionManagement /> },
-    ], ['STUDENT']),
+    children: wrapRoutesWithProtection(
+      [
+        { index: true, element: <DashboardStudent /> },
+        { path: "student-setting", element: <Setting /> },
+        { path: "student-orders", element: <OrderManagement /> },
+        { path: "student-subscription", element: <SubscriptionManagement /> },
+      ],
+      ["STUDENT"],
+    ),
   },
 ];
 

@@ -1,5 +1,5 @@
-import React from 'react'
-import { Select } from 'antd'
+import React from "react";
+import { Select } from "antd";
 interface FilterStatusProps {
   onStatusChange: (status: boolean | null) => void;
 }
@@ -15,7 +15,7 @@ const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange }) => {
       <Select.Option value={true}>Active</Select.Option>
       <Select.Option value={false}>Inactive</Select.Option>
     </Select>
-  )
-}
+  );
+};
 
-export default FilterStatus
+export default FilterStatus;

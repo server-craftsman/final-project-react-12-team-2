@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const Unauthorized: React.FC = () => {
   const navigate = useNavigate();
@@ -9,11 +9,13 @@ const Unauthorized: React.FC = () => {
   };
 
   return (
-    <div className="text-center mt-12">
-      <h1 className="text-3xl font-bold mb-4">Access Denied</h1>
-      <p className="text-lg mb-4">You do not have the necessary permissions to view this page.</p>
+    <div className="mt-12 text-center">
+      <h1 className="mb-4 text-3xl font-bold">Access Denied</h1>
+      <p className="mb-4 text-lg">
+        You do not have the necessary permissions to view this page.
+      </p>
       <button
-        className="bg-blue-500 text-white py-2 px-4 rounded"
+        className="rounded bg-blue-500 px-4 py-2 text-white"
         onClick={handleGoBack}
       >
         Go Back

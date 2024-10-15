@@ -1,7 +1,7 @@
-import React from 'react';
-import { Modal, Table } from 'antd';
-import { formatDate, moneyFormat } from '../../../utils/helper';
-import { InstructorTransaction } from '../../../models/InstructorTransaction';
+import React from "react";
+import { Modal, Table } from "antd";
+import { formatDate, moneyFormat } from "../../../utils/helper";
+import { InstructorTransaction } from "../../../models/InstructorTransaction";
 
 const ViewTransactions: React.FC<{
   isVisible: boolean;
@@ -10,31 +10,32 @@ const ViewTransactions: React.FC<{
 }> = ({ isVisible, onClose, transactions }) => {
   const columns = [
     {
-      title: 'Transaction ID',
-      dataIndex: 'id',
-      key: 'id',
+      title: "Transaction ID",
+      dataIndex: "id",
+      key: "id",
     },
     {
-      title: 'Payout ID',
-      dataIndex: 'payout_id',
-      key: 'payout_id',
+      title: "Payout ID",
+      dataIndex: "payout_id",
+      key: "payout_id",
     },
     {
-      title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
-      render: (amount: number | undefined) => amount !== undefined ? moneyFormat(amount) : 'N/A',
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      render: (amount: number | undefined) =>
+        amount !== undefined ? moneyFormat(amount) : "N/A",
     },
     {
-      title: 'Discount',
-      dataIndex: 'discount',
-      key: 'discount',
+      title: "Discount",
+      dataIndex: "discount",
+      key: "discount",
     },
     {
-      title: 'Created At',
-      dataIndex: 'created_at',
-      key: 'created_at',
-      render: (date: string) => date ? formatDate(new Date(date)) : 'N/A',
+      title: "Created At",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (date: string) => (date ? formatDate(new Date(date)) : "N/A"),
     },
   ];
 

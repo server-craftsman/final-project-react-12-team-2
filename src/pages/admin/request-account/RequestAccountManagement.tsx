@@ -1,11 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const RequestAccountManagement: React.FC = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  return <div></div>;
+};
 
-export default RequestAccountManagement
+export default RequestAccountManagement;

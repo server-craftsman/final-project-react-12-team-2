@@ -6,7 +6,11 @@ const Review = () => {
 
   return (
     <div>
-      <CustomSearch onSearch={setSearchTerm} placeholder="Search Reviews" className="search-input" />
+      <CustomSearch
+        onSearch={setSearchTerm}
+        placeholder="Search Reviews"
+        className="search-input"
+      />
       <Reviews searchTerm={searchTerm} />
     </div>
   );

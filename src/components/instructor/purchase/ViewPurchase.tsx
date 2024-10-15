@@ -10,7 +10,10 @@ interface ViewPurchaseProps {
   filterStatus: string;
 }
 
-const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus }) => {
+const ViewPurchase: React.FC<ViewPurchaseProps> = ({
+  searchQuery,
+  filterStatus,
+}) => {
   const columns = [
     {
       title: "Select",

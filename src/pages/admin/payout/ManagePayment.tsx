@@ -56,7 +56,11 @@ const ManagePayment: React.FC = () => {
   return (
     <Content>
       <Card>
-        <CustomSearch onSearch={handleSearch} placeholder="Search Payment" className="search-input" />
+        <CustomSearch
+          onSearch={handleSearch}
+          placeholder="Search Payment"
+          className="search-input"
+        />
         {/* <Suspense fallback={<div>Loading Amount...</div>}>
           <AmountPayment />
         </Suspense> */}
