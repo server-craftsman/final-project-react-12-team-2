@@ -2,6 +2,7 @@ import { lazy } from "react";
 import { RouteObject } from "react-router-dom";
 import Purchases from "../../pages/instructor/purchase/PurchasesManagement";
 import ManagePayout from "../../pages/instructor/payout/ManagePayout";
+import { wrapRoutesWithProtection } from "../protected/wrapRoutesWithProtection";
 
 //import lazy
 const EditUserProfile = lazy(
@@ -33,7 +34,7 @@ const instructorRoutes: RouteObject[] = [
   {
     path: "/instructor",
     element: <InstructorLayout />,
-    children: [
+    children: wrapRoutesWithProtection([
       { index: true, element: <Dashboard /> },
       { path: "setting", element: <Setting /> },
       { path: "edit-user/:id", element: <EditUserProfile /> },
@@ -44,7 +45,8 @@ const instructorRoutes: RouteObject[] = [
       { path: "payout/view-transactions/:id", element: <ViewTransactions isVisible={true} onClose={() => {}} transactions={[]} /> },
       { path: "orders", element: <OrderPage /> },
       { path: "subscription", element: <SubscriptionPage /> },
-    ],
+    ], ['INSTRUCTOR']),
   },
 ];
+
 export default instructorRoutes;

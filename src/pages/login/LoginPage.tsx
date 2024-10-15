@@ -5,13 +5,20 @@ import gif from "../../assets/login-bg.gif";
 import { CLIENT_ID } from "../../const/authentication";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import LoginGoogle from "./LoginGoogle";
-import { useState } from "react";
-
+import { useState, useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 const LoginPage = () => {
+  const { login } = useContext(AuthContext);
   const [loginError, setLoginError] = useState<string | null>(null);
 
   const onFinish = (values: any) => {
     console.log("Received values of form: ", values);
+    const user = login(values.username, values.password);
+    if (!user) {
+      setLoginError("Invalid username or password.");
+    } else {
+      console.log("User Role: ", user.role);
+    }
   };
 
   const validatePassword = (_: any, value: string) => {

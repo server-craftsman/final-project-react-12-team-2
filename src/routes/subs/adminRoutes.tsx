@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { RouteObject } from "react-router-dom";
 import ManageCourses from "../../pages/admin/course/ManageCourses";
+import { wrapRoutesWithProtection } from "../protected/wrapRoutesWithProtection";
 //import lazy
 const DashBoardAdmin = lazy(
   () => import("../../pages/admin/overview/DashBoardAdmin"),
@@ -52,7 +53,7 @@ const adminRoutes: RouteObject[] = [
   {
     path: "/admin",
     element: <AdminLayout />,
-    children: [
+    children: wrapRoutesWithProtection([
       { index: true, element: <DashBoardAdmin /> },
       { path: "admin-info", element: <Profile /> },
       { path: "manage-user", element: <ManageUser /> },
@@ -65,18 +66,12 @@ const adminRoutes: RouteObject[] = [
       { path: "edit-category/:id", element: <EditCategory /> },
       { path: "/admin/courses", element: <ManageCourses /> },
       { path: "/admin/purchases-log", element: <PurchasesLog /> },
-      {
-        path: "categories/details-category",
-        element: <DetailsCategory />,
-      },
-      {
-        path: "categories/categories-details/:id",
-        element: <DetailsCategory />,
-      },
+      { path: "categories/details-category", element: <DetailsCategory /> },
+      { path: "categories/categories-details/:id", element: <DetailsCategory /> },
       { path: "/admin/courses-log", element: <CoursesLog /> },
       { path: "/admin/subscription", element: <SubscriptionPage /> },
       { path: "/admin/request-account", element: <RequestAccountManagement /> },
-    ],
+    ], ['ADMIN']),
   },
 ];
 

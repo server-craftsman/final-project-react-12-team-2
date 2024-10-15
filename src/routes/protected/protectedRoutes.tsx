@@ -1,14 +1,16 @@
-import { RouteObject } from "react-router-dom";
 import adminRoutes from "../subs/adminRoutes";
 import instructorRoutes from "../subs/instructorRoutes";
 import studentRoutes from "../subs/studentRoutes";
-import authRoutes from "../subs/authRoutes";
+import { wrapRoutesWithProtection } from './wrapRoutesWithProtection';
 
-const protectedRoutes: RouteObject[] = [
-  ...adminRoutes,
-  ...instructorRoutes,
-  ...studentRoutes,
-  ...authRoutes,
-];
+// Wrap each set of routes with the appropriate roles
+const adminProtectedRoutes = wrapRoutesWithProtection(adminRoutes, ['ADMIN']);
+const instructorProtectedRoutes = wrapRoutesWithProtection(instructorRoutes, ['INSTRUCTOR']);
+const studentProtectedRoutes = wrapRoutesWithProtection(studentRoutes, ['STUDENT']);
 
-export default protectedRoutes;
+// Export the protected routes
+export {
+  adminProtectedRoutes,
+  instructorProtectedRoutes,
+  studentProtectedRoutes,
+};

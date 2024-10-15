@@ -8,6 +8,7 @@ import {
   lessonDetailsRoute,
   cartRoute,
   aboutRoute,
+  unauthorizedRoute,
 } from "../../const/constCommon";
 
 const commonRoutes: RouteObject[] = [
@@ -22,6 +23,7 @@ const commonRoutes: RouteObject[] = [
       lessonDetailsRoute,
       cartRoute,
       aboutRoute,
+      unauthorizedRoute,
     ],
   },
 ];

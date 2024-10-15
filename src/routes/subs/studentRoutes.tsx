@@ -1,5 +1,6 @@
 import { lazy } from "react";
 import { RouteObject } from "react-router-dom";
+import { wrapRoutesWithProtection } from "../protected/wrapRoutesWithProtection";
 
 //import lazy
 const DashboardStudent = lazy(
@@ -21,12 +22,12 @@ const studentRoutes: RouteObject[] = [
   {
     path: "/dashboard-student",
     element: <StudentDashboard />,
-    children: [
+    children: wrapRoutesWithProtection([
       { index: true, element: <DashboardStudent /> },
       { path: "student-setting", element: <Setting /> },
       { path: "student-orders", element: <OrderManagement /> },
       { path: "student-subscription", element: <SubscriptionManagement /> },
-    ],
+    ], ['STUDENT']),
   },
 ];
 
