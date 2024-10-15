@@ -88,7 +88,7 @@ const SubscriptionPage: React.FC = () => {
       <CustomSearch
         onSearch={handleSearch}
         placeholder="Search instructors..."
-        className="mb-4"
+        className="search-input"
       />
       <Tabs defaultActiveKey="1" items={items} />
     </div>

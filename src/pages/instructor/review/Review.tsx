@@ -1,13 +1,12 @@
 import { useState } from "react";
 import Reviews from "../../../components/instructor/review/Reviews";
-import SearchReview from "../../../components/instructor/review/SearchReview";
-
+import CustomSearch from "../../../components/generic/search/CustomSearch";
 const Review = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   return (
     <div>
-      <SearchReview onSearch={setSearchTerm} />
+      <CustomSearch onSearch={setSearchTerm} placeholder="Search Reviews" className="search-input" />
       <Reviews searchTerm={searchTerm} />
     </div>
   );

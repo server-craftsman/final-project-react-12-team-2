@@ -9,7 +9,7 @@ const InstructorSubscribed: React.FC<{
   users: User[];
 }> = ({ subscriptions, users }) => {
   return (
-    <div style={{ padding: "20px", backgroundColor: "#f0f2f5" }}>
+    <div style={{ backgroundColor: "#f0f2f5" }}>
       <Row gutter={[12, 12]}>
         {subscriptions.map((subscription) => {
           const user = users.find(

@@ -1,21 +1,16 @@
 import React from "react";
 import { Table, Tag } from "antd";
 import { Checkbox } from "antd";
-import SearchPurchase from "./SearchPurchase";
 import { formatDate, moneyFormat } from "../../../utils/helper";
 import { PurchaseStatusEnum } from "../../../models/Purchases";
+import { purchases } from "../../../data/purchases.json";
 
 interface ViewPurchaseProps {
-  filteredData: any[];
-  onSearch: (value: string) => void;
-  onRequest: () => void;
+  searchQuery: string;
+  filterStatus: string;
 }
 
-const ViewPurchase: React.FC<ViewPurchaseProps> = ({
-  filteredData,
-  onSearch,
-  onRequest,
-}) => {
+const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus }) => {
   const columns = [
     {
       title: "Select",
@@ -92,9 +87,14 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({
     },
   ];
 
+  const filteredData = purchases.filter((item) => {
+    const matchesSearchQuery = item.purchase_no.includes(searchQuery);
+    const matchesStatus = filterStatus === "" || item.status === filterStatus;
+    return matchesSearchQuery && matchesStatus;
+  });
+
   return (
     <div>
-      <SearchPurchase onSearch={onSearch} onRequest={onRequest} />
       <Table columns={columns} dataSource={filteredData} rowKey="purchase_no" />
     </div>
   );
