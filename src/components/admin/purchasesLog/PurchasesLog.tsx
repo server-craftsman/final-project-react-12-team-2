@@ -10,11 +10,13 @@ import { Carts } from "../../../models/Carts";
 import cartData from "../../../data/carts.json";
 import { ColorPurchaseStatusEnum } from "../../../utils/purchasesStatus";
 import { formatDate } from "../../../utils/helper";
+
 interface PurchasesLogProps {
   searchQuery: string;
+  statusFilter: string;
 }
 
-const PurchasesLog: React.FC<PurchasesLogProps> = ({ searchQuery }) => {
+const PurchasesLog: React.FC<PurchasesLogProps> = ({ searchQuery, statusFilter }) => {
   const [purchasesLogData] = useState<Purchases[]>(
     purchaseLogData.purchases as unknown as Purchases[],
   );
@@ -48,16 +50,18 @@ const PurchasesLog: React.FC<PurchasesLogProps> = ({ searchQuery }) => {
       }
     );
 
-    const filtered = purchasesWithCourseNameAndStudentName.filter((purchase) =>
-      Object.values(purchase).some(
+    const filtered = purchasesWithCourseNameAndStudentName.filter((purchase) => {
+      const matchesSearchQuery = Object.values(purchase).some(
         (value) =>
           typeof value === "string" &&
           value.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    );
+      );
+      const matchesStatus = statusFilter === "all" || purchase.status === statusFilter;
+      return matchesSearchQuery && matchesStatus;
+    });
 
     setFilteredPurchases(filtered);
-  }, [searchQuery, purchasesLogData, cartsData, coursesData, usersData]);
+  }, [searchQuery, statusFilter, purchasesLogData, cartsData, coursesData, usersData]);
 
   const columns = [
     {

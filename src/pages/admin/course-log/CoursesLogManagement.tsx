@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import CoursesLog from "../../../components/admin/courses-log/CoursesLog";
 import CustomSearch from "../../../components/generic/search/CustomSearch";
+import FilterStatus from "../../../components/admin/courses-log/FilterStatus";
 import { Course } from "../../../models/Course";
 import coursesData from "../../../data/courses.json";
 import reviewsData from "../../../data/reviews.json";
 import { Content } from "antd/es/layout/layout";
-import { Card } from "antd";
+import { Card, Space } from "antd";
 
 const CoursesLogManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [data, setData] = useState<Course[]>([]);
 
   useEffect(() => {
@@ -25,22 +27,26 @@ const CoursesLogManagement: React.FC = () => {
       };
     });
 
-    // Filter courses based on the searchTerm
+    // Filter courses based on the searchTerm and statusFilter
     const filteredData = mergedData.filter((course) =>
-      course.name.toLowerCase().includes(searchTerm.toLowerCase()),
+      course.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (statusFilter === "all" || course.newStatus === statusFilter)
     );
 
     setData(filteredData as Course[]);
-  }, [searchTerm]); // Add searchTerm as a dependency
+  }, [searchTerm, statusFilter]); // Add statusFilter as a dependency
 
   return (
     <Content>
       <Card>
-      <CustomSearch
-        className="search-input mb-4"
-        placeholder="Search by course name"
-        onSearch={(value) => setSearchTerm(value)}
-        />
+        <div className="mb-4 flex justify-between">
+          <CustomSearch
+            className="search-input"
+            placeholder="Search by course name"
+            onSearch={(value) => setSearchTerm(value)}
+          />
+          <FilterStatus status={statusFilter} setStatus={setStatusFilter} />
+        </div>
         <CoursesLog data={data} />
       </Card>
     </Content>
