@@ -1,8 +1,9 @@
-import { Table, Select } from "antd";
+import { Table } from "antd";
 import { useNavigate } from "react-router-dom";
 import usersData from "../../../data/users.json"; // Adjust the path as necessary
 import { User, UserRole } from "../../../models/User";
-
+import { userStatusColor } from "../../../utils/userStatus";
+import { userRoleColor } from "../../../utils/userRole";
 interface ViewUserProfileProps {
   searchQuery: string;
   selectedRole: UserRole | null;
@@ -44,12 +45,17 @@ const ViewUserProfile = ({ searchQuery, selectedRole, selectedStatus }: ViewUser
       title: "Role",
       dataIndex: "role",
       key: "role",
+      render: (role: UserRole) => (
+        <span className={userRoleColor(role)}>{role}</span>
+      ),
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: boolean) => (status ? "Active" : "Inactive"),
+      render: (status: boolean) => (
+        <span className={userStatusColor(status)}>{status ? "Active" : "Inactive"}</span>
+      ),
     },
     {
       title: "Balance",
