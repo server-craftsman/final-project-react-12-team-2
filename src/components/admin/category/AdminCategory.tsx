@@ -1,25 +1,31 @@
-import { Button, Table, Input } from "antd";
+import { Table, Input, Space, Modal, message } from "antd";
 import { useState } from "react";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import categoriesData from "../../../data/categories.json";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { Category } from "../../../models/Category";
+import { Link } from "react-router-dom";
 
-const { Search } = Input;
+const AdminCategory = ({ searchTerm }: { searchTerm: string }) => {
+  // const navigate = useNavigate();
+  const [categories, setCategories] = useState(categoriesData.categories);
 
-const AdminCategory = () => {
-  const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
+  // const handleViewDetails = (id: string) => {
+  //   navigate(`/admin/categories/categories-details/${id}`);
+  // };
 
-  const handleViewDetails = (id: string) => {
-    navigate(`/admin/categories/categories-details/${id}`);
-  };
-
-  const handleSearch = (value: string) => {
-    setSearchTerm(value);
+  const handleDelete = (id: string) => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this category?",
+      onOk: () => {
+        setCategories(categories.filter((category: Category) => category.id !== id));
+        message.success("Category deleted successfully");
+      },
+    });
   };
 
   // Filter categories based on the search term
-  const filteredData = categoriesData.categories.filter(
+  const filteredData = categories.filter(
     (category: Category) => {
       return (
         category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -35,11 +41,6 @@ const AdminCategory = () => {
       key: "id",
     },
     {
-      title: "User ID",
-      dataIndex: "user_id",
-      key: "user_id",
-    },
-    {
       title: "Name",
       dataIndex: "name",
       key: "name",
@@ -50,42 +51,21 @@ const AdminCategory = () => {
       key: "description",
     },
     {
-      title: "Parent Category ID",
-      dataIndex: "parent_category_id",
-      key: "parent_category_id",
-    },
-    {
-      title: "Is Deleted",
-      dataIndex: "is_deleted",
-      key: "is_deleted",
-      render: (isDeleted: boolean) => (isDeleted ? "Yes" : "No"),
-    },
-    {
       title: "Action",
       key: "action",
       render: (record: Category) => (
-        <span>
-          <Button
-            type="primary"
-            onClick={() => handleViewDetails(record.id)}
-            className="bg-gradient-tone text-white"
-          >
-            View Details
-          </Button>
-        </span>
+        <Space size="middle">
+          <Link to={`/admin/edit-category/${record.id}`}>
+            <EditOutlined />
+          </Link>
+          <DeleteOutlined onClick={() => handleDelete(record.id)} />
+        </Space>
       ),
     },
   ];
 
   return (
-    <div>
-      <Search
-        placeholder="Search by name or description"
-        onSearch={handleSearch}
-        style={{ marginBottom: 20 }}
-      />
-      <Table columns={columns} dataSource={filteredData} rowKey="id" />
-    </div>
+    <Table columns={columns} dataSource={filteredData} rowKey="id" />
   );
 };
 

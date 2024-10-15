@@ -13,24 +13,14 @@ const EditCategory = () => {
   }
 
   const onFinish = (values: unknown) => {
-    // Logic để lưu thông tin chỉnh sửa (có thể là gọi API để cập nhật danh mục)
+    // Logic to save edited information (could be an API call to update the category)
     console.log("Updated values:", values);
   };
 
   return (
-    <Form layout="vertical" onFinish={onFinish} initialValues={category}>
-      <Row gutter={16}>
-        <Col span={12}>
-          <Form.Item label="ID" name="id">
-            <Input readOnly />
-          </Form.Item>
-        </Col>
-        <Col span={12}>
-          <Form.Item label="UserID" name="user_id">
-            <Input readOnly />
-          </Form.Item>
-        </Col>
-      </Row>
+    <Form layout="vertical" onFinish={onFinish} initialValues={{
+      ...category,
+    }}>
       <Row gutter={16}>
         <Col span={12}>
           <Form.Item label="Name" name="name">
@@ -38,40 +28,16 @@ const EditCategory = () => {
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item label="Is Deleted" name="is_deleted">
-            <Input />
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row gutter={16}>
-        <Col span={12}>
           <Form.Item label="Description" name="description">
             <Input />
           </Form.Item>
         </Col>
-        <Col span={12}>
-          <Form.Item label="Parent Category ID" name="parent_category_id">
-            <Input />
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row gutter={16}>
-        <Col span={12}>
-          <Form.Item label="Created At" name="created_at">
-            <Input readOnly />
-          </Form.Item>
-        </Col>
-        <Col span={12}>
-          <Form.Item label="Updated At" name="updated_at">
-            <Input readOnly />
-          </Form.Item>
-        </Col>
-      </Row>
+      </Row>      
       <Form.Item>
         <Button type="primary" htmlType="submit">
           Save
         </Button>
-        <Link to={`/admin/categories/categories-details/${id}`}>
+        <Link to={`/admin/categories`}>
           <Button className="ml-3">Back</Button>
         </Link>
       </Form.Item>
