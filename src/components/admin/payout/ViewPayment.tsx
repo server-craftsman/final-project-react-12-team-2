@@ -29,7 +29,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
-    const filteredPayments = paymentsData.payments
+    const filteredPayments: Payout[] = paymentsData.payments
       .filter(
         (payment) =>
           payment.payout_no.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -37,11 +37,13 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status }) => {
       )
       .map((payment) => ({
         ...payment,
-        status: mapStatusToEnum(payment.status),
+        status: mapStatusToEnum(payment.status), // Correctly map the status
+        instructor_ratio: Number(payment.instructor_ratio), // Convert instructor_ratio to number
       }))
-      .filter((payment) => mapStatusToEnum(payment.status) === mapStatusToEnum(status)); // Filter by status
+      .filter((payment) => payment.status === mapStatusToEnum(status)); // Filter by mapped status
+
     setPayments(filteredPayments);
-  }, [searchQuery, status]); // Add status to the dependency array
+  }, [searchQuery, status]);
 
   const handleViewDetails = (payoutId: string) => {
     const details = transactionsData.filter((detail) => detail.payout_id === payoutId);
