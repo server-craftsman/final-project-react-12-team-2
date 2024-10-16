@@ -36,7 +36,11 @@ const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange }) => {
       placeholder="Filter by status"
       allowClear
       onChange={handleChange}
+      defaultValue=""
     >
+      <Select.Option key="all" value="">
+      All
+      </Select.Option>
       {Object.values(CourseStatusEnum).map((status) => {
         return (
           <Select.Option key={status} value={status}>

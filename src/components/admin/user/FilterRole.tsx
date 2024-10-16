@@ -15,7 +15,9 @@ const FilterRole: React.FC<FilterRoleProps> = ({ onRoleChange }) => {
       onChange={(value) => onRoleChange(value)}
       allowClear
       style={{ width: 120, marginBottom: 10, marginRight: 10 }}
+      defaultValue={null}
     >
+      <Select.Option value={null}>All</Select.Option>
       {rolesToInclude.map((role) => (
         <Select.Option key={role} value={role}>
           {role.charAt(0).toUpperCase() + role.slice(1)}

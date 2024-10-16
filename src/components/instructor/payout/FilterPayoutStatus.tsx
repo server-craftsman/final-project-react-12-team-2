@@ -27,8 +27,9 @@ const FilterStatus: React.FC<{
         placeholder="Filter by status"
         onChange={handleStatusChange}
         value={filterStatus || undefined}
+        defaultValue=""
       >
-        <Option value="">All Statuses</Option>
+        <Option value="">All</Option>
         {statusOptions}
       </Select>
     </div>

@@ -15,7 +15,7 @@ const InstructorPayout: React.FC<{ searchQuery: string; filterStatus: string }> 
     const transactions = instructorTransactions.transactions.filter(
       (transaction) => transaction.payout_id === payoutId
     );
-    setSelectedTransactions(transactions);
+    setSelectedTransactions(transactions); 
     setIsModalVisible(true);
   };
 
