@@ -1,16 +1,19 @@
-import { Table, Select } from "antd";
+import { Table } from "antd";
 import { useNavigate } from "react-router-dom";
 import usersData from "../../../data/users.json"; // Adjust the path as necessary
 import { User, UserRole } from "../../../models/User";
-import { useState } from "react";
+import { userStatusColor } from "../../../utils/userStatus";
+import { userRoleColor } from "../../../utils/userRole";
+interface ViewUserProfileProps {
+  searchQuery: string;
+  selectedRole: UserRole | null;
+  selectedStatus: boolean | null;
+}
 
-const ViewUserProfile = ({ searchQuery }: { searchQuery: string }) => {
+const ViewUserProfile = ({ searchQuery, selectedRole, selectedStatus }: ViewUserProfileProps) => {
   const navigate = useNavigate();
-  const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
-  const [selectedStatus, setSelectedStatus] = useState<boolean | null>(null);
 
   const handleViewDetails = (userId: string) => {
-    // Navigate to the user detail page
     navigate(`/admin/view-user/${userId}`);
   };
 
@@ -19,19 +22,14 @@ const ViewUserProfile = ({ searchQuery }: { searchQuery: string }) => {
       (user) =>
         (user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           user.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
-        (selectedRole ? user.role === selectedRole : true) &&
-        (selectedStatus !== null ? user.status === selectedStatus : true),
+        (selectedRole === null || user.role === selectedRole) &&
+        (selectedStatus === null || user.status === selectedStatus)
     )
     .map((user) => ({
       ...user,
       role: user.role as UserRole,
     }));
 
-  const rolesToInclude = [
-    UserRole.INSTRUCTOR,
-    UserRole.ADMIN,
-    UserRole.STUDENT,
-  ];
   const columns = [
     {
       title: "Name",
@@ -47,12 +45,17 @@ const ViewUserProfile = ({ searchQuery }: { searchQuery: string }) => {
       title: "Role",
       dataIndex: "role",
       key: "role",
+      render: (role: UserRole) => (
+        <span className={userRoleColor(role)}>{role}</span>
+      ),
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: boolean) => (status ? "Active" : "Inactive"),
+      render: (status: boolean) => (
+        <span className={userStatusColor(status)}>{status ? "Active" : "Inactive"}</span>
+      ),
     },
     {
       title: "Balance",
@@ -76,30 +79,7 @@ const ViewUserProfile = ({ searchQuery }: { searchQuery: string }) => {
   ];
 
   return (
-    <div className="p-4">
-      <div className="mb-4">
-        <Select
-          placeholder="Select Role"
-          onChange={(value) => setSelectedRole(value)}
-          allowClear
-          style={{ width: 120, marginRight: 10 }}
-        >
-          {rolesToInclude.map((role) => (
-            <Select.Option key={role} value={role}>
-              {role.charAt(0).toUpperCase() + role.slice(1)}
-            </Select.Option>
-          ))}
-        </Select>
-        <Select
-          placeholder="Select Status"
-          onChange={(value) => setSelectedStatus(value)}
-          allowClear
-          style={{ width: 120 }}
-        >
-          <Select.Option value={true}>Active</Select.Option>
-          <Select.Option value={false}>Inactive</Select.Option>
-        </Select>
-      </div>
+    <div className="-mt-3 mb-64 p-4">
       <Table<User>
         className="shadow-lg"
         columns={columns}

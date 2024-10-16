@@ -1,33 +1,37 @@
 import React, { useState } from "react";
 import ViewPurchase from "../../../components/instructor/purchase/ViewPurchase";
-import purchasesData from "../../../data/purchases.json";
+import FilterStatusPurchases from "../../../components/instructor/purchase/FilterStatusPurchases";
+import CustomSearch from "../../../components/generic/search/CustomSearch";
+import RequestPurchases from "../../../components/instructor/purchase/RequestPurchases";
 
 const PurchasesManagement: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
 
   const handleSearch = (value: string) => {
-    setSearchTerm(value);
+    setSearchQuery(value);
   };
 
-  const handleRequest = () => {
-    console.log("Request button clicked");
+  const handleFilterChange = (status: string) => {
+    setFilterStatus(status);
   };
 
-  const filteredData = purchasesData.purchases.filter(
-    (purchase) =>
-      purchase.purchase_no.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      purchase.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      purchase.price_paid.toString().includes(searchTerm) ||
-      purchase.price.toString().includes(searchTerm) ||
-      purchase.discount.toString().includes(searchTerm),
-  );
+  const handleRequestComplete = () => {
+    console.log("Purchases requested successfully");
+  };
 
   return (
-    <ViewPurchase
-      filteredData={filteredData}
-      onSearch={handleSearch}
-      onRequest={handleRequest}
-    />
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+        <CustomSearch onSearch={handleSearch} placeholder="Search Purchases" className="search-input"/>
+        <FilterStatusPurchases onFilterChange={handleFilterChange} filterStatus={filterStatus} />
+        <RequestPurchases onRequestComplete={handleRequestComplete} />
+      </div>
+      <ViewPurchase
+        searchQuery={searchQuery}
+        filterStatus={filterStatus}
+      />
+    </div>
   );
 };
 

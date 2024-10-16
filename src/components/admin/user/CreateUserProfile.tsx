@@ -68,19 +68,19 @@ const CreateUserProfile = () => {
 
   const validateConfirmPassword = ({ getFieldValue }: any) => ({
     validator(_: any, value: string) {
-      if (!value || getFieldValue('password') === value) {
+      if (!value || getFieldValue("password") === value) {
         return Promise.resolve();
       }
-      return Promise.reject(new Error('The two passwords do not match!'));
+      return Promise.reject(new Error("The two passwords do not match!"));
     },
   });
 
   return (
-    <div className="mb-4">
+    <div className="mb-3">
       <Button
         type="primary"
         onClick={showModal}
-        className="bg-gradient-tone text-white"
+        className="bg-gradient-tone ml-4 text-white"
       >
         Create User
       </Button>

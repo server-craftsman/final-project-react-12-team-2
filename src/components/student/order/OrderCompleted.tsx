@@ -6,6 +6,8 @@ import purchaseData from "../../../data/purchases.json";
 import userData from "../../../data/users.json";
 import cartData from "../../../data/carts.json";
 import { PurchaseStatusEnum } from "../../../models/Purchases";
+import { formatDate } from "../../../utils/helper";
+
 const OrderCompleted: React.FC<{ searchTerm: string }> = ({ searchTerm }) => {
   const columns = [
     {
@@ -22,6 +24,7 @@ const OrderCompleted: React.FC<{ searchTerm: string }> = ({ searchTerm }) => {
       title: "Created Date",
       dataIndex: "createdDate",
       key: "createdDate",
+      render: (text: string) => formatDate(new Date(text)),
     },
     {
       title: "Student Name",

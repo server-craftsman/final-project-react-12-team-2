@@ -1,8 +1,6 @@
 import { lazy } from "react";
 import { RouteObject } from "react-router-dom";
 import ManageCourses from "../../pages/admin/course/ManageCourses";
-import LessonManagement from "../../components/admin/course/LessonManagement";
-
 //import lazy
 const DashBoardAdmin = lazy(
   () => import("../../pages/admin/overview/DashBoardAdmin"),
@@ -37,11 +35,17 @@ const EditCategory = lazy(
 
 const PurchasesLog = lazy(
   () => import("../../pages/admin/purchasesLog/PurchasesLogManagement"),
-)
+);
 
 const CoursesLog = lazy(
   () => import("../../pages/admin/course-log/CoursesLogManagement"),
-)
+);
+const SubscriptionPage = lazy(
+  () => import("../../pages/instructor/subscription/SubscriptionPage"),
+);
+const RequestAccountManagement = lazy(
+  () => import("../../pages/admin/request-account/RequestAccountManagement"),
+);
 //==============================================================
 
 const adminRoutes: RouteObject[] = [
@@ -60,7 +64,6 @@ const adminRoutes: RouteObject[] = [
       { path: "categories", element: <ManageCategory /> },
       { path: "edit-category/:id", element: <EditCategory /> },
       { path: "/admin/courses", element: <ManageCourses /> },
-      { path: "/admin/courses/lessons", element: <LessonManagement /> },
       { path: "/admin/purchases-log", element: <PurchasesLog /> },
       {
         path: "categories/details-category",
@@ -71,6 +74,8 @@ const adminRoutes: RouteObject[] = [
         element: <DetailsCategory />,
       },
       { path: "/admin/courses-log", element: <CoursesLog /> },
+      { path: "/admin/subscription", element: <SubscriptionPage /> },
+      { path: "/admin/request-account", element: <RequestAccountManagement /> },
     ],
   },
 ];

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import StudentSubscription from "../../../components/student/subscription/StudentSubcription";
-import SearchSubscribe from "../../../components/student/subscription/SearchSubscribe";
+// import SearchSubscribe from "../../../components/student/subscription/SearchSubscribe";
+import CustomSearch from "../../../components/generic/search/CustomSearch";
 import { Subscriptions } from "../../../models/Subscriptions";
 import { UserRole } from "../../../models/User";
 import subscriptionData from "../../../data/subscriptions.json";
 import data from "../../../data/users.json";
 import { User } from "../../../models/User";
+
 const SubscriptionManagement: React.FC = () => {
   const [filteredSubscriptions, setFilteredSubscriptions] = useState<
     Subscriptions[]
@@ -59,7 +61,11 @@ const SubscriptionManagement: React.FC = () => {
 
   return (
     <>
-      <SearchSubscribe onSearch={handleSearch} />
+      <CustomSearch
+        onSearch={handleSearch}
+        className="search-input"
+        placeholder="Search by course name or instructor..."
+      />
       <StudentSubscription
         subscriptions={subscriptionsWithUserData}
         users={data.users as unknown as User[]}

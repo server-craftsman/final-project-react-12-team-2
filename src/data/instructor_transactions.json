@@ -26,6 +26,33 @@
       "purchase_id": "3",
       "payout_id": "3",
       "created_at": "2023-04-01T10:00:00Z"
+    },
+    {
+      "id": "4",
+      "price": 100,
+      "discount": 10,
+      "price_paid": 90,
+      "purchase_id": "4",
+      "payout_id": "4",
+      "created_at": "2023-03-01T10:00:00Z"
+    },
+    {
+      "id": "5",
+      "price": 100,
+      "discount": 10,
+      "price_paid": 90,
+      "purchase_id": "5",
+      "payout_id": "5",
+      "created_at": "2023-02-01T10:00:00Z"
+    },
+    {
+      "id": "6",
+      "price": 100,
+      "discount": 10,
+      "price_paid": 90,
+      "purchase_id": "6",
+      "payout_id": "6",
+      "created_at": "2023-01-01T10:00:00Z"
     }
   ]
 }

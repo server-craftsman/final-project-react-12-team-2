@@ -7,6 +7,11 @@
   @apply bg-gradient-to-r from-[#02005dc6] to-[#1a237e];
 }
 
+/* Search input */
+.search-input {
+  @apply mb-4 w-1/4 text-2xl;
+}
+
 /* Float animation */
 @keyframes floatUpDown {
   0%,

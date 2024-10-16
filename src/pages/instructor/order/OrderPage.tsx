@@ -1,7 +1,8 @@
 import { lazy, useState } from "react";
 import { Tabs } from "antd";
-import SearchOrder from "../../../components/instructor/order/SearchOrder";
-
+const CustomSearch = lazy(
+  () => import("../../../components/generic/search/CustomSearch"),
+);
 const WaitingPaid = lazy(
   () => import("../../../components/instructor/order/WaitingPaid"),
 );
@@ -27,7 +28,7 @@ const OrderPage = () => {
 
   return (
     <div>
-      <SearchOrder onSearch={setSearchTerm} />
+      <CustomSearch onSearch={setSearchTerm} placeholder="Search Orders" className="search-input" />
       <Tabs defaultActiveKey="1" items={items} />
     </div>
   );

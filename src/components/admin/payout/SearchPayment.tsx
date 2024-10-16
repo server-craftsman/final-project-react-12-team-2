@@ -27,6 +27,7 @@ const SearchPayment: React.FC<SearchPaymentProps> = ({ onSearch }) => {
         placeholder="Search payment..."
         suffix={<SearchOutlined />}
         className="rounded-md border"
+        style={{ width: "100%" }}
       />
     </div>
   );

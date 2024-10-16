@@ -1,6 +1,7 @@
 import { Table, Typography } from "antd";
-import { getOrderStatus } from "../../../utils/helper";
+import { courseStatusColor } from "../../../utils/courseStatus";
 import { courses } from "../../../data/courses.json";
+import { CourseStatusEnum } from "../../../models/Course";
 
 const recentOrderData = courses.map((course) => ({
   id: course.id,
@@ -52,7 +53,7 @@ const columns = [
     title: "Status",
     dataIndex: "status",
     key: "status",
-    render: (status: string) => getOrderStatus(status),
+    render: (status: string) => courseStatusColor(status as CourseStatusEnum),
   },
   {
     title: "Created At",

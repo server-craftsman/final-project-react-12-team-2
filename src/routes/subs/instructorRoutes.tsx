@@ -18,13 +18,14 @@ const InstructorInfo = lazy(
   () => import("../../components/instructor/setting/InstructorInfo"),
 );
 const Review = lazy(() => import("../../pages/instructor/review/Review"));
-const ReviewsDetail = lazy(
-  () => import("../../components/instructor/review/ReviewsDetail"),
-);
 const OrderPage = lazy(() => import("../../pages/instructor/order/OrderPage"));
 const SubscriptionPage = lazy(
   () => import("../../pages/instructor/subscription/SubscriptionPage"),
 );
+const ViewTransactions = lazy(
+  () => import("../../components/instructor/payout/ViewTransactions"),
+);
+
 
 //==============================================================
 
@@ -38,9 +39,9 @@ const instructorRoutes: RouteObject[] = [
       { path: "edit-user/:id", element: <EditUserProfile /> },
       { path: "instructor-info", element: <InstructorInfo /> },
       { path: "reviews", element: <Review /> },
-      { path: "reviews/:courseId", element: <ReviewsDetail /> },
       { path: "purchases", element: <Purchases /> },
       { path: "payout", element: <ManagePayout /> },
+      { path: "payout/view-transactions/:id", element: <ViewTransactions isVisible={true} onClose={() => {}} transactions={[]} /> },
       { path: "orders", element: <OrderPage /> },
       { path: "subscription", element: <SubscriptionPage /> },
     ],

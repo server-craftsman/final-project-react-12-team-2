@@ -1,8 +1,11 @@
-import { Row, Col } from "antd";
+import { Row, Col, Typography } from "antd";
+import { DollarCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import ViewChartPayment from "../payout/ViewChartPayment";
 import paymentsData from "../../../data/payouts.json";
 import { moneyFormat } from "../../../utils/helper";
+
+const { Title } = Typography;
 
 const AmountPayment: React.FC = () => {
   const [totalPayment, setTotalPayment] = useState<string>("");
@@ -10,7 +13,7 @@ const AmountPayment: React.FC = () => {
     useState<string>("");
 
   useEffect(() => {
-    // Tính tổng số tiền từ các payment origin
+    // Calculate total payment from balance origin
     const total = paymentsData.payments
       .filter((payment) => payment.balance_origin)
       .reduce((acc, payment) => acc + payment.balance_origin, 0);
@@ -20,7 +23,7 @@ const AmountPayment: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Tính tổng số tiền từ Balance Instructor Received với trạng thái completed
+    // Calculate total completed instructor payment
     const totalCompleted = paymentsData.payments
       .filter((payment) => payment.status === "COMPLETED")
       .reduce((acc, payment) => acc + payment.balance_instructor_received, 0);
@@ -32,12 +35,13 @@ const AmountPayment: React.FC = () => {
   return (
     <Row gutter={16}>
       <Col
-        span={10}
+        span={10} // Increased span for better balance
         style={{
-          backgroundColor: "#f0f2f5",
-          padding: "20px",
-          border: "1px solid #ccc",
-          borderRadius: "8px",
+          padding: "50px",
+          border: "1px solid white", // Changed border color
+          borderRadius: "12px", // Increased border radius for a smoother look
+          textAlign: "center",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", // Added shadow for depth
         }}
       >
         <Row gutter={[0, 16]}>
@@ -45,59 +49,66 @@ const AmountPayment: React.FC = () => {
             span={24}
             style={{
               border: "1px solid #ccc",
-              padding: "10px",
+              padding: "20px", // Increased padding for better spacing
               textAlign: "center",
+              background: "linear-gradient(135deg, #e2f0cb, #b2d3c2)", // Gradient background
+              borderRadius: "8px", // Rounded corners for inner box
             }}
           >
-            <p
+            <Title level={3} style={{ color: "#4CAF50", margin: 0 }}>
+              <DollarCircleOutlined style={{ marginRight: 8 }} />
+              Total Payment
+            </Title>
+            <h1
               style={{
-                color: "green",
-                textAlign: "left",
-                width: "250px",
-                height: "100px",
-                fontSize: "20px",
+                textAlign: "center",
+                marginTop: "10px",
+                padding: "10px",
+                fontSize: "30px",
               }}
             >
-              Total Payment: {totalPayment}
-            </p>
+              <strong>{totalPayment}</strong>
+            </h1>
           </Col>
+
           <Col
             span={24}
             style={{
               border: "1px solid #ccc",
-              padding: "10px",
+              padding: "20px", // Increased padding for better spacing
               textAlign: "center",
+              background: "linear-gradient(135deg, #cfe7f5, #9dc1e8)", // Gradient background
+              borderRadius: "8px", // Rounded corners for inner box
             }}
           >
-            <p style={{ color: "red", textAlign: "left", fontSize: "20px" }}>
-              Tax: 20%
-            </p>
-          </Col>
-          <Col
-            span={24}
-            style={{
-              border: "1px solid #ccc",
-              padding: "10px",
-              textAlign: "center",
-            }}
-          >
-            <p style={{ color: "blue", textAlign: "left", fontSize: "20px" }}>
-              Instructor Payment (Completed): {completedInstructorPayment}
-            </p>
+            <Title level={3} style={{ color: "#2F80ED", margin: 0 }}>
+              <CheckCircleOutlined style={{ marginRight: 8 }} />
+              Instructor Received (Completed)
+            </Title>
+            <h1
+              style={{
+                textAlign: "center",
+                marginTop: "10px",
+                padding: "10px",
+                fontSize: "30px",
+              }}
+            >
+              <strong>{completedInstructorPayment}</strong>
+            </h1>
           </Col>
         </Row>
       </Col>
 
       <Col
-        span={14}
+        span={14} // Adjusted span to balance with the left column
         style={{
-          backgroundColor: "#f0f2f5",
           padding: "20px",
-          border: "1px solid #ccc",
-          borderRadius: "8px",
+          border: "1px solid white", // Consistent border color
+          borderRadius: "12px", // Increased border radius for a smoother look
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", // Added shadow for depth
         }}
       >
-        <ViewChartPayment></ViewChartPayment>
+        <ViewChartPayment />
       </Col>
     </Row>
   );

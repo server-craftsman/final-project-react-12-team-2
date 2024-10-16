@@ -1,20 +1,16 @@
 import React from "react";
-import { Table } from "antd";
+import { Table, Tag } from "antd";
 import { Checkbox } from "antd";
-import SearchPurchase from "./SearchPurchase";
 import { formatDate, moneyFormat } from "../../../utils/helper";
+import { PurchaseStatusEnum } from "../../../models/Purchases";
+import { purchases } from "../../../data/purchases.json";
 
 interface ViewPurchaseProps {
-  filteredData: any[];
-  onSearch: (value: string) => void;
-  onRequest: () => void;
+  searchQuery: string;
+  filterStatus: string;
 }
 
-const ViewPurchase: React.FC<ViewPurchaseProps> = ({
-  filteredData,
-  onSearch,
-  onRequest,
-}) => {
+const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus }) => {
   const columns = [
     {
       title: "Select",
@@ -31,6 +27,32 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({
       title: "Status",
       dataIndex: "status",
       key: "status",
+      render: (status: string) => {
+        let color = "";
+        let text = "";
+
+        switch (status) {
+          case PurchaseStatusEnum.new:
+            color = "blue";
+            text = "new";
+            break;
+          case PurchaseStatusEnum.request_paid:
+            color = "orange";
+            text = "request_paid";
+            break;
+          case PurchaseStatusEnum.completed:
+            color = "green";
+            text = "completed";
+            break;
+
+          default:
+            color = "gray";
+            text = "Unknown Status";
+            break;
+        }
+
+        return <Tag color={color}>{text}</Tag>;
+      },
     },
     {
       title: "Price Paid",
@@ -48,7 +70,7 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({
       title: "Discount",
       dataIndex: "discount",
       key: "discount",
-      render: (money: number) => moneyFormat(money),
+      render: (money: number) => money + "%",
     },
 
     {
@@ -65,9 +87,14 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({
     },
   ];
 
+  const filteredData = purchases.filter((item) => {
+    const matchesSearchQuery = item.purchase_no.includes(searchQuery);
+    const matchesStatus = filterStatus === "" || item.status === filterStatus;
+    return matchesSearchQuery && matchesStatus;
+  });
+
   return (
     <div>
-      <SearchPurchase onSearch={onSearch} onRequest={onRequest} />
       <Table columns={columns} dataSource={filteredData} rowKey="purchase_no" />
     </div>
   );
