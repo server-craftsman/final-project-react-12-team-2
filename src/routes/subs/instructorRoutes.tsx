@@ -26,7 +26,7 @@ const ViewTransactions = lazy(
   () => import("../../components/instructor/payout/ViewTransactions"),
 );
 const  CourseManagement  = lazy(
-  () => import("../../pages/instructor/course"),
+  () => import("../../pages/instructor/course/CourseManagement"),
 );
 
 //==============================================================
