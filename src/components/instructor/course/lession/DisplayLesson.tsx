@@ -1,16 +1,18 @@
 import Table from "antd/es/table";
 import { formatDate } from "../../../../utils/helper";
 import { useEffect, useState } from "react";
-import { message, Pagination } from "antd";
+import { Pagination } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
 import { courses } from "../../../../data/courses.json";
 import { lessons as lessonData } from "../../../../data/lessons.json";
 import { Lesson } from "../../../../models/Lesson";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
+import CreateButton from "./CreateButton";
 
 const DisplayLesson = () => {
   const [lessons, setLessons] = useState<[]>([]);
+  const [filteredLessons, setFilteredLessons] = useState<[]>([]);
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
@@ -24,6 +26,7 @@ const DisplayLesson = () => {
       };
     }) as unknown as [];
     setLessons(lessonTempData);
+    setFilteredLessons(lessonTempData);
     setTotalItems(lessonTempData.length);
   }, []);
 
@@ -37,7 +40,7 @@ const DisplayLesson = () => {
   const paginatedCourses = () => {
     const startIndex = (pageNum - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    return lessons.slice(startIndex, endIndex);
+    return filteredLessons.slice(startIndex, endIndex);
   };
   const renderMedia = (record: Lesson) => {
     if (record.video_url) {
@@ -62,6 +65,20 @@ const DisplayLesson = () => {
       );
     }
     return null;
+  };
+  const handleSearch = (searchText: string) => {
+    if (searchText === "") {
+      setFilteredLessons(lessons);
+    } else {
+      const filtered = courses.filter((course) =>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (course as any).name.toLowerCase().includes(searchText.toLowerCase()),
+      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setFilteredLessons(filtered as any);
+    }
+    setPageNum(1);
+    setTotalItems(filteredLessons.length);
   };
   const columns = [
     {
@@ -89,23 +106,26 @@ const DisplayLesson = () => {
       title: "Media",
       key: "video_url",
       dataIndex: "video_url",
-      render: (_, record: Lesson) => renderMedia(record),
-      align: "center",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      render: (_ : any, record: Lesson) => renderMedia(record),
     },
     {
       title: "Actions",
       key: "actions",
       dataIndex: "actions",
-      render: (_, record: Lesson) => renderActions(record),
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      render: (_: any, record: Lesson) => renderActions(record),
     },
   ];
   return (
     <>
-      <div className="mb-4 mt-4 w-1/5">
+      <div className="mb-4 mt-4 flex justify-between">
         <CustomSearch
-          onSearch={() => message.loading("seaching")}
+          onSearch={handleSearch}
           placeholder="Search by lesson name"
+          className="w-1/5"
         />
+        <CreateButton />
       </div>
       <Table
         columns={columns}

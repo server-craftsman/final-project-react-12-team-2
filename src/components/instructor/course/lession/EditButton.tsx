@@ -1,5 +1,5 @@
 import { Editor } from "@tinymce/tinymce-react";
-import { Button, Form, Input, Modal, Select } from "antd";
+import { Button, Form, Input, message, Modal, Select } from "antd";
 const { Option } = Select;
 import { TINY_API_KEY } from "../../../../services/config/apiClientTiny";
 import { useState } from "react";

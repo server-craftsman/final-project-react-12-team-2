@@ -9,17 +9,32 @@ import { courses as coursesData } from "../../../../data/courses.json";
 import { categories } from "../../../../data/categories.json";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
+import CreateCourseButton from "./CreateButton";
 const { Option } = Select;
-interface DisplayProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setSelectedCourse: any;
-}
-const DisplayCourse: React.FC<DisplayProps> = ({ setSelectedCourse }) => {
+
+const DisplayCourse: React.FC = () => {
   const [courses, setCourses] = useState<[]>([]);
+  const [filteredCourses, setFilteredCourses] = useState<[]>([]);
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
   const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState([]);
+
+  useEffect(() => {
+    const coursesTempData = coursesData.map((course) => {
+      const category = categories.find(
+        (category) => category.id === course.category_id,
+      );
+      return {
+        ...course,
+        category_name: category?.name,
+      };
+    }) as unknown as [];
+    setCourses(coursesTempData);
+    setTotalItems(coursesTempData.length);
+    setFilteredCourses(coursesTempData);
+  }, []);
 
   const renderStatusChange = (record: Course) => {
     const isWaitingApprove = ["new", "waiting_approve"].includes(record.status);
@@ -40,37 +55,37 @@ const DisplayCourse: React.FC<DisplayProps> = ({ setSelectedCourse }) => {
       </Select>
     );
   };
-  useEffect(() => {
-    const coursesTempData = coursesData.map((course) => {
-      const category = categories.find(
-        (category) => category.id === course.category_id,
-      );
-      return {
-        ...course,
-        category_name: category?.name,
-      };
-    }) as unknown as [];
-    setCourses(coursesTempData);
-    setTotalItems(coursesTempData.length);
-  }, []);
-
   const renderActions = (record: Course) => (
     <div className="flex space-x-2">
       <EditButton data={record} />
-      <DeleteButton  />
+      <DeleteButton />
     </div>
   );
 
   useEffect(() => {
-    setSelectedCourse(selectedRowKeys);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setSelectedCourse(selectedRowKeys as unknown as any);
   }, [selectedRowKeys, setSelectedCourse]);
 
   const paginatedCourses = () => {
     const startIndex = (pageNum - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    return courses.slice(startIndex, endIndex);
+    return filteredCourses.slice(startIndex, endIndex);
   };
-  
+  const handleSearch = (searchText: string) => {
+    if (searchText === "") {
+      setFilteredCourses(courses);
+    } else {
+      const filtered = courses.filter((course) =>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (course as any).name.toLowerCase().includes(searchText.toLowerCase()),
+      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setFilteredCourses(filtered as any);
+    }
+    setPageNum(1);
+    setTotalItems(filteredCourses.length);
+  };
   const columns: ColumnsType<Course> = [
     {
       title: "Name",
@@ -128,11 +143,21 @@ const DisplayCourse: React.FC<DisplayProps> = ({ setSelectedCourse }) => {
   };
   return (
     <>
-      <div className="mb-4 mt-4 w-1/5">
+      <div className="mb-4 mt-4 flex justify-between">
         <CustomSearch
-          onSearch={() => message.loading("seaching")}
+          onSearch={handleSearch}
           placeholder="Search by course name"
+          className="w-1/5"
         />
+        <div className="flex justify-end gap-2">
+          <CreateCourseButton />
+          <Button
+            disabled={selectedCourse.length === 0}
+            onClick={() => message.info("sending to admin")}
+          >
+            Send to Admin
+          </Button>
+        </div>
       </div>
       <Table
         rowSelection={rowSelection}

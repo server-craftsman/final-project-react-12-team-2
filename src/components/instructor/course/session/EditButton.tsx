@@ -5,7 +5,6 @@ import { TINY_API_KEY } from "../../../../services/config/apiClientTiny";
 import { useState } from "react";
 import { EditOutlined } from "@ant-design/icons";
 import { courses } from "../../../../data/courses.json";
-import { sessions as sessionData } from "../../../../data/sessions.json";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const EditButton = ({ data }: any) => {
   const [isOpen, setIsOpen] = useState(false);

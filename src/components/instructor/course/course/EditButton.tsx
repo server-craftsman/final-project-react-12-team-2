@@ -5,8 +5,8 @@ import {
   Form,
   Input,
   InputNumber,
+  message,
   Modal,
-  Radio,
   Row,
   Select,
 } from "antd";
@@ -156,19 +156,6 @@ const EditButton = ({ data }: any) => {
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item
-            label="Course Type"
-            name="courseType"
-            initialValue="free"
-            rules={[
-              { required: true, message: "Please select the course type!" },
-            ]}
-          >
-            <Radio.Group onChange={(e) => setIsFree(e.target.value === "free")}>
-              <Radio value="free">Free</Radio>
-              <Radio value="paid">Paid</Radio>
-            </Radio.Group>
-          </Form.Item>
 
           <Form.Item
             name="price"

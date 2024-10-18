@@ -1,16 +1,18 @@
 import Table from "antd/es/table";
 import { formatDate } from "../../../../utils/helper";
 import { useEffect, useState } from "react";
-import { message, Pagination } from "antd";
+import { Pagination } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
 import { courses } from "../../../../data/courses.json";
 import { sessions as sessionsData } from "../../../../data/sessions.json";
 import { Lesson } from "../../../../models/Lesson";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
+import CreateButton from "./CreateButton";
 
 const DisplaySession = () => {
   const [sessions, setSessions] = useState<[]>([]);
+  const [filteredSession, setFilteredSession] = useState<[]>([]);
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
@@ -24,6 +26,7 @@ const DisplaySession = () => {
       };
     }) as unknown as [];
     setSessions(sessionTempData);
+    setFilteredSession(sessionTempData);
     setTotalItems(sessionTempData.length);
   }, []);
 
@@ -37,31 +40,21 @@ const DisplaySession = () => {
   const paginatedCourses = () => {
     const startIndex = (pageNum - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    return sessions.slice(startIndex, endIndex);
+    return filteredSession.slice(startIndex, endIndex);
   };
-  const renderMedia = (record: Lesson) => {
-    if (record.video_url) {
-      return (
-        <div className="flex items-center justify-center">
-          <video width="200" controls className="rounded-md">
-            <source src={record.video_url} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
+  const handleSearch = (searchText: string) => {
+    if (searchText === "") {
+      setFilteredSession(sessions);
+    } else {
+      const filtered = courses.filter((course) =>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (course as any).name.toLowerCase().includes(searchText.toLowerCase()),
       );
-    } else if (record.image_url) {
-      return (
-        <div className="flex items-center justify-center">
-          <img
-            src={record.image_url}
-            alt="lesson media"
-            width="200"
-            className="rounded-md"
-          />
-        </div>
-      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setFilteredSession(filtered as any);
     }
-    return null;
+    setPageNum(1);
+    setTotalItems(filteredSession.length);
   };
   const columns = [
     {
@@ -84,16 +77,19 @@ const DisplaySession = () => {
       title: "Actions",
       key: "actions",
       dataIndex: "actions",
-      render: (_, record: Lesson) => renderActions(record),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      render: (_ : any, record: Lesson) => renderActions(record),
     },
   ];
   return (
     <>
-      <div className="mb-4 mt-4 w-1/5">
+      <div className="mb-4 mt-4 flex justify-between">
         <CustomSearch
-          onSearch={() => message.loading("seaching")}
+          onSearch={handleSearch}
           placeholder="Search by session name"
+          className="w-1/5"
         />
+        <CreateButton />
       </div>
       <Table
         columns={columns}

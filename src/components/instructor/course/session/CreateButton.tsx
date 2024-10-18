@@ -26,7 +26,7 @@ const CreateButton = () => {
     <>
       <Button
         onClick={() => openCreateModal()}
-        className="rounded-md bg-green-500 text-black"
+        className="rounded-md bg-[#1a237e] text-white"
       >
         Create Session
       </Button>
