@@ -42,7 +42,6 @@ const DisplayCourse: React.FC = () => {
       CourseStatusEnum.waiting_approve,
     ].includes(record.status);
     const isReject = [CourseStatusEnum.reject].includes(record.status);
-    console.log("🚀 ~ renderStatusChange ~ isReject:", isReject);
     return isWaitingApprove && !isReject ? (
       <Button
         type="primary"

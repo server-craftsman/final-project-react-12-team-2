@@ -46,9 +46,9 @@ const DisplaySession = () => {
     if (searchText === "") {
       setFilteredSession(sessions);
     } else {
-      const filtered = courses.filter((course) =>
+      const filtered = sessions.filter((session) =>
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (course as any).name.toLowerCase().includes(searchText.toLowerCase()),
+        (session as any).name.toLowerCase().includes(searchText.toLowerCase()),
       );
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setFilteredSession(filtered as any);
