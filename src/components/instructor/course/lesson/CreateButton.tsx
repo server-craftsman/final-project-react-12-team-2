@@ -3,23 +3,20 @@ import { Button, Form, Input, message, Modal, Select } from "antd";
 const { Option } = Select;
 import { TINY_API_KEY } from "../../../../services/config/apiClientTiny";
 import { useState } from "react";
-import { EditOutlined } from "@ant-design/icons";
 import { courses } from "../../../../data/courses.json";
 import { sessions as sessionData } from "../../../../data/sessions.json";
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const EditButton = ({ data }: any) => {
+const CreateButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
   const [sessions, setSessions] = useState([]);
-  form.setFieldsValue(data);
-
+  const [description, setDescription] = useState("");
   const openCreateModal = () => {
     setIsOpen(true);
   };
   const handleOk = async () => {
     await form.validateFields();
-    message.info("Edited")
     setIsOpen(false);
+    message.info("Created");
     form.resetFields();
   };
 
@@ -27,28 +24,26 @@ const EditButton = ({ data }: any) => {
     setIsOpen(false);
     form.resetFields();
   };
+
   function handleCourseChange(courseId: string): void {
     setSessions(
-      sessionData.map((session) => {
-        if (session.course_id === courseId) {
-          return session;
-        }
-        return;
+      sessionData.filter((session) => {
+        return session.course_id.toString() === courseId.toString();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      }) as unknown[] as any,
+      }) as any,
     );
-    throw new Error("Function not implemented.");
   }
 
   return (
     <>
       <Button
-        className="mr-2"
-        icon={<EditOutlined />}
         onClick={() => openCreateModal()}
-      />
+        className="rounded-md bg-[#1a237e] text-white"
+      >
+        Create Lesson
+      </Button>
       <Modal
-        title="Edit Lesson"
+        title="Create Lesson"
         open={isOpen}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -92,29 +87,30 @@ const EditButton = ({ data }: any) => {
             </Select>
           </Form.Item>
           <Form.Item
-            name="image_url"
+            name="Image Url"
             label="Image Url"
             rules={[{ required: true, message: "Please input the image url!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name="video_url"
+            name="Video Url"
+            initialValue=""
             label="Video Url"
             rules={[{ required: true, message: "Please input the video url!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name="description"
             label="Description"
+            name="description"
             rules={[
               { required: true, message: "Please input the description!" },
             ]}
           >
             <Editor
               apiKey={TINY_API_KEY}
-              initialValue="description"
+              initialValue={description}
               init={{
                 height: 300,
                 menubar: false,
@@ -125,6 +121,10 @@ const EditButton = ({ data }: any) => {
                 ],
                 toolbar:
                   "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code",
+              }}
+              onEditorChange={(content) => {
+                setDescription(content);
+                form.setFieldValue("description", content);
               }}
             />
           </Form.Item>
@@ -155,4 +155,4 @@ const EditButton = ({ data }: any) => {
   );
 };
 
-export default EditButton;
+export default CreateButton;
