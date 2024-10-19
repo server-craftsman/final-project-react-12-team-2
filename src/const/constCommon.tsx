@@ -1,4 +1,5 @@
 import { lazy } from "react";
+import { CourseStatusEnum } from "../models/Course";
 
 //lazy import
 export const MainLayout = lazy(
@@ -38,3 +39,12 @@ export const lessonDetailsRoute = {
   element: <LessonDetails />,
 };
 export const cartRoute = { path: "cart", element: <CartPage /> };
+
+export const courseStatusName = {
+  [CourseStatusEnum.new]: 'New',
+  [CourseStatusEnum.waiting_approve]: 'Waiting for Approval',
+  [CourseStatusEnum.approve]: 'Approved',
+  [CourseStatusEnum.reject]: 'Rejected',
+  [CourseStatusEnum.active]: 'Active',
+  [CourseStatusEnum.inactive]: 'Inactive'
+};
