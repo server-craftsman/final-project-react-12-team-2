@@ -48,3 +48,6 @@ export const courseStatusName = {
   [CourseStatusEnum.active]: 'Active',
   [CourseStatusEnum.inactive]: 'Inactive'
 };
+export function capitalizeWords(str: string): string {
+  return str.replace(/\b\w/g, (char) => char.toUpperCase());
+}
