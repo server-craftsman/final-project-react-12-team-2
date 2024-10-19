@@ -10,8 +10,8 @@ import { categories } from "../../../../data/categories.json";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
 import CreateCourseButton from "./CreateButton";
+import { courseStatusName } from "../../../../const/constCommon";
 const { Option } = Select;
-
 const DisplayCourse: React.FC = () => {
   const [courses, setCourses] = useState<[]>([]);
   const [filteredCourses, setFilteredCourses] = useState<[]>([]);
@@ -37,9 +37,13 @@ const DisplayCourse: React.FC = () => {
   }, []);
 
   const renderStatusChange = (record: Course) => {
-    const isWaitingApprove = ["new", "waiting_approve"].includes(record.status);
-
-    return isWaitingApprove ? (
+    const isWaitingApprove = [
+      CourseStatusEnum.new,
+      CourseStatusEnum.waiting_approve,
+    ].includes(record.status);
+    const isReject = [CourseStatusEnum.reject].includes(record.status);
+    console.log("🚀 ~ renderStatusChange ~ isReject:", isReject);
+    return isWaitingApprove && !isReject ? (
       <Button
         type="primary"
         onClick={() =>
@@ -47,6 +51,15 @@ const DisplayCourse: React.FC = () => {
         }
       >
         Waiting approval
+      </Button>
+    ) : isReject ? (
+      <Button
+        danger
+        type="dashed"
+        className="w-[140px]"
+        onClick={() => message.error("This course is rejected")}
+      >
+        Rejected
       </Button>
     ) : (
       <Select defaultValue={record.status} style={{ width: 140 }}>
@@ -61,7 +74,9 @@ const DisplayCourse: React.FC = () => {
       <DeleteButton />
     </div>
   );
-
+  const getCourseStatusName = (status: CourseStatusEnum): string => {
+    return courseStatusName[status] || "Unknown status";
+  };
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setSelectedCourse(selectedRowKeys as unknown as any);
@@ -102,7 +117,7 @@ const DisplayCourse: React.FC = () => {
       key: "status",
       dataIndex: "status",
       render: (status: CourseStatusEnum) => (
-        <button className={courseStatusColor(status)}>{status}</button>
+        <button className={courseStatusColor(status)}>{getCourseStatusName(status)}</button>
       ),
     },
     {
