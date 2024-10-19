@@ -10,7 +10,7 @@ import { categories } from "../../../../data/categories.json";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
 import CreateCourseButton from "./CreateButton";
-import { courseStatusName } from "../../../../const/constCommon";
+import { capitalizeWords, courseStatusName } from "../../../../const/constCommon";
 const { Option } = Select;
 const DisplayCourse: React.FC = () => {
   const [courses, setCourses] = useState<[]>([]);
@@ -62,7 +62,7 @@ const DisplayCourse: React.FC = () => {
         Rejected
       </Button>
     ) : (
-      <Select defaultValue={record.status} style={{ width: 140 }}>
+      <Select defaultValue={capitalizeWords(record.status)} style={{ width: 140 }}>
         <Option value="active">Active</Option>
         <Option value="inactive">Inactive</Option>
       </Select>
