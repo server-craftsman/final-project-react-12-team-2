@@ -7,17 +7,18 @@ import { EditOutlined } from "@ant-design/icons";
 import { courses } from "../../../../data/courses.json";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const EditButton = ({ data }: any) => {
+  console.log("🚀 ~ EditButton ~ data:", data);
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
   form.setFieldsValue(data);
-
+  const [, setDescription] = useState<string>("");
   const openCreateModal = () => {
     setIsOpen(true);
   };
   const handleOk = async () => {
     await form.validateFields();
     setIsOpen(false);
-    message.info("Edited")
+    message.info("Edited");
     form.resetFields();
   };
 
@@ -65,6 +66,7 @@ const EditButton = ({ data }: any) => {
             </Select>
           </Form.Item>
           <Form.Item
+            name="description"
             label="Description"
             rules={[
               { required: true, message: "Please input the description!" },
@@ -72,7 +74,7 @@ const EditButton = ({ data }: any) => {
           >
             <Editor
               apiKey={TINY_API_KEY}
-              initialValue="description"
+              initialValue="Description"
               init={{
                 height: 300,
                 menubar: false,
@@ -83,6 +85,10 @@ const EditButton = ({ data }: any) => {
                 ],
                 toolbar:
                   "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code",
+              }}
+              onEditorChange={(content) => {
+                setDescription(content);
+                form.setFieldsValue({ description: content });
               }}
             />
           </Form.Item>

@@ -2,20 +2,27 @@ import { Editor } from "@tinymce/tinymce-react";
 import { Button, Form, Input, message, Modal, Select } from "antd";
 const { Option } = Select;
 import { TINY_API_KEY } from "../../../../services/config/apiClientTiny";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { EditOutlined } from "@ant-design/icons";
 import { courses } from "../../../../data/courses.json";
 import { sessions as sessionData } from "../../../../data/sessions.json";
-const CreateButton = () => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const EditButton = ({ data }: any) => {
+  console.log("🚀 ~ EditButton ~ data:", data);
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
   const [sessions, setSessions] = useState([]);
+  useEffect(() => {
+    form.setFieldsValue(data);
+    handleCourseChange(data.course_id)
+  }, [data, form]);
   const openCreateModal = () => {
     setIsOpen(true);
   };
   const handleOk = async () => {
     await form.validateFields();
+    message.info("Edited");
     setIsOpen(false);
-    message.info("Created");
     form.resetFields();
   };
 
@@ -23,30 +30,24 @@ const CreateButton = () => {
     setIsOpen(false);
     form.resetFields();
   };
-
   function handleCourseChange(courseId: string): void {
     setSessions(
-      sessionData.map((session) => {
-        if (session.course_id === courseId) {
-          return session;
-        }
-        return;
+      sessionData.filter((session) => {
+        return session.course_id.toString() === courseId.toString();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      }) as unknown[] as any,
+      }) as any,
     );
-    throw new Error("Function not implemented.");
   }
 
   return (
     <>
       <Button
+        className="mr-2"
+        icon={<EditOutlined />}
         onClick={() => openCreateModal()}
-        className="rounded-md bg-[#1a237e] text-white"
-      >
-        Create Lesson
-      </Button>
+      />
       <Modal
-        title="Create Lesson"
+        title="Edit Lesson"
         open={isOpen}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -90,20 +91,21 @@ const CreateButton = () => {
             </Select>
           </Form.Item>
           <Form.Item
-            name="Image Url"
+            name="image_url"
             label="Image Url"
             rules={[{ required: true, message: "Please input the image url!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
-            name="Video Url"
+            name="video_url"
             label="Video Url"
             rules={[{ required: true, message: "Please input the video url!" }]}
           >
             <Input />
           </Form.Item>
           <Form.Item
+            name="description"
             label="Description"
             rules={[
               { required: true, message: "Please input the description!" },
@@ -152,4 +154,4 @@ const CreateButton = () => {
   );
 };
 
-export default CreateButton;
+export default EditButton;

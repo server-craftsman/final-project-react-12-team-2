@@ -28,7 +28,7 @@ const CreateCourseButton = () => {
   const handleOk = async () => {
     await form.validateFields();
     setIsOpen(false);
-    message.info("Created")
+    message.info("Created");
     form.resetFields();
     setDescription("");
     setContent("");
@@ -69,6 +69,7 @@ const CreateCourseButton = () => {
               <Form.Item
                 name="name"
                 label="Course Name"
+                initialValue=""
                 rules={[
                   { required: true, message: "Please input the course name!" },
                 ]}
@@ -79,6 +80,7 @@ const CreateCourseButton = () => {
             <Col span={12}>
               <Form.Item
                 name="category_id"
+                initialValue=""
                 label="Category"
                 rules={[
                   { required: true, message: "Please select a category!" },
@@ -103,7 +105,7 @@ const CreateCourseButton = () => {
           >
             <Editor
               apiKey={TINY_API_KEY}
-              initialValue="description"
+              initialValue={description}
               init={{
                 height: 300,
                 menubar: false,
@@ -114,6 +116,10 @@ const CreateCourseButton = () => {
                 ],
                 toolbar:
                   "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code",
+              }}
+              onEditorChange={(content) => {
+                setDescription(content);
+                form.setFieldsValue({ description: content });
               }}
             />
           </Form.Item>
@@ -124,7 +130,7 @@ const CreateCourseButton = () => {
           >
             <Editor
               apiKey={TINY_API_KEY}
-              initialValue="content"
+              initialValue={content}
               init={{
                 height: 300,
                 menubar: false,
@@ -136,12 +142,17 @@ const CreateCourseButton = () => {
                 toolbar:
                   "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code",
               }}
+              onEditorChange={(content) => {
+                setContent(content);
+                form.setFieldsValue({ content: content });
+              }}
             />
           </Form.Item>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
                 name="image_url"
+                initialValue=""
                 label="Upload Image"
                 rules={[{ required: true, message: "Please upload an image!" }]}
               >

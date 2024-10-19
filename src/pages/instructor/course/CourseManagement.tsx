@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Content } from "antd/es/layout/layout";
 import CourseComponent from "../../../components/instructor/course/course/CourseComponent";
 import SessionComponent from "../../../components/instructor/course/session/SessionComponent";
-import LessionComponent from "../../../components/instructor/course/lession/LessionComponent";
+import LessionComponent from "../../../components/instructor/course/lesson/LessionComponent";
 
 const CourseManagement = () => {
   const [activeTab, setActiveTab] = useState("course");
