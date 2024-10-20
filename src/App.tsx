@@ -5,14 +5,24 @@ import ScrollToTopButton from "./components/generic/home/ScrollToTopButton";
 import { AuthProvider } from "./context/AuthContext"; // Import AuthProvider
 
 // Import Routes
-import useProtectedRoutes from "./routes/protected/protectedRoutes";
+// import useProtectedRoutes from "./routes/protected/protectedRoutes";
 import publishRoutes from "./routes/publish/publishRoutes";
+
+import adminRoutes from "./routes/subs/adminRoutes";
+import instructorRoutes from "./routes/subs/instructorRoutes";
+import studentRoutes from "./routes/subs/studentRoutes";
 import { CartProvider } from "./context/CartContext";
 //==============================
 
 const App = () => {
-  const protectedRoutes = useProtectedRoutes();
-  const router = createBrowserRouter([...protectedRoutes, ...publishRoutes]);
+  // const protectedRoutes = useProtectedRoutes();
+  const router = createBrowserRouter([
+    ...adminRoutes,
+    ...instructorRoutes,
+    ...studentRoutes,
+    // ...protectedRoutes,
+    ...publishRoutes,
+  ]);
 
   return (
     <>
