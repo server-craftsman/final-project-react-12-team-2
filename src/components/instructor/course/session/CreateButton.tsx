@@ -7,6 +7,7 @@ import { courses } from "../../../../data/courses.json";
 const CreateButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
+  const [description, setDescription] = useState("");
   const openCreateModal = () => {
     setIsOpen(true);
   };
@@ -63,13 +64,14 @@ const CreateButton = () => {
           </Form.Item>
           <Form.Item
             label="Description"
+            name="description"
             rules={[
               { required: true, message: "Please input the description!" },
             ]}
           >
             <Editor
               apiKey={TINY_API_KEY}
-              initialValue="description"
+              initialValue={description}
               init={{
                 height: 300,
                 menubar: false,
@@ -80,6 +82,10 @@ const CreateButton = () => {
                 ],
                 toolbar:
                   "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code",
+              }}
+              onEditorChange={(content) => {
+                setDescription(content);
+                form.setFieldValue("description", content);
               }}
             />
           </Form.Item>
