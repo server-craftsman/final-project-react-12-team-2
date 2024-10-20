@@ -8,7 +8,7 @@ const { Title } = Typography;
 
 const Profile = () => {
   const adminUser = usersData.users.find(
-    (user) => user.role === UserRole.ADMIN,
+    (user) => user.role === UserRole.admin,
   );
 
   const items = [

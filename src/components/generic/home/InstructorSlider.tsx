@@ -10,7 +10,7 @@ import "swiper/css/effect-coverflow";
 
 const InstructorSlider = () => {
   const instructors = userData.users.filter(
-    (user) => user.role === UserRole.INSTRUCTOR,
+    (user) => user.role === UserRole.instructor,
   );
   const [activeIndex, setActiveIndex] = useState(0);
 

@@ -20,7 +20,7 @@ const CustomSearch: React.FC<SearchProps> = ({
       setSearchTerm(value);
       onSearch(value);
     },
-    [onSearch]
+    [onSearch],
   );
 
   const memoizedPlaceholder = useMemo(() => `🔍 ${placeholder}`, [placeholder]);

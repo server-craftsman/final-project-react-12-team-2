@@ -6,12 +6,30 @@ import { CLIENT_ID } from "../../const/authentication";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import LoginGoogle from "./LoginGoogle";
 import { useState } from "react";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import userData from "../../data/users.json";
+import { User } from "../../models/User";
+import { UserRole } from "../../models/User";
 
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
+  const { setUser, setRole } = useContext(AuthContext);
 
   const onFinish = (values: any) => {
     console.log("Received values of form: ", values);
+    const user = userData.users.find(
+      (user) => user.email === values.username,
+    ) as User | undefined;
+
+    if (user) {
+      const role = user.role as UserRole; // Cast role to UserRole
+      setUser(user);
+      setRole(role); // Ensure role is set
+      console.log("role", role);
+    } else {
+      setLoginError("User not found");
+    }
   };
 
   const validatePassword = (_: any, value: string) => {

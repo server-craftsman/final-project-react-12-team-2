@@ -17,7 +17,7 @@ const EditButton = ({ data }: any) => {
   const handleOk = async () => {
     await form.validateFields();
     setIsOpen(false);
-    message.info("Edited")
+    message.info("Edited");
     form.resetFields();
   };
 

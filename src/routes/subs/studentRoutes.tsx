@@ -30,7 +30,6 @@ const studentRoutes: RouteObject[] = [
       { path: "student/edit-user/:id", element: <EditUserProfile /> },
     ],
   },
-
 ];
 
 export default studentRoutes;

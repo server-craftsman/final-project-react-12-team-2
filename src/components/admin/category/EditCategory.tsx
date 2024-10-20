@@ -18,9 +18,13 @@ const EditCategory = () => {
   };
 
   return (
-    <Form layout="vertical" onFinish={onFinish} initialValues={{
-      ...category,
-    }}>
+    <Form
+      layout="vertical"
+      onFinish={onFinish}
+      initialValues={{
+        ...category,
+      }}
+    >
       <Row gutter={16}>
         <Col span={12}>
           <Form.Item label="Name" name="name">
@@ -32,7 +36,7 @@ const EditCategory = () => {
             <Input />
           </Form.Item>
         </Col>
-      </Row>      
+      </Row>
       <Form.Item>
         <Button type="primary" htmlType="submit">
           Save

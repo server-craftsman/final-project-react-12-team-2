@@ -1,13 +1,17 @@
-import React from 'react'
-import { Select } from 'antd'
-import { UserRole } from '../../../models/User';
+import React from "react";
+import { Select } from "antd";
+import { UserRole } from "../../../models/User";
 
 interface FilterRoleProps {
   onRoleChange: (role: UserRole | null) => void;
 }
 
 const FilterRole: React.FC<FilterRoleProps> = ({ onRoleChange }) => {
-  const rolesToInclude = [UserRole.INSTRUCTOR, UserRole.ADMIN, UserRole.STUDENT];
+  const rolesToInclude = [
+    UserRole.instructor,
+    UserRole.admin,
+    UserRole.student,
+  ];
 
   return (
     <Select
@@ -24,7 +28,7 @@ const FilterRole: React.FC<FilterRoleProps> = ({ onRoleChange }) => {
         </Select.Option>
       ))}
     </Select>
-  )
-}
+  );
+};
 
-export default FilterRole
+export default FilterRole;

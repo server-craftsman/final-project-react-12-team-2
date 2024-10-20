@@ -1,11 +1,13 @@
-import React from 'react'
-import { Select } from 'antd'
+import React from "react";
+import { Select } from "antd";
 
 interface FilterRequestAccountProps {
   onStatusChange: (status: boolean | null) => void;
 }
 
-const FilterRequestAccount: React.FC<FilterRequestAccountProps> = ({ onStatusChange }) => {
+const FilterRequestAccount: React.FC<FilterRequestAccountProps> = ({
+  onStatusChange,
+}) => {
   return (
     <div>
       <Select
@@ -20,7 +22,7 @@ const FilterRequestAccount: React.FC<FilterRequestAccountProps> = ({ onStatusCha
         <Select.Option value={false}>Inactive</Select.Option>
       </Select>
     </div>
-  )
-}
+  );
+};
 
 export default FilterRequestAccount;

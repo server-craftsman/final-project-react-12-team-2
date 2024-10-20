@@ -2,20 +2,25 @@ import React, { useState } from "react";
 import { Button, Table, Tag } from "antd";
 import payoutData from "../../../data/payouts.json";
 import { formatDate, moneyFormat } from "../../../utils/helper";
+const ViewTransactions = React.lazy(() => import("./ViewTransactions"));
 import { Payout, PayoutStatusEnum } from "../../../models/Payout";
-import ViewTransactions from "./ViewTransactions";
 import { InstructorTransaction } from "../../../models/InstructorTransaction";
 import instructorTransactions from "../../../data/instructor_transactions.json";
 
-const InstructorPayout: React.FC<{ searchQuery: string; filterStatus: string }> = ({ searchQuery, filterStatus }) => {
+const InstructorPayout: React.FC<{
+  searchQuery: string;
+  filterStatus: string;
+}> = ({ searchQuery, filterStatus }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedTransactions, setSelectedTransactions] = useState<InstructorTransaction[]>([]);
+  const [selectedTransactions, setSelectedTransactions] = useState<
+    InstructorTransaction[]
+  >([]);
 
   const showModal = (payoutId: string) => {
     const transactions = instructorTransactions.transactions.filter(
-      (transaction) => transaction.payout_id === payoutId
+      (transaction) => transaction.payout_id === payoutId,
     );
-    setSelectedTransactions(transactions); 
+    setSelectedTransactions(transactions);
     setIsModalVisible(true);
   };
 
@@ -76,19 +81,22 @@ const InstructorPayout: React.FC<{ searchQuery: string; filterStatus: string }> 
       title: "Balance Origin",
       dataIndex: "balance_origin",
       key: "balance_origin",
-      render: (money: number | undefined) => money !== undefined ? moneyFormat(money) : 'N/A',
+      render: (money: number | undefined) =>
+        money !== undefined ? moneyFormat(money) : "N/A",
     },
     {
       title: "Instructor Paid",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
-      render: (money: number | undefined) => money !== undefined ? moneyFormat(money) : 'N/A',
+      render: (money: number | undefined) =>
+        money !== undefined ? moneyFormat(money) : "N/A",
     },
     {
       title: "Instructor Received",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
-      render: (money: number | undefined) => money !== undefined ? moneyFormat(money) : 'N/A',
+      render: (money: number | undefined) =>
+        money !== undefined ? moneyFormat(money) : "N/A",
     },
     {
       title: "Created At",
@@ -103,7 +111,7 @@ const InstructorPayout: React.FC<{ searchQuery: string; filterStatus: string }> 
     const matchesStatus = filterStatus === "" || payout.status === filterStatus;
     return matchesSearchQuery && matchesStatus;
   });
-  
+
   return (
     <div>
       <Table

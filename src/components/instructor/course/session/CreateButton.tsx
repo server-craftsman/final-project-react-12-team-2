@@ -13,7 +13,7 @@ const CreateButton = () => {
   const handleOk = async () => {
     await form.validateFields();
     setIsOpen(false);
-    message.info("Created")
+    message.info("Created");
     form.resetFields();
   };
 

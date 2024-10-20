@@ -27,9 +27,9 @@ const ViewUserProfileDetail = () => {
     return <div>User not found</div>;
   }
   const rolesToInclude = [
-    UserRole.INSTRUCTOR,
-    UserRole.ADMIN,
-    UserRole.STUDENT,
+    UserRole.instructor,
+    UserRole.admin,
+    UserRole.student,
   ];
 
   return (

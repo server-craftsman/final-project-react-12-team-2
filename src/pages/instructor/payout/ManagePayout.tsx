@@ -13,9 +13,16 @@ const ManagePayout: React.FC = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
-        <CustomSearch onSearch={handleSearch} placeholder="Search Payout" className="search-input" />
-        <FilterStatus filterStatus={filterStatus} setFilterStatus={setFilterStatus} />
+      <div className="mb-4 flex items-center justify-between">
+        <CustomSearch
+          onSearch={handleSearch}
+          placeholder="Search Payout"
+          className="search-input"
+        />
+        <FilterStatus
+          filterStatus={filterStatus}
+          setFilterStatus={setFilterStatus}
+        />
       </div>
       <InstructorPayout searchQuery={searchQuery} filterStatus={filterStatus} />
     </div>

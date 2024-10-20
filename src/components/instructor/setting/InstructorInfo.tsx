@@ -8,7 +8,7 @@ const { Title } = Typography;
 const InstructorInfo = () => {
   const navigate = useNavigate();
   const instructorUser = usersData.users.find(
-    (user) => user.role === UserRole.INSTRUCTOR,
+    (user) => user.role === UserRole.instructor,
   );
 
   if (!instructorUser) {

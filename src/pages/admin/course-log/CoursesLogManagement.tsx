@@ -28,9 +28,10 @@ const CoursesLogManagement: React.FC = () => {
     });
 
     // Filter courses based on the searchTerm and statusFilter
-    const filteredData = mergedData.filter((course) =>
-      course.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (statusFilter === "all" || course.newStatus === statusFilter)
+    const filteredData = mergedData.filter(
+      (course) =>
+        course.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (statusFilter === "all" || course.newStatus === statusFilter),
     );
 
     setData(filteredData as Course[]);

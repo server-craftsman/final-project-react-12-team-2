@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const AdminInfo = () => {
   const navigate = useNavigate();
   const adminUser = usersData.users.find(
-    (user) => user.role === UserRole.ADMIN,
+    (user) => user.role === UserRole.admin,
   );
 
   if (!adminUser) {

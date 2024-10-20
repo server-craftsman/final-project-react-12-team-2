@@ -34,17 +34,17 @@ const CartPage: React.FC = () => {
     const isChecked = e.target.checked;
     setSelectAll(isChecked);
     if (isChecked) {
-      setSelectedItems(cartItems.map(item => item.id));
+      setSelectedItems(cartItems.map((item) => item.id));
     } else {
       setSelectedItems([]);
     }
   };
 
   const handleItemSelectChange = (itemId: string) => {
-    setSelectedItems(prevSelectedItems =>
+    setSelectedItems((prevSelectedItems) =>
       prevSelectedItems.includes(itemId)
-        ? prevSelectedItems.filter(id => id !== itemId)
-        : [...prevSelectedItems, itemId]
+        ? prevSelectedItems.filter((id) => id !== itemId)
+        : [...prevSelectedItems, itemId],
     );
   };
 
@@ -68,7 +68,10 @@ const CartPage: React.FC = () => {
               renderItem={(item) => (
                 <List.Item>
                   <Card className="w-full rounded-lg shadow-lg">
-                    <Row gutter={16} className="flex items-center justify-between">
+                    <Row
+                      gutter={16}
+                      className="flex items-center justify-between"
+                    >
                       <Col span={1}>
                         <Checkbox
                           checked={selectedItems.includes(item.id)}
@@ -80,7 +83,7 @@ const CartPage: React.FC = () => {
                           Cart No: {numberCartNo(item.cart_no)}
                         </Text>
                       </Col>
-                      
+
                       <Col span={16} className="text-right">
                         <Text className="mr-2 text-lg font-bold text-[#02005dc6]">
                           ${item.discountedPrice.toFixed(2)}
@@ -95,8 +98,7 @@ const CartPage: React.FC = () => {
                         </Button>
                       </Col>
                     </Row>
-                    <Row gutter={16} className="mt-4 flex ">
-
+                    <Row gutter={16} className="mt-4 flex">
                       <Col span={4}>
                         <Text className="text-gray-500">
                           Price Paid: ${item.price_paid.toFixed(2)}
@@ -130,7 +132,7 @@ const CartPage: React.FC = () => {
               </Text>
             </div>
             <div className="flex justify-between">
-            <Text className="text-lg font-bold">Total:</Text>
+              <Text className="text-lg font-bold">Total:</Text>
               <Text className="text-lg font-bold">
                 $
                 {cartItems

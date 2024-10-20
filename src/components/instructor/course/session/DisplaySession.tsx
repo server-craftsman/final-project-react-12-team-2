@@ -78,7 +78,7 @@ const DisplaySession = () => {
       key: "actions",
       dataIndex: "actions",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      render: (_ : any, record: Lesson) => renderActions(record),
+      render: (_: any, record: Lesson) => renderActions(record),
     },
   ];
   return (

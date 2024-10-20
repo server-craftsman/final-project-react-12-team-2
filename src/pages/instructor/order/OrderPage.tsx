@@ -28,7 +28,11 @@ const OrderPage = () => {
 
   return (
     <div>
-      <CustomSearch onSearch={setSearchTerm} placeholder="Search Orders" className="search-input" />
+      <CustomSearch
+        onSearch={setSearchTerm}
+        placeholder="Search Orders"
+        className="search-input"
+      />
       <Tabs defaultActiveKey="1" items={items} />
     </div>
   );

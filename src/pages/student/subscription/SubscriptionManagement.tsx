@@ -19,7 +19,7 @@ const SubscriptionManagement: React.FC = () => {
         const user = data.users.find(
           (user: any) => user.id === subscription.instructor_id,
         );
-        return user?.role === UserRole.INSTRUCTOR;
+        return user?.role === UserRole.instructor;
       },
     );
     setFilteredSubscriptions(instructorSubscriptions);
@@ -32,7 +32,7 @@ const SubscriptionManagement: React.FC = () => {
         (user: any) => user.id === subscription.instructor_id,
       );
       return (
-        user?.role === UserRole.INSTRUCTOR &&
+        user?.role === UserRole.instructor &&
         (user?.name.toLowerCase().includes(lowercasedValue) ||
           user?.email.toLowerCase().includes(lowercasedValue) ||
           user?.phone_number.toLowerCase().includes(lowercasedValue) ||

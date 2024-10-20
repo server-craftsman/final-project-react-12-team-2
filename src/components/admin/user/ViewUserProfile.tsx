@@ -10,7 +10,11 @@ interface ViewUserProfileProps {
   selectedStatus: boolean | null;
 }
 
-const ViewUserProfile = ({ searchQuery, selectedRole, selectedStatus }: ViewUserProfileProps) => {
+const ViewUserProfile = ({
+  searchQuery,
+  selectedRole,
+  selectedStatus,
+}: ViewUserProfileProps) => {
   const navigate = useNavigate();
 
   const handleViewDetails = (userId: string) => {
@@ -23,7 +27,7 @@ const ViewUserProfile = ({ searchQuery, selectedRole, selectedStatus }: ViewUser
         (user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           user.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
         (selectedRole === null || user.role === selectedRole) &&
-        (selectedStatus === null || user.status === selectedStatus)
+        (selectedStatus === null || user.status === selectedStatus),
     )
     .map((user) => ({
       ...user,
@@ -54,7 +58,9 @@ const ViewUserProfile = ({ searchQuery, selectedRole, selectedStatus }: ViewUser
       dataIndex: "status",
       key: "status",
       render: (status: boolean) => (
-        <span className={userStatusColor(status)}>{status ? "Active" : "Inactive"}</span>
+        <span className={userStatusColor(status)}>
+          {status ? "Active" : "Inactive"}
+        </span>
       ),
     },
     {

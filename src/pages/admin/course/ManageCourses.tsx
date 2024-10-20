@@ -10,13 +10,18 @@ import { CourseStatusEnum } from "../../../models/Course";
 const ManageCourses = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeKey, setActiveKey] = useState("1");
-  const [statusFilter, setStatusFilter] = useState<CourseStatusEnum | ''>('');
+  const [statusFilter, setStatusFilter] = useState<CourseStatusEnum | "">("");
 
   const items = [
     {
       key: "1",
       label: "Courses",
-      children: <CoursesManagement searchTerm={searchTerm} statusFilter={statusFilter} />,
+      children: (
+        <CoursesManagement
+          searchTerm={searchTerm}
+          statusFilter={statusFilter}
+        />
+      ),
     },
     {
       key: "2",
@@ -38,16 +43,16 @@ const ManageCourses = () => {
     setActiveKey(key);
   };
 
-  const handleStatusChange = (status: CourseStatusEnum | '') => {
+  const handleStatusChange = (status: CourseStatusEnum | "") => {
     setStatusFilter(status);
   };
 
   return (
     <div className="w-full flex-col gap-4">
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <CustomSearch
           onSearch={handleSearch}
-        placeholder={`Search ${activeKey === "1" ? "courses" : activeKey === "2" ? "sessions" : "lessons"}...`}
+          placeholder={`Search ${activeKey === "1" ? "courses" : activeKey === "2" ? "sessions" : "lessons"}...`}
           className="search-input mb-4"
         />
         {activeKey === "1" && (

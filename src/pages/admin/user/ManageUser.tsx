@@ -37,17 +37,13 @@ const ManageUser = () => {
   return (
     <div className="items-center justify-center border-b border-gray-300">
       <div className="flex flex-col items-center p-4 md:flex-row">
-        <CustomSearch 
-          onSearch={handleSearch} 
-          placeholder="Search by name or email" 
-          className="search-input mr-4" 
+        <CustomSearch
+          onSearch={handleSearch}
+          placeholder="Search by name or email"
+          className="search-input mr-4"
         />
-        <FilterRole 
-          onRoleChange={handleRoleChange} 
-        />
-        <FilterStatus 
-          onStatusChange={handleStatusChange} 
-        />
+        <FilterRole onRoleChange={handleRoleChange} />
+        <FilterStatus onStatusChange={handleStatusChange} />
         <CreateUserProfile />
       </div>
       <ViewUserProfile

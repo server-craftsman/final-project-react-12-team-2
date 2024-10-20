@@ -10,7 +10,10 @@ interface ViewRequestAccount {
   selectedStatus: boolean | null;
 }
 
-const ViewRequestAccount = ({ searchQuery, selectedStatus }: ViewRequestAccount) => {
+const ViewRequestAccount = ({
+  searchQuery,
+  selectedStatus,
+}: ViewRequestAccount) => {
   const [updatedUsers, setUpdatedUsers] = useState<string[]>([]); // State to track updated user IDs
 
   // const navigate = useNavigate();
@@ -26,7 +29,7 @@ const ViewRequestAccount = ({ searchQuery, selectedStatus }: ViewRequestAccount)
         !user.is_verified && // Only show users who are not verified
         (user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
           user.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
-        (selectedStatus === null || user.status === selectedStatus)
+        (selectedStatus === null || user.status === selectedStatus),
     )
     .map((user) => ({
       ...user,
@@ -53,7 +56,9 @@ const ViewRequestAccount = ({ searchQuery, selectedStatus }: ViewRequestAccount)
 
       // Here you would typically trigger an API call to update the backend
       console.log("Updated user status for ID:", userId);
-      message.success(`User ID: ${userId} has been ${isVerified ? "approved" : "rejected"}`);
+      message.success(
+        `User ID: ${userId} has been ${isVerified ? "approved" : "rejected"}`,
+      );
     }
   };
 
@@ -98,33 +103,42 @@ const ViewRequestAccount = ({ searchQuery, selectedStatus }: ViewRequestAccount)
       dataIndex: "status",
       key: "status",
       render: (status: boolean) => (
-        <span className={userStatusColor(status)}>{status ? "Active" : "Inactive"}</span>
+        <span className={userStatusColor(status)}>
+          {status ? "Active" : "Inactive"}
+        </span>
       ),
     },
     {
       title: "Action",
       key: "action",
       render: (_: unknown, record: User) => (
-        <div className="flex items-center justify-between" style={{ minHeight: "48px" }}>
-          {!record.is_verified && !updatedUsers.includes(record.id) && ( // Check if the action has been taken
-            <>
-              <button
-                onClick={() => handleApprove(record.id, true)}
-                className="rounded-md bg-blue-500 px-4 py-2 text-white"
-                style={{ width: "100px", marginRight: "4px" }} // Adjust margin for closeness
-              >
-                Approve
-              </button>
-              <button
-                onClick={() => handleApprove(record.id, false)}
-                className="rounded-md bg-red-500 px-4 py-2 text-white"
-                style={{ width: "70px" }}
-              >
-                Reject
-              </button>
-            </>
-          )}
-          {updatedUsers.includes(record.id) && <span className="text-green-500"></span>} {/* Show completed status */}
+        <div
+          className="flex items-center justify-between"
+          style={{ minHeight: "48px" }}
+        >
+          {!record.is_verified &&
+            !updatedUsers.includes(record.id) && ( // Check if the action has been taken
+              <>
+                <button
+                  onClick={() => handleApprove(record.id, true)}
+                  className="rounded-md bg-blue-500 px-4 py-2 text-white"
+                  style={{ width: "100px", marginRight: "4px" }} // Adjust margin for closeness
+                >
+                  Approve
+                </button>
+                <button
+                  onClick={() => handleApprove(record.id, false)}
+                  className="rounded-md bg-red-500 px-4 py-2 text-white"
+                  style={{ width: "70px" }}
+                >
+                  Reject
+                </button>
+              </>
+            )}
+          {updatedUsers.includes(record.id) && (
+            <span className="text-green-500"></span>
+          )}{" "}
+          {/* Show completed status */}
         </div>
       ),
     },

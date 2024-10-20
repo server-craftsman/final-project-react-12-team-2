@@ -1,4 +1,3 @@
-
 import usersData from "../../../data/users.json"; // Adjust the path as necessary
 import { UserRole } from "../../../models/User";
 import { Descriptions, Button } from "antd";
@@ -8,7 +7,7 @@ import { formatDate } from "../../../utils/helper";
 const StudentInformation = () => {
   const navigate = useNavigate();
   const studentUser = usersData.users.find(
-    (user) => user.role === UserRole.STUDENT,
+    (user) => user.role === UserRole.student,
   );
 
   const handleEdit = () => {

@@ -61,9 +61,12 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm }) => {
     },
   ];
 
-  const filteredLessons = lessons.filter(lesson =>
-    lesson.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    getCoursesNameBySessionId(lesson.course_id).toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredLessons = lessons.filter(
+    (lesson) =>
+      lesson.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      getCoursesNameBySessionId(lesson.course_id)
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()),
   );
 
   return <Table columns={columns} dataSource={filteredLessons} rowKey="id" />;

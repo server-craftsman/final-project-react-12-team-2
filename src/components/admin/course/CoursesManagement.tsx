@@ -6,7 +6,10 @@ import { CheckOutlined, StopOutlined } from "@ant-design/icons";
 import courseData from "../../../data/courses.json";
 import { Course, CourseStatusEnum } from "../../../models/Course"; // Import the Course model
 
-const CoursesManagement: React.FC<{ searchTerm: string; statusFilter: CourseStatusEnum | '' }> = ({ searchTerm, statusFilter }) => {
+const CoursesManagement: React.FC<{
+  searchTerm: string;
+  statusFilter: CourseStatusEnum | "";
+}> = ({ searchTerm, statusFilter }) => {
   const [coursesData, setCourses] = useState<Course[]>(
     courseData.courses as unknown as Course[],
   );
@@ -63,9 +66,7 @@ const CoursesManagement: React.FC<{ searchTerm: string; statusFilter: CourseStat
       key: "status",
       render: (status: CourseStatusEnum) => (
         <span className={courseStatusColor(status)}>
-          {status === CourseStatusEnum.reject
-            ? "Reject"
-            : status}
+          {status === CourseStatusEnum.reject ? "Reject" : status}
         </span>
       ),
     },
@@ -98,9 +99,10 @@ const CoursesManagement: React.FC<{ searchTerm: string; statusFilter: CourseStat
     },
   ];
 
-  const filteredCourses = coursesData.filter(course =>
-    course.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (statusFilter === '' || course.status === statusFilter) 
+  const filteredCourses = coursesData.filter(
+    (course) =>
+      course.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (statusFilter === "" || course.status === statusFilter),
   );
 
   return (

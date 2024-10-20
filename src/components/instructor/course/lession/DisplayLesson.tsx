@@ -107,13 +107,13 @@ const DisplayLesson = () => {
       key: "video_url",
       dataIndex: "video_url",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      render: (_ : any, record: Lesson) => renderMedia(record),
+      render: (_: any, record: Lesson) => renderMedia(record),
     },
     {
       title: "Actions",
       key: "actions",
       dataIndex: "actions",
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       render: (_: any, record: Lesson) => renderActions(record),
     },
   ];
