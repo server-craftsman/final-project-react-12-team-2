@@ -49,13 +49,13 @@ const CartPage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 bg-white">
       <Title level={2} className="mb-8 text-center font-bold text-[#02005dc6]">
         Your Cart
       </Title>
       <Row gutter={16}>
         <Col span={16}>
-          <Card className="w-full rounded-lg shadow-lg">
+          <Card className="w-full rounded-lg shadow-2xl border border-gray-300">
             <Checkbox
               checked={selectAll}
               onChange={handleSelectAllChange}
@@ -67,7 +67,7 @@ const CartPage: React.FC = () => {
               dataSource={cartItems}
               renderItem={(item) => (
                 <List.Item>
-                  <Card className="w-full rounded-lg shadow-lg">
+                  <Card className="w-full rounded-lg shadow-lg border border-gray-300">
                     <Row
                       gutter={16}
                       className="flex items-center justify-between"
@@ -117,7 +117,7 @@ const CartPage: React.FC = () => {
           </Card>
         </Col>
         <Col span={8}>
-          <Card className="w-full rounded-lg shadow-lg">
+          <Card className="w-full rounded-lg shadow-2xl border border-gray-300">
             <Title level={4} className="text-center">
               Order Summary
             </Title>
@@ -145,7 +145,7 @@ const CartPage: React.FC = () => {
               <Button
                 type="primary"
                 size="large"
-                className="bg-[#1a237e] hover:bg-[#1a237e] hover:text-white"
+                className="bg-[#1a237e] hover:bg-[#6a1bff] hover:text-white font-bold"
                 icon={<ShoppingCartOutlined />}
               >
                 Proceed to Checkout
@@ -153,7 +153,7 @@ const CartPage: React.FC = () => {
               <Button
                 type="default"
                 size="large"
-                className="ml-4"
+                className="ml-4 border border-gray-300 text-gray-700 hover:bg-gray-100"
                 onClick={handleBackToHome}
               >
                 Back to Home
