@@ -107,40 +107,6 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="container mx-auto bg-gradient-to-b from-indigo-50 to-white px-4 py-12">
-      <Introduction />
-      <Divider className="my-16 border-indigo-200" />
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="relative mb-16 overflow-hidden"
-      >
-        <h1 className="mb-8 text-center text-2xl font-bold text-blue-500">
-          Top Categories
-        </h1>
-        <h1 className="mb-12 text-center text-4xl font-bold">
-          Most demanding <span className="text-blue-500">Categories</span>.
-        </h1>
-        <div
-          className="mb-12 flex transition-transform duration-500 ease-in-out"
-          style={{ transform: `translateX(-${currentCategoryIndex * 100}%)` }}
-        >
-          {sliderCategories.map((categoryGroup, groupIndex) => (
-            <div key={groupIndex} className="w-full flex-shrink-0">
-              <Categories categories={categoryGroup} />
-            </div>
-          ))}
-        </div>
-        <div className="absolute bottom-0 left-1/2 mt-4 flex -translate-x-1/2 transform space-x-2">
-          {sliderCategories.map((_, index) => (
-            <button
-              key={index}
-              className={`h-2 w-2 rounded-full transition-all duration-300 ${index === currentCategoryIndex ? "w-4 bg-indigo-600" : "bg-indigo-200"}`}
-              onClick={() => setCurrentCategoryIndex(index)}
-            ></button>
-          ))}
-        </div>
-      </motion.div>
 
       <motion.section
         className="bg-gradient-to-b from-indigo-50 to-white py-16"
@@ -213,6 +179,41 @@ const HomePage: React.FC = () => {
       <UtilityRegisterInformation />
 
       <Divider className="my-16 border-indigo-200" />
+
+      <Introduction />
+      <Divider className="my-16 border-indigo-200" />
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative mb-16 overflow-hidden"
+      >
+        <h1 className="mb-8 text-center text-2xl font-bold text-blue-500">
+          Top Categories
+        </h1>
+        <h1 className="mb-12 text-center text-4xl font-bold">
+          Most demanding <span className="text-blue-500">Categories</span>.
+        </h1>
+        <div
+          className="mb-12 flex transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateX(-${currentCategoryIndex * 100}%)` }}
+        >
+          {sliderCategories.map((categoryGroup, groupIndex) => (
+            <div key={groupIndex} className="w-full flex-shrink-0">
+              <Categories categories={categoryGroup} />
+            </div>
+          ))}
+        </div>
+        <div className="absolute bottom-0 left-1/2 mt-4 flex -translate-x-1/2 transform space-x-2">
+          {sliderCategories.map((_, index) => (
+            <button
+              key={index}
+              className={`h-2 w-2 rounded-full transition-all duration-300 ${index === currentCategoryIndex ? "w-4 bg-indigo-600" : "bg-indigo-200"}`}
+              onClick={() => setCurrentCategoryIndex(index)}
+            ></button>
+          ))}
+        </div>
+      </motion.div>
       <motion.section
         className="mt-24 bg-gradient-to-b from-indigo-50 to-white py-16 text-center"
         initial={{ opacity: 0 }}
