@@ -10,14 +10,21 @@ import { categories } from "../../../../data/categories.json";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
 import CreateCourseButton from "./CreateButton";
+import FilterStatus from "./FilterStatus";
 import {
   capitalizeWords,
   courseStatusName,
 } from "../../../../const/constCommon";
 const { Option } = Select;
-const DisplayCourse: React.FC = () => {
-  const [courses, setCourses] = useState<[]>([]);
-  const [filteredCourses, setFilteredCourses] = useState<[]>([]);
+
+const DisplayCourse: React.FC<{
+  searchTerm: string;
+  statusFilter: CourseStatusEnum | "";
+  onSearch: (value: string) => void;
+  onStatusChange: (status: CourseStatusEnum | "") => void;
+}> = ({ searchTerm, statusFilter, onSearch, onStatusChange }) => {
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
@@ -37,7 +44,7 @@ const DisplayCourse: React.FC = () => {
     setCourses(coursesTempData);
     setTotalItems(coursesTempData.length);
     setFilteredCourses(coursesTempData);
-  }, []);
+  }, [statusFilter]); // Add statusFilter as a dependency
 
   const renderStatusChange = (record: Course) => {
     const isWaitingApprove = [
@@ -87,10 +94,16 @@ const DisplayCourse: React.FC = () => {
     setSelectedCourse(selectedRowKeys as unknown as any);
   }, [selectedRowKeys, setSelectedCourse]);
 
+  const filteredCoursesData = courses.filter(
+    (course) =>
+      course.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (statusFilter === "" || course.status === statusFilter),
+  );
+
   const paginatedCourses = () => {
     const startIndex = (pageNum - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    return filteredCourses.slice(startIndex, endIndex);
+    return filteredCoursesData.slice(startIndex, endIndex); // Use filteredCoursesData
   };
   const handleSearch = (searchText: string) => {
     if (searchText === "") {
@@ -163,14 +176,19 @@ const DisplayCourse: React.FC = () => {
       setSelectedRowKeys(selectedRowKeys as number[]);
     },
   };
+
   return (
     <>
       <div className="mb-4 mt-4 flex justify-between">
         <CustomSearch
-          onSearch={handleSearch}
+          onSearch={(value) => {
+            handleSearch(value);
+            onSearch(value); // Use the onSearch prop here
+          }}
           placeholder="Search by course name"
           className="w-1/5"
         />
+        <FilterStatus onStatusChange={onStatusChange} />
         <div className="flex justify-end gap-2">
           <CreateCourseButton />
           <Button
@@ -184,7 +202,7 @@ const DisplayCourse: React.FC = () => {
       <Table
         rowSelection={rowSelection}
         columns={columns}
-        dataSource={paginatedCourses()}
+        dataSource={filteredCoursesData && paginatedCourses()}
         rowKey="id"
         pagination={false}
       />

@@ -28,8 +28,6 @@ const App = () => {
     <>
       <Suspense fallback={<Loading />}>
         <AuthProvider>
-          {" "}
-          {/* Wrap with AuthProvider */}
           <CartProvider>
             <RouterProvider router={router} />
           </CartProvider>

@@ -1,11 +1,10 @@
-import { Col, Row, Tag, Layout, Button } from "antd";
+import { Col, Row, Tag, Layout, Button, Tabs } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import { Content } from "antd/es/layout/layout";
 import CourseComponent from "../../../components/instructor/course/course/CourseComponent";
 import SessionComponent from "../../../components/instructor/course/session/SessionComponent";
 import LessionComponent from "../../../components/instructor/course/lesson/LessionComponent";
-
 const CourseManagement = () => {
   const [activeTab, setActiveTab] = useState("course");
   const statusLabelList = [
@@ -41,6 +40,24 @@ const CourseManagement = () => {
     },
   ];
 
+  const itemsTab = [
+    {
+      key: "course",
+      label: "Course",
+      children: <CourseComponent />,
+    },
+    {
+      key: "session",
+      label: "Session",
+      children: <SessionComponent />,
+    },
+    {
+      key: "lesson",
+      label: "Lesson",
+      children: <LessionComponent />,
+    },
+  ];
+
   const renderTagMenu = () => {
     return (
       <Row className="mb-5 justify-center align-middle">
@@ -62,42 +79,23 @@ const CourseManagement = () => {
       </Row>
     );
   };
-  const renderMainContent = () => {
-    switch (activeTab) {
-      case "course":
-        return <CourseComponent />;
-      case "session":
-        return <SessionComponent />;
-      case "lesson":
-        return <LessionComponent />;
-    }
-  };
+  // const renderMainContent = () => {
+  //   switch (activeTab) {
+  //     case "course":
+  //       return <CourseComponent />;
+  //     case "session":
+  //       return <SessionComponent />;
+  //     case "lesson":
+  //       return <LessionComponent />;
+  //   }
+  // };
   return (
     <Layout className="layout">
       {renderTagMenu()}
       <Content className="">
         <>
-          <div className="flex flex-row justify-start gap-5">
-            <Button
-              className={`${activeTab === "course" ? "bg-[#1a237e] text-white" : null} `}
-              onClick={() => setActiveTab("course")}
-            >
-              Course
-            </Button>
-            <Button
-              className={`${activeTab === "session" ? "bg-[#1a237e] text-white" : null} `}
-              onClick={() => setActiveTab("session")}
-            >
-              Session
-            </Button>
-            <Button
-              className={`${activeTab === "lesson" ? "bg-[#1a237e] text-white" : null} `}
-              onClick={() => setActiveTab("lesson")}
-            >
-              Lesson
-            </Button>
-          </div>
-          {renderMainContent()}
+          <Tabs items={itemsTab} onChange={(key) => setActiveTab(key)} />
+          {/* {renderMainContent()} */}
         </>
       </Content>
     </Layout>
