@@ -3,7 +3,7 @@ import { courseStatusColor } from "../../../../utils/courseStatus";
 import { formatDate, moneyFormat } from "../../../../utils/helper";
 import { Course, CourseStatusEnum } from "../../../../models/Course";
 import { useEffect, useState } from "react";
-import { Button, message, Pagination, Select } from "antd";
+import { Button, message, Modal, Pagination, Select } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
 import { courses as coursesData } from "../../../../data/courses.json";
 import { categories } from "../../../../data/categories.json";
@@ -30,6 +30,7 @@ const DisplayCourse: React.FC<{
   const [totalItems, setTotalItems] = useState<number>(0);
   const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
   const [selectedCourse, setSelectedCourse] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     const coursesTempData = coursesData.map((course) => {
@@ -177,6 +178,19 @@ const DisplayCourse: React.FC<{
     },
   };
 
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+    message.info("Sending to admin");
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
   return (
     <>
       <div className="mb-4 mt-4 flex justify-between">
@@ -193,7 +207,7 @@ const DisplayCourse: React.FC<{
           <CreateCourseButton />
           <Button
             disabled={selectedCourse.length === 0}
-            onClick={() => message.info("sending to admin")}
+            onClick={showModal}
           >
             Send to Admin
           </Button>
@@ -221,6 +235,16 @@ const DisplayCourse: React.FC<{
           showSizeChanger
         />
       </div>
+      <Modal
+        title="Confirm"
+        open={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        okText="Yes"
+        cancelText="No"
+      >
+        <p>Are you sure you want to send the selected courses to admin?</p>
+      </Modal>
     </>
   );
 };

@@ -6,16 +6,18 @@ const ViewTransactions = React.lazy(() => import("./ViewTransactions"));
 import { Payout, PayoutStatusEnum } from "../../../models/Payout";
 import { InstructorTransaction } from "../../../models/InstructorTransaction";
 import instructorTransactions from "../../../data/instructor_transactions.json";
+import PayoutCheckbox from "./PayoutCheckbox"; // Import PayoutCheckbox
 
 const InstructorPayout: React.FC<{
   searchQuery: string;
   filterStatus: string;
-}> = ({ searchQuery, filterStatus }) => {
+  updateSelectedPayouts: (selected: Set<string>) => void; // Add this prop
+}> = ({ searchQuery, filterStatus, updateSelectedPayouts }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedTransactions, setSelectedTransactions] = useState<
     InstructorTransaction[]
   >([]);
-
+  const [selectedPayouts, setSelectedPayouts] = useState<Set<string>>(new Set()); // Ensure setSelectedPayouts is defined
   const showModal = (payoutId: string) => {
     const transactions = instructorTransactions.transactions.filter(
       (transaction) => transaction.payout_id === payoutId,
@@ -24,7 +26,51 @@ const InstructorPayout: React.FC<{
     setIsModalVisible(true);
   };
 
+  const handleCheckboxChange = (payoutId: string, checked: boolean) => {
+    const newSelectedPayouts = new Set(selectedPayouts);
+    if (checked) {
+      newSelectedPayouts.add(payoutId);
+    } else {
+      newSelectedPayouts.delete(payoutId);
+    }
+    setSelectedPayouts(newSelectedPayouts); // Update local state
+    updateSelectedPayouts(newSelectedPayouts); // Update the parent component
+  };
+
+  const handleSelectAllChange = (checked: boolean) => {
+    if (checked) {
+      const allPayoutIds = filteredPayouts.map((payout) => payout.id);
+      setSelectedPayouts(new Set(allPayoutIds));
+      updateSelectedPayouts(new Set(allPayoutIds)); // Update the parent component
+    } else {
+      setSelectedPayouts(new Set());
+      updateSelectedPayouts(new Set()); // Update the parent component
+    }
+  };
+
+  const filteredPayouts = payoutData.payments.filter((payout) => {
+    const matchesSearchQuery = payout.payout_no.includes(searchQuery);
+    const matchesStatus = filterStatus === "" || payout.status === filterStatus;
+    return matchesSearchQuery && matchesStatus;
+  });
+
   const columns = [
+    {
+      title: (
+        <PayoutCheckbox
+          checked={selectedPayouts.size === filteredPayouts.length}
+          onChange={handleSelectAllChange}
+        />
+      ),
+      dataIndex: "id",
+      key: "select",
+      render: (id: string) => (
+        <PayoutCheckbox
+          checked={selectedPayouts.has(id)}
+          onChange={(checked) => handleCheckboxChange(id, checked)}
+        />
+      ),
+    },
     {
       title: "Payout No",
       dataIndex: "payout_no",
@@ -105,12 +151,6 @@ const InstructorPayout: React.FC<{
       render: (date: Date) => formatDate(date),
     },
   ];
-
-  const filteredPayouts = payoutData.payments.filter((payout) => {
-    const matchesSearchQuery = payout.payout_no.includes(searchQuery);
-    const matchesStatus = filterStatus === "" || payout.status === filterStatus;
-    return matchesSearchQuery && matchesStatus;
-  });
 
   return (
     <div>
