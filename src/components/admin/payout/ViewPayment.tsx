@@ -57,17 +57,39 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status }) => {
     setIsModalVisible(true);
   };
 
+  // const handleApprove = (id: string, newStatus: PayoutStatusEnum) => {
+  //   setPayments((prevPayments) =>
+  //     prevPayments.map((payment) =>
+  //       payment.id === id ? { ...payment, status: newStatus } : payment,
+  //     ),
+  //   );
+  //   message.success(
+  //     `Payment ${newStatus === PayoutStatusEnum.completed ? "completed" : "rejected"} successfully.`,
+  //   );
+  // };
   const handleApprove = (id: string, newStatus: PayoutStatusEnum) => {
-    setPayments((prevPayments) =>
-      prevPayments.map((payment) =>
-        payment.id === id ? { ...payment, status: newStatus } : payment,
-      ),
-    );
-    message.success(
-      `Payment ${newStatus === PayoutStatusEnum.completed ? "completed" : "rejected"} successfully.`,
-    );
+    Modal.confirm({
+      title: `Are you sure you want to ${
+        newStatus === PayoutStatusEnum.completed ? "approve" : "reject"
+      } this payment?`,
+      onOk: () => {
+        setPayments((prevPayments) =>
+          prevPayments.map((payment) =>
+            payment.id === id ? { ...payment, status: newStatus } : payment
+          )
+        );
+        message.success(
+          `Payment ${
+            newStatus === PayoutStatusEnum.completed ? "approved" : "rejected"
+          } successfully.`
+        );
+      },
+      onCancel: () => {
+        message.info("Action canceled.");
+      },
+    });
   };
-
+  
   const columns = [
     {
       title: "Payout No",
@@ -75,7 +97,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status }) => {
       key: "payout_no",
     },
     {
-      title: "Instructor ID",
+      title: "Instructor Name",
       dataIndex: "instructor_id",
       key: "instructor_id",
     },

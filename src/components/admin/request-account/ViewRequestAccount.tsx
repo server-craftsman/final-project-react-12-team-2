@@ -1,4 +1,4 @@
-import { Table, message } from "antd";
+import { Table, message, Modal } from "antd";
 // import { useNavigate } from "react-router-dom";
 import usersData from "../../../data/users.json"; // Adjust the path as necessary
 import { User, UserRole } from "../../../models/User";
@@ -36,29 +36,38 @@ const ViewRequestAccount = ({
       role: user.role as UserRole,
     }));
 
-  // Handle approve/reject actions
+  // Handle approve/reject actions with confirmation
   const handleApprove = (userId: string, isVerified: boolean) => {
     const user = filteredUsers.find((user) => user.id === userId);
 
     if (user) {
-      // Check if the user is active before approving
-      if (isVerified && user.status === false) {
-        message.error("Cannot approve an inactive user.");
-        return;
-      }
+      // Show confirmation modal before approving or rejecting
+      Modal.confirm({
+        title: `Are you sure you want to ${isVerified ? "approve" : "reject"} this user?`,
+        onOk: () => {
+          // Check if the user is active before approving
+          if (isVerified && user.status === false) {
+            message.error("Cannot approve an inactive user.");
+            return;
+          }
 
-      // Update the users state to reflect the approval or rejection
-      const updatedUserList = updatedUsers.includes(userId)
-        ? updatedUsers // If already updated, keep the same list
-        : [...updatedUsers, userId]; // Otherwise, add the userId to the list
+          // Update the users state to reflect the approval or rejection
+          const updatedUserList = updatedUsers.includes(userId)
+            ? updatedUsers // If already updated, keep the same list
+            : [...updatedUsers, userId]; // Otherwise, add the userId to the list
 
-      setUpdatedUsers(updatedUserList); // Update the state
+          setUpdatedUsers(updatedUserList); // Update the state
 
-      // Here you would typically trigger an API call to update the backend
-      console.log("Updated user status for ID:", userId);
-      message.success(
-        `User ID: ${userId} has been ${isVerified ? "approved" : "rejected"}`,
-      );
+          // Here you would typically trigger an API call to update the backend
+          console.log("Updated user status for ID:", userId);
+          message.success(
+            `User ID: ${userId} has been ${isVerified ? "approved" : "rejected"}`,
+          );
+        },
+        onCancel: () => {
+          message.info("Action canceled.");
+        },
+      });
     }
   };
 
