@@ -8,19 +8,23 @@ import {
   Col,
   Divider,
   Checkbox,
+  Tabs
 } from "antd";
-import { useCart } from "../../../context/CartContext";
 import { DeleteOutlined, ShoppingCartOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
-
+import { CartStatusEnum } from "../../../models/Carts";
 const { Title, Text } = Typography;
+import cartData from "../../../data/carts.json";
 
 const CartPage: React.FC = () => {
-  const { cartItems, removeFromCart } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const initialTab = queryParams.get("tab") || String(CartStatusEnum.new);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<CartStatusEnum>(initialTab as unknown as CartStatusEnum);
 
   const handleBackToHome = () => {
     navigate("/");
@@ -34,7 +38,7 @@ const CartPage: React.FC = () => {
     const isChecked = e.target.checked;
     setSelectAll(isChecked);
     if (isChecked) {
-      setSelectedItems(cartItems.map((item) => item.id));
+      setSelectedItems(filteredCartItems.map((item) => item.id));
     } else {
       setSelectedItems([]);
     }
@@ -48,11 +52,41 @@ const CartPage: React.FC = () => {
     );
   };
 
+  const filteredCartItems = cartData.carts.filter(item => item.status === String(activeTab) && !item.is_deleted);
+
+  const tabItems = [
+    {
+      key: String(CartStatusEnum.new),
+      label: 'New',
+      children: (
+        // Render New Cart Items
+        <div></div>
+      ),
+    },
+    {
+      key: String(CartStatusEnum.waiting_paid),
+      label: 'Waiting',
+      children: (
+        // Render Waiting Cart Items
+        <div></div>
+      ),
+    },
+    {
+      key: String(CartStatusEnum.completed),
+      label: 'Completed',
+      children: (
+        // Render Completed Cart Items
+        <div></div>
+      ),
+    },
+  ];
+
   return (
     <div className="container mx-auto p-4 bg-white">
       <Title level={2} className="mb-8 text-center font-bold text-[#02005dc6]">
         Your Cart
       </Title>
+      <Tabs activeKey={String(activeTab)} onChange={(key) => setActiveTab(key as unknown as CartStatusEnum)} items={tabItems} />
       <Row gutter={16}>
         <Col span={16}>
           <Card className="w-full rounded-lg shadow-2xl border border-gray-300">
@@ -64,7 +98,7 @@ const CartPage: React.FC = () => {
               Select All
             </Checkbox>
             <List
-              dataSource={cartItems}
+              dataSource={filteredCartItems}
               renderItem={(item) => (
                 <List.Item>
                   <Card className="w-full rounded-lg shadow-lg border border-gray-300">
@@ -86,10 +120,10 @@ const CartPage: React.FC = () => {
 
                       <Col span={16} className="text-right">
                         <Text className="mr-2 text-lg font-bold text-[#02005dc6]">
-                          ${item.discountedPrice.toFixed(2)}
+                          ${(item.price - item.discount).toFixed(2)}
                         </Text>
                         <Button
-                          onClick={() => removeFromCart(item.id)}
+                          onClick={() => console.log(`Remove item ${item.id}`)}
                           type="link"
                           danger
                           icon={<DeleteOutlined />}
@@ -126,7 +160,7 @@ const CartPage: React.FC = () => {
               <Text>Discount:</Text>
               <Text>
                 $
-                {cartItems
+                {filteredCartItems
                   .reduce((acc, item) => acc + item.discount, 0)
                   .toFixed(2)}
               </Text>
@@ -135,8 +169,8 @@ const CartPage: React.FC = () => {
               <Text className="text-lg font-bold">Total:</Text>
               <Text className="text-lg font-bold">
                 $
-                {cartItems
-                  .reduce((acc, item) => acc + item.discountedPrice, 0)
+                {filteredCartItems
+                  .reduce((acc, item) => acc + (item.price - item.discount), 0)
                   .toFixed(2)}
               </Text>
             </div>

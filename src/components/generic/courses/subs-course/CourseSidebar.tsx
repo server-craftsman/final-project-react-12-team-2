@@ -28,19 +28,18 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({
     const cartItem: Carts = {
       id: course.id,
       cart_no: course.title,
-      price_paid: course.price, // Assuming course.price exists
-      status: CartStatusEnum.new, // Add required properties
+      price_paid: course.price,
+      status: CartStatusEnum.new,
       price: course.price,
-      discount: 0, // Or appropriate discount value
+      discount: 0,
       course_id: course.id,
       student_id: course.id,
       created_at: new Date(),
       updated_at: new Date(),
       is_deleted: false,
-      // Add other required properties here
     };
     addToCart(cartItem);
-    navigate("/cart");
+    navigate("/cart?tab=new"); // Ensure this line is present
   };
 
   return (
