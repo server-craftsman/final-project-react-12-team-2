@@ -5,7 +5,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import adminRoutes from "../subs/adminRoutes";
 import instructorRoutes from "../subs/instructorRoutes";
 import studentRoutes from "../subs/studentRoutes";
-// import DashBoardAdmin from "../../pages/admin/overview/DashBoardAdmin";
+// import DashBoardAdmin from "../../pages/admin/overview/DashBoard Admin";
 import { UserRole } from "../../models/User";
 
 const useProtectedRoutes = (): RouteObject[] => {

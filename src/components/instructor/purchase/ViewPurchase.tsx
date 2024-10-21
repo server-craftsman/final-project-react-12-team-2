@@ -1,24 +1,68 @@
-import React from "react";
+import React, { useState } from "react";
 import { Table, Tag } from "antd";
-import { Checkbox } from "antd";
 import { formatDate, moneyFormat } from "../../../utils/helper";
 import { PurchaseStatusEnum } from "../../../models/Purchases";
 import { purchases } from "../../../data/purchases.json";
-
+import PurchaseCheckbox from "./PurchaseCheckbox";
 interface ViewPurchaseProps {
   searchQuery: string;
   filterStatus: string;
+  onSelectionChange: (selectedPurchases: Set<string>) => void;
 }
 
 const ViewPurchase: React.FC<ViewPurchaseProps> = ({
   searchQuery,
   filterStatus,
+  onSelectionChange,
 }) => {
+  const [selectedPurchases, setSelectedPurchases] = useState<Set<string>>(
+    new Set()
+  );
+
+  const handleSelectAllChange = (checked: boolean) => {
+    setSelectedPurchases(
+      checked
+        ? new Set(filteredPurchases.map((purchase) => purchase.id))
+        : new Set()
+    );
+    onSelectionChange(
+      checked
+        ? new Set(filteredPurchases.map((purchase) => purchase.id))
+        : new Set()
+    );
+  };
+
+  const filteredPurchases = purchases.filter((item) => {
+    const matchesSearchQuery = item.purchase_no.includes(searchQuery);
+    const matchesStatus = filterStatus === "" || item.status === filterStatus;
+    return matchesSearchQuery && matchesStatus;
+  });
+
+  const handleCheckboxChange = (id: string, checked: boolean) => {
+    setSelectedPurchases(prev => {
+      const newSet = new Set(prev);
+      checked ? newSet.add(id) : newSet.delete(id);
+      onSelectionChange(newSet);
+      return newSet;
+    });
+  };
+
   const columns = [
     {
-      title: "Select",
-      dataIndex: "select",
-      render: () => <Checkbox />,
+      title: (
+        <PurchaseCheckbox
+          checked={selectedPurchases.size === filteredPurchases.length}
+          onChange={handleSelectAllChange}
+        />
+      ),
+      dataIndex: "id",
+      key: "select",
+      render: (id: string) => (
+        <PurchaseCheckbox
+          checked={selectedPurchases.has(id)}
+          onChange={(checked) => handleCheckboxChange(id, checked)}
+        />
+      ),
     },
 
     {

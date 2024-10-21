@@ -21,7 +21,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         allowedRoles.includes(userRole) ? (
           <Component {...rest} />
         ) : (
-          <Navigate to="/unauthorized" />
+          <Navigate to="/" />
         )
       }
     />
