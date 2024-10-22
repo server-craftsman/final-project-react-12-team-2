@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Form, Input, Button, Divider } from "antd";
-import { UserOutlined, LockOutlined, HomeOutlined } from "@ant-design/icons";
+import { UserOutlined, LockOutlined, HomeOutlined, EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import gif from "../../assets/login-bg.gif";
 import { CLIENT_ID } from "../../const/authentication";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -15,6 +15,7 @@ import { AuthService } from "../../services/authentication/Auth";
 
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState<boolean>(false); // Add state for toggling password visibility
   const { setUser, setRole } = useContext(AuthContext); // Correctly use useContext inside the component
   const navigate = useNavigate(); // Use useNavigate for redirection
   const toggleLoading = useToggleLoading(); // Use the custom hook
@@ -154,9 +155,22 @@ const LoginPage = () => {
                 prefix={
                   <LockOutlined className="site-form-item-icon text-indigo-600" />
                 }
-                type="password"
+                type={showPassword ? "text" : "password"} // Toggle input type
                 placeholder="Password"
                 className="rounded-lg px-4 py-2"
+                suffix={
+                  showPassword ? (
+                    <EyeTwoTone
+                      onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
+                      className="text-indigo-600 cursor-pointer"
+                    />
+                  ) : (
+                    <EyeInvisibleOutlined
+                      onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
+                      className="text-indigo-600 cursor-pointer"
+                    />
+                  )
+                }
               />
             </Form.Item>
             <Form.Item>
