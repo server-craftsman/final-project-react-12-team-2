@@ -1,6 +1,6 @@
-import { BaseService } from "../config/base.service";
-import { User, UserRole } from "../../models/User";
-import { API } from "../../const/api.path";
+import { BaseService } from "../../config/base.service";
+import { User, UserRole } from "../../../models/User";
+import { API } from "../../../const/api.path";
 
 export const AuthService = {
   login(params: { email: string; password: string }) {
