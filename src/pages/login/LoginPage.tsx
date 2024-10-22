@@ -5,7 +5,7 @@ import { CLIENT_ID } from "../../const/authentication";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import LoginGoogle from "./LoginGoogle";
 import { useState, useContext } from "react";
-import { useToggleLoading } from "../../app/toggleLoading";
+import { useToggleLoading } from "../../hooks/toggleLoading";
 import { AuthContext } from "../../context/AuthContext";
 // import userData from "../../data/users.json";
 // import { User } from "../../models/User";

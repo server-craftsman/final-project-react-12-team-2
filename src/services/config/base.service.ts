@@ -9,7 +9,7 @@ import {
   getItemInLocalStorage,
   removeItemInLocalStorage,
 } from "../../utils/storage";
-import { useToggleLoading } from "../../app/toggleLoading";
+import { useToggleLoading } from "../../hooks/toggleLoading";
 import { DOMAIN_ADMIN, LOCAL_STORAGE } from "../../const/domain";
 import { ROUTER_URL } from "../../const/router.path";
 

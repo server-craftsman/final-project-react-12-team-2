@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
-import { useToggleLoading } from "./toggleLoading";
+import { useToggleLoading } from "../hooks/toggleLoading";
 // import logo from "../assets/logo.jpg";
 import LogoApp from "./UI/LogoApp";
 

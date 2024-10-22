@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { toggleLoading } from "./loadingSlice";
+import { toggleLoading } from "../app/loadingSlice";
 
 export const useToggleLoading = () => {
   const dispatch = useDispatch();
