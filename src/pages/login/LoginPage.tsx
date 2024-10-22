@@ -11,7 +11,7 @@ import { AuthContext } from "../../context/AuthContext";
 // import userData from "../../data/users.json";
 // import { User } from "../../models/User";
 // import { UserRole } from "../../models/User";
-import { AuthService } from "../../services/admin/authentication/Auth";
+import { AuthService } from "../../services/authentication/Auth";
 
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
