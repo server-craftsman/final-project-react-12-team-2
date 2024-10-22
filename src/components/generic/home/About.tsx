@@ -1,13 +1,13 @@
 import React from "react";
 import { AmazonOutlined, DockerOutlined } from "@ant-design/icons";
-import logo from "../../../assets/logo.jpg";
+import logo1 from "../../../assets/logo1.jpg";
 import { Link } from "react-router-dom";
 const About: React.FC = () => {
   return (
     <div className="min-h-screen w-full bg-gradient-to-r from-blue-500 via-green-500 to-yellow-500 p-8 text-white">
       <div className="mt-3 flex justify-center">
         <img
-          src={logo}
+          src={logo1}
           alt="Intro Image"
           className="h-auto w-1/4 transform rounded-full shadow-lg transition duration-500 hover:rotate-3 hover:skew-x-3 hover:skew-y-3 hover:scale-105"
         />

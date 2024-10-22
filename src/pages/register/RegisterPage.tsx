@@ -6,8 +6,8 @@ import {
   LockOutlined,
   HomeOutlined,
 } from "@ant-design/icons";
-import image from "../../assets/register-bg.gif";
-
+import registerAnimation from "../../data/registerAnimation.json";
+import Lottie from 'lottie-react';
 const { Title, Text } = Typography;
 
 const RegisterPage = () => {
@@ -64,24 +64,18 @@ const RegisterPage = () => {
     return Promise.resolve();
   };
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-purple-900/20 to-indigo-900/20 backdrop-blur-md">
-      <div className="flex w-full max-w-5xl overflow-hidden rounded-2xl bg-white shadow-2xl">
-        <div className="flex w-1/2 flex-col items-center justify-center bg-gradient-to-br from-indigo-900 to-purple-900 p-12">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-purple-900/20 to-indigo-900/20 backdrop-blur-md">
+      <div className="relative flex w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl md:flex-row">
+        <div className="flex w-full flex-col items-center justify-center bg-gradient-to-br from-indigo-900 to-purple-900 p-12 md:w-1/2">
           <Link to="/">
-            <img
-              src={image}
-              alt="Study"
-              className="border-gold mb-8 ml-20 w-3/5 transform rounded-full border-4 shadow-lg transition-transform duration-300 hover:scale-105"
-            />
+            <Lottie animationData={registerAnimation} loop={true} />
           </Link>
-          <Title level={2} className="text-gold">
-            Edu Learn
-          </Title>
-          <Text className="mt-4 text-center text-white">
+          <h2 className="text-white text-3xl font-bold">Edu Learn</h2>
+          <Text className="mt-4 text-center text-white text-lg">
             Elevate Your Learning Experience
           </Text>
         </div>
-        <div className="w-1/2 bg-gradient-to-br from-white to-gray-100 p-12">
+        <div className="w-full bg-gradient-to-br from-white to-gray-100 p-12 md:w-1/2">
           <Link
             to="/"
             className="mb-8 flex items-center text-lg text-indigo-600 transition-colors duration-300 hover:text-indigo-800"

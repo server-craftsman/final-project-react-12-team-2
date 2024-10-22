@@ -8,7 +8,7 @@ import {
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 const { Sider } = Layout;
-import logo from "../../assets/logo.jpg";
+import logo1 from "../../assets/logo1.jpg";
 
 const StudentDashboardNavbar = () => {
   const [collapsed, setCollapsed] = useResponsiveCollapse();
@@ -50,7 +50,7 @@ const StudentDashboardNavbar = () => {
       <Link to="/">
         <div className="logo flex items-center space-x-4 p-4">
           <img
-            src={logo}
+            src={logo1}
             alt="logo"
             className="h-12 w-12 rounded-full border-2 border-white"
           />

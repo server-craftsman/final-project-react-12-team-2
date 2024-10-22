@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import { motion, useAnimation, useInView } from "framer-motion";
-import courseMockup from "../../../assets/cover/tablet-showing-website.jpg";
-import mobileMockup from "../../../assets/cover/phone-mobile-app.jpg";
 import TextSlider from "./TextSlider";
+import Lottie from 'lottie-react';
+import tabletAnimation from "../../../data/tablet.json";
+import mobileAnimation from "../../../data/mobileAnimation.json";
 
 const Cover: React.FC = () => {
   const controls = useAnimation();
@@ -112,11 +113,7 @@ const Cover: React.FC = () => {
               transition={{ type: "spring", stiffness: 300 }}
               className="relative overflow-hidden rounded-lg shadow-2xl"
             >
-              <img
-                src={courseMockup}
-                alt="Course on desktop"
-                className="h-auto w-full cursor-pointer transition-transform duration-300 hover:scale-110"
-              />
+              <Lottie animationData={tabletAnimation} loop={true} />
               <div className="absolute bottom-0 right-0 h-4 w-4 cursor-se-resize bg-gray-300"></div>
             </motion.div>
             {/* Mobile app mockup */}
@@ -131,11 +128,7 @@ const Cover: React.FC = () => {
               }}
               className="absolute -bottom-7 -right-5 w-1/3 overflow-hidden"
             >
-              <img
-                src={mobileMockup}
-                alt="Mobile app interface"
-                className="border-1 h-auto w-full rounded-3xl border-white shadow-xl"
-              />
+              <Lottie animationData={mobileAnimation} loop={true} />
             </motion.div>
           </div>
         </motion.div>

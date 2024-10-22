@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Form, Input, Button, Divider } from "antd";
 import { UserOutlined, LockOutlined, HomeOutlined, EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import gif from "../../assets/login-bg.gif";
 import { CLIENT_ID } from "../../const/authentication";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import LoginGoogle from "./LoginGoogle";
@@ -12,6 +11,8 @@ import { AuthContext } from "../../context/AuthContext";
 // import { User } from "../../models/User";
 import { UserRole } from "../../models/User";
 import { AuthService } from "../../services/authentication/Auth";
+import loginAnimation from "../../data/loginAnimation.json";
+import Lottie from 'lottie-react'; 
 
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
@@ -98,13 +99,9 @@ const LoginPage = () => {
       <div className="relative flex w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl md:flex-row">
         <div className="flex w-full flex-col items-center justify-center bg-gradient-to-br from-indigo-900 to-purple-900 p-12 md:w-1/2">
           <Link to="/">
-            <img
-              src={gif}
-              alt="Study"
-              className="border-gold mb-8 ml-10 w-4/5 transform rounded-full border-4 shadow-lg transition-transform duration-300 hover:scale-105"
-            />
+            <Lottie animationData={loginAnimation} loop={true} />
           </Link>
-          <h2 className="text-gold text-3xl font-bold">Edu Learn</h2>
+          <h2 className="text-white text-3xl font-bold">Edu Learn</h2>
           <p className="mt-4 text-center text-white">
             Elevate Your Learning Experience
           </p>

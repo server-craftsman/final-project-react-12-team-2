@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "./store";
 import { useToggleLoading } from "./toggleLoading";
-import logo from "../assets/logo.jpg";
+// import logo from "../assets/logo.jpg";
+import LogoApp from "./UI/LogoApp";
 
 const Loading: React.FC<{ timeout?: number }> = ({ timeout = 10000 }) => {
   const showTimeout = useSelector((state: RootState) => state.loading);
@@ -26,7 +27,7 @@ const Loading: React.FC<{ timeout?: number }> = ({ timeout = 10000 }) => {
       {/* Loading content */}
       <div className="relative text-center z-10">
         <div className="mx-auto mb-4 h-32 w-32 animate-spin rounded-full border-b-2 border-t-2 border-white">
-          <img src={logo} alt="Loading logo" className="h-full w-full object-cover rounded-full" />
+          <LogoApp />
         </div>
         <h2 className="font-serif text-3xl text-white">Loading...</h2>
         {showTimeout && (

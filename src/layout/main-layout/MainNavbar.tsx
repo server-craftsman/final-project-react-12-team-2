@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "../../assets/logo.jpg";
+import logo1 from "../../assets/logo1.jpg";
 import { FaSearch, FaBell, FaUserCircle, FaBars } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { useCart } from "../../context/CartContext";
@@ -33,11 +33,7 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link to="/" className="group flex flex-shrink-0 items-center">
               <div className="relative">
-                <img
-                  className="border-gold h-10 w-auto rounded-full border-2 shadow-md transition-all duration-300 group-hover:scale-110 sm:h-12 md:h-14"
-                  src={logo}
-                  alt="Logo"
-                />
+                <img src={logo1} alt="Logo" className="h-10 w-auto rounded-full border-2 shadow-md transition-all duration-300 group-hover:scale-110 sm:h-12 md:h-14" />
                 <div className="from-gold absolute inset-0 rounded-full bg-gradient-to-br to-amber-300 opacity-0 transition-opacity duration-300 group-hover:opacity-25"></div>
               </div>
               <span className="ml-3 text-xl font-bold tracking-wide text-white sm:text-2xl">
