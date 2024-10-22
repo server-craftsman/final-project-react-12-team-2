@@ -52,7 +52,6 @@ const useProtectedRoutes = (): RouteObject[] => {
       }));
       break;
     default:
-      // Redirect to home if the user role is not recognized
       roleBasedRoutes = [
         {
           path: "*",

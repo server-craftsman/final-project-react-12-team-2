@@ -106,10 +106,10 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto bg-gradient-to-b from-indigo-50 to-white px-4 py-12">
+    <div className="container mx-auto bg-white">
 
       <motion.section
-        className="bg-gradient-to-b from-indigo-50 to-white py-16"
+        className="bg-white px-5"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -154,7 +154,7 @@ const HomePage: React.FC = () => {
                     ...cat,
                   })),
                 }}
-              />{" "}
+              />
             </motion.div>
           )}
         </AnimatePresence>
@@ -188,11 +188,11 @@ const HomePage: React.FC = () => {
         transition={{ duration: 0.5 }}
         className="relative mb-16 overflow-hidden"
       >
-        <h1 className="mb-8 text-center text-2xl font-bold text-blue-500">
+        <h1 className="mb-8 text-center text-2xl font-bold text-indigo-900">
           Top Categories
         </h1>
         <h1 className="mb-12 text-center text-4xl font-bold">
-          Most demanding <span className="text-blue-500">Categories</span>.
+          Most demanding <span className="text-indigo-900">Categories</span>.
         </h1>
         <div
           className="mb-12 flex transition-transform duration-500 ease-in-out"
@@ -215,7 +215,7 @@ const HomePage: React.FC = () => {
         </div>
       </motion.div>
       <motion.section
-        className="mt-24 bg-gradient-to-b from-indigo-50 to-white py-16 text-center"
+        className="mt-24 bg-white py-16 text-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}

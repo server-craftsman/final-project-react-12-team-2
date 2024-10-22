@@ -14,10 +14,8 @@ import publishRoutes from "./routes/publish/publishRoutes";
 
 const App = () => {
   const protectedRoutes = useProtectedRoutes();
+
   const router = createBrowserRouter([
-    // ...adminRoutes,
-    // ...instructorRoutes,
-    // ...studentRoutes,
     ...protectedRoutes,
     ...publishRoutes,
   ]);
@@ -25,7 +23,7 @@ const App = () => {
   return (
     <>
       <Suspense>
-          <RouterProvider router={router} />
+        <RouterProvider key={router.routes.length} router={router} />
       </Suspense>
       <ScrollToTopButton />
     </>

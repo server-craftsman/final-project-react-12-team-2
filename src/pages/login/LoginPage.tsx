@@ -10,7 +10,7 @@ import { useToggleLoading } from "../../app/toggleLoading";
 import { AuthContext } from "../../context/AuthContext";
 // import userData from "../../data/users.json";
 // import { User } from "../../models/User";
-// import { UserRole } from "../../models/User";
+import { UserRole } from "../../models/User";
 import { AuthService } from "../../services/authentication/Auth";
 
 const LoginPage = () => {
@@ -27,14 +27,26 @@ const LoginPage = () => {
         toggleLoading,
       });
 
-      // Check if result contains user and role
       const { user, role } = result;
       if (user && role) {
         setUser(user); // Ensure setUser is correctly updating the context
         setRole(role); // Ensure setRole is correctly updating the context
         console.log("role", role);
-        // Redirect to a protected route after successful login
-        navigate("/protected"); // Use useNavigate for redirection
+
+        // Redirect to a role-specific route after successful login
+        switch (role) {
+          case UserRole.admin:
+            navigate("/admin/dashboard");
+            break;
+          case UserRole.instructor:
+            navigate("/instructor/dashboard");
+            break;
+          case UserRole.student:
+            navigate("/student/dashboard");
+            break;
+          default:
+            navigate("/");
+        }
       } else {
         throw new Error("Invalid login response");
       }
