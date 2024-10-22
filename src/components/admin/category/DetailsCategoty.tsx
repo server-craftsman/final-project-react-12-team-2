@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router-dom"; // Remove useHistory
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import categoriesData from "../../../data/categories.json";
 import { Button, Col, Form, Input, Row } from "antd";
-
+import { ROUTER_URL } from "../../../const/router";
 const DetailsCategory = () => {
   const { id } = useParams();
   const navigate = useNavigate(); // Use useNavigate instead
@@ -78,7 +78,7 @@ const DetailsCategory = () => {
       <Button className="mr-3 bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
         Delete
       </Button>
-      <Link to="/admin/categories">
+      <Link to={ROUTER_URL.ADMIN.CATEGORIES}>
         <Button className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
           Back To Categories
         </Button>

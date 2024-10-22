@@ -1,8 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Suspense } from "react";
-import Loading from "./components/generic/home/Loading";
 import ScrollToTopButton from "./components/generic/home/ScrollToTopButton";
-import { AuthProvider } from "./context/AuthContext"; // Import AuthProvider
+import { AuthProvider } from "./context/AuthContext";
 
 // Import Routes
 // import useProtectedRoutes from "./routes/protected/protectedRoutes";
@@ -26,7 +25,7 @@ const App = () => {
 
   return (
     <>
-      <Suspense fallback={<Loading />}>
+      <Suspense>
         <AuthProvider>
           <CartProvider>
             <RouterProvider router={router} />
