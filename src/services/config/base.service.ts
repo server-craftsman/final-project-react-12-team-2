@@ -1,4 +1,3 @@
-import { useToggleLoading } from "../../app/toggleLoading";
 import axios, {
   AxiosRequestConfig,
   AxiosResponse,
@@ -10,8 +9,9 @@ import {
   getItemInLocalStorage,
   removeItemInLocalStorage,
 } from "../../utils/storage";
-import { DOMAIN_ADMIN, LOCAL_STORAGE } from "../../const/domain.d";
-import { ROUTER_URL } from "../../const/router";
+import { useToggleLoading } from "../../app/toggleLoading";
+import { DOMAIN_ADMIN, LOCAL_STORAGE } from "../../const/domain";
+import { ROUTER_URL } from "../../const/router.path";
 
 export const axiosInstance = axios.create({
   baseURL: DOMAIN_ADMIN,
@@ -32,16 +32,13 @@ export const BaseService = {
     isLoading = true,
     payload,
     headers,
-  }: Partial<ApiRequestModel>): Promise<PromiseState<T>> {
-    const params = { ...payload };
-    for (const key in params) {
-      if ((params as any)[key] === "" && (params as any)[key] !== 0) {
-        delete (params as any)[key];
-      }
-    }
-    checkLoading(isLoading);
+    toggleLoading,
+  }: Partial<ApiRequestModel> & {
+    toggleLoading?: (isLoading: boolean) => void;
+  }): Promise<PromiseState<T>> {
+    if (toggleLoading) toggleLoading(isLoading);
     return axiosInstance.get<T, PromiseState<T>>(`${url}`, {
-      params: params,
+      params: payload,
       headers: headers || {},
     });
   },
@@ -50,8 +47,11 @@ export const BaseService = {
     isLoading = true,
     payload,
     headers,
-  }: Partial<ApiRequestModel>): Promise<PromiseState<T>> {
-    checkLoading(isLoading);
+    toggleLoading,
+  }: Partial<ApiRequestModel> & {
+    toggleLoading?: (isLoading: boolean) => void;
+  }): Promise<PromiseState<T>> {
+    if (toggleLoading) toggleLoading(isLoading);
     return axiosInstance.post<T, PromiseState<T>>(`${url}`, payload, {
       headers: headers || {},
     });
@@ -61,8 +61,11 @@ export const BaseService = {
     isLoading = true,
     payload,
     headers,
-  }: Partial<ApiRequestModel>): Promise<PromiseState<T>> {
-    checkLoading(isLoading);
+    toggleLoading,
+  }: Partial<ApiRequestModel> & {
+    toggleLoading?: (isLoading: boolean) => void;
+  }): Promise<PromiseState<T>> {
+    if (toggleLoading) toggleLoading(isLoading);
     return axiosInstance.put(`${url}`, payload, {
       headers: headers || {},
     });
@@ -72,8 +75,11 @@ export const BaseService = {
     isLoading = true,
     payload,
     headers,
-  }: Partial<ApiRequestModel>): Promise<PromiseState<T>> {
-    checkLoading(isLoading);
+    toggleLoading,
+  }: Partial<ApiRequestModel> & {
+    toggleLoading?: (isLoading: boolean) => void;
+  }): Promise<PromiseState<T>> {
+    if (toggleLoading) toggleLoading(isLoading);
     return axiosInstance.delete(`${url}`, {
       params: payload,
       headers: headers || {},
@@ -84,8 +90,11 @@ export const BaseService = {
     isLoading = true,
     payload,
     headers,
-  }: Partial<ApiRequestModel>): Promise<PromiseState<T>> {
-    checkLoading(isLoading);
+    toggleLoading,
+  }: Partial<ApiRequestModel> & {
+    toggleLoading?: (isLoading: boolean) => void;
+  }): Promise<PromiseState<T>> {
+    if (toggleLoading) toggleLoading(isLoading);
     return axiosInstance.get<T, PromiseState<T>>(`${url}`, {
       params: payload,
       headers: headers || {},
@@ -106,7 +115,7 @@ export const BaseService = {
       formData.append("file", file);
     }
     const user: any = getItemInLocalStorage(LOCAL_STORAGE.ACCOUNT_ADMIN);
-    checkLoading(isLoading);
+    if (isLoading) useToggleLoading()(true);
     return axios({
       method: "post",
       url: `${DOMAIN_ADMIN}${url}`,
@@ -126,10 +135,6 @@ export const BaseService = {
         return null;
       });
   },
-};
-
-const checkLoading = (isLoading: boolean = false) => {
-  if (isLoading) useToggleLoading()(true);
 };
 
 export interface PromiseState<T = unknown> extends AxiosResponse<T> {

@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Navigate } from "react-router-dom";
 import { UserRole } from "../../models/User";
+import { ROUTER_URL } from "../../const/router.path";
 
 interface ProtectedRouteProps {
   component: React.ComponentType<any>;
@@ -21,7 +22,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
         allowedRoles.includes(userRole) ? (
           <Component {...rest} />
         ) : (
-          <Navigate to="/" />
+          <Navigate to={ROUTER_URL.LOGIN} />
         )
       }
     />

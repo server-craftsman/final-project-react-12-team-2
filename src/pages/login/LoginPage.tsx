@@ -1,12 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Form, Input, Button, Divider } from "antd";
 import { UserOutlined, LockOutlined, HomeOutlined } from "@ant-design/icons";
 import gif from "../../assets/login-bg.gif";
 import { CLIENT_ID } from "../../const/authentication";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import LoginGoogle from "./LoginGoogle";
-import { useState } from "react";
-import { useContext } from "react";
+import { useState, useContext } from "react";
+import { useToggleLoading } from "../../app/toggleLoading";
 import { AuthContext } from "../../context/AuthContext";
 // import userData from "../../data/users.json";
 // import { User } from "../../models/User";
@@ -15,19 +15,29 @@ import { AuthService } from "../../services/authentication/Auth";
 
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
-  const { setUser, setRole } = useContext(AuthContext); // Ensure this is inside the component
-
+  const { setUser, setRole } = useContext(AuthContext); // Correctly use useContext inside the component
+  const navigate = useNavigate(); // Use useNavigate for redirection
+  const toggleLoading = useToggleLoading(); // Use the custom hook
   const onFinish = async (values: any) => {
     console.log("Received values of form: ", values);
     try {
       const result = await AuthService.login({
         email: values.username,
         password: values.password,
+        toggleLoading,
       });
+
+      // Check if result contains user and role
       const { user, role } = result;
-      setUser(user);
-      setRole(role);
-      console.log("role", role);
+      if (user && role) {
+        setUser(user); // Ensure setUser is correctly updating the context
+        setRole(role); // Ensure setRole is correctly updating the context
+        console.log("role", role);
+        // Redirect to a protected route after successful login
+        navigate("/protected"); // Use useNavigate for redirection
+      } else {
+        throw new Error("Invalid login response");
+      }
     } catch (error) {
       setLoginError("Login failed. Please check your credentials.");
       console.error("Login error:", error);

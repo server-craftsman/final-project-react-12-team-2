@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router-dom"; // Remove useHistory
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import categoriesData from "../../../data/categories.json";
 import { Button, Col, Form, Input, Row } from "antd";
-import { ROUTER_URL } from "../../../const/router";
+import { ROUTER_URL } from "../../../const/router.path";
 const DetailsCategory = () => {
   const { id } = useParams();
   const navigate = useNavigate(); // Use useNavigate instead

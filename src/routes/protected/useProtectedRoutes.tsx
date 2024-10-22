@@ -7,6 +7,7 @@ import instructorRoutes from "../subs/instructorRoutes";
 import studentRoutes from "../subs/studentRoutes";
 // import DashBoardAdmin from "../../pages/admin/overview/DashBoard Admin";
 import { UserRole } from "../../models/User";
+import { Navigate } from "react-router-dom";
 
 const useProtectedRoutes = (): RouteObject[] => {
   const { role } = useContext(AuthContext) as { role: UserRole | null };
@@ -51,7 +52,13 @@ const useProtectedRoutes = (): RouteObject[] => {
       }));
       break;
     default:
-      roleBasedRoutes = [];
+      // Redirect to home if the user role is not recognized
+      roleBasedRoutes = [
+        {
+          path: "*",
+          element: <Navigate to="/" />,
+        },
+      ];
   }
 
   return [...roleBasedRoutes];

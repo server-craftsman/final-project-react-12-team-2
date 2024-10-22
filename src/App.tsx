@@ -1,36 +1,31 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Suspense } from "react";
 import ScrollToTopButton from "./components/generic/home/ScrollToTopButton";
-import { AuthProvider } from "./context/AuthContext";
+// import { AuthProvider } from "./context/AuthContext";
 
 // Import Routes
-// import useProtectedRoutes from "./routes/protected/protectedRoutes";
+import useProtectedRoutes from "./routes/protected/useProtectedRoutes";
 import publishRoutes from "./routes/publish/publishRoutes";
 
-import adminRoutes from "./routes/subs/adminRoutes";
-import instructorRoutes from "./routes/subs/instructorRoutes";
-import studentRoutes from "./routes/subs/studentRoutes";
-import { CartProvider } from "./context/CartContext";
+// import adminRoutes from "./routes/subs/adminRoutes";
+// import instructorRoutes from "./routes/subs/instructorRoutes";
+// import studentRoutes from "./routes/subs/studentRoutes";
 //==============================
 
 const App = () => {
-  // const protectedRoutes = useProtectedRoutes();
+  const protectedRoutes = useProtectedRoutes();
   const router = createBrowserRouter([
-    ...adminRoutes,
-    ...instructorRoutes,
-    ...studentRoutes,
-    // ...protectedRoutes,
+    // ...adminRoutes,
+    // ...instructorRoutes,
+    // ...studentRoutes,
+    ...protectedRoutes,
     ...publishRoutes,
   ]);
 
   return (
     <>
       <Suspense>
-        <AuthProvider>
-          <CartProvider>
-            <RouterProvider router={router} />
-          </CartProvider>
-        </AuthProvider>
+          <RouterProvider router={router} />
       </Suspense>
       <ScrollToTopButton />
     </>
