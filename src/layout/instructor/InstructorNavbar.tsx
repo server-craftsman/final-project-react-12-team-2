@@ -5,7 +5,6 @@ import {
   UserOutlined,
   FileTextOutlined,
   StarOutlined,
-  BellOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import useResponsiveCollapse from "../../hooks/useResponsiveCollapse";

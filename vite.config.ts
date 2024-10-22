@@ -56,6 +56,9 @@ export default defineConfig({
           if (id.includes("node_modules")) {
             return "vendor";
           }
+          if (id.includes("@src/app")) {
+            return "app";
+          }
           if (id.includes("@src/components")) {
             return "components";
           }
@@ -89,6 +92,6 @@ export default defineConfig({
         },
       },
     },
-    chunkSizeWarningLimit: 2000,
+    chunkSizeWarningLimit: 10000,
   },
 });

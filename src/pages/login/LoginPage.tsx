@@ -8,49 +8,51 @@ import LoginGoogle from "./LoginGoogle";
 import { useState } from "react";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-import userData from "../../data/users.json";
-import { User } from "../../models/User";
-import { UserRole } from "../../models/User";
+// import userData from "../../data/users.json";
+// import { User } from "../../models/User";
+// import { UserRole } from "../../models/User";
+import { AuthService } from "../../services/admin/authentication/Auth";
 
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
-  const { setUser, setRole } = useContext(AuthContext);
+  const { setUser, setRole } = useContext(AuthContext); // Ensure this is inside the component
 
-  const onFinish = (values: any) => {
+  const onFinish = async (values: any) => {
     console.log("Received values of form: ", values);
-    const user = userData.users.find(
-      (user) => user.email === values.username,
-    ) as User | undefined;
-
-    if (user) {
-      const role = user.role as UserRole; // Cast role to UserRole
+    try {
+      const result = await AuthService.login({
+        email: values.username,
+        password: values.password,
+      });
+      const { user, role } = result;
       setUser(user);
-      setRole(role); // Ensure role is set
+      setRole(role);
       console.log("role", role);
-    } else {
-      setLoginError("User not found");
+    } catch (error) {
+      setLoginError("Login failed. Please check your credentials.");
+      console.error("Login error:", error);
     }
   };
 
-  const validatePassword = (_: any, value: string) => {
-    const hasUpperCase = /[A-Z]/.test(value);
-    const hasNumber = /\d/.test(value);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value); // Added special character validation
-    if (
-      !value ||
-      value.length < 8 ||
-      !hasUpperCase ||
-      !hasNumber ||
-      !hasSpecialChar
-    ) {
-      return Promise.reject(
-        new Error(
-          "Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.",
-        ),
-      );
-    }
-    return Promise.resolve();
-  };
+  // const validatePassword = (_: any, value: string) => {
+  //   const hasUpperCase = /[A-Z]/.test(value);
+  //   const hasNumber = /\d/.test(value);
+  //   const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value); // Added special character validation
+  //   if (
+  //     !value ||
+  //     value.length < 8 ||
+  //     !hasUpperCase ||
+  //     !hasNumber ||
+  //     !hasSpecialChar
+  //   ) {
+  //     return Promise.reject(
+  //       new Error(
+  //         "Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.",
+  //       ),
+  //     );
+  //   }
+  //   return Promise.resolve();
+  // };
 
   const validateUsername = (_: any, value: string) => {
     if (!value || value.includes(" ") || value.length < 6) {
@@ -124,7 +126,6 @@ const LoginPage = () => {
               name="password"
               rules={[
                 { required: true, message: "Please input your Password!" },
-                { validator: validatePassword },
               ]}
             >
               <Input

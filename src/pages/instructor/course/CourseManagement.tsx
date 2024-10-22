@@ -1,12 +1,11 @@
-import { Col, Row, Tag, Layout, Button, Tabs } from "antd";
+import { Col, Row, Tag, Layout, Tabs } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
-import React, { useState } from "react";
+import React from "react";
 import { Content } from "antd/es/layout/layout";
 import CourseComponent from "../../../components/instructor/course/course/CourseComponent";
 import SessionComponent from "../../../components/instructor/course/session/SessionComponent";
 import LessionComponent from "../../../components/instructor/course/lesson/LessionComponent";
 const CourseManagement = () => {
-  const [activeTab, setActiveTab] = useState("course");
   const statusLabelList = [
     {
       name: "New",
@@ -94,7 +93,7 @@ const CourseManagement = () => {
       {renderTagMenu()}
       <Content className="">
         <>
-          <Tabs items={itemsTab} onChange={(key) => setActiveTab(key)} />
+          <Tabs items={itemsTab} />
           {/* {renderMainContent()} */}
         </>
       </Content>
