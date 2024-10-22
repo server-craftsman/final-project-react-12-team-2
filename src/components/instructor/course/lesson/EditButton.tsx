@@ -8,7 +8,7 @@ import { courses } from "../../../../data/courses.json";
 import { sessions as sessionData } from "../../../../data/sessions.json";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const EditButton = ({ data }: any) => {
-  console.log("🚀 ~ EditButton ~ data:", data);
+  // console.log("🚀 ~ EditButton ~ data:", data);
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
   const [sessions, setSessions] = useState([]);

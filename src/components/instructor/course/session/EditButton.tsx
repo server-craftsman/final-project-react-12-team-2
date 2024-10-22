@@ -7,7 +7,7 @@ import { EditOutlined } from "@ant-design/icons";
 import { courses } from "../../../../data/courses.json";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const EditButton = ({ data }: any) => {
-  console.log("🚀 ~ EditButton ~ data:", data);
+  // console.log("🚀 ~ EditButton ~ data:", data);
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
   form.setFieldsValue(data);
