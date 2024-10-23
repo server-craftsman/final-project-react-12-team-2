@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Form, Input, Button, Divider } from "antd";
 import { UserOutlined, LockOutlined, HomeOutlined, EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { CLIENT_ID } from "../../const/authentication";
@@ -7,19 +7,15 @@ import LoginGoogle from "./LoginGoogle";
 import { useState, useContext } from "react";
 import { useToggleLoading } from "../../hooks/toggleLoading";
 import { AuthContext } from "../../context/AuthContext";
-// import userData from "../../data/users.json";
-// import { User } from "../../models/User";
-import { UserRole } from "../../models/User";
-import { AuthService } from "../../services/authentication/Auth";
+import { AuthService } from "../../services/authentication/auth.service";
 import loginAnimation from "../../data/loginAnimation.json";
 import Lottie from 'lottie-react'; 
 
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState<boolean>(false); // Add state for toggling password visibility
-  const { setUser, setRole } = useContext(AuthContext); // Correctly use useContext inside the component
-  const navigate = useNavigate(); // Use useNavigate for redirection
-  const toggleLoading = useToggleLoading(); // Use the custom hook
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const { setUser, setRole } = useContext(AuthContext);
+  const toggleLoading = useToggleLoading();
   const onFinish = async (values: any) => {
     console.log("Received values of form: ", values);
     try {
@@ -30,25 +26,12 @@ const LoginPage = () => {
       });
 
       const { user, role } = result;
-      if (user && role) {
-        setUser(user); // Ensure setUser is correctly updating the context
-        setRole(role); // Ensure setRole is correctly updating the context
+      const token = localStorage.getItem("authToken");
+      if (user && role && token) {
+        setUser(user);
+        setRole(role);
         console.log("role", role);
-
-        // Redirect to a role-specific route after successful login
-        switch (role) {
-          case UserRole.admin:
-            navigate("/admin/dashboard");
-            break;
-          case UserRole.instructor:
-            navigate("/instructor/dashboard");
-            break;
-          case UserRole.student:
-            navigate("/student/dashboard");
-            break;
-          default:
-            navigate("/");
-        }
+        console.log("token", token);
       } else {
         throw new Error("Invalid login response");
       }
