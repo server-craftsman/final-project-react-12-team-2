@@ -9,9 +9,11 @@ import {
   getItemInLocalStorage,
   removeItemInLocalStorage,
 } from "../../utils/storage";
-import { useToggleLoading } from "../../hooks/toggleLoading";
+// import { useToggleLoading } from "../../hooks/toggleLoading";
 import { DOMAIN_ADMIN, LOCAL_STORAGE } from "../../const/domain";
 import { ROUTER_URL } from "../../const/router.path";
+import { store } from "../../app/store";
+import { toggleLoading } from "../../app/loadingSlice";
 
 export const axiosInstance = axios.create({
   baseURL: DOMAIN_ADMIN,
@@ -22,9 +24,9 @@ export const axiosInstance = axios.create({
   timeoutErrorMessage: `Connection is timeout exceeded`,
 });
 
-export const getState = (store: any) => {
-  return store.getState();
-};
+// export const getState = (store: any) => {
+//   return store.getState();
+// };
 
 export const BaseService = {
   get<T = any>({
@@ -47,11 +49,10 @@ export const BaseService = {
     isLoading = true,
     payload,
     headers,
-    toggleLoading,
-  }: Partial<ApiRequestModel> & {
-    toggleLoading?: (isLoading: boolean) => void;
-  }): Promise<PromiseState<T>> {
-    if (toggleLoading) toggleLoading(isLoading);
+    // toggleLoading,
+  }: Partial<ApiRequestModel>): Promise<PromiseState<T>> {
+    if (isLoading) store.dispatch(toggleLoading(true));
+    console.log("payload: ", payload);
     return axiosInstance.post<T, PromiseState<T>>(`${url}`, payload, {
       headers: headers || {},
     });
@@ -115,7 +116,7 @@ export const BaseService = {
       formData.append("file", file);
     }
     const user: any = getItemInLocalStorage(LOCAL_STORAGE.ACCOUNT_ADMIN);
-    if (isLoading) useToggleLoading()(true);
+    // if (isLoading) useToggleLoading()(true);
     return axios({
       method: "post",
       url: `${DOMAIN_ADMIN}${url}`,
@@ -127,7 +128,7 @@ export const BaseService = {
       },
     })
       .then((res) => {
-        useToggleLoading()(false);
+        // useToggleLoading()(false);
         return res.data;
       })
       .catch((error) => {
@@ -155,7 +156,7 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (config) => {
-    useToggleLoading()(false);
+    // store.dispatch(toggleLoading(false)); // hide loading
     return Promise.resolve(config);
   },
   (err) => {
@@ -175,6 +176,6 @@ const handleErrorByToast = (error: any) => {
     ? error.response?.data?.message
     : error.message;
   toast.error(message);
-  useToggleLoading()(false);
+  // useToggleLoading()(false);
   return null;
 };

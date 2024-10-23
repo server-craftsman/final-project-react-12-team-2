@@ -9,11 +9,11 @@ import { AuthContext } from "../../context/AuthContext";
 import { AuthService } from "../../services/authentication/auth.service";
 import loginAnimation from "../../data/loginAnimation.json";
 import Lottie from 'lottie-react'; 
-
+import { store } from "../../app/store";
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const { setUser, setRole } = useContext(AuthContext);
+  // const { setUser, setRole } = useContext(AuthContext);
   const onFinish = async (values: any) => {
     console.log("Received values of form: ", values);
     try {
@@ -21,22 +21,24 @@ const LoginPage = () => {
         email: values.username,
         password: values.password,
       });
+      // if (user && role && token) {
+      //   setUser(user);
+      //   setRole(role);
+      //   console.log("role", role);
+      //   console.log("token", token);
+      // } else {
+      //   throw new Error("Invalid login response");
+      // }
+      console.log("result: ", result);
+      console.log("store: ", store.getState());
 
-      const { user, role } = result;
-      const token = localStorage.getItem("authToken");
-      if (user && role && token) {
-        setUser(user);
-        setRole(role);
-        console.log("role", role);
-        console.log("token", token);
-      } else {
-        throw new Error("Invalid login response");
-      }
     } catch (error) {
-      setLoginError("Login failed. Please check your credentials.");
+      // setLoginError("Login failed. Please check your credentials.");
       console.error("Login error:", error);
     }
+    
   };
+
 
   // const validatePassword = (_: any, value: string) => {
   //   const hasUpperCase = /[A-Z]/.test(value);
