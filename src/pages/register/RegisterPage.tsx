@@ -1,3 +1,4 @@
+import  { useState } from "react";
 import { Link } from "react-router-dom";
 import { Form, Input, Button, Typography, Divider } from "antd";
 import {
@@ -8,13 +9,21 @@ import {
 } from "@ant-design/icons";
 import registerAnimation from "../../data/registerAnimation.json";
 import Lottie from 'lottie-react';
+import ButtonDivideStudentAndInstructor from "../../components/generic/register/ButtonDivideStudentAndInstructor";
+import RegisterInfoOfInstructor from "../../components/generic/register/RegisterInfoOfInstructor";
 const { Title, Text } = Typography;
 
 const RegisterPage = () => {
   const [form] = Form.useForm();
+  const [role, setRole] = useState<string | null>(null);
 
   const onFinish = (values: any) => {
     console.log("Received values of form: ", values);
+    console.log("Selected role: ", role);
+  };
+
+  const handleRoleSelection = (selectedRole: string) => {
+    setRole(selectedRole);
   };
 
   const validateUsername = (_: any, value: string) => {
@@ -159,7 +168,8 @@ const RegisterPage = () => {
                 className="rounded-lg px-4 py-2"
               />
             </Form.Item>
-
+            <ButtonDivideStudentAndInstructor onSelectRole={handleRoleSelection} />
+            {role === "instructor" && <RegisterInfoOfInstructor />}
             <Form.Item>
               <Button
                 type="primary"
