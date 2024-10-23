@@ -1,16 +1,23 @@
-import { RouteObject } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useEffect, useState } from "react";
+import { RouteObject, Navigate } from "react-router-dom";
+// import { useContext } from "react";
+// import { AuthContext } from "../../context/AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
 import adminRoutes from "../subs/adminRoutes";
 import instructorRoutes from "../subs/instructorRoutes";
 import studentRoutes from "../subs/studentRoutes";
 // import DashBoardAdmin from "../../pages/admin/overview/DashBoard Admin";
 import { UserRole } from "../../models/User";
-import { Navigate } from "react-router-dom";
 
 const useProtectedRoutes = (): RouteObject[] => {
-  const { role } = useContext(AuthContext) as { role: UserRole | null };
+  const [role, setRole] = useState<UserRole | null>(null);
+
+  useEffect(() => {
+    const storedRole = localStorage.getItem("userRole");
+    if (storedRole) {
+      setRole(storedRole as UserRole);
+    }
+  }, []);
 
   let roleBasedRoutes: RouteObject[] = [];
 

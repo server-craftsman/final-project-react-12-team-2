@@ -1,35 +1,26 @@
-import { createContext, useState } from "react";
-import { User, UserRole } from "../models/User"; // Import the User type
+import React, { createContext, useContext, useState } from 'react';
 
-// Update the context type to include role
-const AuthContext = createContext<{
-  user: User | null;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
-  role: UserRole | null;
-  setRole: React.Dispatch<React.SetStateAction<UserRole | null>>;
-  login: (user: User, userRole: UserRole) => void;
-}>({
-  user: null,
-  setUser: () => {},
-  role: null,
-  setRole: () => {},
-  login: () => {},
-});
+interface AuthContextType {
+  role: string | null;
+  setRole: (role: string) => void;
+}
 
-const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [role, setRole] = useState<UserRole | null>(null);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-  const login = (user: User, userRole: UserRole) => {
-    setUser(user);
-    setRole(userRole);
-  };
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [role, setRole] = useState<string | null>(null);
 
   return (
-    <AuthContext.Provider value={{ user, setUser, role, setRole, login }}>
+    <AuthContext.Provider value={{ role, setRole }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-export { AuthContext, AuthProvider };
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};

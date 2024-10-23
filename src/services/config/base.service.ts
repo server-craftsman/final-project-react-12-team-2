@@ -117,6 +117,7 @@ export const BaseService = {
     }
     const user: any = getItemInLocalStorage(LOCAL_STORAGE.ACCOUNT_ADMIN);
     // if (isLoading) useToggleLoading()(true);
+    if (isLoading) store.dispatch(toggleLoading(true));
     return axios({
       method: "post",
       url: `${DOMAIN_ADMIN}${url}`,

@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Suspense } from "react";
 import ScrollToTopButton from "./components/generic/home/ScrollToTopButton";
-// import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 
 // Import Routes
 import useProtectedRoutes from "./routes/protected/useProtectedRoutes";
@@ -21,12 +21,12 @@ const App = () => {
   ]);
 
   return (
-    <>
+    <AuthProvider>
       <Suspense>
         <RouterProvider key={router.routes.length} router={router} />
       </Suspense>
       <ScrollToTopButton />
-    </>
+    </AuthProvider>
   );
 };
 

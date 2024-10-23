@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Typography, Divider, Button } from "antd";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -7,7 +7,7 @@ import Courses from "../../components/generic/courses/main-display/Courses";
 import Categories from "../../components/generic/category/Categories";
 import PageNumber from "../../components/generic/home/PageNumber";
 import CategoryFilter from "../../components/generic/category/CategoryFilter";
-import { AuthContext } from "../../context/AuthContext";
+// import { AuthProvider, useAuth } from "../../context/AuthContext";
 import coursesData from "../../data/courses.json";
 import usersData from "../../data/users.json";
 import categoriesData from "../../data/categories.json";
@@ -20,7 +20,7 @@ import { Course } from "../../models/Course";
 const { Title } = Typography;
 
 const HomePage: React.FC = () => {
-  const { user: _user } = useContext(AuthContext);
+  // const { role } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 6;
   const totalCourses = coursesData.courses.length;

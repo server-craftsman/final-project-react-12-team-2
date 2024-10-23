@@ -18,9 +18,6 @@ export interface User {
   video_url: string | null;
   dob: Date;
   is_verified: boolean;
-  verification_token: string | null;
-  verification_token_expires: string | null;
-  token_version: number;
   balance: number;
   balance_total: number;
   withdrawn_amount: number;
@@ -30,4 +27,9 @@ export interface User {
   created_at: string;
   updated_at: string;
   is_deleted: boolean;
+}
+export interface Token {
+  verification_token: string | null;
+  verification_token_expires: string | null;
+  token_version: number;
 }

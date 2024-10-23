@@ -1,42 +1,56 @@
 import { Link } from "react-router-dom";
 import { Form, Input, Button, Divider } from "antd";
 import { UserOutlined, LockOutlined, HomeOutlined, EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
-import { CLIENT_ID } from "../../const/authentication";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import LoginGoogle from "./LoginGoogle";
-import { useState, useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import { useState } from "react";
+// import { useAuth } from "../../context/AuthContext";
 import { AuthService } from "../../services/authentication/auth.service";
 import loginAnimation from "../../data/loginAnimation.json";
 import Lottie from 'lottie-react'; 
-import { store } from "../../app/store";
+// import { store } from "../../app/store";
+// import { UserRole } from "../../models/User"; // Ensure this import is correct
+import { CLIENT_ID } from "../../const/authentication";
+
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  // const { setUser, setRole } = useContext(AuthContext);
+  // const navigate = useNavigate(); // Use navigate hook
+  // const { setRole } = useAuth();
+
   const onFinish = async (values: any) => {
-    console.log("Received values of form: ", values);
     try {
+      // Step 1: Call login API
       const result = await AuthService.login({
         email: values.username,
         password: values.password,
       });
-      // if (user && role && token) {
-      //   setUser(user);
-      //   setRole(role);
-      //   console.log("role", role);
-      //   console.log("token", token);
-      // } else {
-      //   throw new Error("Invalid login response");
-      // }
-      console.log("result: ", result);
-      console.log("store: ", store.getState());
 
+      // Correct token extraction
+      const token = result.data?.data?.token; // Adjusted to match the provided JSON structure
+      if (token) { // Check for token
+        // Save token to localStorage
+        localStorage.setItem("authToken", token);
+
+        // Step 2: Fetch current user to get role
+        const userResponse = await AuthService.getUserRole(token);
+        const userData = userResponse.data;
+        if (userData && userData.data.role) {
+          // Save role to localStorage
+          localStorage.setItem("userRole", userData.data.role);
+          // Navigate to a default page or refresh to trigger role-based routing
+          // navigate("/"); // Adjust this path as needed
+        } else {
+          throw new Error("Failed to fetch user role");
+        }
+      } else {
+        console.error("Invalid login response:", result.data);
+        throw new Error("Invalid login response");
+      }
     } catch (error) {
-      // setLoginError("Login failed. Please check your credentials.");
+      setLoginError("Login failed. Please check your credentials.");
       console.error("Login error:", error);
     }
-    
   };
 
 
