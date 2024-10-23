@@ -1,14 +1,6 @@
-// import { RouteObject } from "react-router-dom";
-// import useProtectedRoutes from "../routes/protected/protectedRoutes";
-// import publishRoutes from "../routes/publish/publishRoutes";
+import { RoutePaths } from "../models/router/route.constructor";
 
-// // Combine all routes
-// export const ROUTER_OBJECT: RouteObject[] = [
-//   ...useProtectedRoutes(),
-//   ...publishRoutes,
-// ];
-
-export const ROUTER_URL = {
+export const ROUTER_URL: RoutePaths = {
   LOGIN: "/login",
   REGISTER: "/register",
   ADMIN: {

@@ -157,7 +157,7 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (config) => {
-    // store.dispatch(toggleLoading(false)); // hide loading
+    store.dispatch(toggleLoading(false)); // hide loading
     return Promise.resolve(config);
   },
   (err) => {
@@ -173,10 +173,7 @@ axiosInstance.interceptors.response.use(
 );
 
 const handleErrorByToast = (error: any) => {
-  const message = error.response?.data?.message
-    ? error.response?.data?.message
-    : error.message;
+  const message = error.response?.data?.message || error.message;
   toast.error(message);
-  // useToggleLoading()(false);
-  return null;
+  return Promise.reject(error);
 };

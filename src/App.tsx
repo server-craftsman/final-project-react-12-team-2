@@ -1,29 +1,30 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ScrollToTopButton from "./components/generic/home/ScrollToTopButton";
-import Loading from "./app/Loading";
 import { Suspense } from "react";
+import Loading from "./app/Loading";
 import { useSelector } from "react-redux";
 // Import Routes
 import useProtectedRoutes from "./routes/protected/useProtectedRoutes";
-import publishRoutes from "./routes/publish/publishRoutes";
-
-// import adminRoutes from "./routes/subs/adminRoutes";
-// import instructorRoutes from "./routes/subs/instructorRoutes";
-// import studentRoutes from "./routes/subs/studentRoutes";
+// Import runProtectedRoutes
+import runProtectedRoutes from "./routes/run/run";
 //==============================
 
 export const App = () => {
-  const protectedRoutes = useProtectedRoutes();
-  const router = createBrowserRouter([
-    ...protectedRoutes,
-    ...publishRoutes,
-  ]);
-
   const isLoading = useSelector((state: any) => state.loading);
+  const protectedRoutes = useProtectedRoutes();
+  console.log("Protected Routes:", protectedRoutes);
+
+  const router = createBrowserRouter([
+    // Ensure your route objects are correctly structured
+    // ...protectedRoutes,
+    ...runProtectedRoutes()
+  ]);
+  console.log("Router Config:", router);
+
   return (
     <>
       <Suspense fallback={isLoading ? <Loading /> : null}>
-        <RouterProvider key={router.routes.length} router={router} />
+        <RouterProvider router={router} />
       </Suspense>
       <ScrollToTopButton />
     </>

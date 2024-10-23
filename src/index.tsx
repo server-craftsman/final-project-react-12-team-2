@@ -5,12 +5,20 @@ import { CartProvider } from "./context/CartContext";
 import { Provider } from "react-redux";
 import { store } from "./app/store"; // Ensure this is the correct path to your store
 
-const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement); // Create a root
+console.log("Store initialized:", store);
 
-root.render(
-  <Provider store={store}>
+const rootElement = document.getElementById("root");
+
+if (rootElement) {
+  const root = ReactDOM.createRoot(rootElement); // Create a root
+
+  root.render(
+    <Provider store={store}>
       <CartProvider>
         <App />
       </CartProvider>
-  </Provider>
-);
+    </Provider>
+  );
+} else {
+  console.error("Root element not found. Ensure there is a div with id 'root' in your HTML.");
+}

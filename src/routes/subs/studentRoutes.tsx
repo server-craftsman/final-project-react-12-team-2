@@ -1,5 +1,6 @@
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import { RouteObject } from "react-router-dom";
+import Loading from "../../app/Loading";
 import EditUserProfile from "../../components/student/setting/EditUserProfile";
 
 //import lazy
@@ -17,11 +18,14 @@ const StudentDashboard = lazy(
   () => import("../../layout/student/StudentDashboard"),
 );
 //==============================================================
-
 const studentRoutes: RouteObject[] = [
   {
     path: "/dashboard-student",
-    element: <StudentDashboard />,
+    element: (
+      <Suspense fallback={<Loading />}>
+        <StudentDashboard />
+      </Suspense>
+    ),
     children: [
       { index: true, element: <DashboardStudent /> },
       { path: "student-setting", element: <Setting /> },
