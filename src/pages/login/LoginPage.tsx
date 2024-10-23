@@ -5,7 +5,6 @@ import { CLIENT_ID } from "../../const/authentication";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import LoginGoogle from "./LoginGoogle";
 import { useState, useContext } from "react";
-import { useToggleLoading } from "../../hooks/toggleLoading";
 import { AuthContext } from "../../context/AuthContext";
 import { AuthService } from "../../services/authentication/auth.service";
 import loginAnimation from "../../data/loginAnimation.json";
@@ -15,14 +14,12 @@ const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { setUser, setRole } = useContext(AuthContext);
-  const toggleLoading = useToggleLoading();
   const onFinish = async (values: any) => {
     console.log("Received values of form: ", values);
     try {
       const result = await AuthService.login({
         email: values.username,
         password: values.password,
-        toggleLoading,
       });
 
       const { user, role } = result;
