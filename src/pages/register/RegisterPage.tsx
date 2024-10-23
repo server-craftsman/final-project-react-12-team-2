@@ -1,6 +1,6 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Form, Input, Button, Typography, Divider } from "antd";
+import { Form, Input, Button, Typography, Divider, message } from "antd";
 import {
   UserOutlined,
   MailOutlined,
@@ -11,15 +11,33 @@ import registerAnimation from "../../data/registerAnimation.json";
 import Lottie from 'lottie-react';
 import ButtonDivideStudentAndInstructor from "../../components/generic/register/ButtonDivideStudentAndInstructor";
 import RegisterInfoOfInstructor from "../../components/generic/register/RegisterInfoOfInstructor";
+import { AuthService } from "../../services/authentication/auth.service";
+
 const { Title, Text } = Typography;
 
 const RegisterPage = () => {
   const [form] = Form.useForm();
   const [role, setRole] = useState<string | null>(null);
 
-  const onFinish = (values: any) => {
-    console.log("Received values of form: ", values);
-    console.log("Selected role: ", role);
+  const onFinish = async (values: any) => {
+    try {
+      const response = await AuthService.register({
+        ...values,
+        role: role || "student",
+  
+      });
+
+      const { data } = response;
+      const { success } = data;
+
+      if (success) {
+        message.success("Registration successful!");
+        // Redirect or perform additional actions here
+      }
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || "Registration failed. Please try again.";
+      message.error(errorMessage);
+    }
   };
 
   const handleRoleSelection = (selectedRole: string) => {
@@ -103,7 +121,7 @@ const RegisterPage = () => {
             layout="vertical"
           >
             <Form.Item
-              name="username"
+              name="name"
               rules={[
                 { required: true, message: "Please input your username!" },
                 { validator: validateUsername },
