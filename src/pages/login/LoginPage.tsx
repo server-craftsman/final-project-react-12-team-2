@@ -15,7 +15,6 @@ import { CLIENT_ID } from "../../const/authentication";
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  // const navigate = useNavigate(); // Use navigate hook
   // const { setRole } = useAuth();
 
   const onFinish = async (values: any) => {
@@ -38,8 +37,7 @@ const LoginPage = () => {
         if (userData && userData.data.role) {
           // Save role to localStorage
           localStorage.setItem("userRole", userData.data.role);
-          // Navigate to a default page or refresh to trigger role-based routing
-          // navigate("/"); // Adjust this path as needed
+          console.log("userRole", userData.data.role);
         } else {
           throw new Error("Failed to fetch user role");
         }

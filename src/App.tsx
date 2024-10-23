@@ -1,8 +1,8 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Suspense } from "react";
 import ScrollToTopButton from "./components/generic/home/ScrollToTopButton";
-import { AuthProvider } from "./context/AuthContext";
-
+import Loading from "./app/Loading";
+import { Suspense } from "react";
+import { useSelector } from "react-redux";
 // Import Routes
 import useProtectedRoutes from "./routes/protected/useProtectedRoutes";
 import publishRoutes from "./routes/publish/publishRoutes";
@@ -12,22 +12,20 @@ import publishRoutes from "./routes/publish/publishRoutes";
 // import studentRoutes from "./routes/subs/studentRoutes";
 //==============================
 
-const App = () => {
+export const App = () => {
   const protectedRoutes = useProtectedRoutes();
-
   const router = createBrowserRouter([
     ...protectedRoutes,
     ...publishRoutes,
   ]);
 
+  const isLoading = useSelector((state: any) => state.loading);
   return (
-    <AuthProvider>
-      <Suspense>
+    <>
+      <Suspense fallback={isLoading ? <Loading /> : null}>
         <RouterProvider key={router.routes.length} router={router} />
       </Suspense>
       <ScrollToTopButton />
-    </AuthProvider>
+    </>
   );
 };
-
-export default App;

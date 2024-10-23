@@ -9,11 +9,18 @@ import studentRoutes from "../subs/studentRoutes";
 // import DashBoardAdmin from "../../pages/admin/overview/DashBoard Admin";
 import { UserRole } from "../../models/User";
 
+const findIndexRoute = (routes: RouteObject[]) => {
+  return routes.find(route => route.path === "index");
+};
+
+const DefaultComponent = () => <div>Default Component</div>;
+
 const useProtectedRoutes = (): RouteObject[] => {
   const [role, setRole] = useState<UserRole | null>(null);
 
   useEffect(() => {
     const storedRole = localStorage.getItem("userRole");
+    console.log("storedRole", storedRole);
     if (storedRole) {
       setRole(storedRole as UserRole);
     }
@@ -27,8 +34,8 @@ const useProtectedRoutes = (): RouteObject[] => {
         ...route,
         element: (
           <ProtectedRoute
-            component={route.element as unknown as React.ComponentType<any>}
-            userRole={role}
+            component={route.children ? (findIndexRoute(route.children)?.element as unknown as React.ComponentType<any>) || DefaultComponent : DefaultComponent}
+            userRole={role as UserRole}
             allowedRoles={[UserRole.admin]}
           />
         ),
@@ -39,8 +46,8 @@ const useProtectedRoutes = (): RouteObject[] => {
         ...route,
         element: (
           <ProtectedRoute
-            component={route.element as unknown as React.ComponentType<any>}
-            userRole={role}
+            component={route.children ? (findIndexRoute(route.children)?.element as unknown as React.ComponentType<any>) || DefaultComponent : DefaultComponent}
+            userRole={role as UserRole}
             allowedRoles={[UserRole.instructor]}
           />
         ),
@@ -51,8 +58,8 @@ const useProtectedRoutes = (): RouteObject[] => {
         ...route,
         element: (
           <ProtectedRoute
-            component={route.element as unknown as React.ComponentType<any>}
-            userRole={role}
+            component={route.children ? (findIndexRoute(route.children)?.element as unknown as React.ComponentType<any>) || DefaultComponent : DefaultComponent}
+            userRole={role as UserRole}
             allowedRoles={[UserRole.student]}
           />
         ),
@@ -65,6 +72,7 @@ const useProtectedRoutes = (): RouteObject[] => {
           element: <Navigate to="/" />,
         },
       ];
+      console.log("roleBasedRoutes", roleBasedRoutes);
   }
 
   return [...roleBasedRoutes];
