@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 const Navbar = lazy(() => import("./MainNavbar"));
 const StudentFooter = lazy(() => import("./MainFooter"));
