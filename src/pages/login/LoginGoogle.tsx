@@ -3,9 +3,13 @@ import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 interface LoginGoogleProps {
   onLoginError: (error: string) => void;
+  onLoginSuccess: (token: string) => void;
 }
 
-const LoginGoogle: React.FC<LoginGoogleProps> = ({ onLoginError }) => {
+const LoginGoogle: React.FC<LoginGoogleProps> = ({
+  onLoginError,
+  onLoginSuccess,
+}) => {
   const onSuccess = (credentialResponse: any) => {
     try {
       const decodedToken = jwtDecode(credentialResponse.credential);
@@ -20,6 +24,9 @@ const LoginGoogle: React.FC<LoginGoogleProps> = ({ onLoginError }) => {
         Enjoy exclusive features and benefits tailored just for you.
       `;
       alert(successMessage);
+      const googleId = credentialResponse.credential;
+      onLoginSuccess(googleId);
+      console.log("Google ID: ", googleId);
     } catch (error) {
       console.error("Error decoding token: ", error);
       onLoginError("Error decoding token: " + error);

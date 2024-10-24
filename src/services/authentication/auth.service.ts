@@ -9,6 +9,13 @@ export const AuthService = {
       isLoading: true,
     });
   },
+  loginGoogle(params: { google_id: string }) {
+    return BaseService.post<{ success: boolean; data: { token: string } }>({
+      url: API.AUTH.LOGIN_GOOGLE,
+      payload: params,
+      isLoading: true,
+    });
+  },
   logout() {
     return BaseService.get<{ success: boolean; data: string }>({
       url: API.AUTH.LOGOUT,

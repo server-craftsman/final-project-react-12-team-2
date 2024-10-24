@@ -14,6 +14,7 @@ interface AuthContextType {
   handleLogin: (token: string) => Promise<void>;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
+  loginGoogle: (googleId: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,6 +32,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   });
   const [userInfo, setUserInfo] = useState<GetCurrentUserResponse['data'] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const loginGoogle = async (googleId: string) => {
+    try {
+      const response = await AuthService.loginGoogle({ google_id: googleId });
+      if (response.data?.data?.token) {
+        const token = response.data.data.token;
+        setToken(token);
+        localStorage.setItem("token", token);
+        await handleLogin(token);
+      }
+    } catch (error) {
+      console.error("Failed to login with Google:", error);
+    }
+  };
+
   const logout = () => {
     setRole(null);
     setToken(null);
@@ -72,7 +88,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       logout,
       handleLogin,
       isLoading,
-      setIsLoading
+      setIsLoading,
+      loginGoogle,
     }}>
       {children}
     </AuthContext.Provider>

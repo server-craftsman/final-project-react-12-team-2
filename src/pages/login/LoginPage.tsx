@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom"; // Add this import
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [googleIdToken, setGoogleIdToken] = useState<string | null>(null); // Add this state
   const { handleLogin } = useAuth(); // Update this line to use handleLogin instead of setRole
   const navigate = useNavigate(); // Add this hook
 
@@ -29,7 +30,7 @@ const LoginPage = () => {
       case 'instructor':
         return '/instructor';
       case 'student':
-        return '/student';
+        return '/dashboard-student';
       default:
         return '/';
     }
@@ -71,6 +72,20 @@ const LoginPage = () => {
     }
   };
 
+  // const onFinishGoogle = async (googleId: string) => {
+  //   try {
+  //     const result = await AuthService.loginGoogle({ google_id: googleId });
+  //     if (result.data?.data?.token) {
+  //       const token = result.data.data.token;
+  //       localStorage.setItem("token", token);
+  //       await handleLogin(token);
+  //     }
+  //   } catch (error) {
+  //     setLoginError("Login failed. Please check your credentials.");
+  //     console.error("Login error:", error);
+  //   }
+  // };
+
   // const validatePassword = (_: any, value: string) => {
   //   const hasUpperCase = /[A-Z]/.test(value);
   //   const hasNumber = /\d/.test(value);
@@ -105,6 +120,21 @@ const LoginPage = () => {
   const handleGoogleLoginError = (error: string) => {
     setLoginError(error);
     console.error("Google Login Error:", error);
+  };
+
+  const handleGoogleLoginSuccess = (idToken: string) => {
+    setGoogleIdToken(idToken); // Store the Google ID token
+    toast.success("Google Login Success", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      style: { backgroundColor: "#1a237e" }
+    });
   };
 
   return (
@@ -206,16 +236,20 @@ const LoginPage = () => {
             <Divider plain className="text-gray-400">
               or continue with
             </Divider>
-            <GoogleOAuthProvider
-              clientId={CLIENT_ID}
-              onScriptLoadError={() =>
-                console.error("Google script failed to load")
-              }
-            >
+            <GoogleOAuthProvider clientId={CLIENT_ID}>
               <Form.Item>
-                <LoginGoogle onLoginError={handleGoogleLoginError} />
+                <LoginGoogle
+                  onLoginError={handleGoogleLoginError}
+                  onLoginSuccess={handleGoogleLoginSuccess} // Pass the success handler
+                />
               </Form.Item>
             </GoogleOAuthProvider>
+
+            {googleIdToken && (
+              <p className="mt-4 text-center text-green-500">
+                Google ID Token: {googleIdToken}
+              </p>
+            )}
 
             {loginError && (
               <p className="mt-4 text-center text-red-500">
