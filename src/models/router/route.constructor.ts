@@ -1,8 +1,8 @@
 export interface RoutePaths {
   LOGIN: string;
   REGISTER: string;
+  ADMIN_PATH: string;
   ADMIN: {
-    BASE: string;
     INFO: string;
     MANAGE_USER: string;
     VIEW_USER: string;

@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy } from "react";
 import { ROUTER_URL } from "../../const/router.path";
 import { RouteObject } from "react-router-dom";
 //import admin layout
@@ -12,7 +12,6 @@ const ViewUserProfileDetail = lazy(() => import("../../components/admin/user/Vie
 const ViewPurchaseDetails = lazy(() => import("../../components/admin/purchases/ViewPurchaseDetails"));
 const Profile = lazy(() => import("../../pages/admin/setting/Setting"));
 const ManageUser = lazy(() => import("../../pages/admin/user/ManageUser"));
-const AdminLayout = lazy(() => import("../../layout/admin/AdminLayout"));
 const EditUserProfile = lazy(() => import("../../components/admin/setting/EditUserProfile"));
 const EditCategory = lazy(() => import("../../components/admin/category/EditCategory"));
 const PurchasesLog = lazy(() => import("../../pages/admin/purchasesLog/PurchasesLogManagement"));
@@ -20,77 +19,90 @@ const CoursesLog = lazy(() => import("../../pages/admin/course-log/CoursesLogMan
 const SubscriptionPage = lazy(() => import("../../pages/instructor/subscription/SubscriptionPage"));
 const RequestAccountManagement = lazy(() => import("../../pages/admin/request-account/RequestAccountManagement"));
 
-//import instructor layout
-const Loading = lazy(() => import("../../app/Loading"));
-
 export const adminSubPaths: Record<string, RouteObject[]> = {
-    [ROUTER_URL.ADMIN.BASE]: [
+    [ROUTER_URL.ADMIN_PATH]: [
         {
             index: true,
             element: <DashBoardAdmin />,
         },
         {
-            path: ROUTER_URL.ADMIN.COURSES,
+            index: false,
+            path: ROUTER_URL.ADMIN.COURSES.replace('/', ''),
             element: <ManageCourses />,
         },
         {
-            path: ROUTER_URL.ADMIN.CATEGORIES,
+            index: false,
+            path: ROUTER_URL.ADMIN.CATEGORIES.replace('/', ''),
             element: <ManageCategory />,
         },
         {
-            path: ROUTER_URL.ADMIN.PAYOUT,
+            index: false,
+            path: ROUTER_URL.ADMIN.PAYOUT.replace('/', ''),
             element: <ManagePayment />,
         },
         {
-            path: ROUTER_URL.ADMIN.PURCHASE,
+            index: false,
+            path: ROUTER_URL.ADMIN.PURCHASE.replace('/', ''),
             element: <ManagePurchase />,
         },
         {
-            path: ROUTER_URL.ADMIN.REQUEST_ACCOUNT,
+            index: false,
+            path: ROUTER_URL.ADMIN.REQUEST_ACCOUNT.replace('/', ''),
             element: <RequestAccountManagement />,
         },
         {
-            path: ROUTER_URL.ADMIN.CATEGORIES_DETAILS,
+            index: false,
+            path: ROUTER_URL.ADMIN.CATEGORIES_DETAILS.replace('/', ''),
             element: <DetailsCategory />,
         },
         {
-            path: ROUTER_URL.ADMIN.CATEGORIES_DETAILS_ID,
+            index: false,
+            path: ROUTER_URL.ADMIN.CATEGORIES_DETAILS_ID.replace('/', ''),
             element: <DetailsCategory />,
         },
         {
-            path: ROUTER_URL.ADMIN.COURSES_LOG,
+            index: false,
+            path: ROUTER_URL.ADMIN.COURSES_LOG.replace('/', ''),
             element: <CoursesLog />,
         },
         {
-            path: ROUTER_URL.ADMIN.PURCHASES_LOG,
+            index: false,
+            path: ROUTER_URL.ADMIN.PURCHASES_LOG.replace('/', ''),
             element: <PurchasesLog />,
         },
         {
-            path: ROUTER_URL.ADMIN.SUBSCRIPTION,
+            index: false,
+            path: ROUTER_URL.ADMIN.SUBSCRIPTION.replace('/', ''),
             element: <SubscriptionPage />,
         },
         {
-            path: ROUTER_URL.ADMIN.EDIT_USER,
+            index: false,
+            path: ROUTER_URL.ADMIN.EDIT_USER.replace('/', ''),
             element: <EditUserProfile />,
         },
         {
-            path: ROUTER_URL.ADMIN.EDIT_CATEGORY,
+            index: false,
+            path: ROUTER_URL.ADMIN.EDIT_CATEGORY.replace('/', ''),
             element: <EditCategory />,
         },
         {
-            path: ROUTER_URL.ADMIN.VIEW_PURCHASE,
+            index: false,
+            path: ROUTER_URL.ADMIN.VIEW_PURCHASE.replace('/', ''),
             element: <ViewPurchaseDetails />,
         },
         {
-            path: ROUTER_URL.ADMIN.VIEW_USER,
+            index: false,
+            path: ROUTER_URL.ADMIN.VIEW_USER.replace('/', ''),
             element: <ViewUserProfileDetail />,
         },
         {
-            path: ROUTER_URL.ADMIN.INFO,
+            index: false,
+            path: ROUTER_URL.ADMIN.INFO.replace('/', ''),
             element: <Profile />,
         },
         {
-            path: ROUTER_URL.ADMIN.MANAGE_USER,
+            index: false,
+            path: ROUTER_URL.ADMIN.MANAGE_USER.replace('/', ''),
             element: <ManageUser />,
         }
     ]

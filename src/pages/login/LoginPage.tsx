@@ -4,7 +4,7 @@ import { UserOutlined, LockOutlined, HomeOutlined, EyeInvisibleOutlined, EyeTwoT
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import LoginGoogle from "./LoginGoogle";
 import { useState } from "react";
-// import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { AuthService } from "../../services/authentication/auth.service";
 import loginAnimation from "../../data/loginAnimation.json";
 import Lottie from 'lottie-react'; 
@@ -13,35 +13,31 @@ import Lottie from 'lottie-react';
 import { CLIENT_ID } from "../../const/authentication";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { UserRole } from "../../models/User";
 
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  // const { setRole } = useAuth();
+  const { setRole } = useAuth();
 
   const onFinish = async (values: any) => {
     try {
-      // Step 1: Call login API
       const result = await AuthService.login({
         email: values.username,
         password: values.password,
       });
 
-      // Correct token extraction
-      const token = result.data?.data?.token; // Adjusted to match the provided JSON structure
-      if (token) { // Check for token
-        // Save token to localStorage
+      const token = result.data?.data?.token;
+      if (token) {
         localStorage.setItem("authToken", token);
 
-        // Step 2: Fetch current user to get role
         const userResponse = await AuthService.getUserRole(token);
         const userData = userResponse.data;
         if (userData && userData.data.role) {
-          // Save role to localStorage
-          localStorage.setItem("role", userData.data.role);
-          console.log("userRole", userData.data.role);
+          const userRole = userData.data.role;
+          localStorage.setItem("role", userRole);
+          setRole(userRole as UserRole); // This will trigger the protection system in run.tsx
 
-          // Display login success notification
           toast.success("Login Success", {
             position: "top-right",
             autoClose: 5000,
@@ -51,21 +47,15 @@ const LoginPage = () => {
             draggable: true,
             progress: undefined,
             theme: "colored",
-            style: { backgroundColor: "#1a237e" } // Set custom tone color
+            style: { backgroundColor: "#1a237e" }
           });
-        } else {
-          throw new Error("Failed to fetch user role");
         }
-      } else {
-        console.error("Invalid login response:", result.data);
-        throw new Error("Invalid login response");
       }
     } catch (error) {
       setLoginError("Login failed. Please check your credentials.");
       console.error("Login error:", error);
     }
   };
-
 
   // const validatePassword = (_: any, value: string) => {
   //   const hasUpperCase = /[A-Z]/.test(value);

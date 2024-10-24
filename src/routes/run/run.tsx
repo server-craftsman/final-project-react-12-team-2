@@ -1,5 +1,9 @@
 import { Route, Routes } from "react-router-dom";
-import { lazy, useEffect, useState, Suspense } from "react";
+import { lazy, useEffect } from "react";
+
+//import context
+import { useAuth } from "../../contexts/AuthContext";
+
 // Import router path
 import { ROUTER_URL } from "../../const/router.path";
 import { UserRole } from "../../models/User";
@@ -9,7 +13,6 @@ import GuardProtectedRoute from "../protected/GuardProtectedRoute";
 import GuardPublicRoute from "../publish/GuardPublicRoute";
 
 // Import layout
-import MainLayout from "../../layout/main-layout/MainLayout";
 const AdminLayout = lazy(() => import("../../layout/admin/AdminLayout"));
 const InstructorLayout = lazy(() => import("../../layout/instructor/InstructorLayout"));
 const StudentLayout = lazy(() => import("../../layout/student/StudentDashboard"));
@@ -21,35 +24,40 @@ import { instructorSubPaths } from "../sub-paths/instructorSubPaths";
 import { studentSubPaths } from "../sub-paths/studentSubPaths";
 
 const RunRoutes = (): JSX.Element => {
-  const [role, setRole] = useState<UserRole | null>(null);
+  const { role, setRole } = useAuth();
 
   useEffect(() => {
     const storedRole = localStorage.getItem("role");
     if (storedRole) {
       setRole(storedRole as UserRole);
     }
-  }, []);
+  }, [setRole]); // Thêm setRole vào dependency array
 
   const renderProtectedRoutes = () => {
     if (!role) return null;
 
+    const handleAccessDenied = () => {
+      console.log('Access denied for role:', role);
+    };
+
     return (
       <>
         <Route
-          path={ROUTER_URL.ADMIN.BASE}
+          path={ROUTER_URL.ADMIN_PATH}
           element={
             <GuardProtectedRoute
               component={<AdminLayout />}
               userRole={role}
               allowedRoles={["admin"]}
+              onAccessDenied={handleAccessDenied}
             />
           }
         >
-          {adminSubPaths[ROUTER_URL.ADMIN.BASE]?.map((route) => (
+          {adminSubPaths[ROUTER_URL.ADMIN_PATH]?.map((route) => (
             <Route
               key={route.path || 'index'}
-              index={route.index}
-              path={!route.index ? route.path : undefined}
+              index={route.index} //loading index
+              path={route.path?.replace('/admin/', '')}  // Remove /admin/ prefix
               element={route.element}
             />
           ))}
@@ -62,6 +70,7 @@ const RunRoutes = (): JSX.Element => {
               component={<InstructorLayout />}
               userRole={role}
               allowedRoles={["instructor"]}
+              onAccessDenied={handleAccessDenied}
             />
           }
         >
@@ -82,6 +91,7 @@ const RunRoutes = (): JSX.Element => {
               component={<StudentLayout />}
               userRole={role}
               allowedRoles={["student"]}
+              onAccessDenied={handleAccessDenied}
             />
           }
         >
@@ -99,7 +109,6 @@ const RunRoutes = (): JSX.Element => {
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
       <Routes>
         {/* Public Routes */}
         {Object.entries(publicSubPaths).map(([key, routes]) =>
@@ -129,7 +138,6 @@ const RunRoutes = (): JSX.Element => {
         {/* Protected Routes */}
         {renderProtectedRoutes()}
       </Routes>
-    </Suspense>
   );
 };
 

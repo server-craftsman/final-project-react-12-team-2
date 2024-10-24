@@ -1,9 +1,12 @@
+import React, { lazy, Suspense } from "react"; 
 import { Layout } from "antd";
 import { Outlet } from "react-router-dom";
 import StudentDashboardNavbar from "./StudentDashboardNavbar";
 import { Content } from "antd/es/layout/layout";
-import StudentFooter from "../main-layout/MainFooter";
-const StudentDashboard = () => {
+const StudentFooter = lazy(() => import("../main-layout/MainFooter"));
+const Loading = lazy(() => import("../../app/Loading"));
+
+const StudentDashboard: React.FC = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <StudentDashboardNavbar />
@@ -17,7 +20,9 @@ const StudentDashboard = () => {
             </div>
           </header>
           <section>
-            <Outlet />
+            <Suspense fallback={<Loading />}>
+              <Outlet />
+            </Suspense>
           </section>
         </Content>
         <StudentFooter />

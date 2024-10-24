@@ -3,6 +3,7 @@ import { BrowserRouter } from "react-router-dom";
 import { App } from "./App";
 import "./index.css";
 import { CartProvider } from "./context/CartContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import { Provider } from "react-redux";
 import { store } from "./app/store"; // Ensure this is the correct path to your store
 
@@ -16,9 +17,11 @@ if (rootElement) {
   root.render(
     <Provider store={store}>
       <BrowserRouter>
-        <CartProvider>
-          <App />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <App />
+          </CartProvider>
+        </AuthProvider>
       </BrowserRouter>
     </Provider>
   );

@@ -14,9 +14,6 @@ const SubscriptionManagement = lazy(
 const OrderManagement = lazy(
   () => import("../../pages/student/order/OrderManagement"),
 );
-const StudentDashboard = lazy(
-  () => import("../../layout/student/StudentDashboard"),
-);
 
 export const studentSubPaths: Record<string, RouteObject[]> = {
     [ROUTER_URL.STUDENT.BASE]: [

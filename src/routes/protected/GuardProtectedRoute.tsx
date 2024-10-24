@@ -5,13 +5,14 @@ interface GuardProtectedRouteProps {
   component: React.ReactNode;
   userRole: string;
   allowedRoles: string[];
+  onAccessDenied: () => void;
 }
 
-const GuardProtectedRoute = ({ component, userRole, allowedRoles }: GuardProtectedRouteProps) => {
+const GuardProtectedRoute = ({ component, userRole, allowedRoles, onAccessDenied }: GuardProtectedRouteProps) => {
   if (!allowedRoles.includes(userRole)) {
+    onAccessDenied();
     return <Navigate to={ROUTER_URL.UNAUTHORIZED} replace />;
   }
-
   return (
     <div>
       {component}

@@ -2,11 +2,6 @@ import { lazy } from "react";
 import { ROUTER_URL } from "../../const/router.path";
 import { RouteObject } from "react-router-dom";
 
-// Import instructor layout
-const InstructorLayout = lazy(
-  () => import("../../layout/instructor/InstructorLayout"),
-);
-
 // Import instructor pages
 const EditUserProfile = lazy(
   () => import("../../components/instructor/setting/EditUserProfile"),
