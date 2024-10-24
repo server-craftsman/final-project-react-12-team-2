@@ -1,11 +1,10 @@
-import React, { lazy, Suspense, useEffect } from "react";
+import React, { lazy, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { Layout } from "antd";
 import { Avatar, Dropdown } from "antd";
 import { UserOutlined, LogoutOutlined, DownOutlined } from "@ant-design/icons";
 const AdminNavbar = lazy(() => import("./AdminNavbar"));
 const StudentFooter = lazy(() => import("../main-layout/MainFooter"));
-const Loading = lazy(() => import("../../app/Loading"));
 const { Content } = Layout;
 import { AuthService } from "../../services/authentication/auth.service";
 import { useAuth } from "../../contexts/AuthContext";
@@ -102,9 +101,7 @@ const Admin: React.FC = () => {
           </header>
 
           <section>
-            <Suspense fallback={<Loading />}>
-              <Outlet />
-            </Suspense>
+            <Outlet />
           </section>
         </Content>
         <StudentFooter />

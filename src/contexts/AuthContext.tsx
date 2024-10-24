@@ -12,6 +12,8 @@ interface AuthContextType {
   setUserInfo: (userInfo: GetCurrentUserResponse['data'] | null) => void;
   logout: () => void;
   handleLogin: (token: string) => Promise<void>;
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,7 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return storedToken as string | null;
   });
   const [userInfo, setUserInfo] = useState<GetCurrentUserResponse['data'] | null>(null);
-
+  const [isLoading, setIsLoading] = useState(false);
   const logout = () => {
     setRole(null);
     setToken(null);
@@ -57,6 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       logout();
     }
   };
+
   
   return (
     <AuthContext.Provider value={{ 
@@ -67,7 +70,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       userInfo, 
       setUserInfo, 
       logout,
-      handleLogin
+      handleLogin,
+      isLoading,
+      setIsLoading
     }}>
       {children}
     </AuthContext.Provider>

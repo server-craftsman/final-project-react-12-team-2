@@ -13,7 +13,8 @@ export const App = () => {
 
   return (
     <>
-      <Suspense fallback={isLoading ? <Loading /> : null}>
+      {isLoading && <Loading />}
+      <Suspense>
         <RunRoutes />
       </Suspense>
       <ScrollToTopButton />

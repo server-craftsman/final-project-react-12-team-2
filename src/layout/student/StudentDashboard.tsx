@@ -1,10 +1,9 @@
-import React, { lazy, Suspense } from "react"; 
+import React, { lazy } from "react"; 
 import { Layout } from "antd";
 import { Outlet } from "react-router-dom";
 import StudentDashboardNavbar from "./StudentDashboardNavbar";
 import { Content } from "antd/es/layout/layout";
 const StudentFooter = lazy(() => import("../main-layout/MainFooter"));
-const Loading = lazy(() => import("../../app/Loading"));
 
 const StudentDashboard: React.FC = () => {
   return (
@@ -20,9 +19,7 @@ const StudentDashboard: React.FC = () => {
             </div>
           </header>
           <section>
-            <Suspense fallback={<Loading />}>
-              <Outlet />
-            </Suspense>
+            <Outlet />
           </section>
         </Content>
         <StudentFooter />

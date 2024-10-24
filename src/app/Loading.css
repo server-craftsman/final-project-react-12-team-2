@@ -1,0 +1,53 @@
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.font-serif {
+  font-family: "Times New Roman", Times, serif;
+}
+
+.text-3xl {
+  font-size: 2.5rem; /* Increased size for luxury feel */
+}
+
+.text-white {
+  color: white;
+}
+
+.mt-4 {
+  margin-top: 1rem; /* Adjust as needed */
+}
+
+.text-lg {
+  font-size: 1.25rem; /* Increased size for luxury feel */
+}
+
+.text-yellow-300 {
+  color: #ffd700; /* Changed to a more luxurious gold color */
+}
+
+.glow-effect {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 25px rgba(255, 255, 255, 0.7), 0 0 35px rgba(255, 255, 255, 0.5);
+}
+
+.loading-dots {
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}

@@ -148,25 +148,28 @@ axiosInstance.interceptors.request.use(
     const user: any = getItemInLocalStorage(LOCAL_STORAGE.ACCOUNT_ADMIN);
     if (!config.headers) config.headers = {};
     if (user) config.headers["Authorization"] = `Bearer ${user.access_token}`;
+    store.dispatch(toggleLoading(true)); // Show loading
     return config as InternalAxiosRequestConfig;
   },
   (err) => {
+    store.dispatch(toggleLoading(false)); // Hide loading on error
     return handleErrorByToast(err);
   },
 );
 
 axiosInstance.interceptors.response.use(
   (config) => {
-    store.dispatch(toggleLoading(false)); // hide loading
+    store.dispatch(toggleLoading(false)); // Hide loading
     return Promise.resolve(config);
   },
   (err) => {
+    store.dispatch(toggleLoading(false)); // Hide loading on error
     const { response } = err;
     if (response && response.status === 401) {
       setTimeout(() => {
         removeItemInLocalStorage(LOCAL_STORAGE.ACCOUNT_ADMIN);
         window.location.href = ROUTER_URL.LOGIN;
-      }, 2000);
+      }, 10000);
     }
     return handleErrorByToast(err);
   },
