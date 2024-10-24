@@ -1,29 +1,19 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Suspense } from "react";
 import ScrollToTopButton from "./components/generic/home/ScrollToTopButton";
 import Loading from "./app/Loading";
-import { Suspense } from "react";
 import { useSelector } from "react-redux";
-// Import Routes
-import useProtectedRoutes from "./routes/protected/useProtectedRoutes";
-import publishRoutes from "./routes/publish/publishRoutes";
-
-// import adminRoutes from "./routes/subs/adminRoutes";
-// import instructorRoutes from "./routes/subs/instructorRoutes";
-// import studentRoutes from "./routes/subs/studentRoutes";
-//==============================
+// Import RunRoutes component instead of function
+import RunRoutes from "./routes/run/run";
 
 export const App = () => {
-  const protectedRoutes = useProtectedRoutes();
-  const router = createBrowserRouter([
-    ...protectedRoutes,
-    ...publishRoutes,
-  ]);
-
   const isLoading = useSelector((state: any) => state.loading);
+  const role = useSelector((state: any) => state.userRole) || 'guest';
+  console.log("User Role:", role);
+
   return (
     <>
       <Suspense fallback={isLoading ? <Loading /> : null}>
-        <RouterProvider key={router.routes.length} router={router} />
+        <RunRoutes />
       </Suspense>
       <ScrollToTopButton />
     </>

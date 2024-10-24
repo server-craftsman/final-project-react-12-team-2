@@ -1,34 +1,26 @@
-// import { RouteObject } from "react-router-dom";
-// import useProtectedRoutes from "../routes/protected/protectedRoutes";
-// import publishRoutes from "../routes/publish/publishRoutes";
+import { RoutePaths } from "../models/router/route.constructor";
 
-// // Combine all routes
-// export const ROUTER_OBJECT: RouteObject[] = [
-//   ...useProtectedRoutes(),
-//   ...publishRoutes,
-// ];
-
-export const ROUTER_URL = {
+export const ROUTER_URL: RoutePaths = {
   LOGIN: "/login",
   REGISTER: "/register",
+  ADMIN_PATH: "/admin",
   ADMIN: {
-    BASE: "/admin",
-    INFO: "/admin/admin-info",
-    MANAGE_USER: "/admin/manage-user",
-    VIEW_USER: "/admin/view-user/:id",
-    EDIT_USER: "/admin/edit-user/:id",
-    PAYOUT: "/admin/payout",
-    PURCHASE: "/admin/purchase",
-    VIEW_PURCHASE: "/admin/view-purchase/:id",
-    CATEGORIES: "/admin/categories",
-    EDIT_CATEGORY: "/admin/edit-category/:id",
-    COURSES: "/admin/courses",
-    PURCHASES_LOG: "/admin/purchases-log",
-    CATEGORIES_DETAILS: "/admin/categories/details-category",
-    CATEGORIES_DETAILS_ID: "/admin/categories/categories-details/:id",
-    COURSES_LOG: "/admin/courses-log",
-    SUBSCRIPTION: "/admin/subscription",
-    REQUEST_ACCOUNT: "/admin/request-account",
+    INFO: "/admin-info",
+    MANAGE_USER: "/manage-user",
+    VIEW_USER: "/view-user/:id",
+    EDIT_USER: "/edit-user/:id",
+    PAYOUT: "/payout",
+    PURCHASE: "/purchase",
+    VIEW_PURCHASE: "/view-purchase/:id",
+    CATEGORIES: "/categories",
+    EDIT_CATEGORY: "/edit-category/:id",
+    COURSES: "/courses",
+    PURCHASES_LOG: "/purchases-log",
+    CATEGORIES_DETAILS: "/categories/details-category",
+    CATEGORIES_DETAILS_ID: "/categories/categories-details/:id",
+    COURSES_LOG: "/courses-log",
+    SUBSCRIPTION: "/subscription",
+    REQUEST_ACCOUNT: "/request-account",
   },
   INSTRUCTOR: {
     BASE: "/instructor",
@@ -54,9 +46,13 @@ export const ROUTER_URL = {
     HOME: "/",
     COURSE_DETAILS: "/course-details",
     COURSE_BY_ID: "/course/:id",
+    COURSE_BY_ID_LESSON: "/course/:courseId/lesson/:lessonId",
+    COURSE_BY_ID_SESSION: "/course/:courseId/session/:sessionId",
+    COURSE_BY_ID_SESSION_LESSON: "/course/:courseId/session/:sessionId/lesson/:lessonId",
     SESSION_DETAILS: "/session-details",
     LESSON_DETAILS: "/lesson-details",
     CART: "/cart",
     ABOUT: "/about",
   },
+  UNAUTHORIZED: "/unauthorized",
 };

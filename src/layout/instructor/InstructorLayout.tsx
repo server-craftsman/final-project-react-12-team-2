@@ -1,10 +1,9 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { Layout } from "antd";
-
 import { Outlet } from "react-router-dom";
-import InstructorNavbar from "./InstructorNavbar";
-import StudentFooter from "../main-layout/MainFooter";
-
+const InstructorNavbar = lazy(() => import("./InstructorNavbar"));
+const StudentFooter = lazy(() => import("../main-layout/MainFooter"));
+const Loading = lazy(() => import("../../app/Loading"));
 const { Content } = Layout;
 
 const Instructor: React.FC = () => {
@@ -21,7 +20,9 @@ const Instructor: React.FC = () => {
           </header>
 
           <section>
-            <Outlet />
+            <Suspense fallback={<Loading />}>
+              <Outlet />
+            </Suspense>
           </section>
         </Content>
         <StudentFooter />

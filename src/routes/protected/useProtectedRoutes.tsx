@@ -1,81 +1,90 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { RouteObject, Navigate } from "react-router-dom";
-// import { useContext } from "react";
-// import { AuthContext } from "../../context/AuthContext";
-import ProtectedRoute from "./ProtectedRoute";
+import { UserRole } from "../../models/User";
 import adminRoutes from "../subs/adminRoutes";
 import instructorRoutes from "../subs/instructorRoutes";
 import studentRoutes from "../subs/studentRoutes";
-// import DashBoardAdmin from "../../pages/admin/overview/DashBoard Admin";
-import { UserRole } from "../../models/User";
-
-const findIndexRoute = (routes: RouteObject[]) => {
-  return routes.find(route => route.path === "index");
-};
-
-const DefaultComponent = () => <div>Default Component</div>;
+import Loading from "../../app/Loading";
 
 const useProtectedRoutes = (): RouteObject[] => {
   const [role, setRole] = useState<UserRole | null>(null);
 
   useEffect(() => {
-    const storedRole = localStorage.getItem("userRole");
-    console.log("storedRole", storedRole);
+    const storedRole = localStorage.getItem("role");
+    console.log("storedRole", storedRole); // Kiểm tra giá trị storedRole
     if (storedRole) {
       setRole(storedRole as UserRole);
+      console.log("Role set to:", storedRole); // Kiểm tra sau khi setRole
     }
   }, []);
 
   let roleBasedRoutes: RouteObject[] = [];
 
+  // Ensure role is set before proceeding
+  if (role === null) {
+    return [
+      {
+        path: "*",
+        element: <Navigate to="/" />,
+      },
+    ];
+  }
+
+  const mapRoutes = (routes: RouteObject[], allowedRole: UserRole): RouteObject[] => {
+    return routes.map((route) => {
+      if ('index' in route && route.index) {
+        return {
+          ...route,
+          element: (
+            <Suspense fallback={<Loading />}>
+              {role === allowedRole ? route.element : <Navigate to="/" replace />}
+            </Suspense>
+          ),
+        };
+      }
+      return {
+        ...route,
+        element: (
+          <Suspense fallback={<Loading />}>
+            {role === allowedRole && route.element
+              ? (route.element as JSX.Element)
+              : <Navigate to="/" replace />}
+          </Suspense>
+        ) as JSX.Element,
+        children: Array.isArray(route.children) ? mapRoutes(route.children, allowedRole) : undefined,
+      };
+    });
+  };
+
   switch (role) {
     case UserRole.admin:
-      roleBasedRoutes = adminRoutes.map((route) => ({
-        ...route,
-        element: (
-          <ProtectedRoute
-            component={route.children ? (findIndexRoute(route.children)?.element as unknown as React.ComponentType<any>) || DefaultComponent : DefaultComponent}
-            userRole={role as UserRole}
-            allowedRoles={[UserRole.admin]}
-          />
-        ),
-      }));
+      console.log("Admin role detected");
+      console.log("Admin routes:", adminRoutes); // Debug: Kiểm tra adminRoutes
+      roleBasedRoutes = mapRoutes(adminRoutes, UserRole.admin) as RouteObject[];
       break;
     case UserRole.instructor:
-      roleBasedRoutes = instructorRoutes.map((route) => ({
-        ...route,
-        element: (
-          <ProtectedRoute
-            component={route.children ? (findIndexRoute(route.children)?.element as unknown as React.ComponentType<any>) || DefaultComponent : DefaultComponent}
-            userRole={role as UserRole}
-            allowedRoles={[UserRole.instructor]}
-          />
-        ),
-      }));
+      console.log("Instructor role detected");
+      console.log("Instructor routes:", instructorRoutes); // Debug: Kiểm tra instructorRoutes
+      roleBasedRoutes = mapRoutes(instructorRoutes, UserRole.instructor) as RouteObject[];
       break;
     case UserRole.student:
-      roleBasedRoutes = studentRoutes.map((route) => ({
-        ...route,
-        element: (
-          <ProtectedRoute
-            component={route.children ? (findIndexRoute(route.children)?.element as unknown as React.ComponentType<any>) || DefaultComponent : DefaultComponent}
-            userRole={role as UserRole}
-            allowedRoles={[UserRole.student]}
-          />
-        ),
-      }));
+      console.log("Student role detected");
+      console.log("Student routes:", studentRoutes); // Debug: Kiểm tra studentRoutes
+      roleBasedRoutes = mapRoutes(studentRoutes, UserRole.student) as RouteObject[];
       break;
     default:
+      console.log("No valid role detected");
       roleBasedRoutes = [
         {
           path: "*",
           element: <Navigate to="/" />,
         },
       ];
-      console.log("roleBasedRoutes", roleBasedRoutes);
+      console.log("roleBasedRoutes", roleBasedRoutes); // Debug: Kiểm tra roleBasedRoutes
   }
 
-  return [...roleBasedRoutes];
+  // Return only the role-based routes, excluding the index route
+  return roleBasedRoutes;
 };
 
 export default useProtectedRoutes;

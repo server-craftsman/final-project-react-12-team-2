@@ -4,53 +4,58 @@ import { UserOutlined, LockOutlined, HomeOutlined, EyeInvisibleOutlined, EyeTwoT
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import LoginGoogle from "./LoginGoogle";
 import { useState } from "react";
-// import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { AuthService } from "../../services/authentication/auth.service";
 import loginAnimation from "../../data/loginAnimation.json";
 import Lottie from 'lottie-react'; 
 // import { store } from "../../app/store";
 // import { UserRole } from "../../models/User"; // Ensure this import is correct
 import { CLIENT_ID } from "../../const/authentication";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { UserRole } from "../../models/User";
 
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  // const { setRole } = useAuth();
+  const { setRole } = useAuth();
 
   const onFinish = async (values: any) => {
     try {
-      // Step 1: Call login API
       const result = await AuthService.login({
         email: values.username,
         password: values.password,
       });
 
-      // Correct token extraction
-      const token = result.data?.data?.token; // Adjusted to match the provided JSON structure
-      if (token) { // Check for token
-        // Save token to localStorage
+      const token = result.data?.data?.token;
+      if (token) {
         localStorage.setItem("authToken", token);
 
-        // Step 2: Fetch current user to get role
         const userResponse = await AuthService.getUserRole(token);
         const userData = userResponse.data;
         if (userData && userData.data.role) {
-          // Save role to localStorage
-          localStorage.setItem("userRole", userData.data.role);
-          console.log("userRole", userData.data.role);
-        } else {
-          throw new Error("Failed to fetch user role");
+          const userRole = userData.data.role;
+          localStorage.setItem("role", userRole);
+          setRole(userRole as UserRole); // This will trigger the protection system in run.tsx
+
+          toast.success("Login Success", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            style: { backgroundColor: "#1a237e" }
+          });
         }
-      } else {
-        console.error("Invalid login response:", result.data);
-        throw new Error("Invalid login response");
       }
     } catch (error) {
       setLoginError("Login failed. Please check your credentials.");
       console.error("Login error:", error);
     }
   };
-
 
   // const validatePassword = (_: any, value: string) => {
   //   const hasUpperCase = /[A-Z]/.test(value);
@@ -89,27 +94,28 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-purple-900/20 to-indigo-900/20 backdrop-blur-md">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-[#1a237e]/20 to-[#1a237e]/40 backdrop-blur-md">
+      <ToastContainer />
       <div className="relative flex w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl md:flex-row">
-        <div className="flex w-full flex-col items-center justify-center bg-gradient-to-br from-indigo-900 to-purple-900 p-12 md:w-1/2">
+        <div className="flex w-full flex-col items-center justify-center bg-gradient-to-br from-[#1a237e] to-[#1a237e]/80 p-12 md:w-1/2">
           <Link to="/">
             <Lottie animationData={loginAnimation} loop={true} />
           </Link>
-          <h2 className="text-white text-3xl font-bold">Edu Learn</h2>
-          <p className="mt-4 text-center text-white">
+          <h2 className="text-white text-4xl font-extrabold">Edu Learn</h2>
+          <p className="mt-4 text-center text-white text-lg">
             Elevate Your Learning Experience
           </p>
         </div>
         <div className="w-full bg-gradient-to-br from-white to-gray-100 p-12 md:w-1/2">
           <Link
             to="/"
-            className="mb-8 flex items-center text-lg text-indigo-600 transition-colors duration-300 hover:text-indigo-800"
+            className="mb-8 flex items-center text-lg text-[#1a237e] transition-colors duration-300 hover:text-[#1a237e]/80"
           >
             <HomeOutlined className="mr-2" />
             Back to Home
           </Link>
           <div className="mb-8">
-            <h2 className="text-4xl font-bold text-indigo-900">Welcome Back</h2>
+            <h2 className="text-4xl font-extrabold text-[#1a237e]">Welcome Back</h2>
             <p className="mt-2 text-gray-600">Please sign in to your account</p>
           </div>
           <Form
@@ -130,7 +136,7 @@ const LoginPage = () => {
             >
               <Input
                 prefix={
-                  <UserOutlined className="site-form-item-icon text-indigo-600" />
+                  <UserOutlined className="site-form-item-icon text-[#1a237e]" />
                 }
                 placeholder="Username or Email"
                 className="rounded-lg px-4 py-2"
@@ -177,7 +183,7 @@ const LoginPage = () => {
               <Button
                 type="primary"
                 htmlType="submit"
-                className="login-form-button w-full rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 py-3 text-lg font-semibold text-white shadow-md transition-all duration-300 hover:from-indigo-700 hover:to-purple-700"
+                className="login-form-button w-full rounded-lg bg-gradient-to-r from-[#1a237e] to-[#1a237e]/80 py-3 text-lg font-semibold text-white shadow-md transition-all duration-300 hover:from-[#1a237e]/90 hover:to-[#1a237e]/70"
               >
                 Sign In
               </Button>
@@ -215,7 +221,7 @@ const LoginPage = () => {
                 <span className="text-gray-600">New to Edu Learn? </span>
                 <Link
                   to="/register"
-                  className="font-semibold text-indigo-600 transition-colors duration-300 hover:text-indigo-800"
+                  className="font-semibold text-[#1a237e] transition-colors duration-300 hover:text-[#1a237e]/80"
                 >
                   Create an Account
                 </Link>

@@ -1,6 +1,6 @@
 import { BaseService } from "../config/base.service";
 import { API } from "../../const/api.path";
-
+import { GetCurrentUserResponse } from "../../models/api/getCurrentUser";
 export const AuthService = {
   login(params: { email: string; password: string }) {
     return BaseService.post<{ success: boolean; data: { token: string } }>({
@@ -10,7 +10,7 @@ export const AuthService = {
     });
   },
   getUserRole(token: string) {
-    return BaseService.get<{ success: boolean; data: { role: string } }>({
+    return BaseService.get<GetCurrentUserResponse>({
       url: API.AUTH.LOGIN,
       headers: { Authorization: `Bearer ${token}` },
     });
