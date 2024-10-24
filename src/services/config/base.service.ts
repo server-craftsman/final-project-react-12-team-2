@@ -13,7 +13,7 @@ import {
 import { DOMAIN_ADMIN, LOCAL_STORAGE } from "../../const/domain";
 import { ROUTER_URL } from "../../const/router.path";
 import { store } from "../../app/store";
-import { toggleLoading } from "../../app/loadingSlice";
+import { toggleLoading, toggleLoadingAdmin } from "../../app/loadingSlice";
 
 export const axiosInstance = axios.create({
   baseURL: DOMAIN_ADMIN,
@@ -49,9 +49,11 @@ export const BaseService = {
     isLoading = true,
     payload,
     headers,
-    // toggleLoading,
+    toggleLoading,
+    toggleLoadingAdmin,
   }: Partial<ApiRequestModel>): Promise<PromiseState<T>> {
-    if (isLoading) store.dispatch(toggleLoading(true));
+    if (toggleLoading) toggleLoading(isLoading);
+    if (toggleLoadingAdmin) toggleLoadingAdmin(isLoading);
     console.log("payload: ", payload);
     return axiosInstance.post<T, PromiseState<T>>(`${url}`, payload, {
       headers: headers || {},

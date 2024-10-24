@@ -7,4 +7,7 @@ export const API = {
     REGISTER: "api/auth/register",
     VERIFY_TOKEN: "api/auth/verify-token",
   },
+  ADMIN: {
+    GET_USERS: "api/users/search",
+  },
 };

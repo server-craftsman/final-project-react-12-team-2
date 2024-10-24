@@ -1,38 +1,91 @@
-import { Table } from "antd";
+import React, { useEffect, useState } from "react";
+import { Table, Select } from "antd";
 import { useNavigate } from "react-router-dom";
-import usersData from "../../../data/users.json"; // Adjust the path as necessary
-import { User, UserRole } from "../../../models/prototype/User";
+// import usersData from "../../../data/users.json"; // Adjust the path as necessary
+// import { User, UserRole } from "../../../models/prototype/User";
 import { userStatusColor } from "../../../utils/userStatus";
 import { userRoleColor } from "../../../utils/userRole";
+import { UserService } from "../../../services/admin/user.service";
+import { User, UserRole } from "../../../models/prototype/User";
+
 interface ViewUserProfileProps {
   searchQuery: string;
   selectedRole: UserRole | null;
   selectedStatus: boolean | null;
 }
 
-const ViewUserProfile = ({
+const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
   searchQuery,
   selectedRole,
   selectedStatus,
 }: ViewUserProfileProps) => {
   const navigate = useNavigate();
+  const [users, setUsers] = useState<User[]>([]);
 
-  const handleViewDetails = (userId: string) => {
-    navigate(`/admin/view-user/${userId}`);
+  const defaultParams = {
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10,
+    },
+    searchCondition: {
+      keyword: "",
+      role: "admin",
+      status: true,
+      // is_verified: "false", // Change from "" to false or true as needed
+      is_delete: false,
+    },
   };
 
-  const filteredUsers = usersData.users
-    .filter(
-      (user) =>
-        (user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          user.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
-        (selectedRole === null || user.role === selectedRole) &&
-        (selectedStatus === null || user.status === selectedStatus),
-    )
-    .map((user) => ({
-      ...user,
-      role: user.role as UserRole,
-    }));
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        console.log("Fetching users with params:", {
+          ...defaultParams,
+          searchCondition: {
+            ...defaultParams.searchCondition,
+            keyword: searchQuery || defaultParams.searchCondition.keyword,
+            role: selectedRole || defaultParams.searchCondition.role,
+            status: selectedStatus !== null ? selectedStatus : defaultParams.searchCondition.status,
+          },
+        });
+
+        const response = await UserService.getUsersAdmin({
+          ...defaultParams,
+          searchCondition: {
+            ...defaultParams.searchCondition,
+            keyword: searchQuery || defaultParams.searchCondition.keyword,
+            role: selectedRole || defaultParams.searchCondition.role,
+            status: selectedStatus !== null ? selectedStatus : defaultParams.searchCondition.status,
+          },
+        });
+
+        console.log("API response:", response);
+
+        setUsers(response.data.pageData ? response.data.pageData as unknown as User[] : []); // Ensure pageData is an array
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+        setUsers([]); // Set users to an empty array on error
+      }
+    };
+
+    fetchUsers();
+  }, [searchQuery, selectedRole, selectedStatus]);
+
+  const handleViewDetails = async (userId: string) => {
+    try {
+      const userDetails = await UserService.getUsersAdmin({
+        ...defaultParams,
+        searchCondition: {
+          ...defaultParams.searchCondition,
+          keyword: userId,
+        },
+      });
+      console.log(userDetails); // You can handle the user details as needed
+      navigate(`/admin/view-user/${userId}`);
+    } catch (error) {
+      console.error("Failed to fetch user details:", error);
+    }
+  };
 
   const columns = [
     {
@@ -50,7 +103,7 @@ const ViewUserProfile = ({
       dataIndex: "role",
       key: "role",
       render: (role: UserRole) => (
-        <span className={userRoleColor(role)}>{role}</span>
+        <span className={userRoleColor(role)}>{role.toUpperCase()}</span>
       ),
     },
     {
@@ -89,7 +142,7 @@ const ViewUserProfile = ({
       <Table<User>
         className="shadow-lg"
         columns={columns}
-        dataSource={filteredUsers.map((user) => ({
+        dataSource={users.map((user) => ({
           ...user,
           dob: new Date(user.dob),
         }))}

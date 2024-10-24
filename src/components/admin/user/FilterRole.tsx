@@ -16,12 +16,12 @@ const FilterRole: React.FC<FilterRoleProps> = ({ onRoleChange }) => {
   return (
     <Select
       placeholder="Select Role"
-      onChange={(value) => onRoleChange(value)}
+      onChange={(value) => onRoleChange(value === "all" ? null : value as UserRole)}
       allowClear
       style={{ width: 120, marginBottom: 10, marginRight: 10 }}
-      defaultValue={null}
+      defaultValue="all"
     >
-      <Select.Option value={null}>All</Select.Option>
+      <Select.Option value="all">All</Select.Option>
       {rolesToInclude.map((role) => (
         <Select.Option key={role} value={role}>
           {role.charAt(0).toUpperCase() + role.slice(1)}
