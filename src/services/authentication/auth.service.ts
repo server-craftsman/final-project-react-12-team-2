@@ -9,6 +9,12 @@ export const AuthService = {
       isLoading: true,
     });
   },
+  logout() {
+    return BaseService.get<{ success: boolean; data: string }>({
+      url: API.AUTH.LOGOUT,
+      isLoading: true,
+    });
+  },
   getUserRole(token: string) {
     return BaseService.get<GetCurrentUserResponse>({
       url: API.AUTH.LOGIN,

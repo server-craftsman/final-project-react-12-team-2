@@ -11,7 +11,7 @@ export interface GetCurrentUserResponse {
     phone_number: string;
     avatar_url: string;
     video_url: string;
-    dob: string;
+    dob: Date;
     is_verified: boolean;
     verification_token: string;
     verification_token_expires: string;

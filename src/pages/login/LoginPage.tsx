@@ -13,13 +13,13 @@ import Lottie from 'lottie-react';
 import { CLIENT_ID } from "../../const/authentication";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { UserRole } from "../../models/User";
+// import { UserRole } from "../../models/User";
 import { useNavigate } from "react-router-dom"; // Add this import
 
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const { setRole } = useAuth();
+  const { handleLogin } = useAuth(); // Update this line to use handleLogin instead of setRole
   const navigate = useNavigate(); // Add this hook
 
   const getDefaultPath = (userRole: string) => {
@@ -42,33 +42,28 @@ const LoginPage = () => {
         password: values.password,
       });
 
-      const token = result.data?.data?.token;
-      if (token) {
-        localStorage.setItem("authToken", token);
+      if (result.data?.data?.token) {
+        const token = result.data.data.token;
+        
+        // Use handleLogin from AuthContext
+        await handleLogin(token);
 
-        const userResponse = await AuthService.getUserRole(token);
-        const userData = userResponse.data;
-        if (userData && userData.data.role) {
-          const userRole = userData.data.role;
-          localStorage.setItem("role", userRole);
-          setRole(userRole as UserRole);
+        toast.success("Login Success", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          style: { backgroundColor: "#1a237e" }
+        });
 
-          toast.success("Login Success", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            style: { backgroundColor: "#1a237e" }
-          });
-
-          // Add navigation after successful login
-          const defaultPath = getDefaultPath(userRole);
-          navigate(defaultPath, { replace: true });
-        }
+        // Navigate based on role from localStorage since it's just been set by handleLogin
+        const userRole = localStorage.getItem("role");
+        const defaultPath = getDefaultPath(userRole || '');
+        navigate(defaultPath, { replace: true });
       }
     } catch (error) {
       setLoginError("Login failed. Please check your credentials.");
