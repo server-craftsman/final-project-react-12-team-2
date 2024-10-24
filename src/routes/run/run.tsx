@@ -26,10 +26,32 @@ import { studentSubPaths } from "../sub-paths/studentSubPaths";
 const RunRoutes = (): JSX.Element => {
   const { role } = useAuth();
 
-  // Add debugging logs
+  // Add getDefaultPath function at component level
+  const getDefaultPath = (role: string) => {
+    switch (role) {
+      case 'admin':
+        return ROUTER_URL.ADMIN_PATH;
+      case 'instructor':
+        return ROUTER_URL.INSTRUCTOR.BASE;
+      case 'student':
+        return ROUTER_URL.STUDENT.BASE;
+      default:
+        return ROUTER_URL.COMMON.HOME;
+    }
+  };
+
+  // Sửa lại useEffect để chỉ redirect khi ở trang home (/) thay vì tất cả public routes
   useEffect(() => {
-    console.log('Current role from context:', role);
-    console.log('Current role from localStorage:', localStorage.getItem("role"));
+    const currentRole = role || localStorage.getItem("role") as UserRole;
+    if (currentRole) {
+      const currentPath = window.location.pathname;
+      
+      // Chỉ redirect khi user đã đăng nhập và đang ở trang home
+      if (currentPath === '/') {
+        const defaultPath = getDefaultPath(currentRole);
+        window.location.href = defaultPath;
+      }
+    }
   }, [role]);
 
   const renderProtectedRoutes = () => {
@@ -41,9 +63,32 @@ const RunRoutes = (): JSX.Element => {
       return null;
     }
 
+    // Add default route navigation based on role
+    const getDefaultPath = (role: string) => {
+      switch (role) {
+        case 'admin':
+          return ROUTER_URL.ADMIN_PATH;
+        case 'instructor':
+          return ROUTER_URL.INSTRUCTOR.BASE;
+        case 'student':
+          return ROUTER_URL.STUDENT.BASE;
+        default:
+          return ROUTER_URL.COMMON.HOME;
+      }
+    };
+
+    useEffect(() => {
+      if (currentRole && window.location.pathname === '/') {
+        const defaultPath = getDefaultPath(currentRole);
+        window.location.href = defaultPath;
+      }
+    }, [currentRole]);
+
     const handleAccessDenied = () => {
       console.error('Access denied for role:', currentRole);
-      // You could add additional handling here, like redirecting to an error page
+      // Redirect to default path for the role if access is denied
+      const defaultPath = getDefaultPath(currentRole);
+      window.location.href = defaultPath;
     };
 
     return (

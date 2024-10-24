@@ -14,11 +14,26 @@ import { CLIENT_ID } from "../../const/authentication";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { UserRole } from "../../models/User";
+import { useNavigate } from "react-router-dom"; // Add this import
 
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { setRole } = useAuth();
+  const navigate = useNavigate(); // Add this hook
+
+  const getDefaultPath = (userRole: string) => {
+    switch (userRole) {
+      case 'admin':
+        return '/admin';
+      case 'instructor':
+        return '/instructor';
+      case 'student':
+        return '/student';
+      default:
+        return '/';
+    }
+  };
 
   const onFinish = async (values: any) => {
     try {
@@ -36,7 +51,7 @@ const LoginPage = () => {
         if (userData && userData.data.role) {
           const userRole = userData.data.role;
           localStorage.setItem("role", userRole);
-          setRole(userRole as UserRole); // This will trigger the protection system in run.tsx
+          setRole(userRole as UserRole);
 
           toast.success("Login Success", {
             position: "top-right",
@@ -49,6 +64,10 @@ const LoginPage = () => {
             theme: "colored",
             style: { backgroundColor: "#1a237e" }
           });
+
+          // Add navigation after successful login
+          const defaultPath = getDefaultPath(userRole);
+          navigate(defaultPath, { replace: true });
         }
       }
     } catch (error) {
