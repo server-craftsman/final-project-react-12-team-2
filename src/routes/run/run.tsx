@@ -6,7 +6,7 @@ import { useAuth } from "../../contexts/AuthContext";
 
 // Import router path
 import { ROUTER_URL } from "../../const/router.path";
-import { UserRole } from "../../models/User";
+import { UserRole } from "../../models/prototype/User";
 
 // Import guard routes
 import GuardProtectedRoute from "../protected/GuardProtectedRoute";

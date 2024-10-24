@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Navigate } from "react-router-dom";
-import { UserRole } from "../../models/User";
+import { UserRole } from "../../models/prototype/User";
 import { ROUTER_URL } from "../../const/router.path";
 
 interface ProtectedRouteProps {

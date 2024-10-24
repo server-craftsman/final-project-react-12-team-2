@@ -1,4 +1,4 @@
-import { CourseStatusEnum } from "../models/Course";
+import { CourseStatusEnum } from "../models/prototype/Course";
 import React from "react";
 
 

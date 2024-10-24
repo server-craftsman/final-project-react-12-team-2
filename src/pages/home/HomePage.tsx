@@ -11,12 +11,12 @@ import CategoryFilter from "../../components/generic/category/CategoryFilter";
 import coursesData from "../../data/courses.json";
 import usersData from "../../data/users.json";
 import categoriesData from "../../data/categories.json";
-import { Category } from "../../models/Category";
+import { Category } from "../../models/prototype/Category";
 import InstructorSlider from "../../components/generic/home/InstructorSlider";
 import UtilityProgram from "../../components/generic/home/UtilityProgram";
 import UtilityRegisterInformation from "../../components/generic/home/UtilityRegisterInformation";
-import { UserRole } from "../../models/User";
-import { Course } from "../../models/Course";
+import { UserRole } from "../../models/prototype/User";
+import { Course } from "../../models/prototype/Course";
 const { Title } = Typography;
 
 const HomePage: React.FC = () => {

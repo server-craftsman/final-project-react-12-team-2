@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, EffectCoverflow } from "swiper/modules";
 import userData from "../../../data/users.json";
-import { UserRole } from "../../../models/User";
+import { UserRole } from "../../../models/prototype/User";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";

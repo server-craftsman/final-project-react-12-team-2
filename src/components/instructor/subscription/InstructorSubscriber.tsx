@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, Avatar, Row, Col } from "antd";
-import { User } from "../../../models/User";
-import { Subscriptions } from "../../../models/Subscriptions";
+import { User } from "../../../models/prototype/User";
+import { Subscriptions } from "../../../models/prototype/Subscriptions";
 import { formatDate } from "../../../utils/helper"; // Add this import at the top of the file
 
 const InstructorSubscriber: React.FC<{

@@ -1,6 +1,6 @@
 import DisplayCourse from "./DisplayCourse";
 import { useState } from "react";
-import { CourseStatusEnum } from "../../../../models/Course";
+import { CourseStatusEnum } from "../../../../models/prototype/Course";
 const CourseComponent = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<CourseStatusEnum | "">("");

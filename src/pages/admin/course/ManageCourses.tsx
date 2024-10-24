@@ -5,7 +5,7 @@ import LessonManagement from "../../../components/admin/course/LessonManagement"
 import SessionManagement from "../../../components/admin/course/SessionManagement";
 import CustomSearch from "../../../components/generic/search/CustomSearch";
 import FilterStatus from "../../../components/admin/course/FilterStatus";
-import { CourseStatusEnum } from "../../../models/Course";
+import { CourseStatusEnum } from "../../../models/prototype/Course";
 
 const ManageCourses = () => {
   const [searchTerm, setSearchTerm] = useState("");

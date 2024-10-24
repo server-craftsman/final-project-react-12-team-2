@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal, Table } from "antd";
 import { formatDate, moneyFormat } from "../../../utils/helper";
-import { InstructorTransaction } from "../../../models/InstructorTransaction";
+import { InstructorTransaction } from "../../../models/prototype/InstructorTransaction";
 
 const ViewTransactions: React.FC<{
   isVisible: boolean;

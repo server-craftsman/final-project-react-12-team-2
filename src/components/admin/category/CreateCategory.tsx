@@ -1,7 +1,7 @@
 import { Button, Form, Input, Modal } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { useState } from "react";
-import { Category } from "../../../models/Category";
+import { Category } from "../../../models/prototype/Category";
 
 function CreateCategory() {
   const [categories, setCategories] = useState<Category[]>([]);

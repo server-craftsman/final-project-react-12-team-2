@@ -1,6 +1,6 @@
 import { useEffect, useState, Suspense } from "react";
 import { RouteObject, Navigate } from "react-router-dom";
-import { UserRole } from "../../models/User";
+import { UserRole } from "../../models/prototype/User";
 import adminRoutes from "../subs/adminRoutes";
 import instructorRoutes from "../subs/instructorRoutes";
 import studentRoutes from "../subs/studentRoutes";

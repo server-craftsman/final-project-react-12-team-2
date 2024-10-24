@@ -2,7 +2,7 @@ import { Table, Tag, message, Modal } from "antd";
 import paymentsData from "../../../data/payouts.json";
 import transactionsData from "../../../data/admin_transactions.json";
 import { useState, useEffect } from "react";
-import { Payout, PayoutStatusEnum } from "../../../models/Payout";
+import { Payout, PayoutStatusEnum } from "../../../models/prototype/Payout";
 import { moneyFormat } from "../../../utils/helper";
 
 interface ViewPaymentProps {

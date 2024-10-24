@@ -1,8 +1,8 @@
 import { createContext, useContext, ReactNode, useState } from 'react';
-import { UserRole } from '../models/User';
-import { GetCurrentUserResponse } from '../models/api/getCurrentUser';
+import { UserRole } from '../models/prototype/User';
+import { GetCurrentUserResponse, RegisterGooglePublicResponse } from '../models/api/responsive/authentication/auth.responsive.model';
 import { AuthService } from '../services/authentication/auth.service';
-
+import { RegisterStudentPublicParams, RegisterInstructorPublicParams } from '../models/api/request/authentication/auth.request.model';
 interface AuthContextType {
   role: UserRole | null;
   setRole: (role: UserRole | null) => void;
@@ -15,6 +15,7 @@ interface AuthContextType {
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
   loginGoogle: (googleId: string) => Promise<void>;
+  registerGooglePublic: (params: RegisterStudentPublicParams | RegisterInstructorPublicParams) => Promise<RegisterGooglePublicResponse>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -76,9 +77,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  
+  const registerGooglePublic = async (params: RegisterStudentPublicParams | RegisterInstructorPublicParams): Promise<RegisterGooglePublicResponse> => {
+    const response = await AuthService.registerGooglePublic(params);
+    console.log(response);
+    return response.data; // Ensure this returns the correct structure
+  };
+
   return (
-    <AuthContext.Provider value={{ 
+    <AuthContext.Provider value={{
       role, 
       setRole, 
       token, 
@@ -90,6 +96,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isLoading,
       setIsLoading,
       loginGoogle,
+      registerGooglePublic,
     }}>
       {children}
     </AuthContext.Provider>

@@ -1,7 +1,7 @@
 import { Table, message, Modal } from "antd";
 // import { useNavigate } from "react-router-dom";
 import usersData from "../../../data/users.json"; // Adjust the path as necessary
-import { User, UserRole } from "../../../models/User";
+import { User, UserRole } from "../../../models/prototype/User";
 import { userStatusColor } from "../../../utils/userStatus";
 import { useState } from "react";
 

@@ -6,11 +6,11 @@ import {
   BookOutlined,
   PercentageOutlined,
 } from "@ant-design/icons";
-import { Course, CourseStatusEnum } from "../../../../models/Course";
-import { User } from "../../../../models/User";
+import { Course, CourseStatusEnum } from "../../../../models/prototype/Course";
+import { User } from "../../../../models/prototype/User";
 import categoriesData from "../../../../data/categories.json";
 import { motion } from "framer-motion";
-import { Category } from "../../../../models/Category";
+import { Category } from "../../../../models/prototype/Category";
 const { Title, Paragraph } = Typography;
 const { Meta } = Card;
 interface CoursesProps {

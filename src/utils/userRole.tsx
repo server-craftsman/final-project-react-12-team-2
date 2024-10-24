@@ -1,4 +1,4 @@
-import { UserRole } from "../models/User";
+import { UserRole } from "../models/prototype/User";
 
 export const userRoleColor = (role: UserRole) => {
   return role === UserRole.admin

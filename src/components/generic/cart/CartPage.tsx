@@ -13,7 +13,7 @@ import {
 import { DeleteOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
-import { CartStatusEnum } from "../../../models/Carts";
+import { CartStatusEnum } from "../../../models/prototype/Carts";
 const { Title, Text } = Typography;
 import cartData from "../../../data/carts.json";
 

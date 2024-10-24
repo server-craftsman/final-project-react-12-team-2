@@ -1,5 +1,5 @@
 import React, { createContext, useState, ReactNode, useContext } from "react";
-import { Carts } from "../models/Carts";
+import { Carts } from "../models/prototype/Carts";
 
 export interface CartItem extends Carts {
   title: string;

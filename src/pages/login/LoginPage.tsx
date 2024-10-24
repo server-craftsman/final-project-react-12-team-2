@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Form, Input, Button, Divider } from "antd";
+import { Form, Input, Button, Divider, Modal } from "antd";
 import { UserOutlined, LockOutlined, HomeOutlined, EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import LoginGoogle from "./LoginGoogle";
@@ -15,24 +15,28 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 // import { UserRole } from "../../models/User";
 import { useNavigate } from "react-router-dom"; // Add this import
+import SignUpForm from "./SignUpGoogle";
+import { ROUTER_URL } from "../../const/router.path";
+import { RegisterStudentPublicParams, RegisterInstructorPublicParams } from "../../models/api/request/authentication/auth.request.model";
 
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [googleIdToken, setGoogleIdToken] = useState<string | null>(null); // Add this state
-  const { handleLogin } = useAuth(); // Update this line to use handleLogin instead of setRole
-  const navigate = useNavigate(); // Add this hook
+  const [googleIdToken, setGoogleIdToken] = useState<string | null>(null);
+  const [isSignUpModalVisible, setIsSignUpModalVisible] = useState<boolean>(false);
+  const { handleLogin, registerGooglePublic } = useAuth();
+  const navigate = useNavigate();
 
   const getDefaultPath = (userRole: string) => {
     switch (userRole) {
       case 'admin':
-        return '/admin';
+        return ROUTER_URL.ADMIN_PATH;
       case 'instructor':
-        return '/instructor';
+        return ROUTER_URL.INSTRUCTOR.BASE;
       case 'student':
-        return '/dashboard-student';
+        return ROUTER_URL.STUDENT.BASE;
       default:
-        return '/';
+        return ROUTER_URL.COMMON.HOME;
     }
   };
 
@@ -46,7 +50,6 @@ const LoginPage = () => {
       if (result.data?.data?.token) {
         const token = result.data.data.token;
         
-        // Use handleLogin from AuthContext
         await handleLogin(token);
 
         toast.success("Login Success", {
@@ -61,10 +64,13 @@ const LoginPage = () => {
           style: { backgroundColor: "#1a237e" }
         });
 
-        // Navigate based on role from localStorage since it's just been set by handleLogin
         const userRole = localStorage.getItem("role");
         const defaultPath = getDefaultPath(userRole || '');
-        navigate(defaultPath, { replace: true });
+        if (typeof defaultPath === 'string') {
+          navigate(defaultPath);
+        } else {
+          console.error("Invalid path:", defaultPath);
+        }
       }
     } catch (error) {
       setLoginError("Login failed. Please check your credentials.");
@@ -74,37 +80,38 @@ const LoginPage = () => {
 
   // const onFinishGoogle = async (googleId: string) => {
   //   try {
-  //     const result = await AuthService.loginGoogle({ google_id: googleId });
-  //     if (result.data?.data?.token) {
-  //       const token = result.data.data.token;
+  //     const result = await AuthService.registerGooglePublic({ google_id: googleId } as RegisterPublicParams);
+  //     const token = result.data?.data?.token; // Adjust this line to match the actual response structure
+  //     if (token) {
   //       localStorage.setItem("token", token);
   //       await handleLogin(token);
+  //       const userRole = localStorage.getItem("role");
+  //       const defaultPath = getDefaultPath(userRole || '');
+  //       if (typeof defaultPath === 'string') {
+  //         navigate(defaultPath);
+  //       } else {
+  //         console.error("Invalid path:", defaultPath);
+  //       }
   //     }
-  //   } catch (error) {
-  //     setLoginError("Login failed. Please check your credentials.");
+  //   } catch (error: any) {
+  //     if (error.response?.data?.message.includes("is not exists")) {
+  //       setLoginError("Your email is not registered. Please sign up.");
+  //       setIsSignUpModalVisible(true);
+  //     } else {
+  //       setLoginError("Login failed. Please check your credentials.");
+  //     }
   //     console.error("Login error:", error);
   //   }
   // };
 
-  // const validatePassword = (_: any, value: string) => {
-  //   const hasUpperCase = /[A-Z]/.test(value);
-  //   const hasNumber = /\d/.test(value);
-  //   const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value); // Added special character validation
-  //   if (
-  //     !value ||
-  //     value.length < 8 ||
-  //     !hasUpperCase ||
-  //     !hasNumber ||
-  //     !hasSpecialChar
-  //   ) {
-  //     return Promise.reject(
-  //       new Error(
-  //         "Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.",
-  //       ),
-  //     );
-  //   }
-  //   return Promise.resolve();
-  // };
+  const verifyToken = async (token: string) => {
+    try {
+      const result = await AuthService.verifyToken(token);
+      console.log("Verify token result:", result);
+    } catch (error) {
+      console.error("Verify token error:", error);
+    }
+  }
 
   const validateUsername = (_: any, value: string) => {
     if (!value || value.includes(" ") || value.length < 6) {
@@ -122,19 +129,45 @@ const LoginPage = () => {
     console.error("Google Login Error:", error);
   };
 
-  const handleGoogleLoginSuccess = (idToken: string) => {
-    setGoogleIdToken(idToken); // Store the Google ID token
-    toast.success("Google Login Success", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-      style: { backgroundColor: "#1a237e" }
-    });
+  const handleGoogleLoginSuccess = async (idToken: string) => {
+    console.log("Google ID Token received:", idToken);
+    setGoogleIdToken(idToken);
+    setIsSignUpModalVisible(true);
+
+    try {
+      // Register the user with the Google ID token
+      const result = await registerGooglePublic({ google_id: idToken } as RegisterStudentPublicParams | RegisterInstructorPublicParams);
+      // Check if the response contains a token
+      const token = result?.data?.token; // Adjust this line based on actual response
+      if (token) {
+        localStorage.setItem("token", token);
+        await handleLogin(token);
+
+        // Verify the token
+        await verifyToken(token);
+
+        const userRole = localStorage.getItem("role");
+        const defaultPath = getDefaultPath(userRole || '');
+        if (typeof defaultPath === 'string') {
+          navigate(defaultPath);
+        } else {
+          console.error("Invalid path:", defaultPath);
+        }
+      } else {
+        console.error("Token not found in response:", result.data);
+        // Handle the case where the token is not present
+      }
+    } catch (error) {
+      console.error("Token verification failed:", error);
+    }
+  };
+
+  const showSignUpModal = () => {
+    setIsSignUpModalVisible(true);
+  };
+
+  const handleSignUpModalCancel = () => {
+    setIsSignUpModalVisible(false);
   };
 
   return (
@@ -196,18 +229,18 @@ const LoginPage = () => {
                 prefix={
                   <LockOutlined className="site-form-item-icon text-indigo-600" />
                 }
-                type={showPassword ? "text" : "password"} // Toggle input type
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 className="rounded-lg px-4 py-2"
                 suffix={
                   showPassword ? (
                     <EyeTwoTone
-                      onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
+                      onClick={() => setShowPassword(!showPassword)}
                       className="text-indigo-600 cursor-pointer"
                     />
                   ) : (
                     <EyeInvisibleOutlined
-                      onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
+                      onClick={() => setShowPassword(!showPassword)}
                       className="text-indigo-600 cursor-pointer"
                     />
                   )
@@ -240,16 +273,10 @@ const LoginPage = () => {
               <Form.Item>
                 <LoginGoogle
                   onLoginError={handleGoogleLoginError}
-                  onLoginSuccess={handleGoogleLoginSuccess} // Pass the success handler
+                  onLoginSuccess={handleGoogleLoginSuccess}
                 />
               </Form.Item>
             </GoogleOAuthProvider>
-
-            {googleIdToken && (
-              <p className="mt-4 text-center text-green-500">
-                Google ID Token: {googleIdToken}
-              </p>
-            )}
 
             {loginError && (
               <p className="mt-4 text-center text-red-500">
@@ -267,17 +294,27 @@ const LoginPage = () => {
             <Form.Item>
               <div className="text-center">
                 <span className="text-gray-600">New to Edu Learn? </span>
-                <Link
-                  to="/register"
+                <Button
+                  type="link"
                   className="font-semibold text-[#1a237e] transition-colors duration-300 hover:text-[#1a237e]/80"
+                  onClick={showSignUpModal}
                 >
                   Create an Account
-                </Link>
+                </Button>
               </div>
             </Form.Item>
           </Form>
         </div>
       </div>
+
+      <Modal
+        title="Sign Up"
+        open={isSignUpModalVisible}
+        onCancel={handleSignUpModalCancel}
+        footer={null}
+      >
+        <SignUpForm googleIdToken={googleIdToken} />
+      </Modal>
     </div>
   );
 };

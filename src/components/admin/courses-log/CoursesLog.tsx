@@ -1,6 +1,6 @@
 import React from "react";
 import { Table } from "antd";
-import { CourseStatusEnum, Course } from "../../../models/Course";
+import { CourseStatusEnum, Course } from "../../../models/prototype/Course";
 import { courseStatusColor } from "../../../utils/courseStatus";
 
 const CoursesLog: React.FC<{

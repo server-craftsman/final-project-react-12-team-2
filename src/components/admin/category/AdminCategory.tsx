@@ -3,7 +3,7 @@ import { useState } from "react";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import categoriesData from "../../../data/categories.json";
 // import { useNavigate } from "react-router-dom";
-import { Category } from "../../../models/Category";
+import { Category } from "../../../models/prototype/Category";
 import { Link } from "react-router-dom";
 
 const AdminCategory = ({ searchTerm }: { searchTerm: string }) => {

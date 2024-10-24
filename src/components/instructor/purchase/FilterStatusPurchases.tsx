@@ -1,6 +1,6 @@
 import React from "react";
 import { Select } from "antd";
-import { PurchaseStatusEnum } from "../../../models/Purchases";
+import { PurchaseStatusEnum } from "../../../models/prototype/Purchases";
 
 interface FilterStatusPurchasesProps {
   onFilterChange: (status: string) => void;

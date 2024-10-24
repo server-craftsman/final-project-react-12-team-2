@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Form, Input, Button, message, DatePicker } from "antd";
-import { User } from "../../../models/User";
+import { User } from "../../../models/prototype/User";
 import usersData from "../../../data/users.json";
 import { Rule } from "antd/es/form";
 import moment from "moment";

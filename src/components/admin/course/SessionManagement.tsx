@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Session } from "../../../models/Session";
+import { Session } from "../../../models/prototype/Session";
 import sessionsData from "../../../data/sessions.json";
 import { Table } from "antd";
-import { Course } from "../../../models/Course";
+import { Course } from "../../../models/prototype/Course";
 import courseData from "../../../data/courses.json";
 import { formatDate } from "../../../utils/helper";
 

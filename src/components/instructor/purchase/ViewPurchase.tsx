@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Table, Tag } from "antd";
 import { formatDate, moneyFormat } from "../../../utils/helper";
-import { PurchaseStatusEnum } from "../../../models/Purchases";
+import { PurchaseStatusEnum } from "../../../models/prototype/Purchases";
 import { purchases } from "../../../data/purchases.json";
 import PurchaseCheckbox from "./PurchaseCheckbox";
 interface ViewPurchaseProps {

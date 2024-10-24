@@ -1,7 +1,7 @@
 import React from "react";
 import reviewsData from "../../../data/reviews.json";
 import coursesData from "../../../data/courses.json";
-import { Review } from "../../../models/Review";
+import { Review } from "../../../models/prototype/Review";
 import { formatDate } from "../../../utils/helper";
 import { StarFilled, StarOutlined } from "@ant-design/icons";
 

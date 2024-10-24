@@ -1,6 +1,7 @@
 import React from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+
 interface LoginGoogleProps {
   onLoginError: (error: string) => void;
   onLoginSuccess: (token: string) => void;
@@ -12,24 +13,21 @@ const LoginGoogle: React.FC<LoginGoogleProps> = ({
 }) => {
   const onSuccess = (credentialResponse: any) => {
     try {
-      const decodedToken = jwtDecode(credentialResponse.credential);
+      if (!credentialResponse.credential) {
+        throw new Error("No credential received");
+      }
+      const decodedToken: any = jwtDecode(credentialResponse.credential);
       console.log("Decoded Token: ", decodedToken);
-      const successMessage = `
-        🎉✨ Login Success! ✨🎉
-        
-        Your ID Token: ${credentialResponse.credential}
-        
-        Welcome to the premium experience! 🌟
-        
-        Enjoy exclusive features and benefits tailored just for you.
-      `;
-      alert(successMessage);
-      const googleId = credentialResponse.credential;
-      onLoginSuccess(googleId);
-      console.log("Google ID: ", googleId);
+
+      // Save the token to localStorage
+      localStorage.setItem("googleToken", credentialResponse.credential);
+
+      // Pass the token to the onLoginSuccess callback
+      onLoginSuccess(credentialResponse.credential);
+      console.log("Google Token saved to localStorage");
     } catch (error) {
       console.error("Error decoding token: ", error);
-      onLoginError("Error decoding token: " + error);
+      onLoginError("Error decoding token: " + (error as Error).message);
     }
   };
 

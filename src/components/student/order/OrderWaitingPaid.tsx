@@ -5,7 +5,7 @@ import courseData from "../../../data/courses.json";
 import purchaseData from "../../../data/purchases.json";
 import userData from "../../../data/users.json";
 import cartData from "../../../data/carts.json";
-import { PurchaseStatusEnum } from "../../../models/Purchases";
+import { PurchaseStatusEnum } from "../../../models/prototype/Purchases";
 import { formatDate } from "../../../utils/helper";
 
 const OrderWaitingPaid: React.FC<{ searchTerm: string }> = ({ searchTerm }) => {

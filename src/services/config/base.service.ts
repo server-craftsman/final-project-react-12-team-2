@@ -3,7 +3,7 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from "axios";
-import { ApiRequestModel } from "../../models/api/ApiRequestModel";
+import { ApiRequestModel } from "../../models/api/interceptor/ApiRequestModel";
 import { toast } from "react-toastify";
 import {
   getItemInLocalStorage,

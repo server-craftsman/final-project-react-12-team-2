@@ -1,5 +1,5 @@
 import usersData from "../../../data/users.json"; // Adjust the path as necessary
-import { UserRole } from "../../../models/User";
+import { UserRole } from "../../../models/prototype/User";
 import { Typography, Descriptions, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { formatDate } from "../../../utils/helper";

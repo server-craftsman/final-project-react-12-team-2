@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import CoursesLog from "../../../components/admin/courses-log/CoursesLog";
 import CustomSearch from "../../../components/generic/search/CustomSearch";
 import FilterStatus from "../../../components/admin/courses-log/FilterStatus";
-import { Course } from "../../../models/Course";
+import { Course } from "../../../models/prototype/Course";
 import coursesData from "../../../data/courses.json";
 import reviewsData from "../../../data/reviews.json";
 import { Content } from "antd/es/layout/layout";

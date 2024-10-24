@@ -13,7 +13,7 @@ import {
 import { CourseSidebarProps } from "../../../../models/objects/course/CourseSidebarProps";
 import { useCart } from "../../../../context/CartContext";
 import { useNavigate } from "react-router-dom";
-import { Carts, CartStatusEnum } from "../../../../models/Carts";
+import { Carts, CartStatusEnum } from "../../../../models/prototype/Carts";
 
 const { Title, Text } = Typography;
 

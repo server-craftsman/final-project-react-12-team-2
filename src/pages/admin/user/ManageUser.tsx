@@ -1,5 +1,5 @@
 import { lazy, useState } from "react";
-import { UserRole } from "../../../models/User";
+import { UserRole } from "../../../models/prototype/User";
 
 const ViewUserProfile = lazy(
   () => import("../../../components/admin/user/ViewUserProfile"),

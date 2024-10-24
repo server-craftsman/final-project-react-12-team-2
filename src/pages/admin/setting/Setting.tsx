@@ -1,7 +1,7 @@
 import AdminInfo from "../../../components/admin/setting/AdminInfo";
 import { Typography, Tabs } from "antd";
 import usersData from "../../../data/users.json"; // Adjust the path as necessary
-import { UserRole } from "../../../models/User";
+import { UserRole } from "../../../models/prototype/User";
 import ChangePasswordAdmin from "../../../components/admin/setting/ChangePasswordAdmin";
 
 const { Title } = Typography;

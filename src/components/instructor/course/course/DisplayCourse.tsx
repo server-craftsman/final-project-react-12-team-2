@@ -1,7 +1,7 @@
 import Table, { ColumnsType } from "antd/es/table";
 import { courseStatusColor } from "../../../../utils/courseStatus";
 import { formatDate, moneyFormat } from "../../../../utils/helper";
-import { Course, CourseStatusEnum } from "../../../../models/Course";
+import { Course, CourseStatusEnum } from "../../../../models/prototype/Course";
 import { useEffect, useState } from "react";
 import { Button, message, Modal, Pagination, Select } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";

@@ -5,7 +5,7 @@ import { Pagination } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
 import { courses } from "../../../../data/courses.json";
 import { lessons as lessonData } from "../../../../data/lessons.json";
-import { Lesson } from "../../../../models/Lesson";
+import { Lesson } from "../../../../models/prototype/Lesson";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
 import CreateButton from "./CreateButton";

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Row, Col, Form, Input, Select, Popconfirm, Button } from "antd";
-import { User, UserRole } from "../../../models/User";
+import { User, UserRole } from "../../../models/prototype/User";
 import usersData from "../../../data/users.json";
 import { HomeOutlined } from "@ant-design/icons";
 

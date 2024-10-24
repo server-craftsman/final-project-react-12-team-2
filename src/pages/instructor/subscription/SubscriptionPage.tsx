@@ -4,10 +4,10 @@ import InstructorSubscriber from "../../../components/instructor/subscription/In
 import InstructorSubscribed from "../../../components/instructor/subscription/InstructorSubscribed";
 import subscriptionData from "../../../data/subscriptions.json";
 import CustomSearch from "../../../components/generic/search/CustomSearch";
-import { UserRole } from "../../../models/User";
+import { UserRole } from "../../../models/prototype/User";
 import data from "../../../data/users.json";
-import { Subscriptions } from "../../../models/Subscriptions";
-import { User } from "../../../models/User";
+import { Subscriptions } from "../../../models/prototype/Subscriptions";
+import { User } from "../../../models/prototype/User";
 
 const SubscriptionPage: React.FC = () => {
   const [filteredSubscriptions, setFilteredSubscriptions] = useState<

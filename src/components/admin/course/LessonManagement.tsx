@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Lesson } from "../../../models/Lesson";
+import { Lesson } from "../../../models/prototype/Lesson";
 import lessonsData from "../../../data/lessons.json";
 import { Table } from "antd";
 import courseData from "../../../data/courses.json";
-import { Course } from "../../../models/Course";
+import { Course } from "../../../models/prototype/Course";
 import { formatDate } from "../../../utils/helper";
 
 interface LessonManagementProps {

@@ -1,7 +1,7 @@
 import { Table, Tag } from "antd";
 import { useNavigate } from "react-router-dom";
 import purchasesData from "../../../data/purchases.json";
-import { Purchases, PurchaseStatusEnum } from "../../../models/Purchases";
+import { Purchases, PurchaseStatusEnum } from "../../../models/prototype/Purchases";
 import { Key } from "react";
 
 const ViewPurchase = ({ searchQuery }: { searchQuery: string }) => {

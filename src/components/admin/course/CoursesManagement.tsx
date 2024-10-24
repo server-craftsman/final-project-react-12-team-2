@@ -4,7 +4,7 @@ import { courseStatusColor } from "../../../utils/courseStatus";
 import { message, Popconfirm, Table } from "antd";
 import { CheckOutlined, StopOutlined } from "@ant-design/icons";
 import courseData from "../../../data/courses.json";
-import { Course, CourseStatusEnum } from "../../../models/Course"; // Import the Course model
+import { Course, CourseStatusEnum } from "../../../models/prototype/Course"; // Import the Course model
 
 const CoursesManagement: React.FC<{
   searchTerm: string;

@@ -8,7 +8,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import payouts from "../../../data/payouts.json"; // Assuming the payouts.json is in the same directory
-import { Payout } from "../../../models/Payout";
+import { Payout } from "../../../models/prototype/Payout";
 
 // Function to group payouts by month and calculate totals
 const groupByMonth = (payments: Payout[]) => {

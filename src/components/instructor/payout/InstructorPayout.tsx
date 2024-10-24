@@ -3,8 +3,8 @@ import { Button, Table, Tag } from "antd";
 import payoutData from "../../../data/payouts.json";
 import { formatDate, moneyFormat } from "../../../utils/helper";
 const ViewTransactions = React.lazy(() => import("./ViewTransactions"));
-import { Payout, PayoutStatusEnum } from "../../../models/Payout";
-import { InstructorTransaction } from "../../../models/InstructorTransaction";
+import { Payout, PayoutStatusEnum } from "../../../models/prototype/Payout";
+import { InstructorTransaction } from "../../../models/prototype/InstructorTransaction";
 import instructorTransactions from "../../../data/instructor_transactions.json";
 import PayoutCheckbox from "./PayoutCheckbox"; // Import PayoutCheckbox
 

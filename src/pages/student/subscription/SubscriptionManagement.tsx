@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import StudentSubscription from "../../../components/student/subscription/StudentSubcription";
 // import SearchSubscribe from "../../../components/student/subscription/SearchSubscribe";
 import CustomSearch from "../../../components/generic/search/CustomSearch";
-import { Subscriptions } from "../../../models/Subscriptions";
-import { UserRole } from "../../../models/User";
+import { Subscriptions } from "../../../models/prototype/Subscriptions";
+import { UserRole } from "../../../models/prototype/User";
 import subscriptionData from "../../../data/subscriptions.json";
 import data from "../../../data/users.json";
-import { User } from "../../../models/User";
+import { User } from "../../../models/prototype/User";
 
 const SubscriptionManagement: React.FC = () => {
   const [filteredSubscriptions, setFilteredSubscriptions] = useState<

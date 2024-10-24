@@ -1,5 +1,5 @@
 import { lazy } from "react";
-import { CourseStatusEnum } from "../models/Course";
+import { CourseStatusEnum } from "../models/prototype/Course";
 
 //lazy import
 export const MainLayout = lazy(

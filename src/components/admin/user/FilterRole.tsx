@@ -1,6 +1,6 @@
 import React from "react";
 import { Select } from "antd";
-import { UserRole } from "../../../models/User";
+import { UserRole } from "../../../models/prototype/User";
 
 interface FilterRoleProps {
   onRoleChange: (role: UserRole | null) => void;

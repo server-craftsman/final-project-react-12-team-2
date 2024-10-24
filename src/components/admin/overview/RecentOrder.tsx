@@ -1,7 +1,7 @@
 import { Table, Typography } from "antd";
 import { courseStatusColor, getCourseStatusName } from "../../../utils/courseStatus";
 import { courses } from "../../../data/courses.json";
-import { CourseStatusEnum } from "../../../models/Course";
+import { CourseStatusEnum } from "../../../models/prototype/Course";
 import { formatDate } from "../../../utils/helper";
 
 const recentOrderData = courses.map((course) => ({

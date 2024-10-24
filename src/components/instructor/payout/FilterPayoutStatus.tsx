@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { Select } from "antd";
-import { PayoutStatusEnum } from "../../../models/Payout";
+import { PayoutStatusEnum } from "../../../models/prototype/Payout";
 
 const { Option } = Select;
 

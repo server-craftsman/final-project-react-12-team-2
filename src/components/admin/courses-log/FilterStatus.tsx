@@ -1,6 +1,6 @@
 import { Select } from "antd";
 import React from "react";
-import { CourseStatusEnum } from "../../../models/Course";
+import { CourseStatusEnum } from "../../../models/prototype/Course";
 
 const renameStatus = (status: string) => {
   switch (status) {

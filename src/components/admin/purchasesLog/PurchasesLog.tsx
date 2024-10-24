@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { Purchases, PurchaseStatusEnum } from "../../../models/Purchases";
+import { Purchases, PurchaseStatusEnum } from "../../../models/prototype/Purchases";
 import purchaseLogData from "../../../data/purchases.json";
-import { Course } from "../../../models/Course";
+import { Course } from "../../../models/prototype/Course";
 import courseData from "../../../data/courses.json";
-import { User } from "../../../models/User";
+import { User } from "../../../models/prototype/User";
 import userData from "../../../data/users.json";
 import { Table, Tag } from "antd";
-import { Carts } from "../../../models/Carts";
+import { Carts } from "../../../models/prototype/Carts";
 import cartData from "../../../data/carts.json";
 import { ColorPurchaseStatusEnum } from "../../../utils/purchasesStatus";
 import { formatDate } from "../../../utils/helper";

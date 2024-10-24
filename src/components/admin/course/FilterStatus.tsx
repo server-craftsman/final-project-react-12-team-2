@@ -1,5 +1,5 @@
 import React from "react";
-import { CourseStatusEnum } from "../../../models/Course";
+import { CourseStatusEnum } from "../../../models/prototype/Course";
 import { Select } from "antd";
 
 interface FilterStatusProps {
