@@ -1,5 +1,5 @@
-import { RouteObject } from "react-router-dom";
-import { lazy, useEffect, useState } from "react";
+import { Route, Routes } from "react-router-dom";
+import { lazy, useEffect, useState, Suspense } from "react";
 // Import router path
 import { ROUTER_URL } from "../../const/router.path";
 import { UserRole } from "../../models/User";
@@ -9,7 +9,7 @@ import GuardProtectedRoute from "../protected/GuardProtectedRoute";
 import GuardPublicRoute from "../publish/GuardPublicRoute";
 
 // Import layout
-const MainLayout = lazy(() => import("../../layout/main-layout/MainLayout"));
+import MainLayout from "../../layout/main-layout/MainLayout";
 const AdminLayout = lazy(() => import("../../layout/admin/AdminLayout"));
 const InstructorLayout = lazy(() => import("../../layout/instructor/InstructorLayout"));
 const StudentLayout = lazy(() => import("../../layout/student/StudentDashboard"));
@@ -20,63 +20,117 @@ import { publicSubPaths } from "../publish/publicSubPaths";
 import { instructorSubPaths } from "../sub-paths/instructorSubPaths";
 import { studentSubPaths } from "../sub-paths/studentSubPaths";
 
-function RunRoutes() {
-    const [role, setRole] = useState<UserRole | null>(null);
+const RunRoutes = (): JSX.Element => {
+  const [role, setRole] = useState<UserRole | null>(null);
 
-    useEffect(() => {
-        const storedRole = localStorage.getItem("role");
-        console.log("storedRole", storedRole); // Kiểm tra giá trị storedRole
-        if (storedRole) {
-            setRole(storedRole as UserRole);
-            console.log("Role set to:", storedRole); // Kiểm tra sau khi setRole
-        }
-    }, []);
-    
-    const runProtectedRoutes: RouteObject[] = [
-      {
-          path: ROUTER_URL.COMMON.HOME,
-          element: <GuardPublicRoute path={ROUTER_URL.COMMON.HOME} component={<MainLayout />} />,
-          children: publicSubPaths[ROUTER_URL.COMMON.HOME]
-      },
-      {
-          path: ROUTER_URL.ADMIN.BASE,
-          element: (
-              <GuardProtectedRoute
-                  path={ROUTER_URL.ADMIN.BASE}
-                  component={<AdminLayout />}
-                  userRole={role as UserRole} // Pass the role state here
-                  allowedRoles={["admin"]}
-              />
-          ),
-          children: adminSubPaths[ROUTER_URL.ADMIN.BASE]
-      },
-      {
-          path: ROUTER_URL.INSTRUCTOR.BASE,
-          element: (
-              <GuardProtectedRoute
-                  path={ROUTER_URL.INSTRUCTOR.BASE}
-                  component={<InstructorLayout />}
-                  userRole={role as UserRole} // Pass the role state here
-                  allowedRoles={["instructor"]}
-              />
-          ),
-          children: instructorSubPaths[ROUTER_URL.INSTRUCTOR.BASE]
-      },
-      {
-          path: ROUTER_URL.STUDENT.BASE,
-          element: (
-              <GuardProtectedRoute
-                  path={ROUTER_URL.STUDENT.BASE}
-                  component={<StudentLayout />}
-                  userRole={role as UserRole} // Pass the role state here
-                  allowedRoles={["student"]}
-              />
-          ),
-          children: studentSubPaths[ROUTER_URL.STUDENT.BASE]
-      }
-  ];
+  useEffect(() => {
+    const storedRole = localStorage.getItem("role");
+    if (storedRole) {
+      setRole(storedRole as UserRole);
+    }
+  }, []);
 
-  return runProtectedRoutes;
-}
+  const renderProtectedRoutes = () => {
+    if (!role) return null;
+
+    return (
+      <>
+        <Route
+          path={ROUTER_URL.ADMIN.BASE}
+          element={
+            <GuardProtectedRoute
+              component={<AdminLayout />}
+              userRole={role}
+              allowedRoles={["admin"]}
+            />
+          }
+        >
+          {adminSubPaths[ROUTER_URL.ADMIN.BASE]?.map((route) => (
+            <Route
+              key={route.path || 'index'}
+              index={route.index}
+              path={!route.index ? route.path : undefined}
+              element={route.element}
+            />
+          ))}
+        </Route>
+
+        <Route
+          path={ROUTER_URL.INSTRUCTOR.BASE}
+          element={
+            <GuardProtectedRoute
+              component={<InstructorLayout />}
+              userRole={role}
+              allowedRoles={["instructor"]}
+            />
+          }
+        >
+          {instructorSubPaths[ROUTER_URL.INSTRUCTOR.BASE]?.map((route) => (
+            <Route
+              key={route.path || 'index'}
+              index={route.index}
+              path={!route.index ? route.path : undefined}
+              element={route.element}
+            />
+          ))}
+        </Route>
+
+        <Route
+          path={ROUTER_URL.STUDENT.BASE}
+          element={
+            <GuardProtectedRoute
+              component={<StudentLayout />}
+              userRole={role}
+              allowedRoles={["student"]}
+            />
+          }
+        >
+          {studentSubPaths[ROUTER_URL.STUDENT.BASE]?.map((route) => (
+            <Route
+              key={route.path || 'index'}
+              index={route.index}
+              path={!route.index ? route.path : undefined}
+              element={route.element}
+            />
+          ))}
+        </Route>
+      </>
+    );
+  };
+
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Routes>
+        {/* Public Routes */}
+        {Object.entries(publicSubPaths).map(([key, routes]) =>
+          routes.map((route) => (
+            <Route
+              key={route.path || 'index'}
+              path={route.path}
+              element={
+                key === ROUTER_URL.COMMON.HOME ? (
+                  <GuardPublicRoute component={route.element} />
+                ) : (
+                  route.element
+                )
+              }
+            >
+              {route.children?.map((childRoute) => (
+                <Route
+                  key={childRoute.path}
+                  path={childRoute.path}
+                  element={childRoute.element}
+                />
+              ))}
+            </Route>
+          ))
+        )}
+
+        {/* Protected Routes */}
+        {renderProtectedRoutes()}
+      </Routes>
+    </Suspense>
+  );
+};
 
 export default RunRoutes;

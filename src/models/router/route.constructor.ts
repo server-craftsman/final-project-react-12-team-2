@@ -44,9 +44,13 @@ export interface RoutePaths {
     HOME: string;
     COURSE_DETAILS: string;
     COURSE_BY_ID: string;
+    COURSE_BY_ID_LESSON: string;
+    COURSE_BY_ID_SESSION: string;
+    COURSE_BY_ID_SESSION_LESSON: string;
     SESSION_DETAILS: string;
     LESSON_DETAILS: string;
     CART: string;
     ABOUT: string;
   };
+  UNAUTHORIZED: string;
 }

@@ -1,18 +1,22 @@
 import React from 'react';
-import { Route, Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
+import { ROUTER_URL } from '../../const/router.path';
+interface GuardProtectedRouteProps {
+  component: React.ReactNode;
+  userRole: string;
+  allowedRoles: string[];
+}
 
-const GuardProtectedRoute = ({ component: Component, path, userRole, allowedRoles }: { component: React.ReactNode, path: string, userRole: string, allowedRoles: string[] }) => {
+const GuardProtectedRoute = ({ component, userRole, allowedRoles }: GuardProtectedRouteProps) => {
+  if (!allowedRoles.includes(userRole)) {
+    return <Navigate to={ROUTER_URL.UNAUTHORIZED} replace />;
+  }
+
   return (
-    <Route
-      path={path}
-      element={
-        allowedRoles.includes(userRole) ? (
-          Component
-        ) : (
-          <Navigate to="/unauthorized" />
-        )
-      }
-    />
+    <div>
+      {component}
+      <Outlet />
+    </div>
   );
 };
 

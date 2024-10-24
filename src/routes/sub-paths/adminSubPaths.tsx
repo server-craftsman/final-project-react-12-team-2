@@ -25,83 +25,73 @@ const Loading = lazy(() => import("../../app/Loading"));
 
 export const adminSubPaths: Record<string, RouteObject[]> = {
     [ROUTER_URL.ADMIN.BASE]: [
-        { 
-            path: ROUTER_URL.ADMIN.BASE, 
-            element: (
-                <Suspense fallback={<Loading />}>
-                    <AdminLayout />
-                </Suspense>
-            ),
-            children: [
-                {
-                    index: true, // Use index for the default child route
-                    element: <DashBoardAdmin />,
-                },
-                {
-                    path: ROUTER_URL.ADMIN.COURSES,
-                    element: <ManageCourses />,
-                },
-                {
-                    path: ROUTER_URL.ADMIN.CATEGORIES,
-                    element: <ManageCategory />,
-                },
-                {
-                    path: ROUTER_URL.ADMIN.PAYOUT,
-                    element: <ManagePayment />,
-                },
-                {
-                    path: ROUTER_URL.ADMIN.PURCHASE,
-                    element: <ManagePurchase />,
-                },
-                {
-                    path: ROUTER_URL.ADMIN.REQUEST_ACCOUNT,
-                    element: <RequestAccountManagement />,
-                },
-                {
-                    path: ROUTER_URL.ADMIN.CATEGORIES_DETAILS,
-                    element: <DetailsCategory />,
-                },
-                {
-                    path: ROUTER_URL.ADMIN.CATEGORIES_DETAILS_ID,
-                    element: <DetailsCategory />,
-                },
-                {
-                    path: ROUTER_URL.ADMIN.COURSES_LOG,
-                    element: <CoursesLog />,
-                },
-                {
-                    path: ROUTER_URL.ADMIN.PURCHASES_LOG,
-                    element: <PurchasesLog />,
-                },
-                {
-                    path: ROUTER_URL.ADMIN.SUBSCRIPTION,
-                    element: <SubscriptionPage />,
-                },
-                {
-                    path: ROUTER_URL.ADMIN.EDIT_USER,
-                    element: <EditUserProfile />,
-                },
-                {
-                    path: ROUTER_URL.ADMIN.EDIT_CATEGORY,
-                    element: <EditCategory />,
-                },
-                {
-                    path: ROUTER_URL.ADMIN.VIEW_PURCHASE,
-                    element: <ViewPurchaseDetails />,
-                },
-                {
-                    path: ROUTER_URL.ADMIN.VIEW_USER,
-                    element: <ViewUserProfileDetail />,
-                },
-                {
-                    path: ROUTER_URL.ADMIN.INFO,
-                    element: <Profile />,
-                },
-                {
-                    path: ROUTER_URL.ADMIN.MANAGE_USER,
-                    element: <ManageUser />,
-                }
-            ]
+        {
+            index: true,
+            element: <DashBoardAdmin />,
+        },
+        {
+            path: ROUTER_URL.ADMIN.COURSES,
+            element: <ManageCourses />,
+        },
+        {
+            path: ROUTER_URL.ADMIN.CATEGORIES,
+            element: <ManageCategory />,
+        },
+        {
+            path: ROUTER_URL.ADMIN.PAYOUT,
+            element: <ManagePayment />,
+        },
+        {
+            path: ROUTER_URL.ADMIN.PURCHASE,
+            element: <ManagePurchase />,
+        },
+        {
+            path: ROUTER_URL.ADMIN.REQUEST_ACCOUNT,
+            element: <RequestAccountManagement />,
+        },
+        {
+            path: ROUTER_URL.ADMIN.CATEGORIES_DETAILS,
+            element: <DetailsCategory />,
+        },
+        {
+            path: ROUTER_URL.ADMIN.CATEGORIES_DETAILS_ID,
+            element: <DetailsCategory />,
+        },
+        {
+            path: ROUTER_URL.ADMIN.COURSES_LOG,
+            element: <CoursesLog />,
+        },
+        {
+            path: ROUTER_URL.ADMIN.PURCHASES_LOG,
+            element: <PurchasesLog />,
+        },
+        {
+            path: ROUTER_URL.ADMIN.SUBSCRIPTION,
+            element: <SubscriptionPage />,
+        },
+        {
+            path: ROUTER_URL.ADMIN.EDIT_USER,
+            element: <EditUserProfile />,
+        },
+        {
+            path: ROUTER_URL.ADMIN.EDIT_CATEGORY,
+            element: <EditCategory />,
+        },
+        {
+            path: ROUTER_URL.ADMIN.VIEW_PURCHASE,
+            element: <ViewPurchaseDetails />,
+        },
+        {
+            path: ROUTER_URL.ADMIN.VIEW_USER,
+            element: <ViewUserProfileDetail />,
+        },
+        {
+            path: ROUTER_URL.ADMIN.INFO,
+            element: <Profile />,
+        },
+        {
+            path: ROUTER_URL.ADMIN.MANAGE_USER,
+            element: <ManageUser />,
         }
-    ],
+    ]
 };

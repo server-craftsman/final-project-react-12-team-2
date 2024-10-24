@@ -2,11 +2,12 @@ import { lazy } from "react";
 import { ROUTER_URL } from "../../const/router.path";
 import { RouteObject } from "react-router-dom";
 
-//import components
+//================= PUBLIC SUB PATHS =================
 const LoginPage = lazy(() => import("../../pages/login/LoginPage"));
 const RegisterPage = lazy(() => import("../../pages/register/RegisterPage"));
-
-const MainLayout = lazy(() => import("../../layout/main-layout/MainLayout"));
+const MainLayout = lazy(
+  () => import("../../layout/main-layout/MainLayout"),
+);
 const HomePage = lazy(() => import("../../pages/home/HomePage"));
 const CourseDetails = lazy(
   () => import("../../components/generic/courses/main-display/CourseDetails"),
@@ -17,14 +18,16 @@ const LessonDetails = lazy(
 const SessionDetails = lazy(
   () => import("../../components/generic/sessions/SessionDetails"),
 );
-const CartPage = lazy(() => import("../../components/generic/cart/CartPage"));
+const CartPage = lazy(
+  () => import("../../components/generic/cart/CartPage"),
+);
 const About = lazy(() => import("../../components/generic/home/About"));
 
+//======================================================
 //export public sub paths
 export const publicSubPaths: Record<string, RouteObject[]> = {
   [ROUTER_URL.COMMON.HOME]: [
     {
-      path: ROUTER_URL.COMMON.HOME,
       element: <MainLayout />,
       children: [
         {
@@ -32,15 +35,15 @@ export const publicSubPaths: Record<string, RouteObject[]> = {
           element: <HomePage />,
         },
         {
-          path: ROUTER_URL.COMMON.COURSE_DETAILS,
+          path: ROUTER_URL.COMMON.COURSE_BY_ID,
           element: <CourseDetails />,
         },
         {
-          path: ROUTER_URL.COMMON.LESSON_DETAILS,
+          path: ROUTER_URL.COMMON.COURSE_BY_ID_LESSON,
           element: <LessonDetails />,
         },
         {
-          path: ROUTER_URL.COMMON.SESSION_DETAILS,
+          path: ROUTER_URL.COMMON.COURSE_BY_ID_SESSION,
           element: <SessionDetails />,
         },
         {
@@ -50,9 +53,11 @@ export const publicSubPaths: Record<string, RouteObject[]> = {
         {
           path: ROUTER_URL.COMMON.CART,
           element: <CartPage />,
-        },
-      ],
-    },
+        }
+      ]
+    }
+  ],
+  [ROUTER_URL.LOGIN]: [
     {
       path: ROUTER_URL.LOGIN,
       element: <LoginPage />,
@@ -60,6 +65,6 @@ export const publicSubPaths: Record<string, RouteObject[]> = {
     {
       path: ROUTER_URL.REGISTER,
       element: <RegisterPage />,
-    },
-  ],
+    }
+  ]
 };

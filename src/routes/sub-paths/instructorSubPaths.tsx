@@ -37,50 +37,44 @@ const CourseManagement = lazy(
 export const instructorSubPaths: Record<string, RouteObject[]> = {
   [ROUTER_URL.INSTRUCTOR.BASE]: [
     {
-      path: ROUTER_URL.INSTRUCTOR.BASE,
-      element: <InstructorLayout />,
-      children: [
-        {
-          index: true,
-          element: <Dashboard />,
-        },
-        {
-          path: ROUTER_URL.INSTRUCTOR.SETTING,
-          element: <Setting />,
-        },
-        {
-          path: ROUTER_URL.INSTRUCTOR.EDIT_USER,
-          element: <EditUserProfile />,
-        },
-        {
-          path: ROUTER_URL.INSTRUCTOR.REVIEWS,
-          element: <Review />,
-        },
-        {
-          path: ROUTER_URL.INSTRUCTOR.ORDERS,
-          element: <OrderPage />,
-        },
-        {
-          path: ROUTER_URL.INSTRUCTOR.SUBSCRIPTION,
-          element: <SubscriptionPage />,
-        },
-        {
-          path: ROUTER_URL.INSTRUCTOR.PAYOUT,
-          element: <ManagePayout />,
-        },
-        {
-          path: ROUTER_URL.INSTRUCTOR.INFO,
-          element: <InstructorInfo />,
-        },
-        {
-          path: ROUTER_URL.INSTRUCTOR.PURCHASES,
-          element: <Purchases />,
-        },
-        {
-          path: ROUTER_URL.INSTRUCTOR.COURSES,
-          element: <CourseManagement />,
-        },
-      ],
+      index: true,
+      element: <Dashboard />,
+    },
+    {
+      path: ROUTER_URL.INSTRUCTOR.SETTING,
+      element: <Setting />,
+    },
+    {
+      path: ROUTER_URL.INSTRUCTOR.EDIT_USER,
+      element: <EditUserProfile />,
+    },
+    {
+      path: ROUTER_URL.INSTRUCTOR.REVIEWS,
+      element: <Review />,
+    },
+    {
+      path: ROUTER_URL.INSTRUCTOR.ORDERS,
+      element: <OrderPage />,
+    },
+    {
+      path: ROUTER_URL.INSTRUCTOR.SUBSCRIPTION,
+      element: <SubscriptionPage />,
+    },
+    {
+      path: ROUTER_URL.INSTRUCTOR.PAYOUT,
+      element: <ManagePayout />,
+    },
+    {
+      path: ROUTER_URL.INSTRUCTOR.INFO,
+      element: <InstructorInfo />,
+    },
+    {
+      path: ROUTER_URL.INSTRUCTOR.PURCHASES,
+      element: <Purchases />,
+    },
+    {
+      path: ROUTER_URL.INSTRUCTOR.COURSES,
+      element: <CourseManagement />,
     },
   ],
 };

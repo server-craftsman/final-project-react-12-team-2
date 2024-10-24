@@ -1,13 +1,15 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
-const GuardPublicRoute = ({ component: Component, path }: { component: React.ReactNode, path: string }) => {
-    return (
-      <Route
-        path={path}
-        element={Component}
-      />
-    );
-  };
-  
-  export default GuardPublicRoute;
+interface GuardPublicRouteProps {
+  component: React.ReactNode;
+}
+
+const GuardPublicRoute = ({ component }: GuardPublicRouteProps) => (
+  <div>
+    {component}
+    <Outlet />
+  </div>
+);
+
+export default GuardPublicRoute;

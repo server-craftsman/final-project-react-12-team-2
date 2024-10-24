@@ -21,30 +21,24 @@ const StudentDashboard = lazy(
 export const studentSubPaths: Record<string, RouteObject[]> = {
     [ROUTER_URL.STUDENT.BASE]: [
         {
-            path: ROUTER_URL.STUDENT.BASE,
-            element: <StudentDashboard />,
-            children: [
-                {
-                    index: true,
-                    element: <DashboardStudent />,
-                },
-                {
-                    path: ROUTER_URL.STUDENT.SETTING,
-                    element: <Setting />,
-                },
-                {
-                    path: ROUTER_URL.STUDENT.EDIT_USER,
-                    element: <EditUserProfile />,
-                },
-                {
-                    path: ROUTER_URL.STUDENT.SUBSCRIPTION,
-                    element: <SubscriptionManagement />,
-                },
-                {
-                    path: ROUTER_URL.STUDENT.ORDERS,
-                    element: <OrderManagement />,
-                }
-            ]
-        }
-    ]
-}
+            index: true,
+            element: <DashboardStudent />,
+        },
+        {
+            path: ROUTER_URL.STUDENT.SETTING,
+            element: <Setting />,
+        },
+        {
+            path: ROUTER_URL.STUDENT.EDIT_USER,
+            element: <EditUserProfile />,
+        },
+        {
+            path: ROUTER_URL.STUDENT.SUBSCRIPTION,
+            element: <SubscriptionManagement />,
+        },
+        {
+            path: ROUTER_URL.STUDENT.ORDERS,
+            element: <OrderManagement />,
+        },
+    ],
+};
