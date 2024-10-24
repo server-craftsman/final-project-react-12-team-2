@@ -16,8 +16,8 @@ const CoursesLog: React.FC<{
       title: "Old Status",
       dataIndex: "oldStatus",
       key: "oldStatus",
-      render: (text: string) => (
-        <span className={courseStatusColor(text as CourseStatusEnum)}>
+      render: (text: CourseStatusEnum) => (
+        <span className={courseStatusColor[text]}>
           {text}
         </span>
       ),
@@ -26,8 +26,8 @@ const CoursesLog: React.FC<{
       title: "New Status",
       dataIndex: "newStatus",
       key: "newStatus",
-      render: (text: string) => (
-        <span className={courseStatusColor(text as CourseStatusEnum)}>
+      render: (text: CourseStatusEnum) => (
+        <span className={courseStatusColor[text]}>
           {text}
         </span>
       ),

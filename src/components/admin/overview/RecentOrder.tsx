@@ -1,7 +1,8 @@
 import { Table, Typography } from "antd";
-import { courseStatusColor } from "../../../utils/courseStatus";
+import { courseStatusColor, getCourseStatusName } from "../../../utils/courseStatus";
 import { courses } from "../../../data/courses.json";
 import { CourseStatusEnum } from "../../../models/Course";
+import { formatDate } from "../../../utils/helper";
 
 const recentOrderData = courses.map((course) => ({
   id: course.id,
@@ -12,7 +13,7 @@ const recentOrderData = courses.map((course) => ({
   price: course.price,
   discount: course.discount,
   status: course.status,
-  createdAt: new Date(course.created_at).toLocaleDateString(),
+  createdAt: formatDate(new Date(course.created_at)),
 }));
 
 const columns = [
@@ -53,7 +54,11 @@ const columns = [
     title: "Status",
     dataIndex: "status",
     key: "status",
-    render: (status: string) => courseStatusColor(status as CourseStatusEnum),
+    render: (status: CourseStatusEnum) => (
+      <button className={courseStatusColor[status]}>
+        {getCourseStatusName(status)}
+      </button>
+    ),
   },
   {
     title: "Created At",

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { ROUTER_URL } from '../../const/router.path';
 interface GuardProtectedRouteProps {
   component: React.ReactNode;
@@ -16,7 +16,6 @@ const GuardProtectedRoute = ({ component, userRole, allowedRoles, onAccessDenied
   return (
     <div>
       {component}
-      <Outlet />
     </div>
   );
 };

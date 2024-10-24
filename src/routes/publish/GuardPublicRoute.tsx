@@ -1,5 +1,4 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
 
 interface GuardPublicRouteProps {
   component: React.ReactNode;
@@ -8,7 +7,6 @@ interface GuardPublicRouteProps {
 const GuardPublicRoute = ({ component }: GuardPublicRouteProps) => (
   <div>
     {component}
-    <Outlet />
   </div>
 );
 

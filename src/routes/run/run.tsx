@@ -24,20 +24,26 @@ import { instructorSubPaths } from "../sub-paths/instructorSubPaths";
 import { studentSubPaths } from "../sub-paths/studentSubPaths";
 
 const RunRoutes = (): JSX.Element => {
-  const { role, setRole } = useAuth();
+  const { role } = useAuth();
 
+  // Add debugging logs
   useEffect(() => {
-    const storedRole = localStorage.getItem("role");
-    if (storedRole) {
-      setRole(storedRole as UserRole);
-    }
-  }, [setRole]); // Thêm setRole vào dependency array
+    console.log('Current role from context:', role);
+    console.log('Current role from localStorage:', localStorage.getItem("role"));
+  }, [role]);
 
   const renderProtectedRoutes = () => {
-    if (!role) return null;
+    const currentRole = role || localStorage.getItem("role") as UserRole;
+    console.log('Rendering protected routes with role:', currentRole);
+
+    if (!currentRole) {
+      console.log('No role found, protected routes will not render');
+      return null;
+    }
 
     const handleAccessDenied = () => {
-      console.log('Access denied for role:', role);
+      console.error('Access denied for role:', currentRole);
+      // You could add additional handling here, like redirecting to an error page
     };
 
     return (
@@ -47,7 +53,7 @@ const RunRoutes = (): JSX.Element => {
           element={
             <GuardProtectedRoute
               component={<AdminLayout />}
-              userRole={role}
+              userRole={currentRole}
               allowedRoles={["admin"]}
               onAccessDenied={handleAccessDenied}
             />
@@ -68,7 +74,7 @@ const RunRoutes = (): JSX.Element => {
           element={
             <GuardProtectedRoute
               component={<InstructorLayout />}
-              userRole={role}
+              userRole={currentRole}
               allowedRoles={["instructor"]}
               onAccessDenied={handleAccessDenied}
             />
@@ -89,7 +95,7 @@ const RunRoutes = (): JSX.Element => {
           element={
             <GuardProtectedRoute
               component={<StudentLayout />}
-              userRole={role}
+              userRole={currentRole}
               allowedRoles={["student"]}
               onAccessDenied={handleAccessDenied}
             />

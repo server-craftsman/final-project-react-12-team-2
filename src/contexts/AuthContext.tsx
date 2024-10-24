@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
+import { createContext, useContext, ReactNode, useState } from 'react';
 import { UserRole } from '../models/User';
 
 interface AuthContextType {
@@ -10,18 +10,13 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [role, setRole] = useState<UserRole | null>(() => {
+    // Initialize from localStorage
     const storedRole = localStorage.getItem("role");
     return storedRole as UserRole | null;
   });
 
-  useEffect(() => {
-    if (role) {
-      localStorage.setItem("role", role);
-    } else {
-      localStorage.removeItem("role");
-    }
-  }, [role]);
-
+  // Remove the useEffect that sets localStorage since it's handled in LoginPage
+  
   return (
     <AuthContext.Provider value={{ role, setRole }}>
       {children}

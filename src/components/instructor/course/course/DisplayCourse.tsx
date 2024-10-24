@@ -136,7 +136,7 @@ const DisplayCourse: React.FC<{
       key: "status",
       dataIndex: "status",
       render: (status: CourseStatusEnum) => (
-        <button className={courseStatusColor(status)}>
+        <button className={courseStatusColor[status]}>
           {getCourseStatusName(status)}
         </button>
       ),
