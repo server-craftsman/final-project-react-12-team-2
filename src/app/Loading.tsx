@@ -14,7 +14,7 @@ const Loading: React.FC<{ timeout?: number }> = ({ timeout = 10000 }) => {
   }, [timeout]);
 
   return (
-    <div className="flex h-screen items-center justify-center bg-gradient-to-r from-purple-600 to-indigo-600">
+    <div className="flex h-screen items-center justify-center bg-black/50">
       <div className="text-center">
         {/* <div className="mx-auto mb-4 h-32 w-32 animate-spin rounded-full border-b-2 border-t-2 border-white"></div> */}
         <Lottie animationData={logoAnimation} loop={true} />
