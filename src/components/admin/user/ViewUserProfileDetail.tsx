@@ -20,13 +20,23 @@ import {
 import { userStatusColor } from "../../../utils/userStatus";
 import { userRoleColor } from "../../../utils/userRole";
 
+//helper
+import { helpers } from "../../../utils";
+
 //model and service
-import { ChangeStatusParams, ChangeRoleParams } from "../../../models/api/request/admin/user.request.model";
+import {
+  ChangeStatusParams,
+  ChangeRoleParams,
+} from "../../../models/api/request/admin/user.request.model";
 import { User } from "../../../models/api/responsive/users/users.model";
 import { UserRole } from "../../../models/prototype/User";
 // import { GetUserDetailsResponse } from "../../../models/api/responsive/admin/user.responsive.model";
 import { UserService } from "../../../services/admin/user.service";
-import parse from 'html-react-parser';
+import parse from "html-react-parser";
+
+//handle api
+import { HttpException } from "../../../app/exceptions";
+import { HTTP_STATUS } from "../../../app/enums";
 
 const ViewUserProfileDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -41,7 +51,9 @@ const ViewUserProfileDetail = () => {
         const userData: User = {
           ...response.data.data,
           dob: new Date(response.data.data.dob),
-          verification_token_expires: new Date(response.data.data.verification_token_expires),
+          verification_token_expires: new Date(
+            response.data.data.verification_token_expires,
+          ),
           created_at: new Date(response.data.data.created_at),
           updated_at: new Date(response.data.data.updated_at),
         };
@@ -50,6 +62,13 @@ const ViewUserProfileDetail = () => {
         setUser(null);
       }
     } catch (error) {
+      if (error instanceof HttpException) {
+        if (error.status === HTTP_STATUS.NOT_FOUND) {
+          message.error("User not found");
+        } else {
+          message.error("Failed to fetch user details");
+        }
+      }
       console.error("Failed to fetch user details:", error);
       setUser(null);
     }
@@ -66,75 +85,103 @@ const ViewUserProfileDetail = () => {
   // ];
 
   // Memoize handlers to prevent unnecessary recreations
-  const handleChangeStatus = useCallback(async (status: boolean) => {
-    Modal.confirm({
-      title: "Confirm Status Change",
-      content: `Are you sure you want to turn ${status ? "ON" : "OFF"} the status for this user?`,
-      onOk: async () => {
-        try {
-          const params = { user_id: id, status };
-          const response = await UserService.changeStatus(id as string, params as ChangeStatusParams);
+  const handleChangeStatus = useCallback(
+    async (status: boolean) => {
+      Modal.confirm({
+        title: "Confirm Status Change",
+        content: `Are you sure you want to turn ${status ? "ON" : "OFF"} the status for this user?`,
+        onOk: async () => {
+          try {
+            const params = { user_id: id, status };
+            const response = await UserService.changeStatus(
+              id as string,
+              params as ChangeStatusParams,
+            );
 
-          if (response.data.success) {
-            message.success(`User status changed successfully to ${status ? "ON" : "OFF"}.`);
-            setUser((prevUser) => prevUser ? { ...prevUser, status } : null);
-          } else {
-            message.error("Failed to change user status. Please try again.");
-          }
-        } catch (error) {
-          console.error("Failed to change user status:", error);
-          message.error("An error occurred while changing the user status. Please try again.");
-        }
-      },
-    });
-  }, [id]);
-
-  const handleChangeRole = useCallback(async (currentRole: UserRole) => {
-    const roleOptions = useMemo(() => 
-      Object.values(UserRole).filter(role => role !== UserRole.all),
-    []);
-    
-    Modal.confirm({
-      title: 'Change New Role',
-      content: (
-        <select 
-          id="roleSelect"
-          className="w-full p-2 border rounded-md mt-2"
-          defaultValue={currentRole}
-        >
-          {roleOptions.map(role => (
-            <option key={role} value={role}>{role.toUpperCase()}</option>
-          ))}
-        </select>
-      ),
-      onOk: async () => {
-        const newRole = (document.getElementById('roleSelect') as HTMLSelectElement).value as UserRole;
-        if (newRole === currentRole) {
-          return;
-        }
-
-        Modal.confirm({
-          title: 'Confirm Role Change',
-          content: `Are you sure you want to change the role from ${currentRole.toUpperCase()} to ${newRole.toUpperCase()}?`,
-          onOk: async () => {
-            try {
-              const response = await UserService.changeRole(id as string, { 
-                user_id: id, 
-                role: newRole 
-              } as ChangeRoleParams);
-
-              if (response.data.success) {
-                message.success(`Role updated to ${newRole.toUpperCase()}`);
-                setUser(prevUser => prevUser ? {...prevUser, role: newRole} : null);
-              }
-            } catch (error) {
-              message.error("Failed to update role");
+            if (response.data.success) {
+              message.success(
+                `User status changed successfully to ${status ? "ON" : "OFF"}.`,
+              );
+              setUser((prevUser) =>
+                prevUser ? { ...prevUser, status } : null,
+              );
+            } else {
+              message.error("Failed to change user status. Please try again.");
             }
+          } catch (error) {
+            if (error instanceof HttpException) {
+              message.error(error.message || "Failed to change user status");
+            } else {
+              message.error("An error occurred while changing the user status");
+            }
+            console.error("Failed to change user status:", error);
           }
-        });
-      }
-    });
-  }, [id]);
+        },
+      });
+    },
+    [id],
+  );
+
+  // Move roleOptions to component level
+  const roleOptions = useMemo(
+    () => Object.values(UserRole).filter((role) => role !== UserRole.all),
+    [],
+  );
+
+  const handleChangeRole = useCallback(
+    async (currentRole: UserRole) => {
+      Modal.confirm({
+        title: "Change New Role",
+        content: (
+          <select
+            id="roleSelect"
+            className="mt-2 w-full rounded-md border p-2"
+            defaultValue={currentRole}
+          >
+            {roleOptions.map((role) => (
+              <option key={role} value={role}>
+                {role.toUpperCase()}
+              </option>
+            ))}
+          </select>
+        ),
+        onOk: async () => {
+          const newRole = (
+            document.getElementById("roleSelect") as HTMLSelectElement
+          ).value as UserRole;
+          if (newRole === currentRole) {
+            return;
+          }
+
+          Modal.confirm({
+            title: "Confirm Role Change",
+            content: `Are you sure you want to change the role from ${currentRole.toUpperCase()} to ${newRole.toUpperCase()}?`,
+            onOk: async () => {
+              try {
+                const response = await UserService.changeRole(
+                  id as string,
+                  {
+                    user_id: id,
+                    role: newRole,
+                  } as ChangeRoleParams,
+                );
+
+                if (response.data.success) {
+                  message.success(`Role updated to ${newRole.toUpperCase()}`);
+                  setUser((prevUser) =>
+                    prevUser ? { ...prevUser, role: newRole } : null,
+                  );
+                }
+              } catch (error) {
+                message.error("Failed to update role");
+              }
+            },
+          });
+        },
+      });
+    },
+    [id, roleOptions], // Add roleOptions to dependencies
+  );
 
   // Memoize the rendered content for better performance
   const renderUserContent = useMemo(() => {
@@ -147,31 +194,31 @@ const ViewUserProfileDetail = () => {
     }
 
     return (
-      <div className="mx-auto max-w-10xl rounded-lg bg-white p-8 shadow-xl">
+      <div className="max-w-10xl mx-auto rounded-lg bg-white p-8 shadow-xl">
         <Row gutter={24} align="middle">
           <Col span={16}>
             <Form layout="vertical">
               <Row gutter={24}>
                 <Col span={12}>
                   <Form.Item label="Name" className="font-medium text-gray-700">
-                    <Input
-                      value={user.name.split(" ")[0]}
-                      readOnly
-                      className="bg-gray-100"
-                    />
+                    <Input value={user.name} readOnly className="bg-gray-100" />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
                   <Form.Item label="Role" className="font-medium text-gray-700">
                     <div className="flex items-center gap-2">
-                      <span className={`px-3 py-1 rounded-full ${userRoleColor(user.role as UserRole)}`}>
+                      <span
+                        className={`rounded-full px-3 py-1 ${userRoleColor(user.role as UserRole)}`}
+                      >
                         {user.role.toUpperCase()}
                       </span>
-                      <button 
+                      <button
                         onClick={() => handleChangeRole(user.role as UserRole)}
-                        className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors duration-200"
+                        className="rounded-md bg-blue-500 px-3 py-1 text-white transition-colors duration-200 hover:bg-blue-600"
                       >
-                        <span className="text-sm"><EditOutlined /></span>
+                        <span className="text-sm">
+                          <EditOutlined />
+                        </span>
                       </button>
                     </div>
                   </Form.Item>
@@ -196,7 +243,11 @@ const ViewUserProfileDetail = () => {
                     className="font-medium text-gray-700"
                   >
                     <Input
-                      value={user.phone_number}
+                      value={
+                        helpers.formatPhoneNumber(
+                          user.phone_number as string,
+                        ) || ""
+                      }
                       readOnly
                       className="bg-gray-100"
                     />
@@ -239,8 +290,8 @@ const ViewUserProfileDetail = () => {
                     label="Description"
                     className="font-medium text-gray-700"
                   >
-                    <div className="bg-gray-100 p-2 rounded">
-                      {parse(user.description || '')}
+                    <div className="rounded bg-gray-100 p-2">
+                      {parse(user.description || "")}
                     </div>
                   </Form.Item>
                 </Col>
@@ -250,7 +301,7 @@ const ViewUserProfileDetail = () => {
                     className="font-medium text-gray-700"
                   >
                     <Input
-                      value={user.dob.toDateString()}
+                      value={helpers.formatDate(user.dob)}
                       readOnly
                       className="bg-gray-100"
                     />

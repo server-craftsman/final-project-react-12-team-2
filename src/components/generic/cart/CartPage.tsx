@@ -8,7 +8,7 @@ import {
   Col,
   Divider,
   Checkbox,
-  Tabs
+  Tabs,
 } from "antd";
 import { DeleteOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -24,7 +24,9 @@ const CartPage: React.FC = () => {
   const initialTab = queryParams.get("tab") || String(CartStatusEnum.new);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState<CartStatusEnum>(initialTab as unknown as CartStatusEnum);
+  const [activeTab, setActiveTab] = useState<CartStatusEnum>(
+    initialTab as unknown as CartStatusEnum,
+  );
 
   const handleBackToHome = () => {
     navigate("/");
@@ -52,12 +54,14 @@ const CartPage: React.FC = () => {
     );
   };
 
-  const filteredCartItems = cartData.carts.filter(item => item.status === String(activeTab) && !item.is_deleted);
+  const filteredCartItems = cartData.carts.filter(
+    (item) => item.status === String(activeTab) && !item.is_deleted,
+  );
 
   const tabItems = [
     {
       key: String(CartStatusEnum.new),
-      label: 'New',
+      label: "New",
       children: (
         // Render New Cart Items
         <div></div>
@@ -65,7 +69,7 @@ const CartPage: React.FC = () => {
     },
     {
       key: String(CartStatusEnum.waiting_paid),
-      label: 'Waiting',
+      label: "Waiting",
       children: (
         // Render Waiting Cart Items
         <div></div>
@@ -73,7 +77,7 @@ const CartPage: React.FC = () => {
     },
     {
       key: String(CartStatusEnum.completed),
-      label: 'Completed',
+      label: "Completed",
       children: (
         // Render Completed Cart Items
         <div></div>
@@ -82,14 +86,18 @@ const CartPage: React.FC = () => {
   ];
 
   return (
-    <div className="container mx-auto p-4 bg-white">
+    <div className="container mx-auto bg-white p-4">
       <Title level={2} className="mb-8 text-center font-bold text-[#02005dc6]">
         Your Cart
       </Title>
-      <Tabs activeKey={String(activeTab)} onChange={(key) => setActiveTab(key as unknown as CartStatusEnum)} items={tabItems} />
+      <Tabs
+        activeKey={String(activeTab)}
+        onChange={(key) => setActiveTab(key as unknown as CartStatusEnum)}
+        items={tabItems}
+      />
       <Row gutter={16}>
         <Col span={16}>
-          <Card className="w-full rounded-lg shadow-2xl border border-gray-300">
+          <Card className="w-full rounded-lg border border-gray-300 shadow-2xl">
             <Checkbox
               checked={selectAll}
               onChange={handleSelectAllChange}
@@ -101,7 +109,7 @@ const CartPage: React.FC = () => {
               dataSource={filteredCartItems}
               renderItem={(item) => (
                 <List.Item>
-                  <Card className="w-full rounded-lg shadow-lg border border-gray-300">
+                  <Card className="w-full rounded-lg border border-gray-300 shadow-lg">
                     <Row
                       gutter={16}
                       className="flex items-center justify-between"
@@ -151,7 +159,7 @@ const CartPage: React.FC = () => {
           </Card>
         </Col>
         <Col span={8}>
-          <Card className="w-full rounded-lg shadow-2xl border border-gray-300">
+          <Card className="w-full rounded-lg border border-gray-300 shadow-2xl">
             <Title level={4} className="text-center">
               Order Summary
             </Title>
@@ -179,7 +187,7 @@ const CartPage: React.FC = () => {
               <Button
                 type="primary"
                 size="large"
-                className="bg-[#1a237e] hover:bg-[#6a1bff] hover:text-white font-bold"
+                className="bg-[#1a237e] font-bold hover:bg-[#6a1bff] hover:text-white"
                 icon={<ShoppingCartOutlined />}
               >
                 Proceed to Checkout

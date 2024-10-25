@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import { Purchases, PurchaseStatusEnum } from "../../../models/prototype/Purchases";
+import {
+  Purchases,
+  PurchaseStatusEnum,
+} from "../../../models/prototype/Purchases";
 import purchaseLogData from "../../../data/purchases.json";
 import { Course } from "../../../models/prototype/Course";
 import courseData from "../../../data/courses.json";

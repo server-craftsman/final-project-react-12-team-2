@@ -33,7 +33,11 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link to="/" className="group flex flex-shrink-0 items-center">
               <div className="relative">
-                <img src={logo1} alt="Logo" className="h-10 w-auto rounded-full border-2 shadow-md transition-all duration-300 group-hover:scale-110 sm:h-12 md:h-14" />
+                <img
+                  src={logo1}
+                  alt="Logo"
+                  className="h-10 w-auto rounded-full border-2 shadow-md transition-all duration-300 group-hover:scale-110 sm:h-12 md:h-14"
+                />
                 <div className="from-gold absolute inset-0 rounded-full bg-gradient-to-br to-amber-300 opacity-0 transition-opacity duration-300 group-hover:opacity-25"></div>
               </div>
               <span className="ml-3 text-xl font-bold tracking-wide text-white sm:text-2xl">

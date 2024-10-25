@@ -40,7 +40,10 @@
 }
 
 .glow-effect {
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 25px rgba(255, 255, 255, 0.7), 0 0 35px rgba(255, 255, 255, 0.5);
+  text-shadow:
+    0 0 10px rgba(255, 255, 255, 0.9),
+    0 0 25px rgba(255, 255, 255, 0.7),
+    0 0 35px rgba(255, 255, 255, 0.5);
 }
 
 .loading-dots {
@@ -48,6 +51,11 @@
 }
 
 @keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }

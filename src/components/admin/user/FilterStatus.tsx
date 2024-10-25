@@ -11,7 +11,7 @@ const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange }) => {
     const fetchStatuses = async () => {
       try {
         // Replace with actual API call
-        console.log("Fetching statuses...");
+        // console.log("Fetching statuses...");
       } catch (error) {
         console.error("Failed to fetch statuses:", error);
       }
@@ -23,7 +23,9 @@ const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange }) => {
   return (
     <Select
       placeholder="Select Status"
-      onChange={(value) => onStatusChange(value === "all" ? null : value === "true" ? true : false)}
+      onChange={(value) =>
+        onStatusChange(value === "all" ? null : value === "true" ? true : false)
+      }
       allowClear
       style={{ width: 120, marginBottom: 10 }}
       defaultValue="all"

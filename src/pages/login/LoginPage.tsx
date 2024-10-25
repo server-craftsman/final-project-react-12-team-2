@@ -1,39 +1,50 @@
 import { Link } from "react-router-dom";
 import { Form, Input, Button, Divider, Modal } from "antd";
-import { UserOutlined, LockOutlined, HomeOutlined, EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
+import {
+  UserOutlined,
+  LockOutlined,
+  HomeOutlined,
+  EyeInvisibleOutlined,
+  EyeTwoTone,
+} from "@ant-design/icons";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import LoginGoogle from "./LoginGoogle";
 import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { AuthService } from "../../services/authentication/auth.service";
 import loginAnimation from "../../data/loginAnimation.json";
-import Lottie from 'lottie-react'; 
-// import { store } from "../../app/store";
-// import { UserRole } from "../../models/User"; // Ensure this import is correct
+import Lottie from "lottie-react";
 import { CLIENT_ID } from "../../const/authentication";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-// import { UserRole } from "../../models/User";
-import { useNavigate } from "react-router-dom"; // Add this import
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 import SignUpForm from "./SignUpGoogle";
 import { ROUTER_URL } from "../../const/router.path";
-import { RegisterStudentPublicParams, RegisterInstructorPublicParams } from "../../models/api/request/authentication/auth.request.model";
+import { HTTP_STATUS } from "../../app/enums";
+import { HttpException } from "../../app/exceptions";
+import { validation } from "../../utils";
+
+import {
+  RegisterStudentPublicParams,
+  RegisterInstructorPublicParams,
+} from "../../models/api/request/authentication/auth.request.model";
 
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [googleIdToken, setGoogleIdToken] = useState<string | null>(null);
-  const [isSignUpModalVisible, setIsSignUpModalVisible] = useState<boolean>(false);
+  const [isSignUpModalVisible, setIsSignUpModalVisible] =
+    useState<boolean>(false);
   const { handleLogin, registerGooglePublic } = useAuth();
   const navigate = useNavigate();
 
   const getDefaultPath = (userRole: string) => {
     switch (userRole) {
-      case 'admin':
+      case "admin":
         return ROUTER_URL.ADMIN.BASE;
-      case 'instructor':
+      case "instructor":
         return ROUTER_URL.INSTRUCTOR.BASE;
-      case 'student':
+      case "student":
         return ROUTER_URL.STUDENT.BASE;
       default:
         return ROUTER_URL.COMMON.HOME;
@@ -47,9 +58,8 @@ const LoginPage = () => {
         password: values.password,
       });
 
-      if (result.data?.data?.token) {
+      if (result.status === HTTP_STATUS.OK && result.data?.data?.token) {
         const token = result.data.data.token;
-        
         await handleLogin(token);
 
         toast.success("Login Success", {
@@ -61,66 +71,88 @@ const LoginPage = () => {
           draggable: true,
           progress: undefined,
           theme: "colored",
-          style: { backgroundColor: "#1a237e" }
+          style: { backgroundColor: "#1a237e" },
         });
 
         const userRole = localStorage.getItem("role");
-        const defaultPath = getDefaultPath(userRole || '');
-        if (typeof defaultPath === 'string') {
+        const defaultPath = getDefaultPath(userRole || "");
+        if (typeof defaultPath === "string") {
           navigate(defaultPath);
         } else {
           console.error("Invalid path:", defaultPath);
         }
       }
     } catch (error) {
-      setLoginError("Login failed. Please check your credentials.");
+      if (error instanceof HttpException) {
+        setLoginError(error.message);
+      } else {
+        setLoginError("An unexpected error occurred. Please try again later.");
+      }
       console.error("Login error:", error);
     }
   };
 
-  // const onFinishGoogle = async (googleId: string) => {
-  //   try {
-  //     const result = await AuthService.registerGooglePublic({ google_id: googleId } as RegisterPublicParams);
-  //     const token = result.data?.data?.token; // Adjust this line to match the actual response structure
-  //     if (token) {
-  //       localStorage.setItem("token", token);
-  //       await handleLogin(token);
-  //       const userRole = localStorage.getItem("role");
-  //       const defaultPath = getDefaultPath(userRole || '');
-  //       if (typeof defaultPath === 'string') {
-  //         navigate(defaultPath);
-  //       } else {
-  //         console.error("Invalid path:", defaultPath);
-  //       }
-  //     }
-  //   } catch (error: any) {
-  //     if (error.response?.data?.message.includes("is not exists")) {
-  //       setLoginError("Your email is not registered. Please sign up.");
-  //       setIsSignUpModalVisible(true);
-  //     } else {
-  //       setLoginError("Login failed. Please check your credentials.");
-  //     }
-  //     console.error("Login error:", error);
-  //   }
-  // };
-
-  const verifyToken = async (token: string) => {
+  const onFinishGoogle = async (googleId: string) => {
     try {
-      const result = await AuthService.verifyToken(token);
-      console.log("Verify token result:", result);
+      const result = await AuthService.loginGoogle({ google_id: googleId });
+      if (result.status === HTTP_STATUS.OK && result.data?.data?.token) {
+        const token = result.data.data.token;
+        localStorage.setItem("token", token);
+        await handleLogin(token);
+
+        const userRole = localStorage.getItem("role");
+        const defaultPath = getDefaultPath(userRole || "");
+        if (typeof defaultPath === "string") {
+          navigate(defaultPath);
+        } else {
+          console.error("Invalid path:", defaultPath);
+        }
+      }
     } catch (error) {
-      console.error("Verify token error:", error);
+      if (error instanceof HttpException) {
+        if (error.message.includes("is not exists")) {
+          setLoginError("Your email is not registered. Please sign up.");
+          setIsSignUpModalVisible(true);
+        } else {
+          setLoginError(error.message);
+        }
+      } else {
+        setLoginError("An unexpected error occurred. Please try again later.");
+      }
+      console.error("Login error:", error);
     }
-  }
+  };
+
+  // const verifyToken = async (token: string) => {
+  //   try {
+  //     const result = await AuthService.verifyToken(token);
+  //     console.log("Verify token result:", result);
+  //   } catch (error) {
+  //     console.error("Verify token error:", error);
+  //   }
+  // }
 
   const validateUsername = (_: any, value: string) => {
-    if (!value || value.includes(" ") || value.length < 6) {
-      return Promise.reject(
-        new Error(
-          "Username must be at least 6 characters long and contain no spaces.",
-        ),
-      );
+    if (!value) {
+      return Promise.reject(new Error("Please input your email!"));
     }
+    if (!validation.checkValidEmail(value)) {
+      return Promise.reject(new Error("Please enter a valid email address!"));
+    }
+    return Promise.resolve();
+  };
+
+  const validatePassword = (_: any, value: string) => {
+    if (!value) {
+      return Promise.reject(new Error("Please input your password!"));
+    }
+    // if (!validation.checkValidPassword(value)) {
+    //   return Promise.reject(
+    //     new Error(
+    //       "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character"
+    //     )
+    //   );
+    // }
     return Promise.resolve();
   };
 
@@ -129,42 +161,42 @@ const LoginPage = () => {
     console.error("Google Login Error:", error);
   };
 
-  const handleGoogleLoginSuccess = async (idToken: string) => {
-    console.log("Google ID Token received:", idToken);
-    setGoogleIdToken(idToken);
-    setIsSignUpModalVisible(true);
+  // const handleGoogleLoginSuccess = async (idToken: string) => {
+  //   console.log("Google ID Token received:", idToken);
+  //   setGoogleIdToken(idToken);
+  //   setIsSignUpModalVisible(true);
 
-    try {
-      // Register the user with the Google ID token
-      const result = await registerGooglePublic({ google_id: idToken } as RegisterStudentPublicParams | RegisterInstructorPublicParams);
-      // Check if the response contains a token
-      const token = result?.data?.token; // Adjust this line based on actual response
-      if (token) {
-        localStorage.setItem("token", token);
-        await handleLogin(token);
+  //   try {
+  //     // Register the user with the Google ID token
+  //     const result = await registerGooglePublic({ google_id: idToken } as RegisterStudentPublicParams | RegisterInstructorPublicParams);
+  //     // Check if the response contains a token
+  //     const token = result?.data?.token; // Adjust this line based on actual response
+  //     if (token) {
+  //       localStorage.setItem("token", token);
+  //       await handleLogin(token);
 
-        // Verify the token
-        await verifyToken(token);
+  //       // Verify the token
+  //       await verifyToken(token);
 
-        const userRole = localStorage.getItem("role");
-        const defaultPath = getDefaultPath(userRole || '');
-        if (typeof defaultPath === 'string') {
-          navigate(defaultPath);
-        } else {
-          console.error("Invalid path:", defaultPath);
-        }
-      } else {
-        console.error("Token not found in response:", result.data);
-        // Handle the case where the token is not present
-      }
-    } catch (error) {
-      console.error("Token verification failed:", error);
-    }
-  };
+  //       const userRole = localStorage.getItem("role");
+  //       const defaultPath = getDefaultPath(userRole || '');
+  //       if (typeof defaultPath === 'string') {
+  //         navigate(defaultPath);
+  //       } else {
+  //         console.error("Invalid path:", defaultPath);
+  //       }
+  //     } else {
+  //       console.error("Token not found in response:", result.data);
+  //       // Handle the case where the token is not present
+  //     }
+  //   } catch (error) {
+  //     console.error("Token verification failed:", error);
+  //   }
+  // };
 
-  const showSignUpModal = () => {
-    setIsSignUpModalVisible(true);
-  };
+  // const showSignUpModal = () => {
+  //   setIsSignUpModalVisible(true);
+  // };
 
   const handleSignUpModalCancel = () => {
     setIsSignUpModalVisible(false);
@@ -178,8 +210,8 @@ const LoginPage = () => {
           <Link to="/">
             <Lottie animationData={loginAnimation} loop={true} />
           </Link>
-          <h2 className="text-white text-4xl font-extrabold">Edu Learn</h2>
-          <p className="mt-4 text-center text-white text-lg">
+          <h2 className="text-4xl font-extrabold text-white">Edu Learn</h2>
+          <p className="mt-4 text-center text-lg text-white">
             Elevate Your Learning Experience
           </p>
         </div>
@@ -192,7 +224,9 @@ const LoginPage = () => {
             Back to Home
           </Link>
           <div className="mb-8">
-            <h2 className="text-4xl font-extrabold text-[#1a237e]">Welcome Back</h2>
+            <h2 className="text-4xl font-extrabold text-[#1a237e]">
+              Welcome Back
+            </h2>
             <p className="mt-2 text-gray-600">Please sign in to your account</p>
           </div>
           <Form
@@ -203,13 +237,7 @@ const LoginPage = () => {
           >
             <Form.Item
               name="username"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your Username or Email!",
-                },
-                { validator: validateUsername },
-              ]}
+              rules={[{ validator: validateUsername }]}
             >
               <Input
                 prefix={
@@ -221,9 +249,7 @@ const LoginPage = () => {
             </Form.Item>
             <Form.Item
               name="password"
-              rules={[
-                { required: true, message: "Please input your Password!" },
-              ]}
+              rules={[{ validator: validatePassword }]}
             >
               <Input
                 prefix={
@@ -236,12 +262,12 @@ const LoginPage = () => {
                   showPassword ? (
                     <EyeTwoTone
                       onClick={() => setShowPassword(!showPassword)}
-                      className="text-indigo-600 cursor-pointer"
+                      className="cursor-pointer text-indigo-600"
                     />
                   ) : (
                     <EyeInvisibleOutlined
                       onClick={() => setShowPassword(!showPassword)}
-                      className="text-indigo-600 cursor-pointer"
+                      className="cursor-pointer text-indigo-600"
                     />
                   )
                 }
@@ -273,7 +299,7 @@ const LoginPage = () => {
               <Form.Item>
                 <LoginGoogle
                   onLoginError={handleGoogleLoginError}
-                  onLoginSuccess={handleGoogleLoginSuccess}
+                  onLoginSuccess={onFinishGoogle}
                 />
               </Form.Item>
             </GoogleOAuthProvider>
@@ -297,7 +323,8 @@ const LoginPage = () => {
                 <Button
                   type="link"
                   className="font-semibold text-[#1a237e] transition-colors duration-300 hover:text-[#1a237e]/80"
-                  onClick={showSignUpModal}
+                  // onClick={showSignUpModal}
+                  onClick={() => navigate("/register")}
                 >
                   Create an Account
                 </Button>

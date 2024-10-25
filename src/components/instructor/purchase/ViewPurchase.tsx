@@ -16,19 +16,19 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({
   onSelectionChange,
 }) => {
   const [selectedPurchases, setSelectedPurchases] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
 
   const handleSelectAllChange = (checked: boolean) => {
     setSelectedPurchases(
       checked
         ? new Set(filteredPurchases.map((purchase) => purchase.id))
-        : new Set()
+        : new Set(),
     );
     onSelectionChange(
       checked
         ? new Set(filteredPurchases.map((purchase) => purchase.id))
-        : new Set()
+        : new Set(),
     );
   };
 
@@ -39,7 +39,7 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({
   });
 
   const handleCheckboxChange = (id: string, checked: boolean) => {
-    setSelectedPurchases(prev => {
+    setSelectedPurchases((prev) => {
       const newSet = new Set(prev);
       checked ? newSet.add(id) : newSet.delete(id);
       onSelectionChange(newSet);

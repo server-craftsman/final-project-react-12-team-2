@@ -7,7 +7,9 @@ import RequestPurchasesButton from "../../../components/instructor/purchase/Requ
 const PurchasesManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
-  const [selectedPurchases, setSelectedPurchases] = useState<Set<string>>(new Set());
+  const [selectedPurchases, setSelectedPurchases] = useState<Set<string>>(
+    new Set(),
+  );
 
   const handleSearch = (value: string) => {
     setSearchQuery(value);
@@ -39,8 +41,8 @@ const PurchasesManagement: React.FC = () => {
           placeholder="Search Purchases"
           className="search-input"
         />
-        <RequestPurchasesButton 
-          onRequestComplete={handleRequestComplete} 
+        <RequestPurchasesButton
+          onRequestComplete={handleRequestComplete}
           disabled={selectedPurchases.size === 0}
         />
         <FilterStatusPurchases
@@ -48,13 +50,13 @@ const PurchasesManagement: React.FC = () => {
           filterStatus={filterStatus}
         />
       </div>
-      <ViewPurchase 
-        searchQuery={searchQuery} 
-        filterStatus={filterStatus} 
-        onSelectionChange={handleSelectionChange} 
+      <ViewPurchase
+        searchQuery={searchQuery}
+        filterStatus={filterStatus}
+        onSelectionChange={handleSelectionChange}
       />
-      <button 
-        disabled={selectedPurchases.size === 0} 
+      <button
+        disabled={selectedPurchases.size === 0}
         onClick={() => console.log("Create Payout clicked")}
       >
         Create Payout

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { motion, useAnimation, useInView } from "framer-motion";
 import TextSlider from "./TextSlider";
-import Lottie from 'lottie-react';
+import Lottie from "lottie-react";
 import tabletAnimation from "../../../data/tablet.json";
 import mobileAnimation from "../../../data/mobileAnimation.json";
 

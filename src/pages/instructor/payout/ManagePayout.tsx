@@ -11,7 +11,9 @@ const ManagePayout: React.FC = () => {
     setSearchQuery(query);
   };
 
-  const [selectedPayouts, setSelectedPayouts] = useState<Set<string>>(new Set());
+  const [selectedPayouts, setSelectedPayouts] = useState<Set<string>>(
+    new Set(),
+  );
 
   const handleRequestPayout = () => {
     console.log("Request Payout");

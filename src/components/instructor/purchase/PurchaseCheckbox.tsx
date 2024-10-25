@@ -1,5 +1,5 @@
-import React from 'react'
-import { Checkbox } from 'antd'
+import React from "react";
+import { Checkbox } from "antd";
 
 const PurchaseCheckbox: React.FC<{
   checked: boolean;
@@ -7,12 +7,12 @@ const PurchaseCheckbox: React.FC<{
 }> = ({ checked, onChange }) => {
   return (
     <div>
-      <Checkbox 
-        checked={checked} 
-        onChange={(e) => onChange(e.target.checked)} 
+      <Checkbox
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
       />
     </div>
-  )
-}
+  );
+};
 
 export default PurchaseCheckbox;

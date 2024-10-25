@@ -23,7 +23,7 @@ export const UserService = {
     });
   },
   getUserDetails(userId: string) {
-    return BaseService.get<GetUserDetailsResponse>({
+    return BaseService.getById<GetUserDetailsResponse>({
       url: API.ADMIN.GET_USER_DETAILS.replace(":id", userId),
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,

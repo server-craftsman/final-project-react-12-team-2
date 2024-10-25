@@ -14,8 +14,12 @@ import GuardPublicRoute from "../publish/GuardPublicRoute";
 
 // Import layout
 const AdminLayout = lazy(() => import("../../layout/admin/AdminLayout"));
-const InstructorLayout = lazy(() => import("../../layout/instructor/InstructorLayout"));
-const StudentLayout = lazy(() => import("../../layout/student/StudentDashboard"));
+const InstructorLayout = lazy(
+  () => import("../../layout/instructor/InstructorLayout"),
+);
+const StudentLayout = lazy(
+  () => import("../../layout/student/StudentDashboard"),
+);
 
 // Import sub paths
 import { adminSubPaths } from "../sub-paths/adminSubPaths";
@@ -28,11 +32,11 @@ const RunRoutes = (): JSX.Element => {
 
   const getDefaultPath = (role: string) => {
     switch (role) {
-      case 'admin':
+      case "admin":
         return ROUTER_URL.ADMIN.BASE;
-      case 'instructor':
+      case "instructor":
         return ROUTER_URL.INSTRUCTOR.BASE;
-      case 'student':
+      case "student":
         return ROUTER_URL.STUDENT.BASE;
       default:
         return ROUTER_URL.COMMON.HOME;
@@ -40,24 +44,24 @@ const RunRoutes = (): JSX.Element => {
   };
 
   useEffect(() => {
-    const currentRole = role || localStorage.getItem("role") as UserRole;
-    if (currentRole && window.location.pathname === '/') {
+    const currentRole = role || (localStorage.getItem("role") as UserRole);
+    if (currentRole && window.location.pathname === "/") {
       const defaultPath = getDefaultPath(currentRole);
       window.location.href = defaultPath;
     }
   }, [role]);
 
   const renderProtectedRoutes = () => {
-    const currentRole = role || localStorage.getItem("role") as UserRole;
-    console.log('Rendering protected routes with role:', currentRole);
+    const currentRole = role || (localStorage.getItem("role") as UserRole);
+    // console.log("Rendering protected routes with role:", currentRole);
 
     if (!currentRole) {
-      console.log('No role found, protected routes will not render');
+      // console.log("No role found, protected routes will not render");
       return null;
     }
 
     const handleAccessDenied = () => {
-      console.error('Access denied for role:', currentRole);
+      // console.error("Access denied for role:", currentRole);
       const defaultPath = getDefaultPath(currentRole);
       window.location.href = defaultPath;
     };
@@ -77,9 +81,9 @@ const RunRoutes = (): JSX.Element => {
         >
           {adminSubPaths[ROUTER_URL.ADMIN.BASE]?.map((route) => (
             <Route
-              key={route.path || 'index'}
+              key={route.path || "index"}
               index={route.index} //loading index
-              path={route.path?.replace('/admin/', '')}  // Remove /admin/ prefix
+              path={route.path?.replace("/admin/", "")} // Remove /admin/ prefix
               element={route.element}
             />
           ))}
@@ -98,7 +102,7 @@ const RunRoutes = (): JSX.Element => {
         >
           {instructorSubPaths[ROUTER_URL.INSTRUCTOR.BASE]?.map((route) => (
             <Route
-              key={route.path || 'index'}
+              key={route.path || "index"}
               index={route.index}
               path={!route.index ? route.path : undefined}
               element={route.element}
@@ -119,7 +123,7 @@ const RunRoutes = (): JSX.Element => {
         >
           {studentSubPaths[ROUTER_URL.STUDENT.BASE]?.map((route) => (
             <Route
-              key={route.path || 'index'}
+              key={route.path || "index"}
               index={route.index}
               path={!route.index ? route.path : undefined}
               element={route.element}
@@ -136,7 +140,7 @@ const RunRoutes = (): JSX.Element => {
       {Object.entries(publicSubPaths).map(([key, routes]) =>
         routes.map((route) => (
           <Route
-            key={route.path || 'index'}
+            key={route.path || "index"}
             path={route.path}
             element={
               key === ROUTER_URL.COMMON.HOME ? (
@@ -154,7 +158,7 @@ const RunRoutes = (): JSX.Element => {
               />
             ))}
           </Route>
-        ))
+        )),
       )}
 
       {/* Protected Routes */}

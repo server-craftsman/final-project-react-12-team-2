@@ -144,7 +144,7 @@ const ManageUser = () => {
     { label: "Unverified Account", key: "unverified" },
   ];
 
-  if(users === null) {
+  if (users === null) {
     return <div>Loading...</div>;
   } else {
     return (
@@ -163,7 +163,12 @@ const ManageUser = () => {
           )}
           <CreateUserProfile />
         </div>
-        <Tabs defaultActiveKey="all" onChange={handleTabChange} items={tabItems} className="ml-4" />
+        <Tabs
+          defaultActiveKey="all"
+          onChange={handleTabChange}
+          items={tabItems}
+          className="ml-4"
+        />
         <ViewUserProfile
           searchQuery={searchQuery}
           selectedRole={selectedRole}

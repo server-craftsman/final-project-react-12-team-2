@@ -54,7 +54,7 @@ export const BaseService = {
   }: Partial<ApiRequestModel>): Promise<PromiseState<T>> {
     if (toggleLoading) toggleLoading(isLoading);
     if (toggleLoadingAdmin) toggleLoadingAdmin(isLoading);
-    console.log("payload: ", payload);
+    // console.log("payload: ", payload);
     return axiosInstance.post<T, PromiseState<T>>(`${url}`, payload, {
       headers: headers || {},
     });

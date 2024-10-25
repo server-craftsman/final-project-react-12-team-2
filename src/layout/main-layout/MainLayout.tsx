@@ -3,7 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 const Navbar = lazy(() => import("./MainNavbar"));
 const StudentFooter = lazy(() => import("./MainFooter"));
 const Cover = lazy(() => import("../../components/generic/home/Cover"));
-  
+
 const StudentLayout: React.FC = () => {
   const location = useLocation();
   const isHomePage = location.pathname === "/";

@@ -36,7 +36,7 @@ const InstructorNavbar: React.FC = () => {
       icon: <FileTextOutlined />,
       label: <Link to="/instructor/payout">Manage Payout</Link>,
     },
-    
+
     // {
     //   key: "5",
     //   icon: <BellOutlined />,

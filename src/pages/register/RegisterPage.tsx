@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Form, Input, Button, Typography, Divider } from "antd";
 import {
@@ -7,8 +7,11 @@ import {
   LockOutlined,
   HomeOutlined,
 } from "@ant-design/icons";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { CLIENT_ID } from "../../const/authentication";
+import LoginGoogle from "../../pages/login/LoginGoogle";
 import registerAnimation from "../../data/registerAnimation.json";
-import Lottie from 'lottie-react';
+import Lottie from "lottie-react";
 import ButtonDivideStudentAndInstructor from "../../components/generic/register/ButtonDivideStudentAndInstructor";
 import RegisterInfoOfInstructor from "../../components/generic/register/RegisterInfoOfInstructor";
 const { Title, Text } = Typography;
@@ -72,6 +75,15 @@ const RegisterPage = () => {
     }
     return Promise.resolve();
   };
+
+  const onFinishGoogle = (googleIdToken: string) => {
+    console.log("Google ID Token: ", googleIdToken);
+  };
+
+  const handleGoogleLoginError = (error: string) => {
+    console.error("Google Login Error: ", error);
+  };
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-purple-900/20 to-indigo-900/20 backdrop-blur-md">
       <div className="relative flex w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl md:flex-row">
@@ -79,8 +91,8 @@ const RegisterPage = () => {
           <Link to="/">
             <Lottie animationData={registerAnimation} loop={true} />
           </Link>
-          <h2 className="text-white text-3xl font-bold">Edu Learn</h2>
-          <Text className="mt-4 text-center text-white text-lg">
+          <h2 className="text-3xl font-bold text-white">Edu Learn</h2>
+          <Text className="mt-4 text-center text-lg text-white">
             Elevate Your Learning Experience
           </Text>
         </div>
@@ -168,7 +180,9 @@ const RegisterPage = () => {
                 className="rounded-lg px-4 py-2"
               />
             </Form.Item>
-            <ButtonDivideStudentAndInstructor onSelectRole={handleRoleSelection} />
+            <ButtonDivideStudentAndInstructor
+              onSelectRole={handleRoleSelection}
+            />
             {role === "instructor" && <RegisterInfoOfInstructor />}
             <Form.Item>
               <Button
@@ -179,6 +193,12 @@ const RegisterPage = () => {
                 Register
               </Button>
             </Form.Item>
+            <GoogleOAuthProvider clientId={CLIENT_ID}>
+              <LoginGoogle
+                onLoginSuccess={onFinishGoogle}
+                onLoginError={handleGoogleLoginError}
+              />
+            </GoogleOAuthProvider>
           </Form>
           <Divider plain className="text-gray-400">
             Already have an account?

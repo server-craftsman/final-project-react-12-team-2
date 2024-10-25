@@ -120,7 +120,7 @@ const CourseDetails: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white w-full py-12">
+    <div className="min-h-screen w-full bg-white py-12">
       <div className="container mx-auto">
         <Link
           to="/"

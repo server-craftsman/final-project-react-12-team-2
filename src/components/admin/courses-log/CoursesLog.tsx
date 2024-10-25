@@ -17,9 +17,7 @@ const CoursesLog: React.FC<{
       dataIndex: "oldStatus",
       key: "oldStatus",
       render: (text: CourseStatusEnum) => (
-        <span className={courseStatusColor[text]}>
-          {text}
-        </span>
+        <span className={courseStatusColor[text]}>{text}</span>
       ),
     },
     {
@@ -27,9 +25,7 @@ const CoursesLog: React.FC<{
       dataIndex: "newStatus",
       key: "newStatus",
       render: (text: CourseStatusEnum) => (
-        <span className={courseStatusColor[text]}>
-          {text}
-        </span>
+        <span className={courseStatusColor[text]}>{text}</span>
       ),
     },
     {

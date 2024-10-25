@@ -17,7 +17,9 @@ const InstructorPayout: React.FC<{
   const [selectedTransactions, setSelectedTransactions] = useState<
     InstructorTransaction[]
   >([]);
-  const [selectedPayouts, setSelectedPayouts] = useState<Set<string>>(new Set()); // Ensure setSelectedPayouts is defined
+  const [selectedPayouts, setSelectedPayouts] = useState<Set<string>>(
+    new Set(),
+  ); // Ensure setSelectedPayouts is defined
   const showModal = (payoutId: string) => {
     const transactions = instructorTransactions.transactions.filter(
       (transaction) => transaction.payout_id === payoutId,

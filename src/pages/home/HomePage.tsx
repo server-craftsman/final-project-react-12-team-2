@@ -107,7 +107,6 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="container mx-auto bg-white">
-
       <motion.section
         className="bg-white px-5"
         initial={{ opacity: 0, y: -50 }}

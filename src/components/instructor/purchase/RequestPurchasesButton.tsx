@@ -39,7 +39,7 @@ const RequestPurchases: React.FC<RequestPurchasesProps> = ({
 
   return (
     <button
-      className={`my-2 rounded-md bg-gradient-to-r from-blue-500 to-purple-500 px-4 text-white ${isRequesting || disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      className={`my-2 rounded-md bg-gradient-to-r from-blue-500 to-purple-500 px-4 text-white ${isRequesting || disabled ? "cursor-not-allowed opacity-50" : ""}`}
       onClick={showConfirm}
       disabled={isRequesting || disabled} // Disable if requesting or if disabled prop is true
     >

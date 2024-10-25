@@ -205,10 +205,7 @@ const DisplayCourse: React.FC<{
         <FilterStatus onStatusChange={onStatusChange} />
         <div className="flex justify-end gap-2">
           <CreateCourseButton />
-          <Button
-            disabled={selectedCourse.length === 0}
-            onClick={showModal}
-          >
+          <Button disabled={selectedCourse.length === 0} onClick={showModal}>
             Send to Admin
           </Button>
         </div>

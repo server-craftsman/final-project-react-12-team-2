@@ -50,7 +50,8 @@ export const ROUTER_URL: RoutePaths = {
     COURSE_BY_ID: "/course/:id",
     COURSE_BY_ID_LESSON: "/course/:courseId/lesson/:lessonId",
     COURSE_BY_ID_SESSION: "/course/:courseId/session/:sessionId",
-    COURSE_BY_ID_SESSION_LESSON: "/course/:courseId/session/:sessionId/lesson/:lessonId",
+    COURSE_BY_ID_SESSION_LESSON:
+      "/course/:courseId/session/:sessionId/lesson/:lessonId",
     SESSION_DETAILS: "/session-details",
     LESSON_DETAILS: "/lesson-details",
     CART: "/cart",

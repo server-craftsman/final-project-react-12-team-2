@@ -6,8 +6,7 @@ import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { Provider } from "react-redux";
 import { store } from "./app/store"; // Ensure this is the correct path to your store
-
-console.log("Store initialized:", store);
+// console.log("Store initialized:", store);
 
 const rootElement = document.getElementById("root");
 
@@ -23,8 +22,10 @@ if (rootElement) {
           </CartProvider>
         </AuthProvider>
       </BrowserRouter>
-    </Provider>
+    </Provider>,
   );
 } else {
-  console.error("Root element not found. Ensure there is a div with id 'root' in your HTML.");
+  console.error(
+    "Root element not found. Ensure there is a div with id 'root' in your HTML.",
+  );
 }

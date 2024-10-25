@@ -14,7 +14,7 @@ const EditButton = ({ data }: any) => {
   const [sessions, setSessions] = useState([]);
   useEffect(() => {
     form.setFieldsValue(data);
-    handleCourseChange(data.course_id)
+    handleCourseChange(data.course_id);
   }, [data, form]);
   const openCreateModal = () => {
     setIsOpen(true);

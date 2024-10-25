@@ -13,16 +13,19 @@ const LoginGoogle: React.FC<LoginGoogleProps> = ({
 }) => {
   const onSuccess = (credentialResponse: any) => {
     try {
+      // Add validation for callback
+      if (typeof onLoginSuccess !== "function") {
+        throw new Error("onLoginSuccess callback is not properly defined");
+      }
+
       if (!credentialResponse.credential) {
         throw new Error("No credential received");
       }
+
       const decodedToken: any = jwtDecode(credentialResponse.credential);
       console.log("Decoded Token: ", decodedToken);
 
-      // Save the token to localStorage
       localStorage.setItem("googleToken", credentialResponse.credential);
-
-      // Pass the token to the onLoginSuccess callback
       onLoginSuccess(credentialResponse.credential);
       console.log("Google Token saved to localStorage");
     } catch (error) {

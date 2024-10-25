@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Input, Button } from "antd";
 // If using Ant Design icons, import the specific icon
-import { SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined } from "@ant-design/icons";
 
 interface SearchProps {
   onSearch: (searchTerm: string) => void;
@@ -34,24 +34,24 @@ const CustomSearch: React.FC<SearchProps> = ({
         onChange={handleInputChange}
         className="w-64 rounded-l-lg border-2 border-gray-300 bg-white px-4 py-2 text-gray-700 focus:border-[#1a237e] focus:outline-none"
         style={{
-          boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-          transition: 'all 0.3s ease',
-          height: '40px'
+          boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+          transition: "all 0.3s ease",
+          height: "40px",
         }}
       />
-      <Button 
+      <Button
         type="primary"
         onClick={handleSearchSubmit}
         className="rounded-r-lg border-2 border-[#1a237e] bg-[#1a237e] px-6 font-medium text-white transition-colors hover:bg-blue-700"
         style={{
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          marginLeft: '-2px',
-          height: '40px',
-          display: 'flex',
-          alignItems: 'center'
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+          marginLeft: "-2px",
+          height: "40px",
+          display: "flex",
+          alignItems: "center",
         }}
       >
-      <SearchOutlined className="text-xl" />
+        <SearchOutlined className="text-xl" />
       </Button>
     </div>
   );

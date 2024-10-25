@@ -18,7 +18,7 @@ const FilterRole: React.FC<FilterRoleProps> = ({ onRoleChange }) => {
     const fetchRoles = async () => {
       try {
         // Replace with actual API call
-        console.log("Fetching roles...");
+        // console.log("Fetching roles...");
       } catch (error) {
         console.error("Failed to fetch roles:", error);
       }
@@ -30,7 +30,9 @@ const FilterRole: React.FC<FilterRoleProps> = ({ onRoleChange }) => {
   return (
     <Select
       placeholder="Select Role"
-      onChange={(value) => onRoleChange(value === "all" ? null : value as UserRole)}
+      onChange={(value) =>
+        onRoleChange(value === "all" ? null : (value as UserRole))
+      }
       allowClear
       style={{ width: 120, marginBottom: 10, marginRight: 10 }}
       defaultValue="all"

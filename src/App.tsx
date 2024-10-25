@@ -8,8 +8,8 @@ import { useAuth } from "./contexts/AuthContext";
 export const App = () => {
   const isLoading = useSelector((state: any) => state.loading);
   const { role } = useAuth();
-  console.log("User Role from AuthContext:", role);
-  console.log("User Role from localStorage:", localStorage.getItem("role"));
+  // console.log("User Role from AuthContext:", role);
+  // console.log("User Role from localStorage:", localStorage.getItem("role"));
 
   return (
     <>

@@ -14,11 +14,16 @@ import {
   ChangeStatusParams,
   ChangeRoleParams,
 } from "../../../models/api/request/admin/user.request.model";
-import {
-  GetUsersAdminResponse,
-} from "../../../models/api/responsive/admin/user.responsive.model";
+import { GetUsersAdminResponse } from "../../../models/api/responsive/admin/user.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model";
 import { ROUTER_URL } from "../../../const/router.path";
+
+// Utils
+import { helpers } from "../../../utils";
+
+// handle request - response
+import { HTTP_STATUS } from "../../../app/enums";
+import { HttpException } from "../../../app/exceptions";
 
 interface SearchCondition {
   keyword: string;
@@ -60,79 +65,129 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
   } as const; // Make immutable
 
   // Memoize the search condition logic
-  const getSearchCondition = React.useCallback((
-    searchQuery: string,
-    selectedRole: UserRole | null,
-    selectedStatus: boolean | null,
-    activeTab: string
-  ): SearchCondition => {
-    const baseCondition = {
-      keyword: searchQuery || defaultParams.searchCondition.keyword,
-      role: UserRole.all,
-      status: true,
-      is_verified: true,
-      is_deleted: false,
-    };
+  const getSearchCondition = React.useCallback(
+    (
+      searchQuery: string,
+      selectedRole: UserRole | null,
+      selectedStatus: boolean | null,
+      activeTab: string,
+    ): SearchCondition => {
+      const baseCondition = {
+        keyword: searchQuery || defaultParams.searchCondition.keyword,
+        role: UserRole.all,
+        status: true,
+        is_verified: true,
+        is_deleted: false,
+      };
 
-    switch (activeTab) {
-      case "all":
-        return {
-          ...baseCondition,
-          role: selectedRole || UserRole.all,
-          status: selectedStatus !== null ? selectedStatus : true,
-        };
-      case "blocked":
-        return {
-          ...baseCondition,
-          keyword: searchQuery,
-          status: false,
-        };
-      case "unverified":
-        return {
-          ...baseCondition,
-          keyword: searchQuery,
-          is_verified: false,
-        };
-      default:
-        return baseCondition;
-    }
-  }, []);
+      switch (activeTab) {
+        case "all":
+          return {
+            ...baseCondition,
+            role: selectedRole || UserRole.all,
+            status: selectedStatus !== null ? selectedStatus : true,
+          };
+        case "blocked":
+          return {
+            ...baseCondition,
+            keyword: searchQuery,
+            status: false,
+          };
+        case "unverified":
+          return {
+            ...baseCondition,
+            keyword: searchQuery,
+            is_verified: false,
+          };
+        default:
+          return baseCondition;
+      }
+    },
+    [],
+  );
 
   // Memoize fetchUsers to prevent unnecessary recreations
   const fetchUsers = React.useCallback(async () => {
     try {
-      const searchCondition = getSearchCondition(searchQuery, selectedRole, selectedStatus, activeTab);
+      const searchCondition = getSearchCondition(
+        searchQuery,
+        selectedRole,
+        selectedStatus,
+        activeTab,
+      );
       const params = {
         pageInfo: defaultParams.pageInfo,
         searchCondition,
       };
 
-      const response = await UserService.getUsersAdmin(params as GetUsersAdminParams);
-      const responseData = await response.data;
-      
-      setUsers(responseData?.data ? responseData : null);
+      const response = await UserService.getUsersAdmin(
+        params as GetUsersAdminParams,
+      );
+
+      if (!response.data) {
+        throw new HttpException(
+          "No response data received",
+          HTTP_STATUS.NOT_FOUND,
+        );
+      }
+
+      if (!response.data.success) {
+        throw new HttpException(
+          "Failed to fetch users",
+          HTTP_STATUS.BAD_REQUEST,
+        );
+      }
+
+      setUsers(response.data?.data ? response.data : null);
     } catch (error) {
-      console.error("Failed to fetch users:", error);
+      if (error instanceof HttpException) {
+        message.error(error.message);
+      } else {
+        message.error("An unexpected error occurred while fetching users");
+      }
       setUsers(null);
     }
-  }, [searchQuery, selectedRole, selectedStatus, activeTab, getSearchCondition]);
+  }, [
+    searchQuery,
+    selectedRole,
+    selectedStatus,
+    activeTab,
+    getSearchCondition,
+  ]);
 
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
 
-  const handleViewDetails = React.useCallback(async (userId: string) => {
-    try {
-      await UserService.getUserDetails(userId);
-      navigate(ROUTER_URL.ADMIN.VIEW_USER_DETAILS.replace(":id", userId));
-    } catch (error) {
-      console.error("Failed to fetch user details:", error);
-    }
-  }, [navigate]);
+  const handleViewDetails = React.useCallback(
+    async (userId: string) => {
+      try {
+        const response = await UserService.getUserDetails(userId);
+
+        if (!response.data?.success) {
+          throw new HttpException(
+            "Failed to fetch user details",
+            HTTP_STATUS.BAD_REQUEST,
+          );
+        }
+
+        navigate(ROUTER_URL.ADMIN.VIEW_USER_DETAILS.replace(":id", userId));
+      } catch (error) {
+        if (error instanceof HttpException) {
+          message.error(error.message);
+        } else {
+          message.error(
+            "An unexpected error occurred while fetching user details",
+          );
+        }
+      }
+    },
+    [navigate],
+  );
 
   const handleChangeStatus = async (userId: string, status: boolean) => {
     Modal.confirm({
-      title: status ? 'Unblock Account' : 'Block Account',
+      title: status ? "Unblock Account" : "Block Account",
       content: `Are you sure you want to ${status ? "unblock" : "block"} this account?`,
       onOk: async () => {
         try {
@@ -140,66 +195,96 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
             user_id: userId,
             status,
           };
-          const response = await UserService.changeStatus(userId, params as ChangeStatusParams);
+          const response = await UserService.changeStatus(
+            userId,
+            params as ChangeStatusParams,
+          );
 
-          if (response.data.success) {
-            message.success(`Account has been successfully ${status ? "unblocked" : "blocked"}.`);
-            fetchUsers();
-          } else {
-            message.error(`Failed to ${status ? "unblock" : "block"} account. Please try again.`);
+          if (!response.data?.success) {
+            throw new HttpException(
+              `Failed to ${status ? "unblock" : "block"} account`,
+              HTTP_STATUS.BAD_REQUEST,
+            );
           }
+
+          message.success(
+            `Account has been successfully ${status ? "unblocked" : "blocked"}.`,
+          );
+          fetchUsers();
         } catch (error) {
-          console.error("Failed to change account status:", error);
-          message.error(`An error occurred while ${status ? "unblocking" : "blocking"} the account. Please try again.`);
+          if (error instanceof HttpException) {
+            message.error(error.message);
+          } else {
+            message.error(
+              `An unexpected error occurred while ${status ? "unblocking" : "blocking"} the account`,
+            );
+          }
         }
       },
     });
   };
 
   const handleChangeRole = async (userId: string, currentRole: UserRole) => {
-    const roleOptions = Object.values(UserRole).filter(role => role !== UserRole.all);
-    
+    const roleOptions = Object.values(UserRole).filter(
+      (role) => role !== UserRole.all,
+    );
+
     // Modal with role selection (removed first confirmation)
     Modal.confirm({
-      title: 'Change New Role',
+      title: "Change New Role",
       content: (
-        <select 
+        <select
           id="roleSelect"
-          className="w-full p-2 border rounded-md mt-2"
+          className="mt-2 w-full rounded-md border p-2"
           defaultValue={currentRole}
         >
-          {roleOptions.map(role => (
-            <option key={role} value={role}>{role.toUpperCase()}</option>
+          {roleOptions.map((role) => (
+            <option key={role} value={role}>
+              {role.toUpperCase()}
+            </option>
           ))}
         </select>
       ),
       onOk: async () => {
-        const newRole = (document.getElementById('roleSelect') as HTMLSelectElement).value as UserRole;
+        const newRole = (
+          document.getElementById("roleSelect") as HTMLSelectElement
+        ).value as UserRole;
         if (newRole === currentRole) {
           return;
         }
 
         // Final confirmation modal
         Modal.confirm({
-          title: 'Confirm Role Change',
+          title: "Confirm Role Change",
           content: `Are you sure you want to change the role from ${currentRole.toUpperCase()} to ${newRole.toUpperCase()}?`,
           onOk: async () => {
             try {
-              const response = await UserService.changeRole(userId, { 
-                user_id: userId, 
-                role: newRole 
+              const response = await UserService.changeRole(userId, {
+                user_id: userId,
+                role: newRole,
               } as ChangeRoleParams);
 
-              if (response.data.success) {
-                message.success(`Role updated to ${newRole.toUpperCase()}`);
-                fetchUsers();
+              if (!response.data?.success) {
+                throw new HttpException(
+                  "Failed to update role",
+                  HTTP_STATUS.BAD_REQUEST,
+                );
               }
+
+              message.success(`Role updated to ${newRole.toUpperCase()}`);
+              fetchUsers();
             } catch (error) {
-              message.error("Failed to update role");
+              if (error instanceof HttpException) {
+                message.error(error.message);
+              } else {
+                message.error(
+                  "An unexpected error occurred while updating role",
+                );
+              }
             }
-          }
+          },
         });
-      }
+      },
     });
   };
 
@@ -211,7 +296,11 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
         dataIndex: "avatar_url",
         key: "avatar_url",
         render: (avatar_url: string) => (
-          <img src={avatar_url} alt="Avatar" className="w-10 h-10 rounded-full" />
+          <img
+            src={avatar_url}
+            alt="Avatar"
+            className="h-10 w-10 rounded-full"
+          />
         ),
       },
       {
@@ -230,47 +319,56 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
         key: "role",
         render: (role: UserRole, record: User) => (
           <div className="flex items-center gap-2">
-            <span className={`px-3 py-1 rounded-full ${userRoleColor(role)}`}>
+            <span className={`rounded-full px-3 py-1 ${userRoleColor(role)}`}>
               {role.toUpperCase()}
             </span>
-            <button 
+            <button
               onClick={() => handleChangeRole(record._id, role)}
-              className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors duration-200"
+              className="rounded-md bg-blue-500 px-3 py-1 text-white transition-colors duration-200 hover:bg-blue-600"
             >
-              <span className="text-sm"><EditOutlined /></span>
+              <span className="text-sm">
+                <EditOutlined />
+              </span>
             </button>
           </div>
         ),
       },
       {
         title: "Status",
-        dataIndex: "status", 
+        dataIndex: "status",
         key: "status",
         render: (status: boolean, record: User) => (
           <div className="flex items-center gap-2">
             <Input
               value={status ? "Active" : "Inactive"}
               readOnly
-              className="w-32 border-none bg-gradient-to-r from-gray-50 to-gray-100 shadow-sm font-medium"
+              className="w-32 border-none bg-gradient-to-r from-gray-50 to-gray-100 font-medium shadow-sm"
               style={{
                 color: userStatusColor(status),
-                borderRadius: '0.5rem',
-                padding: '0.5rem 1rem',
-                textAlign: 'center'
+                borderRadius: "0.5rem",
+                padding: "0.5rem 1rem",
+                textAlign: "center",
               }}
             />
             <Button
               onClick={() => handleChangeStatus(record._id, !status)}
-              className={`ml-2 px-4 py-1 rounded-full font-medium transition-all duration-200
-                ${status 
-                  ? "bg-gradient-to-r from-green-400 to-green-500 text-white hover:from-green-500 hover:to-green-600" 
+              className={`ml-2 rounded-full px-4 py-1 font-medium transition-all duration-200 ${
+                status
+                  ? "bg-gradient-to-r from-green-400 to-green-500 text-white hover:from-green-500 hover:to-green-600"
                   : "bg-gradient-to-r from-red-400 to-red-500 text-white hover:from-red-500 hover:to-red-600"
-                }`}
+              }`}
             >
               {status ? <LockOutlined /> : <UnlockOutlined />}
             </Button>
           </div>
         ),
+      },
+      {
+        title: "Created At",
+        dataIndex: "created_at",
+        key: "created_at",
+        render: (created_at: string) =>
+          helpers.formatDate(new Date(created_at)),
       },
       {
         title: "Action",
@@ -292,12 +390,12 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
     if (activeTab === "unverified") {
       baseColumns.splice(baseColumns.length - 1, 0, {
         title: "Verify",
-        key: "verify", 
+        key: "verify",
         render: (_: unknown) => (
           <div className="flex items-center justify-center">
             <button
               // onClick={() => handleVerifyUser(record._id)}  // Add onClick handler
-              className="px-4 py-1.5 rounded-full bg-gradient-to-r from-gray-400 to-gray-500 text-white"
+              className="rounded-full bg-gradient-to-r from-gray-400 to-gray-500 px-4 py-1.5 text-white"
             >
               Not Verified
             </button>

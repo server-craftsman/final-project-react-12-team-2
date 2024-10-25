@@ -65,7 +65,7 @@ const CoursesManagement: React.FC<{
       dataIndex: "status",
       key: "status",
       render: (status: CourseStatusEnum) => (
-        <span 
+        <span
           className="text-sm capitalize"
           style={{ color: courseStatusColor[status] }}
         >

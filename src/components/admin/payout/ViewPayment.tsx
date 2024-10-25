@@ -75,13 +75,13 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status }) => {
       onOk: () => {
         setPayments((prevPayments) =>
           prevPayments.map((payment) =>
-            payment.id === id ? { ...payment, status: newStatus } : payment
-          )
+            payment.id === id ? { ...payment, status: newStatus } : payment,
+          ),
         );
         message.success(
           `Payment ${
             newStatus === PayoutStatusEnum.completed ? "approved" : "rejected"
-          } successfully.`
+          } successfully.`,
         );
       },
       onCancel: () => {
@@ -89,7 +89,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status }) => {
       },
     });
   };
-  
+
   const columns = [
     {
       title: "Payout No",
