@@ -11,12 +11,15 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@cloudinary/react": "^1.13.0",
+    "@cloudinary/url-gen": "^1.21.0",
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.3.0",
     "@tinymce/tinymce-react": "^5.1.1",
     "@types/react-redux": "^7.1.34",
     "antd": "^5.21.3",
     "axios": "^1.7.7",
+    "cloudinary": "^2.5.1",
     "firebase": "^11.0.1",
     "framer-motion": "^11.11.1",
     "html-react-parser": "^5.1.18",

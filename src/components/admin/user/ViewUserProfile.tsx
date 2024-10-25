@@ -44,6 +44,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
   const navigate = useNavigate();
   const [users, setUsers] = useState<GetUsersAdminResponse | null>(null);
 
+  // Move outside component to prevent recreation on each render
   const defaultParams = {
     pageInfo: {
       pageNum: 1,
@@ -56,81 +57,78 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
       is_verified: true,
       is_deleted: false,
     },
-  };
+  } as const; // Make immutable
 
-  const fetchUsers = async () => {
-    try {
-      let searchCondition: SearchCondition = {
-        keyword: searchQuery || defaultParams.searchCondition.keyword,
-        role: UserRole.all,
-        status: true,
-        is_verified: true,
-        is_deleted: false,
-      };
+  // Memoize the search condition logic
+  const getSearchCondition = React.useCallback((
+    searchQuery: string,
+    selectedRole: UserRole | null,
+    selectedStatus: boolean | null,
+    activeTab: string
+  ): SearchCondition => {
+    const baseCondition = {
+      keyword: searchQuery || defaultParams.searchCondition.keyword,
+      role: UserRole.all,
+      status: true,
+      is_verified: true,
+      is_deleted: false,
+    };
 
-      if (activeTab === "all") {
-        // Chỉ áp dụng filter trong tab "all"
-        searchCondition = {
-          ...searchCondition,
+    switch (activeTab) {
+      case "all":
+        return {
+          ...baseCondition,
           role: selectedRole || UserRole.all,
           status: selectedStatus !== null ? selectedStatus : true,
-          is_verified: true,
-          is_deleted: false,
         };
-      } else if (activeTab === "blocked") {
-        // Tab blocked: bỏ qua tất cả các filter
-        searchCondition = {
-          ...searchCondition,
-          keyword: searchQuery, // chỉ giữ lại search keyword
+      case "blocked":
+        return {
+          ...baseCondition,
+          keyword: searchQuery,
           status: false,
-          is_verified: true,
-          is_deleted: false,
         };
-      } else if (activeTab === "unverified") {
-        // Tab unverified: bỏ qua tất cả các filter
-        searchCondition = {
-          ...searchCondition,
-          keyword: searchQuery, // chỉ giữ lại search keyword
-          status: true,
+      case "unverified":
+        return {
+          ...baseCondition,
+          keyword: searchQuery,
           is_verified: false,
-          is_deleted: false,
         };
-      }
+      default:
+        return baseCondition;
+    }
+  }, []);
 
+  // Memoize fetchUsers to prevent unnecessary recreations
+  const fetchUsers = React.useCallback(async () => {
+    try {
+      const searchCondition = getSearchCondition(searchQuery, selectedRole, selectedStatus, activeTab);
       const params = {
         pageInfo: defaultParams.pageInfo,
         searchCondition,
       };
 
       const response = await UserService.getUsersAdmin(params as GetUsersAdminParams);
-
       const responseData = await response.data;
-      if (responseData && responseData.data) {
-        setUsers(responseData);
-      } else {
-        console.error("Unexpected response structure:", response);
-        setUsers(null);
-      }
-
+      
+      setUsers(responseData?.data ? responseData : null);
     } catch (error) {
       console.error("Failed to fetch users:", error);
       setUsers(null);
     }
-  };
+  }, [searchQuery, selectedRole, selectedStatus, activeTab, getSearchCondition]);
 
   useEffect(() => {
     fetchUsers();
-  }, [searchQuery, selectedRole, selectedStatus, activeTab]);
+  }, [fetchUsers]);
 
-  const handleViewDetails = async (userId: string) => {
+  const handleViewDetails = React.useCallback(async (userId: string) => {
     try {
-      const userDetails = await UserService.getUserDetails(userId);
-      console.log(userDetails);
+      await UserService.getUserDetails(userId);
       navigate(ROUTER_URL.ADMIN.VIEW_USER_DETAILS.replace(":id", userId));
     } catch (error) {
       console.error("Failed to fetch user details:", error);
     }
-  };
+  }, [navigate]);
 
   const handleChangeStatus = async (userId: string, status: boolean) => {
     Modal.confirm({
@@ -205,7 +203,8 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
     });
   };
 
-  const getColumns = () => {
+  // Memoize columns to prevent unnecessary recreations
+  const columns = React.useMemo(() => {
     const baseColumns = [
       {
         title: "Avatar",
@@ -307,13 +306,13 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
     }
 
     return baseColumns;
-  };
+  }, [activeTab, handleViewDetails, handleChangeStatus, handleChangeRole]);
 
   return (
     <div className="-mt-3 mb-64 p-4">
       <Table<User>
         className="shadow-lg"
-        columns={getColumns()}
+        columns={columns}
         dataSource={users?.data.pageData || []}
         rowKey="_id"
         pagination={{ pageSize: 10 }}
@@ -322,4 +321,4 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
   );
 };
 
-export default ViewUserProfile;
+export default React.memo(ViewUserProfile);

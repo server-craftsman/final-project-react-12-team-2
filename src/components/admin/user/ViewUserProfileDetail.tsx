@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo, memo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   Row,
   Col,
   Form,
   Input,
-  Select,
   Popconfirm,
   Button,
   Modal,
@@ -27,119 +26,73 @@ import { User } from "../../../models/api/responsive/users/users.model";
 import { UserRole } from "../../../models/prototype/User";
 // import { GetUserDetailsResponse } from "../../../models/api/responsive/admin/user.responsive.model";
 import { UserService } from "../../../services/admin/user.service";
+import parse from 'html-react-parser';
 
 const ViewUserProfileDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const userData = usersData.users.find((user) => user.id === id);
-  //   if (userData) {
-  //     setUser({
-  //       ...userData,
-  //       role: userData.role as UserRole,
-  //       dob: new Date(userData.dob),
-  //     });
-  //   } else {
-  //     setUser(null);
-  //   }
-  // }, [id]);
-
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      try {
-        const response = await UserService.getUserDetails(id as string);
-        if (response && response.data) {
-          const userData: User = {
-            _id: response.data.data._id,
-            name: response.data.data.name,
-            email: response.data.data.email,
-            phone_number: response.data.data.phone_number,
-            role: response.data.data.role,
-            status: response.data.data.status,
-            description: response.data.data.description,
-            dob: new Date(response.data.data.dob),
-            balance: response.data.data.balance,
-            avatar_url: response.data.data.avatar_url,
-            google_id: response.data.data.google_id,
-            video_url: response.data.data.video_url,
-            is_verified: response.data.data.is_verified,
-            verification_token: response.data.data.verification_token,
-            verification_token_expires: new Date(
-              response.data.data.verification_token_expires,
-            ),
-            token_version: response.data.data.token_version,
-            balance_total: response.data.data.balance_total,
-            bank_name: response.data.data.bank_name,
-            bank_account_no: response.data.data.bank_account_no,
-            bank_account_name: response.data.data.bank_account_name,
-            created_at: new Date(response.data.data.created_at),
-            updated_at: new Date(response.data.data.updated_at),
-            is_deleted: response.data.data.is_deleted,
-            __v: response.data.data.__v,
-          };
-          setUser(userData);
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        console.error("Failed to fetch user details:", error);
+  // Memoize the fetch function to prevent unnecessary recreations
+  const fetchUserDetails = useCallback(async () => {
+    try {
+      const response = await UserService.getUserDetails(id as string);
+      if (response?.data?.data) {
+        const userData: User = {
+          ...response.data.data,
+          dob: new Date(response.data.data.dob),
+          verification_token_expires: new Date(response.data.data.verification_token_expires),
+          created_at: new Date(response.data.data.created_at),
+          updated_at: new Date(response.data.data.updated_at),
+        };
+        setUser(userData);
+      } else {
         setUser(null);
       }
-    };
-
-    fetchUserDetails();
+    } catch (error) {
+      console.error("Failed to fetch user details:", error);
+      setUser(null);
+    }
   }, [id]);
 
-  const rolesToInclude = [
-    UserRole.instructor,
-    UserRole.admin,
-    UserRole.student,
-  ];
+  useEffect(() => {
+    fetchUserDetails();
+  }, [fetchUserDetails]);
 
-  const handleChangeStatus = async (status: boolean) => {
+  // const rolesToInclude = [
+  //   UserRole.instructor,
+  //   UserRole.admin,
+  //   UserRole.student,
+  // ];
+
+  // Memoize handlers to prevent unnecessary recreations
+  const handleChangeStatus = useCallback(async (status: boolean) => {
     Modal.confirm({
       title: "Confirm Status Change",
       content: `Are you sure you want to turn ${status ? "ON" : "OFF"} the status for this user?`,
       onOk: async () => {
         try {
-          const params = {
-            user_id: id,
-            status,
-          };
-          const response = await UserService.changeStatus(
-            id as string,
-            params as ChangeStatusParams,
-          ); // Adjust this line to match the actual response structure
+          const params = { user_id: id, status };
+          const response = await UserService.changeStatus(id as string, params as ChangeStatusParams);
 
           if (response.data.success) {
-            message.success(
-              `User status changed successfully to ${status ? "ON" : "OFF"}.`,
-            );
-            // Refresh user details
-            const updatedUser = await UserService.getUserDetails(id as string);
-            if (updatedUser && updatedUser.data) {
-              setUser((prevUser) => ({
-                ...prevUser!,
-                status: status,
-              }));
-            }
+            message.success(`User status changed successfully to ${status ? "ON" : "OFF"}.`);
+            setUser((prevUser) => prevUser ? { ...prevUser, status } : null);
           } else {
             message.error("Failed to change user status. Please try again.");
           }
         } catch (error) {
           console.error("Failed to change user status:", error);
-          message.error(
-            "An error occurred while changing the user status. Please try again.",
-          );
+          message.error("An error occurred while changing the user status. Please try again.");
         }
       },
     });
-  };
+  }, [id]);
 
-  const handleChangeRole = async (currentRole: UserRole) => {
-    const roleOptions = Object.values(UserRole).filter(role => role !== UserRole.all);
+  const handleChangeRole = useCallback(async (currentRole: UserRole) => {
+    const roleOptions = useMemo(() => 
+      Object.values(UserRole).filter(role => role !== UserRole.all),
+    []);
     
     Modal.confirm({
       title: 'Change New Role',
@@ -181,17 +134,20 @@ const ViewUserProfileDetail = () => {
         });
       }
     });
-  };
+  }, [id]);
 
-  if (!user) {
+  // Memoize the rendered content for better performance
+  const renderUserContent = useMemo(() => {
+    if (!user) {
+      return (
+        <div className="text-center text-xl font-bold text-gray-500">
+          User not found
+        </div>
+      );
+    }
+
     return (
-      <div className="text-center text-xl font-bold text-gray-500">
-        User not found
-      </div>
-    );
-  } else {
-    return (
-      <div className="mx-auto max-w-3xl rounded-lg bg-white p-8 shadow-xl">
+      <div className="mx-auto max-w-10xl rounded-lg bg-white p-8 shadow-xl">
         <Row gutter={24} align="middle">
           <Col span={16}>
             <Form layout="vertical">
@@ -283,11 +239,9 @@ const ViewUserProfileDetail = () => {
                     label="Description"
                     className="font-medium text-gray-700"
                   >
-                    <Input
-                      value={user.description}
-                      readOnly
-                      className="bg-gray-100"
-                    />
+                    <div className="bg-gray-100 p-2 rounded">
+                      {parse(user.description || '')}
+                    </div>
                   </Form.Item>
                 </Col>
                 <Col span={12}>
@@ -354,7 +308,9 @@ const ViewUserProfileDetail = () => {
         </Button>
       </div>
     );
-  }
+  }, [user, handleChangeStatus, handleChangeRole, navigate]);
+
+  return renderUserContent;
 };
 
-export default ViewUserProfileDetail;
+export default memo(ViewUserProfileDetail);
