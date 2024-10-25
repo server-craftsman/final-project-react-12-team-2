@@ -1,26 +1,39 @@
 import React, { useEffect, useState } from "react";
-import { Table, Select } from "antd";
+import { Table } from "antd";
 import { useNavigate } from "react-router-dom";
 // import usersData from "../../../data/users.json"; // Adjust the path as necessary
 // import { User, UserRole } from "../../../models/prototype/User";
 import { userStatusColor } from "../../../utils/userStatus";
 import { userRoleColor } from "../../../utils/userRole";
 import { UserService } from "../../../services/admin/user.service";
-import { User, UserRole } from "../../../models/prototype/User";
+import { UserRole } from "../../../models/prototype/User";
+import { GetUsersAdminParams } from "../../../models/api/request/admin/user.request.model";
+import { GetUsersAdminResponse } from "../../../models/api/responsive/admin/user.responsive.model";
+import { User } from "../../../models/api/responsive/users/users.model";
+
+interface SearchCondition {
+  keyword: string;
+  role: UserRole | undefined;
+  status: boolean | null;
+  is_verified: boolean | null;
+  is_deleted: boolean | null;
+}
 
 interface ViewUserProfileProps {
   searchQuery: string;
   selectedRole: UserRole | null;
   selectedStatus: boolean | null;
+  activeTab: string;
 }
 
 const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
   searchQuery,
   selectedRole,
   selectedStatus,
-}: ViewUserProfileProps) => {
+  activeTab,
+}) => {
   const navigate = useNavigate();
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<GetUsersAdminResponse | null>(null);
 
   const defaultParams = {
     pageInfo: {
@@ -29,47 +42,63 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
     },
     searchCondition: {
       keyword: "",
-      role: "admin",
+      role: UserRole.all,
       status: true,
-      // is_verified: "false", // Change from "" to false or true as needed
-      is_delete: false,
+      is_verified: true,
+      is_deleted: false,
     },
   };
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        console.log("Fetching users with params:", {
+        const searchCondition: SearchCondition = {
+          keyword: searchQuery || defaultParams.searchCondition.keyword,
+          role: selectedRole || defaultParams.searchCondition.role,
+          status: selectedStatus !== null ? selectedStatus : defaultParams.searchCondition.status ?? null,
+          is_verified: null,
+          is_deleted: null,
+        };
+
+        if (activeTab === "all") {
+          searchCondition.role = UserRole.all;
+          searchCondition.status = true;
+          searchCondition.is_verified = true;
+          searchCondition.is_deleted = false;
+        } else if (activeTab === "blocked") {
+          searchCondition.role = UserRole.all;
+          searchCondition.status = false;
+          searchCondition.is_verified = true;
+          searchCondition.is_deleted = true;
+        } else if (activeTab === "unverified") {
+          searchCondition.role = UserRole.all;
+          searchCondition.status = true;
+          searchCondition.is_verified = false;
+          searchCondition.is_deleted = false;
+        }
+
+        const params = {
           ...defaultParams,
-          searchCondition: {
-            ...defaultParams.searchCondition,
-            keyword: searchQuery || defaultParams.searchCondition.keyword,
-            role: selectedRole || defaultParams.searchCondition.role,
-            status: selectedStatus !== null ? selectedStatus : defaultParams.searchCondition.status,
-          },
-        });
+          searchCondition,
+        };
 
-        const response = await UserService.getUsersAdmin({
-          ...defaultParams,
-          searchCondition: {
-            ...defaultParams.searchCondition,
-            keyword: searchQuery || defaultParams.searchCondition.keyword,
-            role: selectedRole || defaultParams.searchCondition.role,
-            status: selectedStatus !== null ? selectedStatus : defaultParams.searchCondition.status,
-          },
-        });
+        const response = await UserService.getUsersAdmin(params as GetUsersAdminParams);
 
-        console.log("API response:", response);
+        const responseData = await response.data;
+        if (responseData && responseData.data) {
+          setUsers(responseData);
+        } else {
+          console.error("Unexpected response structure:", response);
+          setUsers(null);
+        }
 
-        setUsers(response.data.pageData ? response.data.pageData as unknown as User[] : []); // Ensure pageData is an array
       } catch (error) {
         console.error("Failed to fetch users:", error);
-        setUsers([]); // Set users to an empty array on error
+        setUsers(null);
       }
     };
-
     fetchUsers();
-  }, [searchQuery, selectedRole, selectedStatus]);
+  }, [searchQuery, selectedRole, selectedStatus, activeTab]);
 
   const handleViewDetails = async (userId: string) => {
     try {
@@ -80,7 +109,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
           keyword: userId,
         },
       });
-      console.log(userDetails); // You can handle the user details as needed
+      console.log(userDetails);
       navigate(`/admin/view-user/${userId}`);
     } catch (error) {
       console.error("Failed to fetch user details:", error);
@@ -127,7 +156,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
       render: (_: unknown, record: User) => (
         <div>
           <button
-            onClick={() => handleViewDetails(record.id)}
+            onClick={() => handleViewDetails(record._id)}
             className="bg-gradient-tone rounded-md px-4 py-2 text-white"
           >
             View Details
@@ -142,11 +171,8 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
       <Table<User>
         className="shadow-lg"
         columns={columns}
-        dataSource={users.map((user) => ({
-          ...user,
-          dob: new Date(user.dob),
-        }))}
-        rowKey="id"
+        dataSource={users?.data.pageData || []}
+        rowKey="_id"
         pagination={{ pageSize: 10 }}
       />
     </div>

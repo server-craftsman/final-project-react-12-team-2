@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Select } from "antd";
 import { UserRole } from "../../../models/prototype/User";
 
@@ -12,6 +12,20 @@ const FilterRole: React.FC<FilterRoleProps> = ({ onRoleChange }) => {
     UserRole.admin,
     UserRole.student,
   ];
+
+  useEffect(() => {
+    // Example API call
+    const fetchRoles = async () => {
+      try {
+        // Replace with actual API call
+        console.log("Fetching roles...");
+      } catch (error) {
+        console.error("Failed to fetch roles:", error);
+      }
+    };
+
+    fetchRoles();
+  }, []); // Empty dependency array means this runs once on mount
 
   return (
     <Select
