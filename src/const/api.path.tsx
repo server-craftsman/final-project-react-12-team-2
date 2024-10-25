@@ -10,5 +10,6 @@ export const API = {
   ADMIN: {
     GET_USERS: "api/users/search",
     GET_USER_DETAILS: "/api/users/:id",
+    UPDATE_USER: "/api/users/:id",
   },
 };

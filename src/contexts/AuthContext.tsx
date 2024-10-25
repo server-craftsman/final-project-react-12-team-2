@@ -9,6 +9,7 @@ interface AuthContextType {
   token: string | null;
   setToken: (token: string | null) => void;
   userInfo: GetCurrentUserResponse['data'] | null;
+  getCurrentUser: () => Promise<void>;
   setUserInfo: (userInfo: GetCurrentUserResponse['data'] | null) => void;
   logout: () => void;
   handleLogin: (token: string) => Promise<void>;
@@ -31,8 +32,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const storedToken = localStorage.getItem("token");
     return storedToken as string | null;
   });
-  const [userInfo, setUserInfo] = useState<GetCurrentUserResponse['data'] | null>(null);
+
+  const [userInfo, setUserInfo] = useState<GetCurrentUserResponse['data'] | null>(null); // Initialize from localStorage
   const [isLoading, setIsLoading] = useState(false);
+
+  const getCurrentUser = async () => {
+    try {
+      const storedToken = localStorage.getItem("token");
+      if (!storedToken) {
+        logout();
+        return;
+      }
+      const response = await AuthService.getUserRole(storedToken);
+      setUserInfo(response.data?.data as unknown as GetCurrentUserResponse['data']);
+      // Remove the return statement
+    } catch (error) {
+      console.error('Failed to get current user:', error);
+      logout();
+    }
+  };
 
   const loginGoogle = async (googleId: string) => {
     try {
@@ -97,6 +115,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsLoading,
       loginGoogle,
       registerGooglePublic,
+      getCurrentUser,
     }}>
       {children}
     </AuthContext.Provider>

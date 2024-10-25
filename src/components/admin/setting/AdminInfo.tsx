@@ -1,60 +1,66 @@
-import usersData from "../../../data/users.json"; // Adjust the path as necessary
-import { UserRole } from "../../../models/prototype/User";
+import { useEffect } from "react";
 import { Descriptions, Button } from "antd";
 import { useNavigate } from "react-router-dom";
+import { formatDate } from "../../../utils/helper";
 
-const AdminInfo = () => {
+import { useAuth } from "../../../contexts/AuthContext";
+// import { AuthService } from "../../../services/authentication/auth.service";
+// import { User} from "../../../models/api/responsive/users/users.model";
+
+const AdminInfo: React.FC = () => {
+  // const [adminUser, setAdminUser] = useState<User | null>(null);
   const navigate = useNavigate();
-  const adminUser = usersData.users.find(
-    (user) => user.role === UserRole.admin,
-  );
+  const { getCurrentUser, userInfo } = useAuth();
 
-  if (!adminUser) {
-    return <div className="text-center text-red-500">No admin user found.</div>;
-  }
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
 
   const handleEdit = () => {
-    navigate(`/admin/edit-user/${adminUser.id}`);
+    navigate(`/admin/edit-user/${userInfo?._id}`);
   };
 
-  return (
-    <div>
+  if (!userInfo) {
+    return <div className="text-center text-red-500">No admin user found.</div>;
+  } else {
+    return (
+      <div>
       <Descriptions bordered column={1} className="mt-4">
         <Descriptions.Item label="Email" className="text-sm md:text-base">
-          {adminUser.email}
+          {userInfo.email}
         </Descriptions.Item>
         <Descriptions.Item label="Name" className="text-sm md:text-base">
-          {adminUser.name}
+          {userInfo.name}
         </Descriptions.Item>
         <Descriptions.Item label="Role" className="text-sm md:text-base">
-          {adminUser.role}
+          {userInfo.role}
         </Descriptions.Item>
         <Descriptions.Item label="Status" className="text-sm md:text-base">
-          {adminUser.status ? "Active" : "Inactive"}
+          {userInfo.status ? "Active" : "Inactive"}
         </Descriptions.Item>
         <Descriptions.Item label="Description" className="text-sm md:text-base">
-          {adminUser.description}
+          {userInfo.description}
         </Descriptions.Item>
         <Descriptions.Item
           label="Phone Number"
           className="text-sm md:text-base"
         >
-          {adminUser.phone_number}
+          {userInfo.phone_number}
         </Descriptions.Item>
         <Descriptions.Item
           label="Date of Birth"
           className="text-sm md:text-base"
         >
-          {adminUser.dob}
+          {formatDate(new Date(userInfo.dob))}
         </Descriptions.Item>
         <Descriptions.Item label="Verified" className="text-sm md:text-base">
-          {adminUser.is_verified ? "Yes" : "No"}
+          {userInfo.is_verified ? "Yes" : "No"}
         </Descriptions.Item>
         <Descriptions.Item label="Created At" className="text-sm md:text-base">
-          {new Date(adminUser.created_at).toLocaleString()}
+          {formatDate(new Date(userInfo.created_at))}
         </Descriptions.Item>
         <Descriptions.Item label="Updated At" className="text-sm md:text-base">
-          {new Date(adminUser.updated_at).toLocaleString()}
+          {formatDate(new Date(userInfo.updated_at))}
         </Descriptions.Item>
       </Descriptions>
       <Button
@@ -64,8 +70,9 @@ const AdminInfo = () => {
       >
         Edit Profile
       </Button>
-    </div>
-  );
+      </div>
+    );
+  }
 };
 
 export default AdminInfo;
