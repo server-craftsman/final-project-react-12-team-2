@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Row, Col, Form, Input, Select, Popconfirm, Button } from "antd";
+import { Row, Col, Form, Input, Select, Popconfirm, Button, Modal, message } from "antd";
 import { HomeOutlined, DeleteOutlined } from "@ant-design/icons";
 
 //model and service
+import { ChangeStatusParams } from "../../../models/api/request/admin/user.request.model";
 import { User } from "../../../models/api/responsive/users/users.model";
 import { UserRole } from "../../../models/prototype/User";
 // import { GetUserDetailsResponse } from "../../../models/api/responsive/admin/user.responsive.model";
@@ -78,6 +79,39 @@ const ViewUserProfileDetail = () => {
     UserRole.student,
   ];
 
+  const handleChangeStatus = async (status: boolean) => {
+    Modal.confirm({
+      title: 'Confirm Status Change',
+      content: `Are you sure you want to turn ${status ? "ON" : "OFF"} the status for this user?`,
+      onOk: async () => {
+        try {
+          const params = {
+            user_id: id,
+            status,
+          };
+          const response = await UserService.changeStatus(id as string, params as ChangeStatusParams); // Adjust this line to match the actual response structure
+
+          if (response.data.success) {
+            message.success(`User status changed successfully to ${status ? "ON" : "OFF"}.`);
+            // Refresh user details
+            const updatedUser = await UserService.getUserDetails(id as string);
+            if (updatedUser && updatedUser.data) {
+              setUser(prevUser => ({
+                ...prevUser!,
+                status: status
+              }));
+            }
+          } else {
+            message.error("Failed to change user status. Please try again.");
+          }
+        } catch (error) {
+          console.error("Failed to change user status:", error);
+          message.error("An error occurred while changing the user status. Please try again.");
+        }
+      },
+    });
+  };
+
   if (!user) {
     return <div className="text-center text-xl font-bold text-gray-500">User not found</div>;
   } else {
@@ -119,10 +153,19 @@ const ViewUserProfileDetail = () => {
               <Row gutter={24}>
                 <Col span={12}>
                   <Form.Item label="Status" className="font-medium text-gray-700">
-                    <Select value={user.status ? "Active" : "Inactive"} className="bg-gray-100">
-                      <Select.Option value="Active">Active</Select.Option>
-                      <Select.Option value="Inactive">Inactive</Select.Option>
-                    </Select>
+                    <div className="flex items-center gap-2">
+                      <Input value={user.status ? "Active" : "Inactive"} readOnly className="bg-gray-100 w-32" />
+                      <Button
+                        onClick={() => handleChangeStatus(!user.status)}
+                        className={`ml-2 px-4 py-1 rounded-full font-medium transition-all duration-200
+                          ${user.status 
+                            ? "bg-gradient-to-r from-green-400 to-green-500 text-white hover:from-green-500 hover:to-green-600" 
+                            : "bg-gradient-to-r from-red-400 to-red-500 text-white hover:from-red-500 hover:to-red-600"
+                          }`}
+                      >
+                        Toggle Status
+                      </Button>
+                    </div>
                   </Form.Item>
                 </Col>
                 <Col span={12}>

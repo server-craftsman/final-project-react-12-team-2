@@ -18,3 +18,8 @@ export interface GetUserDetailsResponse {
   success: boolean;
   data: User;
 }
+
+export interface ChangeStatusResponse {
+  success: boolean;
+  data: string;
+}

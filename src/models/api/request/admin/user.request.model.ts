@@ -13,3 +13,13 @@ export interface GetUsersAdminParams {
     pageSize?: number;
   };
 }
+
+export interface ChangeStatusParams {
+  user_id: string;
+  status: boolean;
+}
+
+export interface ChangeRoleParams {
+  user_id: string;
+  role: UserRole;
+}
