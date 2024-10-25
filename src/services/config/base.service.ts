@@ -13,7 +13,7 @@ import {
 import { DOMAIN_ADMIN, LOCAL_STORAGE } from "../../const/domain";
 import { ROUTER_URL } from "../../const/router.path";
 import { store } from "../../app/store";
-import { toggleLoading, toggleLoadingAdmin } from "../../app/loadingSlice";
+import { toggleLoading } from "../../app/loadingSlice";
 
 export const axiosInstance = axios.create({
   baseURL: DOMAIN_ADMIN,
