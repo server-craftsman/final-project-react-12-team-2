@@ -4,8 +4,6 @@ interface GuardPublicRouteProps {
   component: React.ReactNode;
 }
 
-const GuardPublicRoute = ({ component }: GuardPublicRouteProps) => (
-  <div>{component}</div>
-);
+const GuardPublicRoute = ({ component }: GuardPublicRouteProps) => <div>{component}</div>;
 
 export default GuardPublicRoute;

@@ -7,15 +7,9 @@ const LoginPage = lazy(() => import("../../pages/login/LoginPage"));
 const RegisterPage = lazy(() => import("../../pages/register/RegisterPage"));
 const MainLayout = lazy(() => import("../../layout/main-layout/MainLayout"));
 const HomePage = lazy(() => import("../../pages/home/HomePage"));
-const CourseDetails = lazy(
-  () => import("../../components/generic/courses/main-display/CourseDetails"),
-);
-const LessonDetails = lazy(
-  () => import("../../components/generic/lessons/LessonDetails"),
-);
-const SessionDetails = lazy(
-  () => import("../../components/generic/sessions/SessionDetails"),
-);
+const CourseDetails = lazy(() => import("../../components/generic/courses/main-display/CourseDetails"));
+const LessonDetails = lazy(() => import("../../components/generic/lessons/LessonDetails"));
+const SessionDetails = lazy(() => import("../../components/generic/sessions/SessionDetails"));
 const CartPage = lazy(() => import("../../components/generic/cart/CartPage"));
 const About = lazy(() => import("../../components/generic/home/About"));
 
@@ -28,39 +22,39 @@ export const publicSubPaths: Record<string, RouteObject[]> = {
       children: [
         {
           path: ROUTER_URL.COMMON.HOME,
-          element: <HomePage />,
+          element: <HomePage />
         },
         {
           path: ROUTER_URL.COMMON.COURSE_BY_ID,
-          element: <CourseDetails />,
+          element: <CourseDetails />
         },
         {
           path: ROUTER_URL.COMMON.COURSE_BY_ID_LESSON,
-          element: <LessonDetails />,
+          element: <LessonDetails />
         },
         {
           path: ROUTER_URL.COMMON.COURSE_BY_ID_SESSION,
-          element: <SessionDetails />,
+          element: <SessionDetails />
         },
         {
           path: ROUTER_URL.COMMON.ABOUT,
-          element: <About />,
+          element: <About />
         },
         {
           path: ROUTER_URL.COMMON.CART,
-          element: <CartPage />,
-        },
-      ],
-    },
+          element: <CartPage />
+        }
+      ]
+    }
   ],
   [ROUTER_URL.LOGIN]: [
     {
       path: ROUTER_URL.LOGIN,
-      element: <LoginPage />,
+      element: <LoginPage />
     },
     {
       path: ROUTER_URL.REGISTER,
-      element: <RegisterPage />,
-    },
-  ],
+      element: <RegisterPage />
+    }
+  ]
 };

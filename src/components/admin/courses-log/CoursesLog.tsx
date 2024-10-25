@@ -10,29 +10,25 @@ const CoursesLog: React.FC<{
     {
       title: "Course Name",
       dataIndex: "name",
-      key: "name",
+      key: "name"
     },
     {
       title: "Old Status",
       dataIndex: "oldStatus",
       key: "oldStatus",
-      render: (text: CourseStatusEnum) => (
-        <span className={courseStatusColor[text]}>{text}</span>
-      ),
+      render: (text: CourseStatusEnum) => <span className={courseStatusColor[text]}>{text}</span>
     },
     {
       title: "New Status",
       dataIndex: "newStatus",
       key: "newStatus",
-      render: (text: CourseStatusEnum) => (
-        <span className={courseStatusColor[text]}>{text}</span>
-      ),
+      render: (text: CourseStatusEnum) => <span className={courseStatusColor[text]}>{text}</span>
     },
     {
       title: "Comment",
       dataIndex: "comment",
-      key: "comment",
-    },
+      key: "comment"
+    }
   ];
 
   return <Table columns={columns} dataSource={data} />;

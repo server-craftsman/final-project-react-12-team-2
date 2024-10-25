@@ -1,9 +1,6 @@
 import { DATE_FORMAT } from "../const/date.constant";
 
-export const formatDate = (
-  date: Date,
-  format: string = DATE_FORMAT.YYYYMMDD,
-) => {
+export const formatDate = (date: Date, format: string = DATE_FORMAT.YYYYMMDD) => {
   const d = new Date(date);
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -26,17 +23,12 @@ export const formatDateISO = (date: Date) => {
 };
 
 export const moneyFormat = (money: number) => {
-  return money
-    .toLocaleString("vi-VN", { style: "currency", currency: "VND" })
-    .replace(/\./g, ",");
+  return money.toLocaleString("vi-VN", { style: "currency", currency: "VND" }).replace(/\./g, ",");
 };
 
 export const formatParamsString = (params: Record<string, any>) => {
   return Object.entries(params)
-    .map(
-      ([key, value]) =>
-        `${encodeURIComponent(key)}=${encodeURIComponent(value)}`,
-    )
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
     .join("&");
 };
 
@@ -47,7 +39,7 @@ export const isEmptyObject = (obj: any): boolean => {
 export const formatResponse = <T,>(data: T, success: boolean = true) => {
   return {
     success,
-    data,
+    data
   };
 };
 
@@ -62,13 +54,13 @@ export const formatPhoneNumber = (phoneNumber: string): string => {
     VN: {
       pattern: /^(0|84|\+84)?[-.\s]?(\d{2,3})[-.\s]?(\d{3})[-.\s]?(\d{4})$/,
       code: "+84",
-      country: "VN",
+      country: "VN"
     },
     US: {
       pattern: /^(\+?1)?[-.\s]?(\d{3})[-.\s]?(\d{3})[-.\s]?(\d{4})$/,
       code: "+1",
-      country: "US",
-    },
+      country: "US"
+    }
   };
 
   const cleanPhone = phoneNumber.replace(/[-.\s]/g, "");
@@ -77,10 +69,7 @@ export const formatPhoneNumber = (phoneNumber: string): string => {
     const { pattern, code } = phonePatterns[country];
     const match = cleanPhone.match(pattern);
     if (match) {
-      const formattedNumber =
-        country === "VN"
-          ? `(${match[2]})-${match[3]}-${match[4]}`
-          : `(${match[2]}) ${match[3]}-${match[4]}`;
+      const formattedNumber = country === "VN" ? `(${match[2]})-${match[3]}-${match[4]}` : `(${match[2]}) ${match[3]}-${match[4]}`;
 
       return `${code} ${formattedNumber}`;
     }

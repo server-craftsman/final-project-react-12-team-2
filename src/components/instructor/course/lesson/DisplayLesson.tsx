@@ -22,7 +22,7 @@ const DisplayLesson = () => {
       const course = courses.find((course) => course.id === lesson.course_id);
       return {
         ...lesson,
-        course_name: course?.name,
+        course_name: course?.name
       };
     }) as unknown as [];
     setLessons(lessonTempData);
@@ -55,12 +55,7 @@ const DisplayLesson = () => {
     } else if (record.image_url) {
       return (
         <div className="flex items-center justify-center">
-          <img
-            src={record.image_url}
-            alt="lesson media"
-            width="200"
-            className="rounded-md"
-          />
+          <img src={record.image_url} alt="lesson media" width="200" className="rounded-md" />
         </div>
       );
     }
@@ -72,7 +67,7 @@ const DisplayLesson = () => {
     } else {
       const filtered = lessons.filter((lesson) =>
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (lesson as any).name.toLowerCase().includes(searchText.toLowerCase()),
+        (lesson as any).name.toLowerCase().includes(searchText.toLowerCase())
       );
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setFilteredLessons(filtered as any);
@@ -84,63 +79,52 @@ const DisplayLesson = () => {
     {
       title: "Name",
       key: "name",
-      dataIndex: "name",
+      dataIndex: "name"
     },
     {
       title: "Course Name",
       key: "course_name",
-      dataIndex: "course_name",
+      dataIndex: "course_name"
     },
     {
       title: "Full Time",
       key: "full_time",
-      dataIndex: "full_time",
+      dataIndex: "full_time"
     },
     {
       title: "Created At",
       key: "created_at",
       dataIndex: "created_at",
-      render: (text: Date) => formatDate(text),
+      render: (text: Date) => formatDate(text)
     },
     {
       title: "Media",
       key: "video_url",
       dataIndex: "video_url",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      render: (_: any, record: Lesson) => renderMedia(record),
+      render: (_: any, record: Lesson) => renderMedia(record)
     },
     {
       title: "Actions",
       key: "actions",
       dataIndex: "actions",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      render: (_: any, record: Lesson) => renderActions(record),
-    },
+      render: (_: any, record: Lesson) => renderActions(record)
+    }
   ];
   return (
     <>
       <div className="mb-4 mt-4 flex justify-between">
-        <CustomSearch
-          onSearch={handleSearch}
-          placeholder="Search by lesson name"
-          className="w-1/5"
-        />
+        <CustomSearch onSearch={handleSearch} placeholder="Search by lesson name" className="w-1/5" />
         <CreateButton />
       </div>
-      <Table
-        columns={columns}
-        dataSource={paginatedCourses()}
-        rowKey="id"
-        pagination={false}
-      />
+      <Table columns={columns} dataSource={paginatedCourses()} rowKey="id" pagination={false} />
       <div className="mt-5 flex justify-end">
         <Pagination
           current={pageNum}
           pageSize={pageSize}
           total={totalItems}
-          showTotal={(total, range) =>
-            `${range[0]}-${range[1]} of ${total} items`
-          }
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
           onChange={(page, pageSize) => {
             setPageNum(page);
             setPageSize(pageSize);

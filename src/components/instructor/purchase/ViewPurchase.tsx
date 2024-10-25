@@ -10,26 +10,12 @@ interface ViewPurchaseProps {
   onSelectionChange: (selectedPurchases: Set<string>) => void;
 }
 
-const ViewPurchase: React.FC<ViewPurchaseProps> = ({
-  searchQuery,
-  filterStatus,
-  onSelectionChange,
-}) => {
-  const [selectedPurchases, setSelectedPurchases] = useState<Set<string>>(
-    new Set(),
-  );
+const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, onSelectionChange }) => {
+  const [selectedPurchases, setSelectedPurchases] = useState<Set<string>>(new Set());
 
   const handleSelectAllChange = (checked: boolean) => {
-    setSelectedPurchases(
-      checked
-        ? new Set(filteredPurchases.map((purchase) => purchase.id))
-        : new Set(),
-    );
-    onSelectionChange(
-      checked
-        ? new Set(filteredPurchases.map((purchase) => purchase.id))
-        : new Set(),
-    );
+    setSelectedPurchases(checked ? new Set(filteredPurchases.map((purchase) => purchase.id)) : new Set());
+    onSelectionChange(checked ? new Set(filteredPurchases.map((purchase) => purchase.id)) : new Set());
   };
 
   const filteredPurchases = purchases.filter((item) => {
@@ -49,26 +35,16 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({
 
   const columns = [
     {
-      title: (
-        <PurchaseCheckbox
-          checked={selectedPurchases.size === filteredPurchases.length}
-          onChange={handleSelectAllChange}
-        />
-      ),
+      title: <PurchaseCheckbox checked={selectedPurchases.size === filteredPurchases.length} onChange={handleSelectAllChange} />,
       dataIndex: "id",
       key: "select",
-      render: (id: string) => (
-        <PurchaseCheckbox
-          checked={selectedPurchases.has(id)}
-          onChange={(checked) => handleCheckboxChange(id, checked)}
-        />
-      ),
+      render: (id: string) => <PurchaseCheckbox checked={selectedPurchases.has(id)} onChange={(checked) => handleCheckboxChange(id, checked)} />
     },
 
     {
       title: "Purchase No",
       dataIndex: "purchase_no",
-      key: "purchase_no",
+      key: "purchase_no"
     },
     {
       title: "Status",
@@ -99,39 +75,39 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({
         }
 
         return <Tag color={color}>{text}</Tag>;
-      },
+      }
     },
     {
       title: "Price Paid",
       dataIndex: "price_paid",
       key: "price_paid",
-      render: (money: number) => moneyFormat(money),
+      render: (money: number) => moneyFormat(money)
     },
     {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (money: number) => moneyFormat(money),
+      render: (money: number) => moneyFormat(money)
     },
     {
       title: "Discount",
       dataIndex: "discount",
       key: "discount",
-      render: (money: number) => money + "%",
+      render: (money: number) => money + "%"
     },
 
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (date: Date) => formatDate(date),
+      render: (date: Date) => formatDate(date)
     },
     {
       title: "Updated At",
       dataIndex: "updated_at",
       key: "updated_at",
-      render: (date: Date) => formatDate(date),
-    },
+      render: (date: Date) => formatDate(date)
+    }
   ];
 
   const filteredData = purchases.filter((item) => {

@@ -23,16 +23,12 @@ const CoursesLogManagement: React.FC = () => {
         ...course,
         newStatus: course.status,
         oldStatus: review ? "Updated" : course.status,
-        comment: review ? review.comment : "No comment",
+        comment: review ? review.comment : "No comment"
       };
     });
 
     // Filter courses based on the searchTerm and statusFilter
-    const filteredData = mergedData.filter(
-      (course) =>
-        course.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (statusFilter === "all" || course.newStatus === statusFilter),
-    );
+    const filteredData = mergedData.filter((course) => course.name.toLowerCase().includes(searchTerm.toLowerCase()) && (statusFilter === "all" || course.newStatus === statusFilter));
 
     setData(filteredData as Course[]);
   }, [searchTerm, statusFilter]); // Add statusFilter as a dependency
@@ -41,11 +37,7 @@ const CoursesLogManagement: React.FC = () => {
     <Content>
       <Card>
         <div className="mb-4 flex justify-between">
-          <CustomSearch
-            className="search-input"
-            placeholder="Search by course name"
-            onSearch={(value) => setSearchTerm(value)}
-          />
+          <CustomSearch className="search-input" placeholder="Search by course name" onSearch={(value) => setSearchTerm(value)} />
           <FilterStatus status={statusFilter} setStatus={setStatusFilter} />
         </div>
         <CoursesLog data={data} />

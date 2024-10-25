@@ -10,9 +10,7 @@ export const checkValidEmail = (email: string): boolean => {
 export const checkValidUrl = (url: string): boolean => {
   const urlPattern = /^(http:\/\/|https:\/\/)/i;
   if (!urlPattern.test(url)) {
-    throw new Error(
-      "Invalid URL format. URL must start with http:// or https:// and contain a valid domain",
-    );
+    throw new Error("Invalid URL format. URL must start with http:// or https:// and contain a valid domain");
   }
   return true;
 };
@@ -37,28 +35,18 @@ export const checkValidLength = (value: string, min: number, max: number) => {
 //   return phoneNumber; // Return the phone number instead of a boolean
 // };
 
-export const checkValidNumeric = (
-  value: string,
-  allowDecimals = false,
-): boolean => {
+export const checkValidNumeric = (value: string, allowDecimals = false): boolean => {
   const numericPattern = allowDecimals ? /^\d*\.?\d+$/ : /^\d+$/;
   if (!numericPattern.test(value)) {
-    throw new Error(
-      allowDecimals
-        ? "Value must be a valid number (decimals allowed)"
-        : "Value must be a valid integer",
-    );
+    throw new Error(allowDecimals ? "Value must be a valid number (decimals allowed)" : "Value must be a valid integer");
   }
   return true;
 };
 
 export const checkValidPassword = (password: string): boolean => {
-  const passwordPattern =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   if (!passwordPattern.test(password)) {
-    throw new Error(
-      "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character",
-    );
+    throw new Error("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character");
   }
   return true;
 };

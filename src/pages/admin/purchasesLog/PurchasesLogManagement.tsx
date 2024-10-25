@@ -17,11 +17,7 @@ const PurchasesLogManagement: React.FC = () => {
     <Content>
       <Card>
         <div className="mb-4 flex justify-between">
-          <CustomSearch
-            onSearch={handleSearch}
-            placeholder="Search Purchase"
-            className="search-input"
-          />
+          <CustomSearch onSearch={handleSearch} placeholder="Search Purchase" className="search-input" />
           <FilterStatus status={statusFilter} setStatus={setStatusFilter} />
         </div>
         <PurchasesLog searchQuery={searchQuery} statusFilter={statusFilter} />

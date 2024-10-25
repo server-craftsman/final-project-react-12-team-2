@@ -1,22 +1,13 @@
 import React from "react";
 import { Card, Row, Col, Typography } from "antd";
-import {
-  PlayCircleOutlined,
-  ClockCircleOutlined,
-  FileTextOutlined,
-  TrophyOutlined,
-} from "@ant-design/icons";
+import { PlayCircleOutlined, ClockCircleOutlined, FileTextOutlined, TrophyOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { CourseInsightsProps } from "../../../../models/objects/course/CourseInsightsProps";
 const { Title, Paragraph, Text } = Typography;
 
 const CourseInsights: React.FC<CourseInsightsProps> = ({ instructor }) => {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
       <Title level={4} className="mb-4">
         Course Content
       </Title>
@@ -65,18 +56,12 @@ const CourseInsights: React.FC<CourseInsightsProps> = ({ instructor }) => {
       <Card className="transition-shadow duration-300 hover:shadow-lg">
         <Row gutter={16} align="middle">
           <Col xs={24} sm={6}>
-            <img
-              src={instructor?.avatar_url || ""}
-              alt={instructor?.name}
-              className="w-full rounded-full"
-            />
+            <img src={instructor?.avatar_url || ""} alt={instructor?.name} className="w-full rounded-full" />
           </Col>
           <Col xs={24} sm={18}>
             <Title level={5}>{instructor?.name}</Title>
             <Text className="block text-gray-500">{instructor?.role}</Text>
-            <Paragraph ellipsis={{ rows: 3, expandable: true, symbol: "more" }}>
-              {instructor?.description}
-            </Paragraph>
+            <Paragraph ellipsis={{ rows: 3, expandable: true, symbol: "more" }}>{instructor?.description}</Paragraph>
           </Col>
         </Row>
       </Card>

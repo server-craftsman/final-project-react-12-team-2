@@ -10,13 +10,7 @@ const SearchPurchaseLog: React.FC = () => {
 
   return (
     <div>
-      <Input.Search
-        placeholder="Search Purchase Log"
-        allowClear
-        value={searchTerm}
-        onChange={handleSearchChange}
-        style={{ width: 300, marginBottom: 16 }}
-      />
+      <Input.Search placeholder="Search Purchase Log" allowClear value={searchTerm} onChange={handleSearchChange} style={{ width: 300, marginBottom: 16 }} />
     </div>
   );
 };

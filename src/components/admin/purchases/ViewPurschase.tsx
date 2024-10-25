@@ -1,10 +1,7 @@
 import { Table, Tag } from "antd";
 import { useNavigate } from "react-router-dom";
 import purchasesData from "../../../data/purchases.json";
-import {
-  Purchases,
-  PurchaseStatusEnum,
-} from "../../../models/prototype/Purchases";
+import { Purchases, PurchaseStatusEnum } from "../../../models/prototype/Purchases";
 import { Key } from "react";
 
 const ViewPurchase = ({ searchQuery }: { searchQuery: string }) => {
@@ -31,38 +28,34 @@ const ViewPurchase = ({ searchQuery }: { searchQuery: string }) => {
     ...purchase,
     status: mapStatus(purchase.status), // Convert status to enum
     created_at: new Date(purchase.created_at),
-    updated_at: new Date(purchase.updated_at),
+    updated_at: new Date(purchase.updated_at)
   }));
 
-  const filteredPurchases = convertedPurchasesData.filter(
-    (purchase: Purchases) =>
-      purchase.purchase_no.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      purchase.cart_id.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const filteredPurchases = convertedPurchasesData.filter((purchase: Purchases) => purchase.purchase_no.toLowerCase().includes(searchQuery.toLowerCase()) || purchase.cart_id.toLowerCase().includes(searchQuery.toLowerCase()));
 
   const columns = [
     {
       title: "Purchase No",
       dataIndex: "purchase_no",
-      key: "purchase_no",
+      key: "purchase_no"
     },
     {
       title: "Price Paid",
       dataIndex: "price_paid",
       key: "price_paid",
-      render: (amount: number) => `$${amount.toFixed(2)}`, // Format as currency
+      render: (amount: number) => `$${amount.toFixed(2)}` // Format as currency
     },
     {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (amount: number) => `$${amount.toFixed(2)}`, // Format as currency
+      render: (amount: number) => `$${amount.toFixed(2)}` // Format as currency
     },
     {
       title: "Discount",
       dataIndex: "discount",
       key: "discount",
-      render: (amount: number) => `${amount.toFixed(2)}%`,
+      render: (amount: number) => `${amount.toFixed(2)}%`
     },
     {
       title: "Status",
@@ -71,7 +64,7 @@ const ViewPurchase = ({ searchQuery }: { searchQuery: string }) => {
       filters: [
         { text: "New", value: PurchaseStatusEnum.new },
         { text: "Request Paid", value: PurchaseStatusEnum.request_paid },
-        { text: "Completed", value: PurchaseStatusEnum.completed },
+        { text: "Completed", value: PurchaseStatusEnum.completed }
       ],
       onFilter: (value: boolean | Key, record: Purchases) => {
         // Cast value to Key if it's not a boolean
@@ -100,13 +93,13 @@ const ViewPurchase = ({ searchQuery }: { searchQuery: string }) => {
         }
 
         return <Tag color={color}>{statusText}</Tag>;
-      },
+      }
     },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (date: Date) => date.toLocaleDateString(), // Format the date
+      render: (date: Date) => date.toLocaleDateString() // Format the date
     },
     {
       title: "Action",
@@ -120,19 +113,13 @@ const ViewPurchase = ({ searchQuery }: { searchQuery: string }) => {
             View Details
           </button>
         </div>
-      ),
-    },
+      )
+    }
   ];
 
   return (
     <div className="p-4">
-      <Table<Purchases>
-        className="shadow-lg"
-        columns={columns}
-        dataSource={filteredPurchases}
-        rowKey="id"
-        pagination={{ pageSize: 10 }}
-      />
+      <Table<Purchases> className="shadow-lg" columns={columns} dataSource={filteredPurchases} rowKey="id" pagination={{ pageSize: 10 }} />
     </div>
   );
 };

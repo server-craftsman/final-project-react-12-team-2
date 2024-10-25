@@ -22,10 +22,8 @@ if (rootElement) {
           </CartProvider>
         </AuthProvider>
       </BrowserRouter>
-    </Provider>,
+    </Provider>
   );
 } else {
-  console.error(
-    "Root element not found. Ensure there is a div with id 'root' in your HTML.",
-  );
+  console.error("Root element not found. Ensure there is a div with id 'root' in your HTML.");
 }

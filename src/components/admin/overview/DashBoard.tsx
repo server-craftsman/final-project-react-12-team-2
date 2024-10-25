@@ -12,9 +12,7 @@ const DashBoard = () => {
           <div className="pl-4">
             <span className="ml-2 font-medium text-black">User</span>
             <div className="flex items-center">
-              <strong className="text-xl font-semibold text-gray-700">
-                50,000
-              </strong>
+              <strong className="text-xl font-semibold text-gray-700">50,000</strong>
               <span className="pl-2 text-sm text-green-500">+140</span>
             </div>
           </div>
@@ -26,9 +24,7 @@ const DashBoard = () => {
           <div className="pl-4">
             <span className="ml-2 font-medium text-black">Course</span>
             <div className="flex items-center">
-              <strong className="text-xl font-semibold text-gray-700">
-                50,000
-              </strong>
+              <strong className="text-xl font-semibold text-gray-700">50,000</strong>
               <span className="pl-2 text-sm text-green-500">+140</span>
             </div>
           </div>
@@ -40,9 +36,7 @@ const DashBoard = () => {
           <div className="pl-4">
             <span className="ml-2 font-medium text-black">Complete</span>
             <div className="flex items-center">
-              <strong className="text-xl font-semibold text-gray-700">
-                50,000
-              </strong>
+              <strong className="text-xl font-semibold text-gray-700">50,000</strong>
               <span className="pl-2 text-sm text-green-500">+140</span>
             </div>
           </div>
@@ -55,9 +49,5 @@ const DashBoard = () => {
 export default DashBoard;
 
 function BoxWrapper({ children }: any) {
-  return (
-    <div className="flex flex-1 items-center rounded-sm border border-gray-200 bg-white p-4">
-      {children}
-    </div>
-  );
+  return <div className="flex flex-1 items-center rounded-sm border border-gray-200 bg-white p-4">{children}</div>;
 }

@@ -1,14 +1,7 @@
-import axios, {
-  AxiosRequestConfig,
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-} from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { ApiRequestModel } from "../../models/api/interceptor/ApiRequestModel";
 import { toast } from "react-toastify";
-import {
-  getItemInLocalStorage,
-  removeItemInLocalStorage,
-} from "../../utils/storage";
+import { getItemInLocalStorage, removeItemInLocalStorage } from "../../utils/storage";
 // import { useToggleLoading } from "../../hooks/toggleLoading";
 import { DOMAIN_ADMIN, LOCAL_STORAGE } from "../../const/domain";
 import { ROUTER_URL } from "../../const/router.path";
@@ -18,10 +11,10 @@ import { toggleLoading } from "../../app/loadingSlice";
 export const axiosInstance = axios.create({
   baseURL: DOMAIN_ADMIN,
   headers: {
-    "content-type": "application/json; charset=UTF-8",
+    "content-type": "application/json; charset=UTF-8"
   },
   timeout: 300000,
-  timeoutErrorMessage: `Connection is timeout exceeded`,
+  timeoutErrorMessage: `Connection is timeout exceeded`
 });
 
 // export const getState = (store: any) => {
@@ -34,29 +27,22 @@ export const BaseService = {
     isLoading = true,
     payload,
     headers,
-    toggleLoading,
+    toggleLoading
   }: Partial<ApiRequestModel> & {
     toggleLoading?: (isLoading: boolean) => void;
   }): Promise<PromiseState<T>> {
     if (toggleLoading) toggleLoading(isLoading);
     return axiosInstance.get<T, PromiseState<T>>(`${url}`, {
       params: payload,
-      headers: headers || {},
+      headers: headers || {}
     });
   },
-  post<T = any>({
-    url,
-    isLoading = true,
-    payload,
-    headers,
-    toggleLoading,
-    toggleLoadingAdmin,
-  }: Partial<ApiRequestModel>): Promise<PromiseState<T>> {
+  post<T = any>({ url, isLoading = true, payload, headers, toggleLoading, toggleLoadingAdmin }: Partial<ApiRequestModel>): Promise<PromiseState<T>> {
     if (toggleLoading) toggleLoading(isLoading);
     if (toggleLoadingAdmin) toggleLoadingAdmin(isLoading);
     // console.log("payload: ", payload);
     return axiosInstance.post<T, PromiseState<T>>(`${url}`, payload, {
-      headers: headers || {},
+      headers: headers || {}
     });
   },
   put<T = any>({
@@ -64,13 +50,13 @@ export const BaseService = {
     isLoading = true,
     payload,
     headers,
-    toggleLoading,
+    toggleLoading
   }: Partial<ApiRequestModel> & {
     toggleLoading?: (isLoading: boolean) => void;
   }): Promise<PromiseState<T>> {
     if (toggleLoading) toggleLoading(isLoading);
     return axiosInstance.put(`${url}`, payload, {
-      headers: headers || {},
+      headers: headers || {}
     });
   },
   remove<T = any>({
@@ -78,14 +64,14 @@ export const BaseService = {
     isLoading = true,
     payload,
     headers,
-    toggleLoading,
+    toggleLoading
   }: Partial<ApiRequestModel> & {
     toggleLoading?: (isLoading: boolean) => void;
   }): Promise<PromiseState<T>> {
     if (toggleLoading) toggleLoading(isLoading);
     return axiosInstance.delete(`${url}`, {
       params: payload,
-      headers: headers || {},
+      headers: headers || {}
     });
   },
   getById<T = any>({
@@ -93,22 +79,17 @@ export const BaseService = {
     isLoading = true,
     payload,
     headers,
-    toggleLoading,
+    toggleLoading
   }: Partial<ApiRequestModel> & {
     toggleLoading?: (isLoading: boolean) => void;
   }): Promise<PromiseState<T>> {
     if (toggleLoading) toggleLoading(isLoading);
     return axiosInstance.get<T, PromiseState<T>>(`${url}`, {
       params: payload,
-      headers: headers || {},
+      headers: headers || {}
     });
   },
-  uploadMedia(
-    url: string,
-    file?: any,
-    isMultiple: boolean = false,
-    isLoading: boolean = true,
-  ) {
+  uploadMedia(url: string, file?: any, isMultiple: boolean = false, isLoading: boolean = true) {
     const formData = new FormData();
     if (isMultiple) {
       for (let i = 0; i < file.length; i++) {
@@ -127,8 +108,8 @@ export const BaseService = {
       params: {},
       headers: {
         "content-type": "multipart/form-data",
-        Authorization: `Bearer ${user.access_token}`,
-      },
+        Authorization: `Bearer ${user.access_token}`
+      }
     })
       .then((res) => {
         // useToggleLoading()(false);
@@ -138,7 +119,7 @@ export const BaseService = {
         handleErrorByToast(error);
         return null;
       });
-  },
+  }
 };
 
 export interface PromiseState<T = unknown> extends AxiosResponse<T> {
@@ -156,7 +137,7 @@ axiosInstance.interceptors.request.use(
   (err) => {
     store.dispatch(toggleLoading(false)); // Hide loading on error
     return handleErrorByToast(err);
-  },
+  }
 );
 
 axiosInstance.interceptors.response.use(
@@ -174,7 +155,7 @@ axiosInstance.interceptors.response.use(
       }, 10000);
     }
     return handleErrorByToast(err);
-  },
+  }
 );
 
 const handleErrorByToast = (error: any) => {

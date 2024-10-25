@@ -3,7 +3,7 @@ export enum PayoutStatusEnum {
   new = "NEW",
   request_payout = "REQUEST_PAYOUT",
   completed = "COMPLETED",
-  rejected = "REJECTED",
+  rejected = "REJECTED"
 }
 export interface Payout {
   id: string;

@@ -16,7 +16,7 @@ const validateAndSortByLatestDate = (data: any[]) => {
     })
     .map((item) => ({
       ...item,
-      created_at_string: new Date(item.created_at).toLocaleDateString(),
+      created_at_string: new Date(item.created_at).toLocaleDateString()
     }));
 };
 
@@ -27,34 +27,33 @@ const columns = [
     title: "Payout ID",
     dataIndex: "id",
     key: "id",
-    render: (text: any) => `#${text}`,
+    render: (text: any) => `#${text}`
   },
   {
     title: "Created At",
     dataIndex: "created_at_string",
     key: "created_at",
-    sorter: (a: any, b: any) =>
-      new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-    defaultSortOrder: "descend" as const,
+    sorter: (a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    defaultSortOrder: "descend" as const
   },
   {
     title: "Price",
     dataIndex: "price",
     key: "price",
-    render: (price: any) => `$${price.toFixed(2)}`,
+    render: (price: any) => `$${price.toFixed(2)}`
   },
   {
     title: "Discount",
     dataIndex: "discount",
     key: "discount",
-    render: (discount: any) => `${discount.toFixed(2)}%`,
+    render: (discount: any) => `${discount.toFixed(2)}%`
   },
   {
     title: "Price Paid",
     dataIndex: "price_paid",
     key: "price_paid",
-    render: (price_paid: any) => `$${price_paid.toFixed(2)}`,
-  },
+    render: (price_paid: any) => `$${price_paid.toFixed(2)}`
+  }
 ];
 
 const LatestTransaction: React.FC = () => {
@@ -64,12 +63,7 @@ const LatestTransaction: React.FC = () => {
         Recent Transactions
       </Typography.Text>
       <div className="mt-3">
-        <Table
-          columns={columns}
-          dataSource={LatestTransactionData}
-          rowKey="id"
-          pagination={false}
-        />
+        <Table columns={columns} dataSource={LatestTransactionData} rowKey="id" pagination={false} />
       </div>
     </div>
   );

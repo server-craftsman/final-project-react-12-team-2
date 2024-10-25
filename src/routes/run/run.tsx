@@ -14,12 +14,8 @@ import GuardPublicRoute from "../publish/GuardPublicRoute";
 
 // Import layout
 const AdminLayout = lazy(() => import("../../layout/admin/AdminLayout"));
-const InstructorLayout = lazy(
-  () => import("../../layout/instructor/InstructorLayout"),
-);
-const StudentLayout = lazy(
-  () => import("../../layout/student/StudentDashboard"),
-);
+const InstructorLayout = lazy(() => import("../../layout/instructor/InstructorLayout"));
+const StudentLayout = lazy(() => import("../../layout/student/StudentDashboard"));
 
 // Import sub paths
 import { adminSubPaths } from "../sub-paths/adminSubPaths";
@@ -68,17 +64,7 @@ const RunRoutes = (): JSX.Element => {
 
     return (
       <>
-        <Route
-          path={ROUTER_URL.ADMIN.BASE}
-          element={
-            <GuardProtectedRoute
-              component={<AdminLayout />}
-              userRole={currentRole}
-              allowedRoles={["admin"]}
-              onAccessDenied={handleAccessDenied}
-            />
-          }
-        >
+        <Route path={ROUTER_URL.ADMIN.BASE} element={<GuardProtectedRoute component={<AdminLayout />} userRole={currentRole} allowedRoles={["admin"]} onAccessDenied={handleAccessDenied} />}>
           {adminSubPaths[ROUTER_URL.ADMIN.BASE]?.map((route) => (
             <Route
               key={route.path || "index"}
@@ -89,46 +75,12 @@ const RunRoutes = (): JSX.Element => {
           ))}
         </Route>
 
-        <Route
-          path={ROUTER_URL.INSTRUCTOR.BASE}
-          element={
-            <GuardProtectedRoute
-              component={<InstructorLayout />}
-              userRole={currentRole}
-              allowedRoles={["instructor"]}
-              onAccessDenied={handleAccessDenied}
-            />
-          }
-        >
-          {instructorSubPaths[ROUTER_URL.INSTRUCTOR.BASE]?.map((route) => (
-            <Route
-              key={route.path || "index"}
-              index={route.index}
-              path={!route.index ? route.path : undefined}
-              element={route.element}
-            />
-          ))}
+        <Route path={ROUTER_URL.INSTRUCTOR.BASE} element={<GuardProtectedRoute component={<InstructorLayout />} userRole={currentRole} allowedRoles={["instructor"]} onAccessDenied={handleAccessDenied} />}>
+          {instructorSubPaths[ROUTER_URL.INSTRUCTOR.BASE]?.map((route) => <Route key={route.path || "index"} index={route.index} path={!route.index ? route.path : undefined} element={route.element} />)}
         </Route>
 
-        <Route
-          path={ROUTER_URL.STUDENT.BASE}
-          element={
-            <GuardProtectedRoute
-              component={<StudentLayout />}
-              userRole={currentRole}
-              allowedRoles={["student"]}
-              onAccessDenied={handleAccessDenied}
-            />
-          }
-        >
-          {studentSubPaths[ROUTER_URL.STUDENT.BASE]?.map((route) => (
-            <Route
-              key={route.path || "index"}
-              index={route.index}
-              path={!route.index ? route.path : undefined}
-              element={route.element}
-            />
-          ))}
+        <Route path={ROUTER_URL.STUDENT.BASE} element={<GuardProtectedRoute component={<StudentLayout />} userRole={currentRole} allowedRoles={["student"]} onAccessDenied={handleAccessDenied} />}>
+          {studentSubPaths[ROUTER_URL.STUDENT.BASE]?.map((route) => <Route key={route.path || "index"} index={route.index} path={!route.index ? route.path : undefined} element={route.element} />)}
         </Route>
       </>
     );
@@ -139,26 +91,10 @@ const RunRoutes = (): JSX.Element => {
       {/* Public Routes */}
       {Object.entries(publicSubPaths).map(([key, routes]) =>
         routes.map((route) => (
-          <Route
-            key={route.path || "index"}
-            path={route.path}
-            element={
-              key === ROUTER_URL.COMMON.HOME ? (
-                <GuardPublicRoute component={route.element} />
-              ) : (
-                route.element
-              )
-            }
-          >
-            {route.children?.map((childRoute) => (
-              <Route
-                key={childRoute.path}
-                path={childRoute.path}
-                element={childRoute.element}
-              />
-            ))}
+          <Route key={route.path || "index"} path={route.path} element={key === ROUTER_URL.COMMON.HOME ? <GuardPublicRoute component={route.element} /> : route.element}>
+            {route.children?.map((childRoute) => <Route key={childRoute.path} path={childRoute.path} element={childRoute.element} />)}
           </Route>
-        )),
+        ))
       )}
 
       {/* Protected Routes */}

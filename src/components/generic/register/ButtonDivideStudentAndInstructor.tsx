@@ -6,10 +6,7 @@ const ButtonDivideStudentAndInstructor: React.FC<{
 }> = ({ onSelectRole }) => {
   return (
     <div className="justify-center space-x-4">
-      <Radio.Group
-        onChange={(e) => onSelectRole(e.target.value)}
-        defaultValue="student"
-      >
+      <Radio.Group onChange={(e) => onSelectRole(e.target.value)} defaultValue="student">
         <Radio value="student" type="primary">
           Student
         </Radio>

@@ -1,18 +1,11 @@
 import { lazy, useState, Suspense } from "react";
 
 // Ensure that CustomSearch and ViewRequestAccount are default exports in the respective modules
-const CustomSearch = lazy(
-  () => import("../../../components/generic/search/CustomSearch"),
-);
+const CustomSearch = lazy(() => import("../../../components/generic/search/CustomSearch"));
 
-const ViewRequestAccount = lazy(
-  () => import("../../../components/admin/request-account/ViewRequestAccount"),
-);
+const ViewRequestAccount = lazy(() => import("../../../components/admin/request-account/ViewRequestAccount"));
 
-const FilterRequestAccount = lazy(
-  () =>
-    import("../../../components/admin/request-account/FilterRequestAccount"),
-);
+const FilterRequestAccount = lazy(() => import("../../../components/admin/request-account/FilterRequestAccount"));
 
 const RequestAccountManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>(""); // Ensure the correct type

@@ -6,27 +6,15 @@ import ManagePayout from "../../pages/instructor/payout/ManagePayout";
 import CourseManagement from "../../pages/instructor/course/CourseManagement";
 
 //import lazy
-const EditUserProfile = lazy(
-  () => import("../../components/instructor/setting/EditUserProfile"),
-);
-const InstructorLayout = lazy(
-  () => import("../../layout/instructor/InstructorLayout"),
-);
-const Dashboard = lazy(
-  () => import("../../pages/instructor/overview/Dashboard"),
-);
+const EditUserProfile = lazy(() => import("../../components/instructor/setting/EditUserProfile"));
+const InstructorLayout = lazy(() => import("../../layout/instructor/InstructorLayout"));
+const Dashboard = lazy(() => import("../../pages/instructor/overview/Dashboard"));
 const Setting = lazy(() => import("../../pages/instructor/setting/Setting"));
-const InstructorInfo = lazy(
-  () => import("../../components/instructor/setting/InstructorInfo"),
-);
+const InstructorInfo = lazy(() => import("../../components/instructor/setting/InstructorInfo"));
 const Review = lazy(() => import("../../pages/instructor/review/Review"));
 const OrderPage = lazy(() => import("../../pages/instructor/order/OrderPage"));
-const SubscriptionPage = lazy(
-  () => import("../../pages/instructor/subscription/SubscriptionPage"),
-);
-const ViewTransactions = lazy(
-  () => import("../../components/instructor/payout/ViewTransactions"),
-);
+const SubscriptionPage = lazy(() => import("../../pages/instructor/subscription/SubscriptionPage"));
+const ViewTransactions = lazy(() => import("../../components/instructor/payout/ViewTransactions"));
 //==============================================================
 
 const instructorRoutes: RouteObject[] = [
@@ -47,19 +35,13 @@ const instructorRoutes: RouteObject[] = [
       { path: "payout", element: <ManagePayout /> },
       {
         path: "payout/view-transactions/:id",
-        element: (
-          <ViewTransactions
-            isVisible={true}
-            onClose={() => {}}
-            transactions={[]}
-          />
-        ),
+        element: <ViewTransactions isVisible={true} onClose={() => {}} transactions={[]} />
       },
       { path: "orders", element: <OrderPage /> },
       { path: "courses", element: <CourseManagement /> },
-      { path: "subscription", element: <SubscriptionPage /> },
-    ],
-  },
+      { path: "subscription", element: <SubscriptionPage /> }
+    ]
+  }
 ];
 
 export default instructorRoutes;

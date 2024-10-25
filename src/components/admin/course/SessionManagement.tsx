@@ -10,13 +10,9 @@ interface SessionManagementProps {
   searchTerm: string;
 }
 
-const SessionManagement: React.FC<SessionManagementProps> = ({
-  searchTerm,
-}) => {
+const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm }) => {
   const [sessionData] = useState<Session[]>(sessionsData.sessions);
-  const [coursesData] = useState<Course[]>(
-    courseData.courses as unknown as Course[],
-  );
+  const [coursesData] = useState<Course[]>(courseData.courses as unknown as Course[]);
 
   const getCoursesNameBySessionId = (session_id: string) => {
     const course = coursesData.find((course) => course.id === session_id);
@@ -27,29 +23,23 @@ const SessionManagement: React.FC<SessionManagementProps> = ({
     {
       title: "Name",
       dataIndex: "name",
-      key: "name",
+      key: "name"
     },
     {
       title: "Course Name",
       dataIndex: "course_id",
       key: "course_id",
-      render: (courseId: string) => getCoursesNameBySessionId(courseId),
+      render: (courseId: string) => getCoursesNameBySessionId(courseId)
     },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (date: string) => formatDate(new Date(date)),
-    },
+      render: (date: string) => formatDate(new Date(date))
+    }
   ];
 
-  const filteredSessions = sessionData.filter(
-    (session) =>
-      session.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      getCoursesNameBySessionId(session.course_id)
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()),
-  );
+  const filteredSessions = sessionData.filter((session) => session.name.toLowerCase().includes(searchTerm.toLowerCase()) || getCoursesNameBySessionId(session.course_id).toLowerCase().includes(searchTerm.toLowerCase()));
 
   return <Table columns={columns} dataSource={filteredSessions} rowKey="id" />;
 };

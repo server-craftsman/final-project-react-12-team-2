@@ -12,7 +12,7 @@ const FilterStatus: React.FC<{
     (value: string) => {
       setFilterStatus(value);
     },
-    [setFilterStatus],
+    [setFilterStatus]
   );
 
   const statusOptions = useMemo(
@@ -22,18 +22,12 @@ const FilterStatus: React.FC<{
           {status.toUpperCase()}
         </Option>
       )),
-    [],
+    []
   );
 
   return (
     <div className="mb-4">
-      <Select
-        style={{ width: 200 }}
-        placeholder="Filter by status"
-        onChange={handleStatusChange}
-        value={filterStatus || undefined}
-        defaultValue=""
-      >
+      <Select style={{ width: 200 }} placeholder="Filter by status" onChange={handleStatusChange} value={filterStatus || undefined} defaultValue="">
         <Option value="">All</Option>
         {statusOptions}
       </Select>

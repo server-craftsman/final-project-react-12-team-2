@@ -6,15 +6,11 @@ import { Content } from "antd/es/layout/layout";
 //   () => import("../../../components/admin/payout/SearchPayment"),
 // );
 
-const CustomSearch = lazy(
-  () => import("../../../components/generic/search/CustomSearch"),
-);
+const CustomSearch = lazy(() => import("../../../components/generic/search/CustomSearch"));
 // const AmountPayment = lazy(
 //   () => import("../../../components/admin/payout/AmountPayment"),
 // );
-const ViewPayment = lazy(
-  () => import("../../../components/admin/payout/ViewPayment"),
-);
+const ViewPayment = lazy(() => import("../../../components/admin/payout/ViewPayment"));
 
 const ManagePayment: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -31,7 +27,7 @@ const ManagePayment: React.FC = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <ViewPayment searchQuery={searchQuery} status="REQUEST_PAYOUT" />
         </Suspense>
-      ),
+      )
     },
     {
       key: "2",
@@ -40,7 +36,7 @@ const ManagePayment: React.FC = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <ViewPayment searchQuery={searchQuery} status="COMPLETED" />
         </Suspense>
-      ),
+      )
     },
     {
       key: "3",
@@ -49,18 +45,14 @@ const ManagePayment: React.FC = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <ViewPayment searchQuery={searchQuery} status="REJECTED" />
         </Suspense>
-      ),
-    },
+      )
+    }
   ];
 
   return (
     <Content>
       <Card>
-        <CustomSearch
-          onSearch={handleSearch}
-          placeholder="Search Payment"
-          className="search-input"
-        />
+        <CustomSearch onSearch={handleSearch} placeholder="Search Payment" className="search-input" />
         {/* <Suspense fallback={<div>Loading Amount...</div>}>
           <AmountPayment />
         </Suspense> */}

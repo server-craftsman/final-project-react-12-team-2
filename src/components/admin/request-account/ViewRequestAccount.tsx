@@ -10,10 +10,7 @@ interface ViewRequestAccount {
   selectedStatus: boolean | null;
 }
 
-const ViewRequestAccount = ({
-  searchQuery,
-  selectedStatus,
-}: ViewRequestAccount) => {
+const ViewRequestAccount = ({ searchQuery, selectedStatus }: ViewRequestAccount) => {
   const [updatedUsers, setUpdatedUsers] = useState<string[]>([]); // State to track updated user IDs
 
   // const navigate = useNavigate();
@@ -27,13 +24,12 @@ const ViewRequestAccount = ({
     .filter(
       (user) =>
         !user.is_verified && // Only show users who are not verified
-        (user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          user.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
-        (selectedStatus === null || user.status === selectedStatus),
+        (user.name.toLowerCase().includes(searchQuery.toLowerCase()) || user.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
+        (selectedStatus === null || user.status === selectedStatus)
     )
     .map((user) => ({
       ...user,
-      role: user.role as UserRole,
+      role: user.role as UserRole
     }));
 
   // Handle approve/reject actions with confirmation
@@ -60,13 +56,11 @@ const ViewRequestAccount = ({
 
           // Here you would typically trigger an API call to update the backend
           console.log("Updated user status for ID:", userId);
-          message.success(
-            `User ID: ${userId} has been ${isVerified ? "approved" : "rejected"}`,
-          );
+          message.success(`User ID: ${userId} has been ${isVerified ? "approved" : "rejected"}`);
         },
         onCancel: () => {
           message.info("Action canceled.");
-        },
+        }
       });
     }
   };
@@ -75,56 +69,49 @@ const ViewRequestAccount = ({
     {
       title: "ID",
       dataIndex: "id",
-      key: "id",
+      key: "id"
     },
     {
       title: "Name",
       dataIndex: "name",
-      key: "name",
+      key: "name"
     },
     {
       title: "Email",
       dataIndex: "email",
-      key: "email",
+      key: "email"
     },
     {
       title: "Phone",
       dataIndex: "phone_number",
-      key: "phone_number",
+      key: "phone_number"
     },
     {
       title: "Role",
       dataIndex: "role",
-      key: "role",
+      key: "role"
     },
     {
       title: "Created At",
       dataIndex: "created_at",
-      key: "created_at",
+      key: "created_at"
     },
     {
       title: "Description",
       dataIndex: "description",
-      key: "description",
+      key: "description"
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: boolean) => (
-        <span className={userStatusColor(status)}>
-          {status ? "Active" : "Inactive"}
-        </span>
-      ),
+      render: (status: boolean) => <span className={userStatusColor(status)}>{status ? "Active" : "Inactive"}</span>
     },
     {
       title: "Action",
       key: "action",
       render: (_: unknown, record: User) => (
-        <div
-          className="flex items-center justify-between"
-          style={{ minHeight: "48px" }}
-        >
+        <div className="flex items-center justify-between" style={{ minHeight: "48px" }}>
           {!record.is_verified &&
             !updatedUsers.includes(record.id) && ( // Check if the action has been taken
               <>
@@ -135,22 +122,15 @@ const ViewRequestAccount = ({
                 >
                   Approve
                 </button>
-                <button
-                  onClick={() => handleApprove(record.id, false)}
-                  className="rounded-md bg-red-500 px-4 py-2 text-white"
-                  style={{ width: "70px" }}
-                >
+                <button onClick={() => handleApprove(record.id, false)} className="rounded-md bg-red-500 px-4 py-2 text-white" style={{ width: "70px" }}>
                   Reject
                 </button>
               </>
             )}
-          {updatedUsers.includes(record.id) && (
-            <span className="text-green-500"></span>
-          )}{" "}
-          {/* Show completed status */}
+          {updatedUsers.includes(record.id) && <span className="text-green-500"></span>} {/* Show completed status */}
         </div>
-      ),
-    },
+      )
+    }
   ];
 
   return (
@@ -160,7 +140,7 @@ const ViewRequestAccount = ({
         columns={columns}
         dataSource={filteredUsers.map((user) => ({
           ...user,
-          dob: new Date(user.dob), // Ensure dob is formatted correctly if used elsewhere
+          dob: new Date(user.dob) // Ensure dob is formatted correctly if used elsewhere
         }))}
         rowKey="id"
         pagination={{ pageSize: 10 }}

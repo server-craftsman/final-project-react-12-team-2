@@ -8,13 +8,13 @@ const Setting: React.FC = () => {
     {
       label: "Instructor Info",
       key: "1",
-      children: <InstructorInfo />,
+      children: <InstructorInfo />
     },
     {
       label: "Change Password",
       key: "2",
-      children: <ChangePasswordInstructor />,
-    },
+      children: <ChangePasswordInstructor />
+    }
   ];
 
   return <Tabs defaultActiveKey="1" items={items} />;

@@ -9,7 +9,7 @@ const DeleteButton = () => {
       cancelText: "Cancel",
       onOk: async () => {
         message.info("Deleted lesson");
-      },
+      }
     });
   };
   return <Button icon={<DeleteOutlined />} onClick={handleClick} danger />;

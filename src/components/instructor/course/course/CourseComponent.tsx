@@ -16,12 +16,7 @@ const CourseComponent = () => {
 
   return (
     <div>
-      <DisplayCourse
-        searchTerm={searchTerm}
-        statusFilter={statusFilter}
-        onSearch={handleSearch}
-        onStatusChange={handleStatusChange}
-      />
+      <DisplayCourse searchTerm={searchTerm} statusFilter={statusFilter} onSearch={handleSearch} onStatusChange={handleStatusChange} />
     </div>
   );
 };

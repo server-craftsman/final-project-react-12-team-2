@@ -13,38 +13,38 @@ const columns = [
   {
     title: "Course Name",
     dataIndex: "courseName",
-    key: "courseName",
+    key: "courseName"
   },
   {
     title: "Purchase Number",
     dataIndex: "purchaseNumber",
-    key: "purchaseNumber",
+    key: "purchaseNumber"
   },
   {
     title: "Created At",
     dataIndex: "createdAt",
-    key: "createdAt",
+    key: "createdAt"
   },
   {
     title: "Student Name",
     dataIndex: "studentName",
-    key: "studentName",
+    key: "studentName"
   },
   {
     title: "Instructor Name",
     dataIndex: "instructorName",
-    key: "instructorName",
+    key: "instructorName"
   },
   {
     title: "Price Paid",
     dataIndex: "pricePaid",
-    key: "pricePaid",
+    key: "pricePaid"
   },
   {
     title: "Discount",
     dataIndex: "discount",
-    key: "discount",
-  },
+    key: "discount"
+  }
 ];
 
 const Completed = ({ searchTerm }: { searchTerm: string }) => {
@@ -52,22 +52,12 @@ const Completed = ({ searchTerm }: { searchTerm: string }) => {
 
   useEffect(() => {
     const completedOrders = purchases.purchases
-      .filter(
-        (purchase) => purchase.status === "completed" && !purchase.is_deleted,
-      )
+      .filter((purchase) => purchase.status === "completed" && !purchase.is_deleted)
       .map((purchase: any) => {
-        const cart = carts.carts.find(
-          (cart: any) => cart.id === purchase.cart_id,
-        );
-        const course = courses.courses.find(
-          (course: any) => course.id === cart?.course_id,
-        );
-        const student = users.users.find(
-          (user: any) => user.id === cart?.student_id,
-        );
-        const instructor = users.users.find(
-          (user: any) => user.id === course?.user_id,
-        );
+        const cart = carts.carts.find((cart: any) => cart.id === purchase.cart_id);
+        const course = courses.courses.find((course: any) => course.id === cart?.course_id);
+        const student = users.users.find((user: any) => user.id === cart?.student_id);
+        const instructor = users.users.find((user: any) => user.id === course?.user_id);
 
         return {
           key: purchase.id,
@@ -77,12 +67,10 @@ const Completed = ({ searchTerm }: { searchTerm: string }) => {
           studentName: student ? student.name : "Unknown Student",
           instructorName: instructor ? instructor.name : "Unknown Instructor",
           pricePaid: `$${purchase.price_paid}`,
-          discount: `${purchase.discount}%`,
+          discount: `${purchase.discount}%`
         };
       })
-      .filter((order: any) =>
-        order.courseName?.toLowerCase().includes(searchTerm.toLowerCase()),
-      );
+      .filter((order: any) => order.courseName?.toLowerCase().includes(searchTerm.toLowerCase()));
 
     setData(completedOrders as any);
   }, [searchTerm]);

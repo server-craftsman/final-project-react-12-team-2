@@ -13,50 +13,46 @@ const OrderCompleted: React.FC<{ searchTerm: string }> = ({ searchTerm }) => {
     {
       title: "Course Name",
       dataIndex: "courseName",
-      key: "courseName",
+      key: "courseName"
     },
     {
       title: "Purchased Number",
       dataIndex: "purchasedNumber",
-      key: "purchasedNumber",
+      key: "purchasedNumber"
     },
     {
       title: "Created Date",
       dataIndex: "createdDate",
       key: "createdDate",
-      render: (text: string) => formatDate(new Date(text)),
+      render: (text: string) => formatDate(new Date(text))
     },
     {
       title: "Student Name",
       dataIndex: "studentName",
-      key: "studentName",
+      key: "studentName"
     },
     {
       title: "Instructor Name",
       dataIndex: "instructorName",
-      key: "instructorName",
+      key: "instructorName"
     },
     {
       title: "Price Paid",
       dataIndex: "pricePaid",
-      key: "pricePaid",
+      key: "pricePaid"
     },
     {
       title: "Discount",
       dataIndex: "discount",
-      key: "discount",
-    },
+      key: "discount"
+    }
   ];
 
   const dataSource = purchaseData.purchases
-    .filter(
-      (purchase) => purchase.status === PurchaseStatusEnum.completed.toString(),
-    )
+    .filter((purchase) => purchase.status === PurchaseStatusEnum.completed.toString())
     .map((purchase) => {
       const cart = cartData.carts.find((cart) => cart.id === purchase.cart_id);
-      const course = courseData.courses.find(
-        (course) => course.id === cart?.course_id,
-      );
+      const course = courseData.courses.find((course) => course.id === cart?.course_id);
       const user = userData.users.find((user) => user.id === cart?.student_id);
       return {
         key: purchase.id,
@@ -66,14 +62,10 @@ const OrderCompleted: React.FC<{ searchTerm: string }> = ({ searchTerm }) => {
         studentName: user?.name,
         instructorName: user?.name,
         pricePaid: purchase.price_paid,
-        discount: purchase.discount,
+        discount: purchase.discount
       };
     })
-    .filter((item) =>
-      Object.values(item).some((value) =>
-        String(value).toLowerCase().includes(searchTerm.toLowerCase()),
-      ),
-    );
+    .filter((item) => Object.values(item).some((value) => String(value).toLowerCase().includes(searchTerm.toLowerCase())));
 
   return (
     <div>

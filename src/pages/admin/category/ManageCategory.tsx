@@ -13,15 +13,11 @@ function ManageCategory() {
       <Card
         style={{
           borderRadius: "8px",
-          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)"
         }}
       >
         <div className="mb-4 flex items-center justify-between">
-          <CustomSearch
-            onSearch={(value) => setSearchTerm(value)}
-            placeholder="Search by name or description"
-            className="search-input"
-          />
+          <CustomSearch onSearch={(value) => setSearchTerm(value)} placeholder="Search by name or description" className="search-input" />
           <CreateCategory />
         </div>
         <AdminCategory searchTerm={searchTerm} />

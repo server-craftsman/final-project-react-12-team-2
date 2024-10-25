@@ -21,11 +21,7 @@ const FilterStatus: React.FC<{
 }> = ({ status, setStatus }) => {
   return (
     <div className="flex items-center">
-      <Select
-        value={status}
-        onChange={(value) => setStatus(value)}
-        style={{ width: 120 }}
-      >
+      <Select value={status} onChange={(value) => setStatus(value)} style={{ width: 120 }}>
         <Select.Option value="all">All</Select.Option>
         {Object.values(PurchaseStatusEnum).map((statusOption) => (
           <Select.Option key={statusOption} value={statusOption}>

@@ -7,14 +7,10 @@ const { Title } = Typography;
 
 const InstructorInfo = () => {
   const navigate = useNavigate();
-  const instructorUser = usersData.users.find(
-    (user) => user.role === UserRole.instructor,
-  );
+  const instructorUser = usersData.users.find((user) => user.role === UserRole.instructor);
 
   if (!instructorUser) {
-    return (
-      <div className="text-center text-red-500">No instructor user found.</div>
-    );
+    return <div className="text-center text-red-500">No instructor user found.</div>;
   }
 
   const handleEdit = () => {
@@ -39,45 +35,26 @@ const InstructorInfo = () => {
           <Descriptions.Item label="Status" className="text-sm md:text-base">
             {instructorUser.status ? "Active" : "Inactive"}
           </Descriptions.Item>
-          <Descriptions.Item
-            label="Description"
-            className="text-sm md:text-base"
-          >
+          <Descriptions.Item label="Description" className="text-sm md:text-base">
             {instructorUser.description}
           </Descriptions.Item>
-          <Descriptions.Item
-            label="Phone Number"
-            className="text-sm md:text-base"
-          >
+          <Descriptions.Item label="Phone Number" className="text-sm md:text-base">
             {instructorUser.phone_number}
           </Descriptions.Item>
-          <Descriptions.Item
-            label="Date of Birth"
-            className="text-sm md:text-base"
-          >
+          <Descriptions.Item label="Date of Birth" className="text-sm md:text-base">
             {instructorUser.dob}
           </Descriptions.Item>
           <Descriptions.Item label="Verified" className="text-sm md:text-base">
             {instructorUser.is_verified ? "Yes" : "No"}
           </Descriptions.Item>
-          <Descriptions.Item
-            label="Created At"
-            className="text-sm md:text-base"
-          >
+          <Descriptions.Item label="Created At" className="text-sm md:text-base">
             {formatDate(new Date(instructorUser.created_at))}
           </Descriptions.Item>
-          <Descriptions.Item
-            label="Updated At"
-            className="text-sm md:text-base"
-          >
+          <Descriptions.Item label="Updated At" className="text-sm md:text-base">
             {formatDate(new Date(instructorUser.updated_at))}
           </Descriptions.Item>
         </Descriptions>
-        <Button
-          type="primary"
-          onClick={handleEdit}
-          className="mt-4 md:-ml-0 md:mt-2"
-        >
+        <Button type="primary" onClick={handleEdit} className="mt-4 md:-ml-0 md:mt-2">
           Edit Profile
         </Button>
       </div>

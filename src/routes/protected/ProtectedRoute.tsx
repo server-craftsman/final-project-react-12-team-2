@@ -9,24 +9,8 @@ interface ProtectedRouteProps {
   allowedRoles: UserRole[];
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  component: Component,
-  userRole,
-  allowedRoles,
-  ...rest
-}) => {
-  return (
-    <Route
-      {...rest}
-      element={
-        allowedRoles.includes(userRole) ? (
-          <Component {...rest} />
-        ) : (
-          <Navigate to={ROUTER_URL.LOGIN} />
-        )
-      }
-    />
-  );
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ component: Component, userRole, allowedRoles, ...rest }) => {
+  return <Route {...rest} element={allowedRoles.includes(userRole) ? <Component {...rest} /> : <Navigate to={ROUTER_URL.LOGIN} />} />;
 };
 
 export default ProtectedRoute;

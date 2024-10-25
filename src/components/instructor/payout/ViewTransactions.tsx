@@ -12,47 +12,35 @@ const ViewTransactions: React.FC<{
     {
       title: "Transaction ID",
       dataIndex: "id",
-      key: "id",
+      key: "id"
     },
     {
       title: "Payout ID",
       dataIndex: "payout_id",
-      key: "payout_id",
+      key: "payout_id"
     },
     {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (amount: number | undefined) =>
-        amount !== undefined ? moneyFormat(amount) : "N/A",
+      render: (amount: number | undefined) => (amount !== undefined ? moneyFormat(amount) : "N/A")
     },
     {
       title: "Discount",
       dataIndex: "discount",
-      key: "discount",
+      key: "discount"
     },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (date: string) => (date ? formatDate(new Date(date)) : "N/A"),
-    },
+      render: (date: string) => (date ? formatDate(new Date(date)) : "N/A")
+    }
   ];
 
   return (
-    <Modal
-      title="Transaction Details"
-      open={isVisible}
-      onCancel={onClose}
-      footer={null}
-      width={800}
-    >
-      <Table
-        columns={columns}
-        dataSource={transactions}
-        rowKey="id"
-        pagination={{ pageSize: 5 }}
-      />
+    <Modal title="Transaction Details" open={isVisible} onCancel={onClose} footer={null} width={800}>
+      <Table columns={columns} dataSource={transactions} rowKey="id" pagination={{ pageSize: 5 }} />
     </Modal>
   );
 };

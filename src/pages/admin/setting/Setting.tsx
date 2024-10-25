@@ -7,26 +7,19 @@ import ChangePasswordAdmin from "../../../components/admin/setting/ChangePasswor
 const { Title } = Typography;
 
 const Profile = () => {
-  const adminUser = usersData.users.find(
-    (user) => user.role === UserRole.admin,
-  );
+  const adminUser = usersData.users.find((user) => user.role === UserRole.admin);
 
   const items = [
     {
       label: "Information",
       key: "1",
-      children: <AdminInfo />,
+      children: <AdminInfo />
     },
     {
       label: "Change Password",
       key: "2",
-      children: (
-        <ChangePasswordAdmin
-          visible={true}
-          currentPassword={adminUser ? adminUser.password : ""}
-        />
-      ),
-    },
+      children: <ChangePasswordAdmin visible={true} currentPassword={adminUser ? adminUser.password : ""} />
+    }
   ];
 
   return (

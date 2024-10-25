@@ -11,9 +11,7 @@ const ManagePayout: React.FC = () => {
     setSearchQuery(query);
   };
 
-  const [selectedPayouts, setSelectedPayouts] = useState<Set<string>>(
-    new Set(),
-  );
+  const [selectedPayouts, setSelectedPayouts] = useState<Set<string>>(new Set());
 
   const handleRequestPayout = () => {
     console.log("Request Payout");
@@ -22,25 +20,11 @@ const ManagePayout: React.FC = () => {
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
-        <CustomSearch
-          onSearch={handleSearch}
-          placeholder="Search Payout"
-          className="search-input"
-        />
-        <RequestPayoutButton
-          onClick={handleRequestPayout}
-          disabled={selectedPayouts.size === 0}
-        />
-        <FilterStatus
-          filterStatus={filterStatus}
-          setFilterStatus={setFilterStatus}
-        />
+        <CustomSearch onSearch={handleSearch} placeholder="Search Payout" className="search-input" />
+        <RequestPayoutButton onClick={handleRequestPayout} disabled={selectedPayouts.size === 0} />
+        <FilterStatus filterStatus={filterStatus} setFilterStatus={setFilterStatus} />
       </div>
-      <InstructorPayout
-        searchQuery={searchQuery}
-        filterStatus={filterStatus}
-        updateSelectedPayouts={setSelectedPayouts}
-      />
+      <InstructorPayout searchQuery={searchQuery} filterStatus={filterStatus} updateSelectedPayouts={setSelectedPayouts} />
     </>
   );
 };

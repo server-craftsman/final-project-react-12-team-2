@@ -22,7 +22,7 @@ const DisplaySession = () => {
       const course = courses.find((course) => course.id === session.course_id);
       return {
         ...session,
-        course_name: course?.name,
+        course_name: course?.name
       };
     }) as unknown as [];
     setSessions(sessionTempData);
@@ -48,7 +48,7 @@ const DisplaySession = () => {
     } else {
       const filtered = sessions.filter((session) =>
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (session as any).name.toLowerCase().includes(searchText.toLowerCase()),
+        (session as any).name.toLowerCase().includes(searchText.toLowerCase())
       );
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setFilteredSession(filtered as any);
@@ -60,51 +60,40 @@ const DisplaySession = () => {
     {
       title: "Name",
       key: "name",
-      dataIndex: "name",
+      dataIndex: "name"
     },
     {
       title: "Course Name",
       key: "course_name",
-      dataIndex: "course_name",
+      dataIndex: "course_name"
     },
     {
       title: "Created At",
       key: "created_at",
       dataIndex: "created_at",
-      render: (text: Date) => formatDate(text),
+      render: (text: Date) => formatDate(text)
     },
     {
       title: "Actions",
       key: "actions",
       dataIndex: "actions",
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      render: (_: any, record: Lesson) => renderActions(record),
-    },
+      render: (_: any, record: Lesson) => renderActions(record)
+    }
   ];
   return (
     <>
       <div className="mb-4 mt-4 flex justify-between">
-        <CustomSearch
-          onSearch={handleSearch}
-          placeholder="Search by session name"
-          className="w-1/5"
-        />
+        <CustomSearch onSearch={handleSearch} placeholder="Search by session name" className="w-1/5" />
         <CreateButton />
       </div>
-      <Table
-        columns={columns}
-        dataSource={paginatedCourses()}
-        rowKey="id"
-        pagination={false}
-      />
+      <Table columns={columns} dataSource={paginatedCourses()} rowKey="id" pagination={false} />
       <div className="mt-5 flex justify-end">
         <Pagination
           current={pageNum}
           pageSize={pageSize}
           total={totalItems}
-          showTotal={(total, range) =>
-            `${range[0]}-${range[1]} of ${total} items`
-          }
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
           onChange={(page, pageSize) => {
             setPageNum(page);
             setPageSize(pageSize);

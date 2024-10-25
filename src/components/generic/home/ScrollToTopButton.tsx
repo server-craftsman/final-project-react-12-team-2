@@ -16,7 +16,7 @@ const ScrollToTopButton: React.FC = () => {
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: "smooth",
+      behavior: "smooth"
     });
   };
 
@@ -43,7 +43,7 @@ const ScrollToTopButton: React.FC = () => {
         zIndex: 1000,
         backgroundColor: "#857aff",
         color: "white",
-        border: "none",
+        border: "none"
       }}
     />
   );

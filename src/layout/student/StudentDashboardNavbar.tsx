@@ -1,11 +1,6 @@
 import useResponsiveCollapse from "../../hooks/useResponsiveCollapse";
 import { Layout, Menu } from "antd";
-import {
-  BellOutlined,
-  DashboardOutlined,
-  FileTextOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
+import { BellOutlined, DashboardOutlined, FileTextOutlined, SettingOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 const { Sider } = Layout;
 import logo1 from "../../assets/logo1.jpg";
@@ -17,23 +12,23 @@ const StudentDashboardNavbar = () => {
     {
       key: "1",
       icon: <DashboardOutlined />,
-      label: <Link to="/dashboard-student">Dashboard</Link>,
+      label: <Link to="/dashboard-student">Dashboard</Link>
     },
     {
       key: "2",
       icon: <BellOutlined />,
-      label: <Link to="student-orders">Orders</Link>,
+      label: <Link to="student-orders">Orders</Link>
     },
     {
       key: "3",
       icon: <FileTextOutlined />,
-      label: <Link to="student-subscription">Subscription</Link>,
+      label: <Link to="student-subscription">Subscription</Link>
     },
     {
       key: "4",
       icon: <SettingOutlined />,
-      label: <Link to="student-setting">Setting</Link>,
-    },
+      label: <Link to="student-setting">Setting</Link>
+    }
   ];
 
   return (
@@ -49,14 +44,8 @@ const StudentDashboardNavbar = () => {
     >
       <Link to="/">
         <div className="logo flex items-center space-x-4 p-4">
-          <img
-            src={logo1}
-            alt="logo"
-            className="h-12 w-12 rounded-full border-2 border-white"
-          />
-          {!collapsed && (
-            <h1 className="text-xl font-bold text-white">Student Panel</h1>
-          )}
+          <img src={logo1} alt="logo" className="h-12 w-12 rounded-full border-2 border-white" />
+          {!collapsed && <h1 className="text-xl font-bold text-white">Student Panel</h1>}
         </div>
       </Link>
       <Menu theme="dark" mode="vertical" items={menuItems} />

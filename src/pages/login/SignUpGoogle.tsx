@@ -20,7 +20,7 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ googleIdToken }) => {
       try {
         const result = await AuthService.registerGooglePublic({
           google_id: googleIdToken,
-          ...values,
+          ...values
         });
         console.log("Registration successful:", result);
         // Handle post-registration logic, e.g., navigate to a different page
@@ -41,18 +41,10 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ googleIdToken }) => {
 
       {role === "student" && (
         <>
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[{ required: true }]}
-          >
+          <Form.Item name="description" label="Description" rules={[{ required: true }]}>
             <Input.TextArea />
           </Form.Item>
-          <Form.Item
-            name="phoneNumber"
-            label="Phone Number"
-            rules={[{ required: true }]}
-          >
+          <Form.Item name="phoneNumber" label="Phone Number" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
         </>
@@ -60,32 +52,16 @@ const SignUpForm: React.FC<SignUpFormProps> = ({ googleIdToken }) => {
 
       {role === "instructor" && (
         <>
-          <Form.Item
-            name="avatar"
-            label="Upload Avatar"
-            rules={[{ required: true }]}
-          >
+          <Form.Item name="avatar" label="Upload Avatar" rules={[{ required: true }]}>
             <Input type="file" />
           </Form.Item>
-          <Form.Item
-            name="video"
-            label="Upload Video"
-            rules={[{ required: true }]}
-          >
+          <Form.Item name="video" label="Upload Video" rules={[{ required: true }]}>
             <Input type="file" />
           </Form.Item>
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[{ required: true }]}
-          >
+          <Form.Item name="description" label="Description" rules={[{ required: true }]}>
             <Input.TextArea />
           </Form.Item>
-          <Form.Item
-            name="phoneNumber"
-            label="Phone Number"
-            rules={[{ required: true }]}
-          >
+          <Form.Item name="phoneNumber" label="Phone Number" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
         </>

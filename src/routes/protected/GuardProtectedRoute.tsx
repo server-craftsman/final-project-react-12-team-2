@@ -8,12 +8,7 @@ interface GuardProtectedRouteProps {
   onAccessDenied: () => void;
 }
 
-const GuardProtectedRoute = ({
-  component,
-  userRole,
-  allowedRoles,
-  onAccessDenied,
-}: GuardProtectedRouteProps) => {
+const GuardProtectedRoute = ({ component, userRole, allowedRoles, onAccessDenied }: GuardProtectedRouteProps) => {
   if (!allowedRoles.includes(userRole)) {
     onAccessDenied();
     return <Navigate to={ROUTER_URL.UNAUTHORIZED} replace />;

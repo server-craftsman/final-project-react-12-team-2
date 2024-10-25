@@ -4,7 +4,7 @@ export class HttpException extends Error {
   constructor(
     message: string,
     public status: HTTP_STATUS,
-    public error?: string,
+    public error?: string
   ) {
     super(message);
   }

@@ -1,7 +1,7 @@
 export enum LessonType {
   video,
   image,
-  text,
+  text
 }
 
 export interface Lesson {

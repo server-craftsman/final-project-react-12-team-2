@@ -9,11 +9,7 @@ import { userRoleColor } from "../../../utils/userRole";
 import { userStatusColor } from "../../../utils/userStatus";
 import { UserService } from "../../../services/admin/user.service";
 import { UserRole } from "../../../models/prototype/User";
-import {
-  GetUsersAdminParams,
-  ChangeStatusParams,
-  ChangeRoleParams,
-} from "../../../models/api/request/admin/user.request.model";
+import { GetUsersAdminParams, ChangeStatusParams, ChangeRoleParams } from "../../../models/api/request/admin/user.request.model";
 import { GetUsersAdminResponse } from "../../../models/api/responsive/admin/user.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model";
 import { ROUTER_URL } from "../../../const/router.path";
@@ -40,12 +36,7 @@ interface ViewUserProfileProps {
   activeTab: string;
 }
 
-const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
-  searchQuery,
-  selectedRole,
-  selectedStatus,
-  activeTab,
-}) => {
+const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selectedRole, selectedStatus, activeTab }) => {
   const navigate = useNavigate();
   const [users, setUsers] = useState<GetUsersAdminResponse | null>(null);
 
@@ -53,89 +44,68 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
   const defaultParams = {
     pageInfo: {
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 10
     },
     searchCondition: {
       keyword: "",
       role: UserRole.all,
       status: true,
       is_verified: true,
-      is_deleted: false,
-    },
+      is_deleted: false
+    }
   } as const; // Make immutable
 
   // Memoize the search condition logic
-  const getSearchCondition = React.useCallback(
-    (
-      searchQuery: string,
-      selectedRole: UserRole | null,
-      selectedStatus: boolean | null,
-      activeTab: string,
-    ): SearchCondition => {
-      const baseCondition = {
-        keyword: searchQuery || defaultParams.searchCondition.keyword,
-        role: UserRole.all,
-        status: true,
-        is_verified: true,
-        is_deleted: false,
-      };
+  const getSearchCondition = React.useCallback((searchQuery: string, selectedRole: UserRole | null, selectedStatus: boolean | null, activeTab: string): SearchCondition => {
+    const baseCondition = {
+      keyword: searchQuery || defaultParams.searchCondition.keyword,
+      role: UserRole.all,
+      status: true,
+      is_verified: true,
+      is_deleted: false
+    };
 
-      switch (activeTab) {
-        case "all":
-          return {
-            ...baseCondition,
-            role: selectedRole || UserRole.all,
-            status: selectedStatus !== null ? selectedStatus : true,
-          };
-        case "blocked":
-          return {
-            ...baseCondition,
-            keyword: searchQuery,
-            status: false,
-          };
-        case "unverified":
-          return {
-            ...baseCondition,
-            keyword: searchQuery,
-            is_verified: false,
-          };
-        default:
-          return baseCondition;
-      }
-    },
-    [],
-  );
+    switch (activeTab) {
+      case "all":
+        return {
+          ...baseCondition,
+          role: selectedRole || UserRole.all,
+          status: selectedStatus !== null ? selectedStatus : true
+        };
+      case "blocked":
+        return {
+          ...baseCondition,
+          keyword: searchQuery,
+          status: false
+        };
+      case "unverified":
+        return {
+          ...baseCondition,
+          keyword: searchQuery,
+          is_verified: false
+        };
+      default:
+        return baseCondition;
+    }
+  }, []);
 
   // Memoize fetchUsers to prevent unnecessary recreations
   const fetchUsers = React.useCallback(async () => {
     try {
-      const searchCondition = getSearchCondition(
-        searchQuery,
-        selectedRole,
-        selectedStatus,
-        activeTab,
-      );
+      const searchCondition = getSearchCondition(searchQuery, selectedRole, selectedStatus, activeTab);
       const params = {
         pageInfo: defaultParams.pageInfo,
-        searchCondition,
+        searchCondition
       };
 
-      const response = await UserService.getUsersAdmin(
-        params as GetUsersAdminParams,
-      );
+      const response = await UserService.getUsersAdmin(params as GetUsersAdminParams);
 
       if (!response.data) {
-        throw new HttpException(
-          "No response data received",
-          HTTP_STATUS.NOT_FOUND,
-        );
+        throw new HttpException("No response data received", HTTP_STATUS.NOT_FOUND);
       }
 
       if (!response.data.success) {
-        throw new HttpException(
-          "Failed to fetch users",
-          HTTP_STATUS.BAD_REQUEST,
-        );
+        throw new HttpException("Failed to fetch users", HTTP_STATUS.BAD_REQUEST);
       }
 
       setUsers(response.data?.data ? response.data : null);
@@ -147,13 +117,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
       }
       setUsers(null);
     }
-  }, [
-    searchQuery,
-    selectedRole,
-    selectedStatus,
-    activeTab,
-    getSearchCondition,
-  ]);
+  }, [searchQuery, selectedRole, selectedStatus, activeTab, getSearchCondition]);
 
   useEffect(() => {
     fetchUsers();
@@ -165,10 +129,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
         const response = await UserService.getUserDetails(userId);
 
         if (!response.data?.success) {
-          throw new HttpException(
-            "Failed to fetch user details",
-            HTTP_STATUS.BAD_REQUEST,
-          );
+          throw new HttpException("Failed to fetch user details", HTTP_STATUS.BAD_REQUEST);
         }
 
         navigate(ROUTER_URL.ADMIN.VIEW_USER_DETAILS.replace(":id", userId));
@@ -176,13 +137,11 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
         if (error instanceof HttpException) {
           message.error(error.message);
         } else {
-          message.error(
-            "An unexpected error occurred while fetching user details",
-          );
+          message.error("An unexpected error occurred while fetching user details");
         }
       }
     },
-    [navigate],
+    [navigate]
   );
 
   const handleChangeStatus = async (userId: string, status: boolean) => {
@@ -193,51 +152,35 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
         try {
           const params = {
             user_id: userId,
-            status,
+            status
           };
-          const response = await UserService.changeStatus(
-            userId,
-            params as ChangeStatusParams,
-          );
+          const response = await UserService.changeStatus(userId, params as ChangeStatusParams);
 
           if (!response.data?.success) {
-            throw new HttpException(
-              `Failed to ${status ? "unblock" : "block"} account`,
-              HTTP_STATUS.BAD_REQUEST,
-            );
+            throw new HttpException(`Failed to ${status ? "unblock" : "block"} account`, HTTP_STATUS.BAD_REQUEST);
           }
 
-          message.success(
-            `Account has been successfully ${status ? "unblocked" : "blocked"}.`,
-          );
+          message.success(`Account has been successfully ${status ? "unblocked" : "blocked"}.`);
           fetchUsers();
         } catch (error) {
           if (error instanceof HttpException) {
             message.error(error.message);
           } else {
-            message.error(
-              `An unexpected error occurred while ${status ? "unblocking" : "blocking"} the account`,
-            );
+            message.error(`An unexpected error occurred while ${status ? "unblocking" : "blocking"} the account`);
           }
         }
-      },
+      }
     });
   };
 
   const handleChangeRole = async (userId: string, currentRole: UserRole) => {
-    const roleOptions = Object.values(UserRole).filter(
-      (role) => role !== UserRole.all,
-    );
+    const roleOptions = Object.values(UserRole).filter((role) => role !== UserRole.all);
 
     // Modal with role selection (removed first confirmation)
     Modal.confirm({
       title: "Change New Role",
       content: (
-        <select
-          id="roleSelect"
-          className="mt-2 w-full rounded-md border p-2"
-          defaultValue={currentRole}
-        >
+        <select id="roleSelect" className="mt-2 w-full rounded-md border p-2" defaultValue={currentRole}>
           {roleOptions.map((role) => (
             <option key={role} value={role}>
               {role.toUpperCase()}
@@ -246,9 +189,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
         </select>
       ),
       onOk: async () => {
-        const newRole = (
-          document.getElementById("roleSelect") as HTMLSelectElement
-        ).value as UserRole;
+        const newRole = (document.getElementById("roleSelect") as HTMLSelectElement).value as UserRole;
         if (newRole === currentRole) {
           return;
         }
@@ -261,14 +202,11 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
             try {
               const response = await UserService.changeRole(userId, {
                 user_id: userId,
-                role: newRole,
+                role: newRole
               } as ChangeRoleParams);
 
               if (!response.data?.success) {
-                throw new HttpException(
-                  "Failed to update role",
-                  HTTP_STATUS.BAD_REQUEST,
-                );
+                throw new HttpException("Failed to update role", HTTP_STATUS.BAD_REQUEST);
               }
 
               message.success(`Role updated to ${newRole.toUpperCase()}`);
@@ -277,14 +215,12 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
               if (error instanceof HttpException) {
                 message.error(error.message);
               } else {
-                message.error(
-                  "An unexpected error occurred while updating role",
-                );
+                message.error("An unexpected error occurred while updating role");
               }
             }
-          },
+          }
         });
-      },
+      }
     });
   };
 
@@ -295,23 +231,17 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
         title: "Avatar",
         dataIndex: "avatar_url",
         key: "avatar_url",
-        render: (avatar_url: string) => (
-          <img
-            src={avatar_url}
-            alt="Avatar"
-            className="h-10 w-10 rounded-full"
-          />
-        ),
+        render: (avatar_url: string) => <img src={avatar_url} alt="Avatar" className="h-10 w-10 rounded-full" />
       },
       {
         title: "Name",
         dataIndex: "name",
-        key: "name",
+        key: "name"
       },
       {
         title: "Email",
         dataIndex: "email",
-        key: "email",
+        key: "email"
       },
       {
         title: "Role",
@@ -319,19 +249,14 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
         key: "role",
         render: (role: UserRole, record: User) => (
           <div className="flex items-center gap-2">
-            <span className={`rounded-full px-3 py-1 ${userRoleColor(role)}`}>
-              {role.toUpperCase()}
-            </span>
-            <button
-              onClick={() => handleChangeRole(record._id, role)}
-              className="rounded-md bg-blue-500 px-3 py-1 text-white transition-colors duration-200 hover:bg-blue-600"
-            >
+            <span className={`rounded-full px-3 py-1 ${userRoleColor(role)}`}>{role.toUpperCase()}</span>
+            <button onClick={() => handleChangeRole(record._id, role)} className="rounded-md bg-blue-500 px-3 py-1 text-white transition-colors duration-200 hover:bg-blue-600">
               <span className="text-sm">
                 <EditOutlined />
               </span>
             </button>
           </div>
-        ),
+        )
       },
       {
         title: "Status",
@@ -347,43 +272,32 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
                 color: userStatusColor(status),
                 borderRadius: "0.5rem",
                 padding: "0.5rem 1rem",
-                textAlign: "center",
+                textAlign: "center"
               }}
             />
-            <Button
-              onClick={() => handleChangeStatus(record._id, !status)}
-              className={`ml-2 rounded-full px-4 py-1 font-medium transition-all duration-200 ${
-                status
-                  ? "bg-gradient-to-r from-green-400 to-green-500 text-white hover:from-green-500 hover:to-green-600"
-                  : "bg-gradient-to-r from-red-400 to-red-500 text-white hover:from-red-500 hover:to-red-600"
-              }`}
-            >
+            <Button onClick={() => handleChangeStatus(record._id, !status)} className={`ml-2 rounded-full px-4 py-1 font-medium transition-all duration-200 ${status ? "bg-gradient-to-r from-green-400 to-green-500 text-white hover:from-green-500 hover:to-green-600" : "bg-gradient-to-r from-red-400 to-red-500 text-white hover:from-red-500 hover:to-red-600"}`}>
               {status ? <LockOutlined /> : <UnlockOutlined />}
             </Button>
           </div>
-        ),
+        )
       },
       {
         title: "Created At",
         dataIndex: "created_at",
         key: "created_at",
-        render: (created_at: string) =>
-          helpers.formatDate(new Date(created_at)),
+        render: (created_at: string) => helpers.formatDate(new Date(created_at))
       },
       {
         title: "Action",
         key: "action",
         render: (_: unknown, record: User) => (
           <div>
-            <button
-              onClick={() => handleViewDetails(record._id)}
-              className="bg-gradient-tone rounded-md px-4 py-2 text-white"
-            >
+            <button onClick={() => handleViewDetails(record._id)} className="bg-gradient-tone rounded-md px-4 py-2 text-white">
               View Details
             </button>
           </div>
-        ),
-      },
+        )
+      }
     ];
 
     // Add verify column if on unverified tab
@@ -400,7 +314,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
               Not Verified
             </button>
           </div>
-        ),
+        )
       });
     }
 
@@ -409,13 +323,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
 
   return (
     <div className="-mt-3 mb-64 p-4">
-      <Table<User>
-        className="shadow-lg"
-        columns={columns}
-        dataSource={users?.data.pageData || []}
-        rowKey="_id"
-        pagination={{ pageSize: 10 }}
-      />
+      <Table<User> className="shadow-lg" columns={columns} dataSource={users?.data.pageData || []} rowKey="_id" pagination={{ pageSize: 10 }} />
     </div>
   );
 };

@@ -12,33 +12,33 @@ const columns = [
   {
     title: "Course Name",
     dataIndex: "courseName",
-    key: "courseName",
+    key: "courseName"
   },
   {
     title: "Created At",
     dataIndex: "createdAt",
-    key: "createdAt",
+    key: "createdAt"
   },
   {
     title: "Student Name",
     dataIndex: "studentName",
-    key: "studentName",
+    key: "studentName"
   },
   {
     title: "Instructor Name",
     dataIndex: "instructorName",
-    key: "instructorName",
+    key: "instructorName"
   },
   {
     title: "Price Paid",
     dataIndex: "pricePaid",
-    key: "pricePaid",
+    key: "pricePaid"
   },
   {
     title: "Discount",
     dataIndex: "discount",
-    key: "discount",
-  },
+    key: "discount"
+  }
 ];
 
 const WaitingPaid = ({ searchTerm }: { searchTerm: string }) => {
@@ -49,15 +49,9 @@ const WaitingPaid = ({ searchTerm }: { searchTerm: string }) => {
     const completedOrders = carts.carts
       .filter((cart: any) => cart.status === "waiting_paid" && !cart.is_deleted)
       .map((cart: any) => {
-        const course = courses.courses.find(
-          (course: any) => course.id === cart?.course_id,
-        );
-        const student = users.users.find(
-          (user: any) => user.id === cart?.student_id,
-        );
-        const instructor = users.users.find(
-          (user: any) => user.id === course?.user_id,
-        );
+        const course = courses.courses.find((course: any) => course.id === cart?.course_id);
+        const student = users.users.find((user: any) => user.id === cart?.student_id);
+        const instructor = users.users.find((user: any) => user.id === course?.user_id);
 
         return {
           key: cart.id,
@@ -66,12 +60,10 @@ const WaitingPaid = ({ searchTerm }: { searchTerm: string }) => {
           studentName: student ? student.name : "Unknown Student",
           instructorName: instructor ? instructor.name : "Unknown Instructor",
           pricePaid: `$${cart.price_paid}`,
-          discount: `${cart.discount}%`,
+          discount: `${cart.discount}%`
         };
       })
-      .filter((order: any) =>
-        order.courseName?.toLowerCase().includes(searchTerm.toLowerCase()),
-      );
+      .filter((order: any) => order.courseName?.toLowerCase().includes(searchTerm.toLowerCase()));
 
     setData(completedOrders as any);
   }, [searchTerm]);

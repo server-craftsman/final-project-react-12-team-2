@@ -4,25 +4,8 @@ import lessonsData from "../../../data/lessons.json";
 import coursesData from "../../../data/courses.json";
 import usersData from "../../../data/users.json";
 import sessionsData from "../../../data/sessions.json";
-import {
-  PlayCircleOutlined,
-  ClockCircleOutlined,
-  FileTextOutlined,
-  MenuOutlined,
-  CloseOutlined,
-} from "@ant-design/icons";
-import {
-  Button,
-  Card,
-  Row,
-  Col,
-  Typography,
-  Tag,
-  Progress,
-  Breadcrumb,
-  Menu,
-  Modal,
-} from "antd";
+import { PlayCircleOutlined, ClockCircleOutlined, FileTextOutlined, MenuOutlined, CloseOutlined } from "@ant-design/icons";
+import { Button, Card, Row, Col, Typography, Tag, Progress, Breadcrumb, Menu, Modal } from "antd";
 import YouTube from "react-youtube";
 import LessonSidebar from "./LessonSidebar";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
@@ -47,19 +30,11 @@ const LessonDetails: React.FC = () => {
   const [sidebarVisible, setSidebarVisible] = useState(true);
   const lesson = lessonsData.lessons.find((lesson) => lesson.id === lessonId);
   const course = coursesData.courses.find((course) => course.id === courseId);
-  const session = sessionsData.sessions.find(
-    (session) => session.id === sessionId,
-  );
-  const instructor = usersData.users.find(
-    (user) => user.id === lesson?.user_id,
-  );
+  const session = sessionsData.sessions.find((session) => session.id === sessionId);
+  const instructor = usersData.users.find((user) => user.id === lesson?.user_id);
 
-  const allSessions = sessionsData.sessions.filter(
-    (session) => session.course_id === courseId,
-  );
-  const allLessons = lessonsData.lessons.filter(
-    (lesson) => lesson.course_id === courseId,
-  );
+  const allSessions = sessionsData.sessions.filter((session) => session.course_id === courseId);
+  const allLessons = lessonsData.lessons.filter((lesson) => lesson.course_id === courseId);
 
   useEffect(() => {
     if (!lesson || !course) {
@@ -82,16 +57,13 @@ const LessonDetails: React.FC = () => {
     return (
       <div className="mt-8 text-center">
         <div className="mb-4 text-2xl">{error}</div>
-        <Button onClick={() => navigate(`/course/${courseId}`)}>
-          Back to Course
-        </Button>
+        <Button onClick={() => navigate(`/course/${courseId}`)}>Back to Course</Button>
       </div>
     );
   }
 
   const getYouTubeVideoId = (url: string) => {
-    const regExp =
-      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     const match = url.match(regExp);
     return match && match[2].length === 11 ? match[2] : null;
   };
@@ -152,20 +124,11 @@ const LessonDetails: React.FC = () => {
         .map((lesson) => ({
           key: `lesson-${lesson.id}`,
           label: lesson.name,
-          onClick: () => handleLessonChange(lesson.id),
-        })),
+          onClick: () => handleLessonChange(lesson.id)
+        }))
     }));
 
-    return (
-      <Menu
-        mode="inline"
-        defaultSelectedKeys={[`lesson-${lessonId}`]}
-        openKeys={openKeys}
-        onOpenChange={(keys) => setOpenKeys(keys as string[])}
-        inlineCollapsed={menuCollapsed}
-        items={menuItems}
-      />
-    );
+    return <Menu mode="inline" defaultSelectedKeys={[`lesson-${lessonId}`]} openKeys={openKeys} onOpenChange={(keys) => setOpenKeys(keys as string[])} inlineCollapsed={menuCollapsed} items={menuItems} />;
   };
 
   const handleOk = () => {
@@ -180,7 +143,7 @@ const LessonDetails: React.FC = () => {
     { title: <Link to="/">Home</Link> },
     { title: <Link to={`/course/${courseId}`}>{course?.name}</Link> },
     // { title: <Link to={`/course/${courseId}/session/${sessionId}`}>{session?.name}</Link> },
-    { title: lesson?.name },
+    { title: lesson?.name }
   ];
 
   const toggleSidebar = () => {
@@ -191,12 +154,7 @@ const LessonDetails: React.FC = () => {
     <div className="min-h-screen bg-gray-100 py-12">
       <div className="container mx-auto px-4">
         <div className="mb-6 flex items-center">
-          <Button
-            icon={menuCollapsed ? <MenuOutlined /> : <CloseOutlined />}
-            onClick={toggleMenu}
-            type="text"
-            className="mr-4 text-gray-600"
-          />
+          <Button icon={menuCollapsed ? <MenuOutlined /> : <CloseOutlined />} onClick={toggleMenu} type="text" className="mr-4 text-gray-600" />
           <Breadcrumb items={breadcrumbItems} className="flex-grow" />
         </div>
 
@@ -233,8 +191,8 @@ const LessonDetails: React.FC = () => {
                           rel: 0,
                           showinfo: 0,
                           controls: 1,
-                          origin: window.location.origin,
-                        },
+                          origin: window.location.origin
+                        }
                       }}
                       onReady={handleTimeUpdate}
                       onStateChange={handleTimeUpdate}
@@ -244,67 +202,34 @@ const LessonDetails: React.FC = () => {
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 text-white">
                     <div
                       onClick={(e) => {
-                        const progressBar = e.currentTarget.querySelector(
-                          ".ant-progress-bg",
-                        ) as HTMLElement;
+                        const progressBar = e.currentTarget.querySelector(".ant-progress-bg") as HTMLElement;
                         const rect = progressBar.getBoundingClientRect();
                         const clickPosition = e.clientX - rect.left;
-                        const percentClicked =
-                          (clickPosition / rect.width) * 100;
+                        const percentClicked = (clickPosition / rect.width) * 100;
                         const newTime = (percentClicked / 100) * duration;
                         if (player) {
                           player.seekTo(newTime);
                         }
                       }}
                     >
-                      <Progress
-                        percent={(currentTime / duration) * 100}
-                        showInfo={false}
-                        strokeColor="#8529ff"
-                        trailColor="rgba(255,255,255,0.3)"
-                        size={4}
-                        style={{ cursor: "pointer" }}
-                      />
+                      <Progress percent={(currentTime / duration) * 100} showInfo={false} strokeColor="#8529ff" trailColor="rgba(255,255,255,0.3)" size={4} style={{ cursor: "pointer" }} />
                     </div>
                     <div className="mt-2 flex justify-between text-sm">
-                      <span className="font-semibold">
-                        {formatTime(currentTime)}
-                      </span>
-                      <span className="font-semibold">
-                        {formatTime(duration)}
-                      </span>
+                      <span className="font-semibold">{formatTime(currentTime)}</span>
+                      <span className="font-semibold">{formatTime(duration)}</span>
                     </div>
                   </div>
                 </div>
-                <Paragraph className="mb-6 text-gray-600">
-                  {lesson?.description}
-                </Paragraph>
+                <Paragraph className="mb-6 text-gray-600">{lesson?.description}</Paragraph>
                 <div className="mb-6 flex items-center">
-                  <img
-                    src={instructor?.avatar_url || ""}
-                    className="mr-4 h-16 w-16 rounded-full shadow-lg"
-                    alt={instructor?.name || ""}
-                  />
+                  <img src={instructor?.avatar_url || ""} className="mr-4 h-16 w-16 rounded-full shadow-lg" alt={instructor?.name || ""} />
                   <div className="flex-1">
                     <Text strong className="text-lg text-gray-800">
                       {instructor?.name}
                     </Text>
-                    <Text className="block text-sm text-gray-500">
-                      {instructor?.description}
-                    </Text>
+                    <Text className="block text-sm text-gray-500">{instructor?.description}</Text>
                   </div>
-                  <Button
-                    type="primary"
-                    onClick={toggleSidebar}
-                    className="ml-4"
-                    icon={
-                      sidebarVisible ? (
-                        <MenuFoldOutlined />
-                      ) : (
-                        <MenuUnfoldOutlined />
-                      )
-                    }
-                  >
+                  <Button type="primary" onClick={toggleSidebar} className="ml-4" icon={sidebarVisible ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}>
                     {sidebarVisible ? "Hide Sidebar" : "Show Sidebar"}
                   </Button>
                 </div>
@@ -320,9 +245,7 @@ const LessonDetails: React.FC = () => {
                     <Col xs={12} sm={8}>
                       <Card className="text-center transition-shadow duration-300 hover:shadow-lg">
                         <PlayCircleOutlined className="mb-2 text-4xl text-blue-500" />
-                        <Text className="block text-gray-500">
-                          Video Length
-                        </Text>
+                        <Text className="block text-gray-500">Video Length</Text>
                         <Text strong className="text-lg">
                           {lesson?.full_time} min
                         </Text>
@@ -331,9 +254,7 @@ const LessonDetails: React.FC = () => {
                     <Col xs={12} sm={8}>
                       <Card className="text-center transition-shadow duration-300 hover:shadow-lg">
                         <ClockCircleOutlined className="mb-2 text-4xl text-blue-500" />
-                        <Text className="block text-gray-500">
-                          Estimated Time
-                        </Text>
+                        <Text className="block text-gray-500">Estimated Time</Text>
                         <Text strong className="text-lg">
                           {lesson?.full_time} min
                         </Text>
@@ -353,30 +274,14 @@ const LessonDetails: React.FC = () => {
               </Col>
               {sidebarVisible && (
                 <Col xs={24} lg={8}>
-                  <LessonSidebar
-                    course={course}
-                    session={session}
-                    lesson={lesson}
-                    onContinueLesson={() => setIsModalVisible(true)}
-                    onPreviousLesson={handlePreviousLesson}
-                    onNextLesson={handleNextLesson}
-                    previousLesson={!!previousLesson}
-                    nextLesson={!!nextLesson}
-                  />
+                  <LessonSidebar course={course} session={session} lesson={lesson} onContinueLesson={() => setIsModalVisible(true)} onPreviousLesson={handlePreviousLesson} onNextLesson={handleNextLesson} previousLesson={!!previousLesson} nextLesson={!!nextLesson} />
                 </Col>
               )}
             </Row>
           </Col>
         </Row>
       </div>
-      <Modal
-        title="Lesson Video"
-        open={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        width={800}
-        footer={null}
-      >
+      <Modal title="Lesson Video" open={isModalVisible} onOk={handleOk} onCancel={handleCancel} width={800} footer={null}>
         {videoId && (
           <YouTube
             videoId={videoId}
@@ -387,8 +292,8 @@ const LessonDetails: React.FC = () => {
                 autoplay: 1,
                 modestbranding: 1,
                 rel: 0,
-                origin: window.location.origin,
-              },
+                origin: window.location.origin
+              }
             }}
           />
         )}

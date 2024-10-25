@@ -29,34 +29,13 @@ const EditButton = ({ data }: any) => {
 
   return (
     <>
-      <Button
-        className="mr-2"
-        icon={<EditOutlined />}
-        onClick={() => openCreateModal()}
-      />
-      <Modal
-        title="Edit Session"
-        open={isOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        width={800}
-        style={{ top: "20px" }}
-      >
+      <Button className="mr-2" icon={<EditOutlined />} onClick={() => openCreateModal()} />
+      <Modal title="Edit Session" open={isOpen} onOk={handleOk} onCancel={handleCancel} width={800} style={{ top: "20px" }}>
         <Form form={form} layout="vertical">
-          <Form.Item
-            name="name"
-            label="Name"
-            rules={[
-              { required: true, message: "Please input the lesson name!" },
-            ]}
-          >
+          <Form.Item name="name" label="Name" rules={[{ required: true, message: "Please input the lesson name!" }]}>
             <Input />
           </Form.Item>
-          <Form.Item
-            name="course_id"
-            label="Course"
-            rules={[{ required: true, message: "Please select the session!" }]}
-          >
+          <Form.Item name="course_id" label="Course" rules={[{ required: true, message: "Please select the session!" }]}>
             <Select>
               {courses.map((course: any) => (
                 <Option key={course.id} value={course.id}>
@@ -65,26 +44,15 @@ const EditButton = ({ data }: any) => {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[
-              { required: true, message: "Please input the description!" },
-            ]}
-          >
+          <Form.Item name="description" label="Description" rules={[{ required: true, message: "Please input the description!" }]}>
             <Editor
               apiKey={TINY_API_KEY}
               initialValue="Description"
               init={{
                 height: 300,
                 menubar: false,
-                plugins: [
-                  "advlist autolink lists link image charmap print preview anchor",
-                  "searchreplace visualblocks code fullscreen",
-                  "insertdatetime media table paste code help wordcount",
-                ],
-                toolbar:
-                  "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code",
+                plugins: ["advlist autolink lists link image charmap print preview anchor", "searchreplace visualblocks code fullscreen", "insertdatetime media table paste code help wordcount"],
+                toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code"
               }}
               onEditorChange={(content) => {
                 setDescription(content);

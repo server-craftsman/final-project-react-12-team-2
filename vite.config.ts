@@ -16,7 +16,7 @@ export default defineConfig({
           title: "Vite Build",
           message: `🚀 Build starting at ${startTime}...`,
           sound: true,
-          wait: true, // Wait for user action before continuing
+          wait: true // Wait for user action before continuing
         });
       },
       buildEnd() {
@@ -26,14 +26,14 @@ export default defineConfig({
           title: "Vite Build",
           message: `🎉 Build finished at ${endTime}!`,
           sound: true,
-          wait: true, // Wait for user action before continuing
+          wait: true // Wait for user action before continuing
         });
-      },
-    },
+      }
+    }
   ],
   server: {
     port: 3000,
-    open: true,
+    open: true
   },
   resolve: {
     alias: {
@@ -46,8 +46,8 @@ export default defineConfig({
       "@pages": path.resolve(__dirname, "./src/pages"),
       "@layout": path.resolve(__dirname, "./src/layout"),
       "@models": path.resolve(__dirname, "./src/models"),
-      "@services": path.resolve(__dirname, "./src/services"),
-    },
+      "@services": path.resolve(__dirname, "./src/services")
+    }
   },
   build: {
     rollupOptions: {
@@ -89,9 +89,9 @@ export default defineConfig({
           if (id.includes("@src/services")) {
             return "services";
           }
-        },
-      },
+        }
+      }
     },
-    chunkSizeWarningLimit: 10000,
-  },
+    chunkSizeWarningLimit: 10000
+  }
 });

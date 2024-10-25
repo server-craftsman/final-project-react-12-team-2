@@ -3,8 +3,8 @@ import loadingReducer from "./loadingSlice";
 
 export const store = configureStore({
   reducer: {
-    loading: loadingReducer,
-  },
+    loading: loadingReducer
+  }
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -18,37 +18,32 @@ const AdminCategory = ({ searchTerm }: { searchTerm: string }) => {
     Modal.confirm({
       title: "Are you sure you want to delete this category?",
       onOk: () => {
-        setCategories(
-          categories.filter((category: Category) => category.id !== id),
-        );
+        setCategories(categories.filter((category: Category) => category.id !== id));
         message.success("Category deleted successfully");
-      },
+      }
     });
   };
 
   // Filter categories based on the search term
   const filteredData = categories.filter((category: Category) => {
-    return (
-      category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      category.description.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    return category.name.toLowerCase().includes(searchTerm.toLowerCase()) || category.description.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
   const columns = [
     {
       title: "ID",
       dataIndex: "id",
-      key: "id",
+      key: "id"
     },
     {
       title: "Name",
       dataIndex: "name",
-      key: "name",
+      key: "name"
     },
     {
       title: "Description",
       dataIndex: "description",
-      key: "description",
+      key: "description"
     },
     {
       title: "Action",
@@ -60,8 +55,8 @@ const AdminCategory = ({ searchTerm }: { searchTerm: string }) => {
           </Link>
           <DeleteOutlined onClick={() => handleDelete(record.id)} />
         </Space>
-      ),
-    },
+      )
+    }
   ];
 
   return <Table columns={columns} dataSource={filteredData} rowKey="id" />;

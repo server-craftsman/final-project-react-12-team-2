@@ -1,15 +1,5 @@
 import React, { useState } from "react";
-import {
-  Typography,
-  List,
-  Card,
-  Button,
-  Row,
-  Col,
-  Divider,
-  Checkbox,
-  Tabs,
-} from "antd";
+import { Typography, List, Card, Button, Row, Col, Divider, Checkbox, Tabs } from "antd";
 import { DeleteOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
@@ -24,9 +14,7 @@ const CartPage: React.FC = () => {
   const initialTab = queryParams.get("tab") || String(CartStatusEnum.new);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState<CartStatusEnum>(
-    initialTab as unknown as CartStatusEnum,
-  );
+  const [activeTab, setActiveTab] = useState<CartStatusEnum>(initialTab as unknown as CartStatusEnum);
 
   const handleBackToHome = () => {
     navigate("/");
@@ -47,16 +35,10 @@ const CartPage: React.FC = () => {
   };
 
   const handleItemSelectChange = (itemId: string) => {
-    setSelectedItems((prevSelectedItems) =>
-      prevSelectedItems.includes(itemId)
-        ? prevSelectedItems.filter((id) => id !== itemId)
-        : [...prevSelectedItems, itemId],
-    );
+    setSelectedItems((prevSelectedItems) => (prevSelectedItems.includes(itemId) ? prevSelectedItems.filter((id) => id !== itemId) : [...prevSelectedItems, itemId]));
   };
 
-  const filteredCartItems = cartData.carts.filter(
-    (item) => item.status === String(activeTab) && !item.is_deleted,
-  );
+  const filteredCartItems = cartData.carts.filter((item) => item.status === String(activeTab) && !item.is_deleted);
 
   const tabItems = [
     {
@@ -65,7 +47,7 @@ const CartPage: React.FC = () => {
       children: (
         // Render New Cart Items
         <div></div>
-      ),
+      )
     },
     {
       key: String(CartStatusEnum.waiting_paid),
@@ -73,7 +55,7 @@ const CartPage: React.FC = () => {
       children: (
         // Render Waiting Cart Items
         <div></div>
-      ),
+      )
     },
     {
       key: String(CartStatusEnum.completed),
@@ -81,8 +63,8 @@ const CartPage: React.FC = () => {
       children: (
         // Render Completed Cart Items
         <div></div>
-      ),
-    },
+      )
+    }
   ];
 
   return (
@@ -90,19 +72,11 @@ const CartPage: React.FC = () => {
       <Title level={2} className="mb-8 text-center font-bold text-[#02005dc6]">
         Your Cart
       </Title>
-      <Tabs
-        activeKey={String(activeTab)}
-        onChange={(key) => setActiveTab(key as unknown as CartStatusEnum)}
-        items={tabItems}
-      />
+      <Tabs activeKey={String(activeTab)} onChange={(key) => setActiveTab(key as unknown as CartStatusEnum)} items={tabItems} />
       <Row gutter={16}>
         <Col span={16}>
           <Card className="w-full rounded-lg border border-gray-300 shadow-2xl">
-            <Checkbox
-              checked={selectAll}
-              onChange={handleSelectAllChange}
-              className="mb-4"
-            >
+            <Checkbox checked={selectAll} onChange={handleSelectAllChange} className="mb-4">
               Select All
             </Checkbox>
             <List
@@ -110,15 +84,9 @@ const CartPage: React.FC = () => {
               renderItem={(item) => (
                 <List.Item>
                   <Card className="w-full rounded-lg border border-gray-300 shadow-lg">
-                    <Row
-                      gutter={16}
-                      className="flex items-center justify-between"
-                    >
+                    <Row gutter={16} className="flex items-center justify-between">
                       <Col span={1}>
-                        <Checkbox
-                          checked={selectedItems.includes(item.id)}
-                          onChange={() => handleItemSelectChange(item.id)}
-                        />
+                        <Checkbox checked={selectedItems.includes(item.id)} onChange={() => handleItemSelectChange(item.id)} />
                       </Col>
                       <Col span={4}>
                         <Text strong className="text-lg">
@@ -127,29 +95,18 @@ const CartPage: React.FC = () => {
                       </Col>
 
                       <Col span={16} className="text-right">
-                        <Text className="mr-2 text-lg font-bold text-[#02005dc6]">
-                          ${(item.price - item.discount).toFixed(2)}
-                        </Text>
-                        <Button
-                          onClick={() => console.log(`Remove item ${item.id}`)}
-                          type="link"
-                          danger
-                          icon={<DeleteOutlined />}
-                        >
+                        <Text className="mr-2 text-lg font-bold text-[#02005dc6]">${(item.price - item.discount).toFixed(2)}</Text>
+                        <Button onClick={() => console.log(`Remove item ${item.id}`)} type="link" danger icon={<DeleteOutlined />}>
                           Remove
                         </Button>
                       </Col>
                     </Row>
                     <Row gutter={16} className="mt-4 flex">
                       <Col span={4}>
-                        <Text className="text-gray-500">
-                          Price Paid: ${item.price_paid.toFixed(2)}
-                        </Text>
+                        <Text className="text-gray-500">Price Paid: ${item.price_paid.toFixed(2)}</Text>
                       </Col>
                       <Col span={4}>
-                        <Text className="text-gray-500">
-                          Discount: ${item.discount.toFixed(2)}
-                        </Text>
+                        <Text className="text-gray-500">Discount: ${item.discount.toFixed(2)}</Text>
                       </Col>
                     </Row>
                   </Card>
@@ -166,38 +123,18 @@ const CartPage: React.FC = () => {
             <Divider />
             <div className="flex justify-between">
               <Text>Discount:</Text>
-              <Text>
-                $
-                {filteredCartItems
-                  .reduce((acc, item) => acc + item.discount, 0)
-                  .toFixed(2)}
-              </Text>
+              <Text>${filteredCartItems.reduce((acc, item) => acc + item.discount, 0).toFixed(2)}</Text>
             </div>
             <div className="flex justify-between">
               <Text className="text-lg font-bold">Total:</Text>
-              <Text className="text-lg font-bold">
-                $
-                {filteredCartItems
-                  .reduce((acc, item) => acc + (item.price - item.discount), 0)
-                  .toFixed(2)}
-              </Text>
+              <Text className="text-lg font-bold">${filteredCartItems.reduce((acc, item) => acc + (item.price - item.discount), 0).toFixed(2)}</Text>
             </div>
             <Divider />
             <div className="text-center">
-              <Button
-                type="primary"
-                size="large"
-                className="bg-[#1a237e] font-bold hover:bg-[#6a1bff] hover:text-white"
-                icon={<ShoppingCartOutlined />}
-              >
+              <Button type="primary" size="large" className="bg-[#1a237e] font-bold hover:bg-[#6a1bff] hover:text-white" icon={<ShoppingCartOutlined />}>
                 Proceed to Checkout
               </Button>
-              <Button
-                type="default"
-                size="large"
-                className="ml-4 border border-gray-300 text-gray-700 hover:bg-gray-100"
-                onClick={handleBackToHome}
-              >
+              <Button type="default" size="large" className="ml-4 border border-gray-300 text-gray-700 hover:bg-gray-100" onClick={handleBackToHome}>
                 Back to Home
               </Button>
             </div>

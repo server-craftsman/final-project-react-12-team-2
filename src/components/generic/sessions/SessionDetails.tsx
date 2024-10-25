@@ -23,10 +23,7 @@ const SessionDetails: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Link
-        to={`/course/${courseId}`}
-        className="mb-6 flex items-center text-blue-600 hover:text-blue-800"
-      >
+      <Link to={`/course/${courseId}`} className="mb-6 flex items-center text-blue-600 hover:text-blue-800">
         <HomeOutlined className="mr-2" />
         <span>Back to Course</span>
       </Link>
@@ -52,13 +49,9 @@ const SessionDetails: React.FC = () => {
                     <div className="flex w-full items-center">
                       <BookOutlined className="mr-4 text-2xl text-blue-500" />
                       <div className="flex-grow">
-                        <div className="text-lg font-semibold">
-                          {lesson.name}
-                        </div>
+                        <div className="text-lg font-semibold">{lesson.name}</div>
                       </div>
-                      <div className="text-sm text-gray-500">
-                        {lesson.full_time} min
-                      </div>
+                      <div className="text-sm text-gray-500">{lesson.full_time} min</div>
                     </div>
                   ),
                   children: (
@@ -68,8 +61,8 @@ const SessionDetails: React.FC = () => {
                         <Button type="primary">Go to Lesson</Button>
                       </Link>
                     </div>
-                  ),
-                },
+                  )
+                }
               ]}
             />
           </List.Item>

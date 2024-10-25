@@ -5,13 +5,7 @@ interface SearchPurchaseProps {
 }
 
 const SearchPurchase = ({ onSearch }: SearchPurchaseProps) => {
-  return (
-    <Input
-      placeholder="Search Purchases"
-      onChange={(e) => onSearch(e.target.value)}
-      style={{ marginBottom: "20px" }}
-    />
-  );
+  return <Input placeholder="Search Purchases" onChange={(e) => onSearch(e.target.value)} style={{ marginBottom: "20px" }} />;
 };
 
 export default SearchPurchase;

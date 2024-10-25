@@ -9,22 +9,18 @@ const OrderManagement: React.FC = () => {
     {
       key: "1",
       label: "Waiting for payment",
-      children: <OrderWaitingPaid searchTerm={searchTerm} />,
+      children: <OrderWaitingPaid searchTerm={searchTerm} />
     },
     {
       key: "2",
       label: "Completed",
-      children: <OrderCompleted searchTerm={searchTerm} />,
-    },
+      children: <OrderCompleted searchTerm={searchTerm} />
+    }
   ];
 
   return (
     <div>
-      <CustomSearch
-        onSearch={setSearchTerm}
-        className="search-input"
-        placeholder="Search by course name or instructor..."
-      />
+      <CustomSearch onSearch={setSearchTerm} className="search-input" placeholder="Search by course name or instructor..." />
       <Tabs defaultActiveKey="1" items={items} />
     </div>
   );

@@ -1,8 +1,4 @@
-import {
-  DollarOutlined,
-  UserAddOutlined,
-  BookOutlined,
-} from "@ant-design/icons";
+import { DollarOutlined, UserAddOutlined, BookOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import purchasesData from "../../../data/purchases.json"; // Adjust the path as necessary
 import subscriptionData from "../../../data/subscriptions.json";
@@ -41,10 +37,7 @@ const DashboardNumber = () => {
       {/* Flex container for the boxes */}
       <div className="flex space-x-4">
         {/* Box for Total Purchases */}
-        <div
-          className="flex h-32 w-64 cursor-pointer items-center justify-center rounded-lg border border-gray-400 bg-white p-6 shadow-lg"
-          onClick={handlePurchasedClick}
-        >
+        <div className="flex h-32 w-64 cursor-pointer items-center justify-center rounded-lg border border-gray-400 bg-white p-6 shadow-lg" onClick={handlePurchasedClick}>
           <div className="text-center">
             <h1 className="mb-2 text-xl font-semibold">
               {" "}
@@ -55,10 +48,7 @@ const DashboardNumber = () => {
         </div>
 
         {/* Box for Total Subscriptions */}
-        <div
-          className="flex h-32 w-64 cursor-pointer items-center justify-center rounded-lg border border-gray-400 bg-white p-6 shadow-lg"
-          onClick={handleSubscriptionClick}
-        >
+        <div className="flex h-32 w-64 cursor-pointer items-center justify-center rounded-lg border border-gray-400 bg-white p-6 shadow-lg" onClick={handleSubscriptionClick}>
           <div className="text-center">
             <h1 className="mb-2 text-xl font-semibold">
               {" "}
@@ -69,10 +59,7 @@ const DashboardNumber = () => {
         </div>
 
         {/* Box for Total Courses */}
-        <div
-          className="flex h-32 w-64 cursor-pointer items-center justify-center rounded-lg border border-gray-400 bg-white p-6 shadow-lg"
-          onClick={handleCoursesClick}
-        >
+        <div className="flex h-32 w-64 cursor-pointer items-center justify-center rounded-lg border border-gray-400 bg-white p-6 shadow-lg" onClick={handleCoursesClick}>
           <div className="text-center">
             <h1 className="mb-2 text-xl font-semibold">
               {" "}

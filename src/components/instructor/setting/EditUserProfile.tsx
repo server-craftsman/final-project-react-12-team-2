@@ -18,7 +18,7 @@ const EditUserProfile = () => {
     if (userData) {
       const userWithDateDob = {
         ...userData,
-        dob: userData.dob ? moment(userData.dob) : null,
+        dob: userData.dob ? moment(userData.dob) : null
       };
       setUser(userWithDateDob as unknown as User);
       form.setFieldsValue({
@@ -28,7 +28,7 @@ const EditUserProfile = () => {
         role: userData.role,
         status: userData.status ? "Active" : "Inactive",
         description: userData.description,
-        dob: userData.dob ? moment(userData.dob) : null,
+        dob: userData.dob ? moment(userData.dob) : null
       });
     }
   }, [id, form]);
@@ -49,103 +49,66 @@ const EditUserProfile = () => {
       { required: true, message: "Please enter the email address" },
       {
         type: "email",
-        message:
-          "Please enter a valid email address. Please include a @ symbol.",
-      },
+        message: "Please enter a valid email address. Please include a @ symbol."
+      }
     ],
     phone_number: [
       { required: true, message: "Please enter the phone number." },
       {
         pattern: /^[0-9]+$/,
-        message: "Please enter a valid phone number. Only numbers are allowed.",
-      },
+        message: "Please enter a valid phone number. Only numbers are allowed."
+      }
     ],
     description: [{ required: true, message: "Please enter the description" }],
     dob: [
       { required: true, message: "Please enter the date of birth" },
       {
         validator: (_: unknown, value: moment.Moment | null) => {
-          if (
-            !value ||
-            (value.isBefore(moment()) &&
-              value.isAfter(moment().subtract(100, "years")))
-          ) {
+          if (!value || (value.isBefore(moment()) && value.isAfter(moment().subtract(100, "years")))) {
             return Promise.resolve();
           }
-          return Promise.reject(
-            new Error(
-              "Please enter a valid date of birth within the last 100 years.",
-            ),
-          );
-        },
-      },
-    ],
+          return Promise.reject(new Error("Please enter a valid date of birth within the last 100 years."));
+        }
+      }
+    ]
   };
 
   return (
     <div className="mx-auto max-w-2xl p-5">
       <h1 className="mb-4 text-2xl font-bold">Edit User Profile</h1>
       <Form form={form} layout="vertical" onFinish={handleFormSubmit}>
-        <Form.Item
-          label="Name"
-          name="name"
-          rules={validationRules.name as Rule[]}
-        >
+        <Form.Item label="Name" name="name" rules={validationRules.name as Rule[]}>
           <Input />
         </Form.Item>
-        <Form.Item
-          label="Email Address"
-          name="email"
-          rules={validationRules.email as Rule[]}
-        >
+        <Form.Item label="Email Address" name="email" rules={validationRules.email as Rule[]}>
           <Input />
         </Form.Item>
-        <Form.Item
-          label="Phone Number"
-          name="phone_number"
-          rules={validationRules.phone_number as Rule[]}
-        >
+        <Form.Item label="Phone Number" name="phone_number" rules={validationRules.phone_number as Rule[]}>
           <Input />
         </Form.Item>
-        <Form.Item
-          label="Description"
-          name="description"
-          rules={validationRules.description as Rule[]}
-        >
+        <Form.Item label="Description" name="description" rules={validationRules.description as Rule[]}>
           <Editor
             apiKey={TINY_API_KEY}
             initialValue="description"
             init={{
               height: 300,
               menubar: false,
-              plugins: [
-                "advlist autolink lists link image charmap print preview anchor",
-                "searchreplace visualblocks code fullscreen",
-                "insertdatetime media table paste code help wordcount",
-              ],
-              toolbar:
-                "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code",
+              plugins: ["advlist autolink lists link image charmap print preview anchor", "searchreplace visualblocks code fullscreen", "insertdatetime media table paste code help wordcount"],
+              toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code"
             }}
             onEditorChange={(content) => {
               form.setFieldsValue({ description: content });
             }}
           />
         </Form.Item>
-        <Form.Item
-          label="Date of Birth"
-          name="dob"
-          rules={validationRules.dob as Rule[]}
-        >
+        <Form.Item label="Date of Birth" name="dob" rules={validationRules.dob as Rule[]}>
           <DatePicker format="YYYY-MM-DD" />
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
             Update
           </Button>
-          <Button
-            onClick={() => navigate("/instructor/instructor-info")}
-            className="ml-2"
-          >
+          <Button onClick={() => navigate("/instructor/instructor-info")} className="ml-2">
             Cancel
           </Button>
         </Form.Item>

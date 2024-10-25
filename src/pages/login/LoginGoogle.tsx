@@ -7,10 +7,7 @@ interface LoginGoogleProps {
   onLoginSuccess: (token: string) => void;
 }
 
-const LoginGoogle: React.FC<LoginGoogleProps> = ({
-  onLoginError,
-  onLoginSuccess,
-}) => {
+const LoginGoogle: React.FC<LoginGoogleProps> = ({ onLoginError, onLoginSuccess }) => {
   const onSuccess = (credentialResponse: any) => {
     try {
       // Add validation for callback
@@ -35,21 +32,14 @@ const LoginGoogle: React.FC<LoginGoogleProps> = ({
   };
 
   const onError = () => {
-    const errorMessage =
-      "Google Login Failed. This may be due to ad-blocking or privacy protection software.";
+    const errorMessage = "Google Login Failed. This may be due to ad-blocking or privacy protection software.";
     console.error(errorMessage);
     onLoginError(errorMessage + " (ERR_BLOCKED_BY_CLIENT)");
   };
 
   return (
     <div>
-      <GoogleLogin
-        onSuccess={onSuccess}
-        onError={onError}
-        useOneTap={false}
-        auto_select={false}
-        context="signin"
-      />
+      <GoogleLogin onSuccess={onSuccess} onError={onError} useOneTap={false} auto_select={false} context="signin" />
     </div>
   );
 };

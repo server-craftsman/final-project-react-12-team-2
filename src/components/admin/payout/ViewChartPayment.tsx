@@ -1,12 +1,5 @@
 import { PureComponent } from "react";
-import {
-  BarChart,
-  Bar,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import { BarChart, Bar, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import payouts from "../../../data/payouts.json"; // Assuming the payouts.json is in the same directory
 import { Payout } from "../../../models/prototype/Payout";
 
@@ -26,30 +19,26 @@ const groupByMonth = (payments: Payout[]) => {
     if (!groupedData[month]) {
       groupedData[month] = {
         balance_origin: 0,
-        balance_instructor_received: 0,
+        balance_instructor_received: 0
       };
     }
 
     groupedData[month].balance_origin += payment.balance_origin;
-    groupedData[month].balance_instructor_received +=
-      payment.balance_instructor_received;
+    groupedData[month].balance_instructor_received += payment.balance_instructor_received;
   });
 
   // Convert grouped data to array format for chart
   const dataArray = Object.entries(groupedData).map(([name, values]) => ({
     name,
     balance_origin: values.balance_origin,
-    balance_instructor_received: values.balance_instructor_received,
+    balance_instructor_received: values.balance_instructor_received
   }));
 
   // Sort the dataArray by month (ascending order)
   return dataArray.sort((a, b) => {
     const [yearA, monthA] = a.name.split("-");
     const [yearB, monthB] = b.name.split("-");
-    return (
-      new Date(Number(yearA), Number(monthA) - 1).getTime() -
-      new Date(Number(yearB), Number(monthB) - 1).getTime()
-    );
+    return new Date(Number(yearA), Number(monthA) - 1).getTime() - new Date(Number(yearB), Number(monthB) - 1).getTime();
   });
 };
 
@@ -66,18 +55,14 @@ export default class Example extends PureComponent {
             top: 20,
             right: 30,
             left: 20,
-            bottom: 5,
+            bottom: 5
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <Tooltip />
           <Legend />
           <Bar dataKey="balance_origin" fill="green" name="Balance Origin" />
-          <Bar
-            dataKey="balance_instructor_received"
-            fill="blue"
-            name="Instructor Received"
-          />
+          <Bar dataKey="balance_instructor_received" fill="blue" name="Instructor Received" />
         </BarChart>
       </ResponsiveContainer>
     );

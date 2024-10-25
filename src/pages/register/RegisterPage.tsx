@@ -1,12 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Form, Input, Button, Typography, Divider } from "antd";
-import {
-  UserOutlined,
-  MailOutlined,
-  LockOutlined,
-  HomeOutlined,
-} from "@ant-design/icons";
+import { UserOutlined, MailOutlined, LockOutlined, HomeOutlined } from "@ant-design/icons";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { CLIENT_ID } from "../../const/authentication";
 import LoginGoogle from "../../pages/login/LoginGoogle";
@@ -31,11 +26,7 @@ const RegisterPage = () => {
 
   const validateUsername = (_: any, value: string) => {
     if (!value || value.includes(" ") || value.length < 6) {
-      return Promise.reject(
-        new Error(
-          "Username must be at least 6 characters long and contain no spaces.",
-        ),
-      );
+      return Promise.reject(new Error("Username must be at least 6 characters long and contain no spaces."));
     }
     return Promise.resolve();
   };
@@ -51,27 +42,15 @@ const RegisterPage = () => {
     const hasUpperCase = /[A-Z]/.test(value);
     const hasNumber = /\d/.test(value);
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value); // Added special character validation
-    if (
-      !value ||
-      value.length < 8 ||
-      !hasUpperCase ||
-      !hasNumber ||
-      !hasSpecialChar
-    ) {
-      return Promise.reject(
-        new Error(
-          "Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.",
-        ),
-      );
+    if (!value || value.length < 8 || !hasUpperCase || !hasNumber || !hasSpecialChar) {
+      return Promise.reject(new Error("Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character."));
     }
     return Promise.resolve();
   };
 
   const validateConfirmPassword = (_: any, value: string) => {
     if (!value || value !== form.getFieldValue("password")) {
-      return Promise.reject(
-        new Error("The two passwords that you entered do not match!"),
-      );
+      return Promise.reject(new Error("The two passwords that you entered do not match!"));
     }
     return Promise.resolve();
   };
@@ -92,122 +71,48 @@ const RegisterPage = () => {
             <Lottie animationData={registerAnimation} loop={true} />
           </Link>
           <h2 className="text-3xl font-bold text-white">Edu Learn</h2>
-          <Text className="mt-4 text-center text-lg text-white">
-            Elevate Your Learning Experience
-          </Text>
+          <Text className="mt-4 text-center text-lg text-white">Elevate Your Learning Experience</Text>
         </div>
         <div className="w-full bg-gradient-to-br from-white to-gray-100 p-12 md:w-1/2">
-          <Link
-            to="/"
-            className="mb-8 flex items-center text-lg text-indigo-600 transition-colors duration-300 hover:text-indigo-800"
-          >
+          <Link to="/" className="mb-8 flex items-center text-lg text-indigo-600 transition-colors duration-300 hover:text-indigo-800">
             <HomeOutlined className="mr-2" />
             Back to Home
           </Link>
           <Title level={2} className="mb-8 text-indigo-900">
             Create an Account
           </Title>
-          <Form
-            form={form}
-            name="register"
-            onFinish={onFinish}
-            scrollToFirstError
-            layout="vertical"
-          >
-            <Form.Item
-              name="username"
-              rules={[
-                { required: true, message: "Please input your username!" },
-                { validator: validateUsername },
-              ]}
-            >
-              <Input
-                prefix={
-                  <UserOutlined className="site-form-item-icon text-indigo-600" />
-                }
-                placeholder="Username"
-                className="rounded-lg px-4 py-2"
-              />
+          <Form form={form} name="register" onFinish={onFinish} scrollToFirstError layout="vertical">
+            <Form.Item name="username" rules={[{ required: true, message: "Please input your username!" }, { validator: validateUsername }]}>
+              <Input prefix={<UserOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Username" className="rounded-lg px-4 py-2" />
             </Form.Item>
 
-            <Form.Item
-              name="email"
-              rules={[
-                { required: true, message: "Please input your E-mail!" },
-                { validator: validateEmail },
-              ]}
-            >
-              <Input
-                prefix={
-                  <MailOutlined className="site-form-item-icon text-indigo-600" />
-                }
-                placeholder="Email"
-                className="rounded-lg px-4 py-2"
-              />
+            <Form.Item name="email" rules={[{ required: true, message: "Please input your E-mail!" }, { validator: validateEmail }]}>
+              <Input prefix={<MailOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Email" className="rounded-lg px-4 py-2" />
             </Form.Item>
 
-            <Form.Item
-              name="password"
-              rules={[
-                { required: true, message: "Please input your password!" },
-                { validator: validatePassword },
-              ]}
-              hasFeedback
-            >
-              <Input.Password
-                prefix={
-                  <LockOutlined className="site-form-item-icon text-indigo-600" />
-                }
-                placeholder="Password"
-                className="rounded-lg px-4 py-2"
-              />
+            <Form.Item name="password" rules={[{ required: true, message: "Please input your password!" }, { validator: validatePassword }]} hasFeedback>
+              <Input.Password prefix={<LockOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Password" className="rounded-lg px-4 py-2" />
             </Form.Item>
 
-            <Form.Item
-              name="confirm"
-              dependencies={["password"]}
-              hasFeedback
-              rules={[
-                { required: true, message: "Please confirm your password!" },
-                { validator: validateConfirmPassword },
-              ]}
-            >
-              <Input.Password
-                prefix={
-                  <LockOutlined className="site-form-item-icon text-indigo-600" />
-                }
-                placeholder="Confirm Password"
-                className="rounded-lg px-4 py-2"
-              />
+            <Form.Item name="confirm" dependencies={["password"]} hasFeedback rules={[{ required: true, message: "Please confirm your password!" }, { validator: validateConfirmPassword }]}>
+              <Input.Password prefix={<LockOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Confirm Password" className="rounded-lg px-4 py-2" />
             </Form.Item>
-            <ButtonDivideStudentAndInstructor
-              onSelectRole={handleRoleSelection}
-            />
+            <ButtonDivideStudentAndInstructor onSelectRole={handleRoleSelection} />
             {role === "instructor" && <RegisterInfoOfInstructor />}
             <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="w-full rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 py-3 text-lg font-semibold text-white shadow-md transition-all duration-300 hover:from-indigo-700 hover:to-purple-700"
-              >
+              <Button type="primary" htmlType="submit" className="w-full rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 py-3 text-lg font-semibold text-white shadow-md transition-all duration-300 hover:from-indigo-700 hover:to-purple-700">
                 Register
               </Button>
             </Form.Item>
             <GoogleOAuthProvider clientId={CLIENT_ID}>
-              <LoginGoogle
-                onLoginSuccess={onFinishGoogle}
-                onLoginError={handleGoogleLoginError}
-              />
+              <LoginGoogle onLoginSuccess={onFinishGoogle} onLoginError={handleGoogleLoginError} />
             </GoogleOAuthProvider>
           </Form>
           <Divider plain className="text-gray-400">
             Already have an account?
           </Divider>
           <div className="text-center">
-            <Link
-              to="/login"
-              className="font-semibold text-indigo-600 transition-colors duration-300 hover:text-indigo-800"
-            >
+            <Link to="/login" className="font-semibold text-indigo-600 transition-colors duration-300 hover:text-indigo-800">
               Sign in
             </Link>
           </div>

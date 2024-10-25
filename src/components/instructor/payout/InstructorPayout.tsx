@@ -14,16 +14,10 @@ const InstructorPayout: React.FC<{
   updateSelectedPayouts: (selected: Set<string>) => void; // Add this prop
 }> = ({ searchQuery, filterStatus, updateSelectedPayouts }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedTransactions, setSelectedTransactions] = useState<
-    InstructorTransaction[]
-  >([]);
-  const [selectedPayouts, setSelectedPayouts] = useState<Set<string>>(
-    new Set(),
-  ); // Ensure setSelectedPayouts is defined
+  const [selectedTransactions, setSelectedTransactions] = useState<InstructorTransaction[]>([]);
+  const [selectedPayouts, setSelectedPayouts] = useState<Set<string>>(new Set()); // Ensure setSelectedPayouts is defined
   const showModal = (payoutId: string) => {
-    const transactions = instructorTransactions.transactions.filter(
-      (transaction) => transaction.payout_id === payoutId,
-    );
+    const transactions = instructorTransactions.transactions.filter((transaction) => transaction.payout_id === payoutId);
     setSelectedTransactions(transactions);
     setIsModalVisible(true);
   };
@@ -58,38 +52,25 @@ const InstructorPayout: React.FC<{
 
   const columns = [
     {
-      title: (
-        <PayoutCheckbox
-          checked={selectedPayouts.size === filteredPayouts.length}
-          onChange={handleSelectAllChange}
-        />
-      ),
+      title: <PayoutCheckbox checked={selectedPayouts.size === filteredPayouts.length} onChange={handleSelectAllChange} />,
       dataIndex: "id",
       key: "select",
-      render: (id: string) => (
-        <PayoutCheckbox
-          checked={selectedPayouts.has(id)}
-          onChange={(checked) => handleCheckboxChange(id, checked)}
-        />
-      ),
+      render: (id: string) => <PayoutCheckbox checked={selectedPayouts.has(id)} onChange={(checked) => handleCheckboxChange(id, checked)} />
     },
     {
       title: "Payout No",
       dataIndex: "payout_no",
-      key: "payout_no",
+      key: "payout_no"
     },
     {
       title: "Transaction",
       dataIndex: "id",
       key: "id",
       render: (_: any, record: Payout) => (
-        <Button
-          className="bg-gradient-tone text-white"
-          onClick={() => showModal(record.id)}
-        >
+        <Button className="bg-gradient-tone text-white" onClick={() => showModal(record.id)}>
           View Transactions
         </Button>
-      ),
+      )
     },
     {
       title: "Status",
@@ -123,49 +104,38 @@ const InstructorPayout: React.FC<{
         }
 
         return <Tag color={color}>{text}</Tag>;
-      },
+      }
     },
     {
       title: "Balance Origin",
       dataIndex: "balance_origin",
       key: "balance_origin",
-      render: (money: number | undefined) =>
-        money !== undefined ? moneyFormat(money) : "N/A",
+      render: (money: number | undefined) => (money !== undefined ? moneyFormat(money) : "N/A")
     },
     {
       title: "Instructor Paid",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
-      render: (money: number | undefined) =>
-        money !== undefined ? moneyFormat(money) : "N/A",
+      render: (money: number | undefined) => (money !== undefined ? moneyFormat(money) : "N/A")
     },
     {
       title: "Instructor Received",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
-      render: (money: number | undefined) =>
-        money !== undefined ? moneyFormat(money) : "N/A",
+      render: (money: number | undefined) => (money !== undefined ? moneyFormat(money) : "N/A")
     },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (date: Date) => formatDate(date),
-    },
+      render: (date: Date) => formatDate(date)
+    }
   ];
 
   return (
     <div>
-      <Table
-        columns={columns}
-        dataSource={filteredPayouts as unknown as Payout[]}
-        rowKey="id"
-      />
-      <ViewTransactions
-        isVisible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
-        transactions={selectedTransactions}
-      />
+      <Table columns={columns} dataSource={filteredPayouts as unknown as Payout[]} rowKey="id" />
+      <ViewTransactions isVisible={isModalVisible} onClose={() => setIsModalVisible(false)} transactions={selectedTransactions} />
     </div>
   );
 };

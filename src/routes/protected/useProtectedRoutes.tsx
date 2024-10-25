@@ -25,44 +25,23 @@ const useProtectedRoutes = (): RouteObject[] => {
     return [
       {
         path: "*",
-        element: <Navigate to="/" />,
-      },
+        element: <Navigate to="/" />
+      }
     ];
   }
 
-  const mapRoutes = (
-    routes: RouteObject[],
-    allowedRole: UserRole,
-  ): RouteObject[] => {
+  const mapRoutes = (routes: RouteObject[], allowedRole: UserRole): RouteObject[] => {
     return routes.map((route) => {
       if ("index" in route && route.index) {
         return {
           ...route,
-          element: (
-            <Suspense fallback={<Loading />}>
-              {role === allowedRole ? (
-                route.element
-              ) : (
-                <Navigate to="/" replace />
-              )}
-            </Suspense>
-          ),
+          element: <Suspense fallback={<Loading />}>{role === allowedRole ? route.element : <Navigate to="/" replace />}</Suspense>
         };
       }
       return {
         ...route,
-        element: (
-          <Suspense fallback={<Loading />}>
-            {role === allowedRole && route.element ? (
-              (route.element as JSX.Element)
-            ) : (
-              <Navigate to="/" replace />
-            )}
-          </Suspense>
-        ) as JSX.Element,
-        children: Array.isArray(route.children)
-          ? mapRoutes(route.children, allowedRole)
-          : undefined,
+        element: (<Suspense fallback={<Loading />}>{role === allowedRole && route.element ? (route.element as JSX.Element) : <Navigate to="/" replace />}</Suspense>) as JSX.Element,
+        children: Array.isArray(route.children) ? mapRoutes(route.children, allowedRole) : undefined
       };
     });
   };
@@ -76,26 +55,20 @@ const useProtectedRoutes = (): RouteObject[] => {
     case UserRole.instructor:
       console.log("Instructor role detected");
       console.log("Instructor routes:", instructorRoutes); // Debug: Kiểm tra instructorRoutes
-      roleBasedRoutes = mapRoutes(
-        instructorRoutes,
-        UserRole.instructor,
-      ) as RouteObject[];
+      roleBasedRoutes = mapRoutes(instructorRoutes, UserRole.instructor) as RouteObject[];
       break;
     case UserRole.student:
       console.log("Student role detected");
       console.log("Student routes:", studentRoutes); // Debug: Kiểm tra studentRoutes
-      roleBasedRoutes = mapRoutes(
-        studentRoutes,
-        UserRole.student,
-      ) as RouteObject[];
+      roleBasedRoutes = mapRoutes(studentRoutes, UserRole.student) as RouteObject[];
       break;
     default:
       console.log("No valid role detected");
       roleBasedRoutes = [
         {
           path: "*",
-          element: <Navigate to="/" />,
-        },
+          element: <Navigate to="/" />
+        }
       ];
       console.log("roleBasedRoutes", roleBasedRoutes); // Debug: Kiểm tra roleBasedRoutes
   }

@@ -9,14 +9,11 @@ const { Title } = Typography;
 
 const AmountPayment: React.FC = () => {
   const [totalPayment, setTotalPayment] = useState<string>("");
-  const [completedInstructorPayment, setCompletedInstructorPayment] =
-    useState<string>("");
+  const [completedInstructorPayment, setCompletedInstructorPayment] = useState<string>("");
 
   useEffect(() => {
     // Calculate total payment from balance origin
-    const total = paymentsData.payments
-      .filter((payment) => payment.balance_origin)
-      .reduce((acc, payment) => acc + payment.balance_origin, 0);
+    const total = paymentsData.payments.filter((payment) => payment.balance_origin).reduce((acc, payment) => acc + payment.balance_origin, 0);
 
     const formattedTotal = moneyFormat(total);
     setTotalPayment(formattedTotal);
@@ -24,9 +21,7 @@ const AmountPayment: React.FC = () => {
 
   useEffect(() => {
     // Calculate total completed instructor payment
-    const totalCompleted = paymentsData.payments
-      .filter((payment) => payment.status === "COMPLETED")
-      .reduce((acc, payment) => acc + payment.balance_instructor_received, 0);
+    const totalCompleted = paymentsData.payments.filter((payment) => payment.status === "COMPLETED").reduce((acc, payment) => acc + payment.balance_instructor_received, 0);
 
     const formattedCompletedTotal = moneyFormat(totalCompleted);
     setCompletedInstructorPayment(formattedCompletedTotal);
@@ -41,7 +36,7 @@ const AmountPayment: React.FC = () => {
           border: "1px solid white", // Changed border color
           borderRadius: "12px", // Increased border radius for a smoother look
           textAlign: "center",
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", // Added shadow for depth
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)" // Added shadow for depth
         }}
       >
         <Row gutter={[0, 16]}>
@@ -52,7 +47,7 @@ const AmountPayment: React.FC = () => {
               padding: "20px", // Increased padding for better spacing
               textAlign: "center",
               background: "linear-gradient(135deg, #e2f0cb, #b2d3c2)", // Gradient background
-              borderRadius: "8px", // Rounded corners for inner box
+              borderRadius: "8px" // Rounded corners for inner box
             }}
           >
             <Title level={3} style={{ color: "#4CAF50", margin: 0 }}>
@@ -64,7 +59,7 @@ const AmountPayment: React.FC = () => {
                 textAlign: "center",
                 marginTop: "10px",
                 padding: "10px",
-                fontSize: "30px",
+                fontSize: "30px"
               }}
             >
               <strong>{totalPayment}</strong>
@@ -78,7 +73,7 @@ const AmountPayment: React.FC = () => {
               padding: "20px", // Increased padding for better spacing
               textAlign: "center",
               background: "linear-gradient(135deg, #cfe7f5, #9dc1e8)", // Gradient background
-              borderRadius: "8px", // Rounded corners for inner box
+              borderRadius: "8px" // Rounded corners for inner box
             }}
           >
             <Title level={3} style={{ color: "#2F80ED", margin: 0 }}>
@@ -90,7 +85,7 @@ const AmountPayment: React.FC = () => {
                 textAlign: "center",
                 marginTop: "10px",
                 padding: "10px",
-                fontSize: "30px",
+                fontSize: "30px"
               }}
             >
               <strong>{completedInstructorPayment}</strong>
@@ -105,7 +100,7 @@ const AmountPayment: React.FC = () => {
           padding: "20px",
           border: "1px solid white", // Consistent border color
           borderRadius: "12px", // Increased border radius for a smoother look
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", // Added shadow for depth
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)" // Added shadow for depth
         }}
       >
         <ViewChartPayment />

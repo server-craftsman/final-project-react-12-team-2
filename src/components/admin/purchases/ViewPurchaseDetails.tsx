@@ -11,10 +11,7 @@ const ViewPurchaseDetails = () => {
   if (purchaseDetails) {
     return (
       <div className="mx-auto max-w-2xl p-5">
-        <Card
-          title={`Purchase No: ${purchaseDetails.cart_no}`}
-          className="shadow-lg"
-        >
+        <Card title={`Purchase No: ${purchaseDetails.cart_no}`} className="shadow-lg">
           <Row gutter={16}>
             <Col span={12}>
               <Row>
@@ -39,9 +36,7 @@ const ViewPurchaseDetails = () => {
                 <Col span={12}>
                   <strong>Price Paid:</strong>
                 </Col>
-                <Col
-                  span={12}
-                >{`$${purchaseDetails.price_paid.toFixed(2)}`}</Col>
+                <Col span={12}>{`$${purchaseDetails.price_paid.toFixed(2)}`}</Col>
               </Row>
               <Row>
                 <Col span={12}>
@@ -61,17 +56,13 @@ const ViewPurchaseDetails = () => {
                 <Col span={12}>
                   <strong>Created At:</strong>
                 </Col>
-                <Col span={12}>
-                  {new Date(purchaseDetails.created_at).toLocaleDateString()}
-                </Col>
+                <Col span={12}>{new Date(purchaseDetails.created_at).toLocaleDateString()}</Col>
               </Row>
               <Row>
                 <Col span={12}>
                   <strong>Updated At:</strong>
                 </Col>
-                <Col span={12}>
-                  {new Date(purchaseDetails.updated_at).toLocaleDateString()}
-                </Col>
+                <Col span={12}>{new Date(purchaseDetails.updated_at).toLocaleDateString()}</Col>
               </Row>
               <Row>
                 <Col span={12}>
@@ -82,12 +73,7 @@ const ViewPurchaseDetails = () => {
             </Col>
           </Row>
         </Card>
-        <Button
-          type="primary"
-          icon={<HomeOutlined />}
-          className="mt-4"
-          onClick={() => window.history.back()}
-        >
+        <Button type="primary" icon={<HomeOutlined />} className="mt-4" onClick={() => window.history.back()}>
           Back to Purchases
         </Button>
       </div>

@@ -1,10 +1,5 @@
 import { Card, Row, Col, Typography, Statistic } from "antd";
-import {
-  BookOutlined,
-  UserOutlined,
-  DollarOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { BookOutlined, UserOutlined, DollarOutlined, PlusOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 
@@ -21,9 +16,7 @@ const Introduction = () => {
               title="Total Courses"
               value={10} // Replace with actual value
               prefix={<BookOutlined className="mr-2" />}
-              suffix={
-                <PlusOutlined className="ml-2 cursor-pointer text-blue-500" />
-              }
+              suffix={<PlusOutlined className="ml-2 cursor-pointer text-blue-500" />}
             />
           </Card>
         </Col>
@@ -33,9 +26,7 @@ const Introduction = () => {
               title="Total Subscribers"
               value={1000} // Replace with actual value
               prefix={<UserOutlined className="mr-2" />}
-              suffix={
-                <PlusOutlined className="ml-2 cursor-pointer text-blue-500" />
-              }
+              suffix={<PlusOutlined className="ml-2 cursor-pointer text-blue-500" />}
             />
           </Card>
         </Col>
@@ -45,9 +36,7 @@ const Introduction = () => {
               title="Total Balance"
               value={5000} // Replace with actual value
               prefix={<DollarOutlined className="mr-2" />}
-              suffix={
-                <PlusOutlined className="ml-2 cursor-pointer text-blue-500" />
-              }
+              suffix={<PlusOutlined className="ml-2 cursor-pointer text-blue-500" />}
             />
           </Card>
         </Col>

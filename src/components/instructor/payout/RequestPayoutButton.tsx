@@ -6,10 +6,7 @@ interface RequestPayoutButtonProps {
   disabled: boolean;
 }
 
-const RequestPayoutButton: React.FC<RequestPayoutButtonProps> = ({
-  onClick,
-  disabled,
-}) => {
+const RequestPayoutButton: React.FC<RequestPayoutButtonProps> = ({ onClick, disabled }) => {
   const handleButtonClick = () => {
     Modal.confirm({
       title: "Confirm Request Payout",
@@ -18,7 +15,7 @@ const RequestPayoutButton: React.FC<RequestPayoutButtonProps> = ({
         onClick();
         message.success("Payout request successful");
       },
-      onCancel() {},
+      onCancel() {}
     });
   };
 
@@ -30,7 +27,7 @@ const RequestPayoutButton: React.FC<RequestPayoutButtonProps> = ({
         style={{
           backgroundColor: disabled ? "#d9d9d9" : "#1a237e",
           color: disabled ? "rgba(0, 0, 0, 0.25)" : "#fff",
-          transition: "background-color 0.3s ease",
+          transition: "background-color 0.3s ease"
         }}
         onMouseEnter={(e) => {
           if (!disabled) {

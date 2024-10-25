@@ -30,41 +30,21 @@ const CreateButton = () => {
       sessionData.filter((session) => {
         return session.course_id.toString() === courseId.toString();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      }) as any,
+      }) as any
     );
   }
 
   return (
     <>
-      <Button
-        onClick={() => openCreateModal()}
-        className="rounded-md bg-[#1a237e] text-white"
-      >
+      <Button onClick={() => openCreateModal()} className="rounded-md bg-[#1a237e] text-white">
         Create Lesson
       </Button>
-      <Modal
-        title="Create Lesson"
-        open={isOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        width={800}
-        style={{ top: "20px" }}
-      >
+      <Modal title="Create Lesson" open={isOpen} onOk={handleOk} onCancel={handleCancel} width={800} style={{ top: "20px" }}>
         <Form form={form} layout="vertical">
-          <Form.Item
-            name="name"
-            label="Name"
-            rules={[
-              { required: true, message: "Please input the lesson name!" },
-            ]}
-          >
+          <Form.Item name="name" label="Name" rules={[{ required: true, message: "Please input the lesson name!" }]}>
             <Input />
           </Form.Item>
-          <Form.Item
-            name="course_id"
-            label="Course"
-            rules={[{ required: true, message: "Please select the course!" }]}
-          >
+          <Form.Item name="course_id" label="Course" rules={[{ required: true, message: "Please select the course!" }]}>
             <Select onChange={handleCourseChange}>
               {courses.map((course) => (
                 <Option key={course.id} value={course.id}>
@@ -73,11 +53,7 @@ const CreateButton = () => {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item
-            name="session_id"
-            label="Session"
-            rules={[{ required: true, message: "Please select the session!" }]}
-          >
+          <Form.Item name="session_id" label="Session" rules={[{ required: true, message: "Please select the session!" }]}>
             <Select>
               {sessions.map((session: any) => (
                 <Option key={session.id} value={session.id}>
@@ -86,41 +62,21 @@ const CreateButton = () => {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item
-            name="Image Url"
-            label="Image Url"
-            rules={[{ required: true, message: "Please input the image url!" }]}
-          >
+          <Form.Item name="Image Url" label="Image Url" rules={[{ required: true, message: "Please input the image url!" }]}>
             <Input />
           </Form.Item>
-          <Form.Item
-            name="Video Url"
-            initialValue=""
-            label="Video Url"
-            rules={[{ required: true, message: "Please input the video url!" }]}
-          >
+          <Form.Item name="Video Url" initialValue="" label="Video Url" rules={[{ required: true, message: "Please input the video url!" }]}>
             <Input />
           </Form.Item>
-          <Form.Item
-            label="Description"
-            name="description"
-            rules={[
-              { required: true, message: "Please input the description!" },
-            ]}
-          >
+          <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
             <Editor
               apiKey={TINY_API_KEY}
               initialValue={description}
               init={{
                 height: 300,
                 menubar: false,
-                plugins: [
-                  "advlist autolink lists link image charmap print preview anchor",
-                  "searchreplace visualblocks code fullscreen",
-                  "insertdatetime media table paste code help wordcount",
-                ],
-                toolbar:
-                  "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code",
+                plugins: ["advlist autolink lists link image charmap print preview anchor", "searchreplace visualblocks code fullscreen", "insertdatetime media table paste code help wordcount"],
+                toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code"
               }}
               onEditorChange={(content) => {
                 setDescription(content);
@@ -134,19 +90,13 @@ const CreateButton = () => {
             rules={[
               {
                 required: true,
-                message: "Please input the full time in minutes!",
-              },
+                message: "Please input the full time in minutes!"
+              }
             ]}
           >
             <Input type="number" />
           </Form.Item>
-          <Form.Item
-            name="position_order"
-            label="Position Order"
-            rules={[
-              { required: true, message: "Please input the position order!" },
-            ]}
-          >
+          <Form.Item name="position_order" label="Position Order" rules={[{ required: true, message: "Please input the position order!" }]}>
             <Input type="number" />
           </Form.Item>
         </Form>

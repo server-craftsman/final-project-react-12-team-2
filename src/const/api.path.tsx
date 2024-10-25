@@ -5,7 +5,7 @@ export const API = {
     LOGIN_GOOGLE: "api/auth/google",
     REGISTER_GOOGLE_PUBLIC: "api/users/google",
     REGISTER: "api/auth/register",
-    VERIFY_TOKEN: "api/auth/verify-token",
+    VERIFY_TOKEN: "api/auth/verify-token"
   },
   ADMIN: {
     GET_USERS: "api/users/search",
@@ -13,6 +13,6 @@ export const API = {
     UPDATE_USER: "api/users/:id",
     CHANGE_STATUS: "api/users/change-status",
     CHANGE_ROLE: "api/users/change-role",
-    DELETE_USER: "api/users/:id",
-  },
+    DELETE_USER: "api/users/:id"
+  }
 };

@@ -11,10 +11,7 @@ import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
 import CreateCourseButton from "./CreateButton";
 import FilterStatus from "./FilterStatus";
-import {
-  capitalizeWords,
-  courseStatusName,
-} from "../../../../const/constCommon";
+import { capitalizeWords, courseStatusName } from "../../../../const/constCommon";
 const { Option } = Select;
 
 const DisplayCourse: React.FC<{
@@ -34,12 +31,10 @@ const DisplayCourse: React.FC<{
 
   useEffect(() => {
     const coursesTempData = coursesData.map((course) => {
-      const category = categories.find(
-        (category) => category.id === course.category_id,
-      );
+      const category = categories.find((category) => category.id === course.category_id);
       return {
         ...course,
-        category_name: category?.name,
+        category_name: category?.name
       };
     }) as unknown as [];
     setCourses(coursesTempData);
@@ -48,34 +43,18 @@ const DisplayCourse: React.FC<{
   }, [statusFilter]); // Add statusFilter as a dependency
 
   const renderStatusChange = (record: Course) => {
-    const isWaitingApprove = [
-      CourseStatusEnum.new,
-      CourseStatusEnum.waiting_approve,
-    ].includes(record.status);
+    const isWaitingApprove = [CourseStatusEnum.new, CourseStatusEnum.waiting_approve].includes(record.status);
     const isReject = [CourseStatusEnum.reject].includes(record.status);
     return isWaitingApprove && !isReject ? (
-      <Button
-        type="primary"
-        onClick={() =>
-          message.info("Click here Send to admin to send to admin for approval")
-        }
-      >
+      <Button type="primary" onClick={() => message.info("Click here Send to admin to send to admin for approval")}>
         Waiting approval
       </Button>
     ) : isReject ? (
-      <Button
-        danger
-        type="dashed"
-        className="w-[140px]"
-        onClick={() => message.error("This course is rejected")}
-      >
+      <Button danger type="dashed" className="w-[140px]" onClick={() => message.error("This course is rejected")}>
         Rejected
       </Button>
     ) : (
-      <Select
-        defaultValue={capitalizeWords(record.status)}
-        style={{ width: 140 }}
-      >
+      <Select defaultValue={capitalizeWords(record.status)} style={{ width: 140 }}>
         <Option value="active">Active</Option>
         <Option value="inactive">Inactive</Option>
       </Select>
@@ -95,11 +74,7 @@ const DisplayCourse: React.FC<{
     setSelectedCourse(selectedRowKeys as unknown as any);
   }, [selectedRowKeys, setSelectedCourse]);
 
-  const filteredCoursesData = courses.filter(
-    (course) =>
-      course.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (statusFilter === "" || course.status === statusFilter),
-  );
+  const filteredCoursesData = courses.filter((course) => course.name.toLowerCase().includes(searchTerm.toLowerCase()) && (statusFilter === "" || course.status === statusFilter));
 
   const paginatedCourses = () => {
     const startIndex = (pageNum - 1) * pageSize;
@@ -112,7 +87,7 @@ const DisplayCourse: React.FC<{
     } else {
       const filtered = courses.filter((course) =>
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (course as any).name.toLowerCase().includes(searchText.toLowerCase()),
+        (course as any).name.toLowerCase().includes(searchText.toLowerCase())
       );
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setFilteredCourses(filtered as any);
@@ -124,58 +99,54 @@ const DisplayCourse: React.FC<{
     {
       title: "Name",
       key: "name",
-      dataIndex: "name",
+      dataIndex: "name"
     },
     {
       title: "Category Name",
       key: "category_name",
-      dataIndex: "category_name",
+      dataIndex: "category_name"
     },
     {
       title: "Status",
       key: "status",
       dataIndex: "status",
-      render: (status: CourseStatusEnum) => (
-        <button className={courseStatusColor[status]}>
-          {getCourseStatusName(status)}
-        </button>
-      ),
+      render: (status: CourseStatusEnum) => <button className={courseStatusColor[status]}>{getCourseStatusName(status)}</button>
     },
     {
       title: "Price",
       key: "price",
       dataIndex: "price",
-      render: (price: number) => moneyFormat(price),
+      render: (price: number) => moneyFormat(price)
     },
     {
       title: "Discount",
       key: "discount",
-      dataIndex: "discount",
+      dataIndex: "discount"
     },
     {
       title: "Created At",
       key: "created_at",
       dataIndex: "created_at",
-      render: (text: Date) => formatDate(text),
+      render: (text: Date) => formatDate(text)
     },
     {
       title: "Change Status",
       key: "change_status",
       dataIndex: "change_status",
-      render: (_, record) => renderStatusChange(record),
+      render: (_, record) => renderStatusChange(record)
     },
     {
       title: "Actions",
       key: "actions",
       dataIndex: "actions",
-      render: (_, record) => renderActions(record),
-    },
+      render: (_, record) => renderActions(record)
+    }
   ];
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[]) => {
       setSelectedRowKeys(selectedRowKeys as number[]);
-    },
+    }
   };
 
   const showModal = () => {
@@ -210,21 +181,13 @@ const DisplayCourse: React.FC<{
           </Button>
         </div>
       </div>
-      <Table
-        rowSelection={rowSelection}
-        columns={columns}
-        dataSource={filteredCoursesData && paginatedCourses()}
-        rowKey="id"
-        pagination={false}
-      />
+      <Table rowSelection={rowSelection} columns={columns} dataSource={filteredCoursesData && paginatedCourses()} rowKey="id" pagination={false} />
       <div className="mt-5 flex justify-end">
         <Pagination
           current={pageNum}
           pageSize={pageSize}
           total={totalItems}
-          showTotal={(total, range) =>
-            `${range[0]}-${range[1]} of ${total} items`
-          }
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
           onChange={(page, pageSize) => {
             setPageNum(page);
             setPageSize(pageSize);
@@ -232,14 +195,7 @@ const DisplayCourse: React.FC<{
           showSizeChanger
         />
       </div>
-      <Modal
-        title="Confirm"
-        open={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        okText="Yes"
-        cancelText="No"
-      >
+      <Modal title="Confirm" open={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText="Yes" cancelText="No">
         <p>Are you sure you want to send the selected courses to admin?</p>
       </Modal>
     </>

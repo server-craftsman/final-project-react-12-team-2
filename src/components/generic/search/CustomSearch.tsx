@@ -9,11 +9,7 @@ interface SearchProps {
   className?: string;
 }
 
-const CustomSearch: React.FC<SearchProps> = ({
-  onSearch,
-  placeholder = "Search...",
-  className,
-}) => {
+const CustomSearch: React.FC<SearchProps> = ({ onSearch, placeholder = "Search...", className }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +32,7 @@ const CustomSearch: React.FC<SearchProps> = ({
         style={{
           boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
           transition: "all 0.3s ease",
-          height: "40px",
+          height: "40px"
         }}
       />
       <Button
@@ -48,7 +44,7 @@ const CustomSearch: React.FC<SearchProps> = ({
           marginLeft: "-2px",
           height: "40px",
           display: "flex",
-          alignItems: "center",
+          alignItems: "center"
         }}
       >
         <SearchOutlined className="text-xl" />

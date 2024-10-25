@@ -6,25 +6,12 @@ interface CategoryFilterProps {
   onCategoryChange: (category: string) => void;
 }
 
-const CategoryFilter: React.FC<CategoryFilterProps> = ({
-  activeCategory,
-  onCategoryChange,
-}) => {
-  const categories = [
-    "All Courses",
-    "WEB DEVELOPMENT",
-    "ARTIFICIAL INTELLIGENCE",
-    "DATA SCIENCE",
-    "PROGRAMMING LANGUAGES",
-  ];
+const CategoryFilter: React.FC<CategoryFilterProps> = ({ activeCategory, onCategoryChange }) => {
+  const categories = ["All Courses", "WEB DEVELOPMENT", "ARTIFICIAL INTELLIGENCE", "DATA SCIENCE", "PROGRAMMING LANGUAGES"];
 
   const items = categories.map((category) => ({
     key: category,
-    label: (
-      <span className="px-2 py-1 text-xs text-indigo-900 transition-colors duration-300 hover:text-[#8529ff] sm:px-4 sm:py-2 sm:text-sm md:text-base lg:text-lg">
-        {category}
-      </span>
-    ),
+    label: <span className="px-2 py-1 text-xs text-indigo-900 transition-colors duration-300 hover:text-[#8529ff] sm:px-4 sm:py-2 sm:text-sm md:text-base lg:text-lg">{category}</span>
   }));
 
   return (
@@ -39,7 +26,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
           borderBottom: "2px solid #8529ff",
           fontFamily: "Playfair Display, serif",
           fontSize: "14px",
-          color: "#8529ff",
+          color: "#8529ff"
         }}
         tabBarGutter={8}
       />

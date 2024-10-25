@@ -21,15 +21,7 @@ const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange }) => {
   }, []); // Empty dependency array means this runs once on mount
 
   return (
-    <Select
-      placeholder="Select Status"
-      onChange={(value) =>
-        onStatusChange(value === "all" ? null : value === "true" ? true : false)
-      }
-      allowClear
-      style={{ width: 120, marginBottom: 10 }}
-      defaultValue="all"
-    >
+    <Select placeholder="Select Status" onChange={(value) => onStatusChange(value === "all" ? null : value === "true" ? true : false)} allowClear style={{ width: 120, marginBottom: 10 }} defaultValue="all">
       <Select.Option value="all">All</Select.Option>
       <Select.Option value="true">Active</Select.Option>
       <Select.Option value="false">Inactive</Select.Option>

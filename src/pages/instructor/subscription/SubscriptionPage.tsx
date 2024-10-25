@@ -10,86 +10,54 @@ import { Subscriptions } from "../../../models/prototype/Subscriptions";
 import { User } from "../../../models/prototype/User";
 
 const SubscriptionPage: React.FC = () => {
-  const [filteredSubscriptions, setFilteredSubscriptions] = useState<
-    Subscriptions[]
-  >([]);
+  const [filteredSubscriptions, setFilteredSubscriptions] = useState<Subscriptions[]>([]);
 
   useEffect(() => {
-    const instructorSubscriptions = subscriptionData.filter(
-      (subscription: Subscriptions) => {
-        const user = data.users.find(
-          (user: any) => user.id === subscription.instructor_id,
-        );
-        return user?.role === UserRole.instructor;
-      },
-    );
+    const instructorSubscriptions = subscriptionData.filter((subscription: Subscriptions) => {
+      const user = data.users.find((user: any) => user.id === subscription.instructor_id);
+      return user?.role === UserRole.instructor;
+    });
     setFilteredSubscriptions(instructorSubscriptions);
   }, []);
 
   const handleSearch = (value: string) => {
     const lowercasedValue = value.toLowerCase();
     const filtered = subscriptionData.filter((subscription: Subscriptions) => {
-      const user = data.users.find(
-        (user: any) => user.id === subscription.instructor_id,
-      );
-      return (
-        user?.role === UserRole.instructor &&
-        (user?.name.toLowerCase().includes(lowercasedValue) ||
-          user?.email.toLowerCase().includes(lowercasedValue) ||
-          user?.phone_number.toLowerCase().includes(lowercasedValue) ||
-          subscription.id.toLowerCase().includes(lowercasedValue))
-      );
+      const user = data.users.find((user: any) => user.id === subscription.instructor_id);
+      return user?.role === UserRole.instructor && (user?.name.toLowerCase().includes(lowercasedValue) || user?.email.toLowerCase().includes(lowercasedValue) || user?.phone_number.toLowerCase().includes(lowercasedValue) || subscription.id.toLowerCase().includes(lowercasedValue));
     });
     setFilteredSubscriptions(filtered);
   };
 
-  const subscriptionsWithUserData = filteredSubscriptions.map(
-    (subscription) => {
-      const user = data.users.find(
-        (user: any) => user.id === subscription.instructor_id,
-      );
-      return {
-        ...subscription,
-        user: {
-          name: user?.name,
-          email: user?.email,
-          phone_number: user?.phone_number,
-          avatar_url: user?.avatar_url,
-        },
-      };
-    },
-  );
+  const subscriptionsWithUserData = filteredSubscriptions.map((subscription) => {
+    const user = data.users.find((user: any) => user.id === subscription.instructor_id);
+    return {
+      ...subscription,
+      user: {
+        name: user?.name,
+        email: user?.email,
+        phone_number: user?.phone_number,
+        avatar_url: user?.avatar_url
+      }
+    };
+  });
 
   const items = [
     {
       key: "1",
       label: "Subscribed",
-      children: (
-        <InstructorSubscribed
-          subscriptions={subscriptionsWithUserData}
-          users={data.users as unknown as User[]}
-        />
-      ),
+      children: <InstructorSubscribed subscriptions={subscriptionsWithUserData} users={data.users as unknown as User[]} />
     },
     {
       key: "2",
       label: "Subscriber",
-      children: (
-        <InstructorSubscriber
-          subscriptions={subscriptionsWithUserData}
-          users={data.users as unknown as User[]}
-        />
-      ),
-    },
+      children: <InstructorSubscriber subscriptions={subscriptionsWithUserData} users={data.users as unknown as User[]} />
+    }
   ];
 
   return (
     <div>
-      <CustomSearch
-        onSearch={handleSearch}
-        placeholder="Search instructors..."
-        className="search-input"
-      />
+      <CustomSearch onSearch={handleSearch} placeholder="Search instructors..." className="search-input" />
       <Tabs defaultActiveKey="1" items={items} />
     </div>
   );

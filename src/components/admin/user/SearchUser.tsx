@@ -15,13 +15,7 @@ const SearchUser = ({ onSearch }: { onSearch: (query: string) => void }) => {
 
   return (
     <div className="mb-4 flex items-center justify-end">
-      <Input
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search user ..."
-        suffix={<SearchOutlined />}
-        className="rounded-md border"
-      />
+      <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search user ..." suffix={<SearchOutlined />} className="rounded-md border" />
     </div>
   );
 };

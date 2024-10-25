@@ -8,7 +8,7 @@ const RegisterPage = lazy(() => import("../../pages/register/RegisterPage"));
 
 const authRoutes: RouteObject[] = [
   { path: "/login", element: <LoginPage /> },
-  { path: "/register", element: <RegisterPage /> },
+  { path: "/register", element: <RegisterPage /> }
 ];
 
 export default authRoutes;

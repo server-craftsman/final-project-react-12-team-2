@@ -2,7 +2,7 @@ export enum UserRole {
   admin = "admin",
   student = "student",
   instructor = "instructor",
-  all = "all",
+  all = "all"
 }
 
 export interface User {

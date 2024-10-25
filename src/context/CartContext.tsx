@@ -15,7 +15,7 @@ export interface CartContextType {
 const defaultCartContext: CartContextType = {
   cartItems: [],
   addToCart: () => {},
-  removeFromCart: () => {},
+  removeFromCart: () => {}
 };
 
 export const CartContext = createContext<CartContextType>(defaultCartContext);
@@ -28,16 +28,14 @@ export const useCart = () => {
   return context;
 };
 
-export const CartProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const addToCart = (item: Carts) => {
     const cartItem: CartItem = {
       ...item,
       title: item.cart_no,
-      discountedPrice: item.price_paid,
+      discountedPrice: item.price_paid
     };
     setCartItems((prevItems) => [...prevItems, cartItem]);
   };
@@ -49,7 +47,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({
   const value = {
     cartItems,
     addToCart,
-    removeFromCart,
+    removeFromCart
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

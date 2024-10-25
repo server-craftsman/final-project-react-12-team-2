@@ -8,12 +8,7 @@ interface PageNumberProps {
   onChange: (page: number) => void;
 }
 
-const PageNumber: React.FC<PageNumberProps> = ({
-  currentPage,
-  total,
-  pageSize,
-  onChange,
-}) => {
+const PageNumber: React.FC<PageNumberProps> = ({ currentPage, total, pageSize, onChange }) => {
   return (
     <div>
       <Pagination
@@ -26,7 +21,7 @@ const PageNumber: React.FC<PageNumberProps> = ({
         style={{
           fontFamily: "Playfair Display, serif",
           fontSize: "16px",
-          color: "#4a4a4a",
+          color: "#4a4a4a"
         }}
       />
     </div>

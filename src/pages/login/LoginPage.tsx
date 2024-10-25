@@ -1,12 +1,6 @@
 import { Link } from "react-router-dom";
 import { Form, Input, Button, Divider, Modal } from "antd";
-import {
-  UserOutlined,
-  LockOutlined,
-  HomeOutlined,
-  EyeInvisibleOutlined,
-  EyeTwoTone,
-} from "@ant-design/icons";
+import { UserOutlined, LockOutlined, HomeOutlined, EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import LoginGoogle from "./LoginGoogle";
 import { useState } from "react";
@@ -24,17 +18,13 @@ import { HTTP_STATUS } from "../../app/enums";
 import { HttpException } from "../../app/exceptions";
 import { validation } from "../../utils";
 
-import {
-  RegisterStudentPublicParams,
-  RegisterInstructorPublicParams,
-} from "../../models/api/request/authentication/auth.request.model";
+import { RegisterStudentPublicParams, RegisterInstructorPublicParams } from "../../models/api/request/authentication/auth.request.model";
 
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [googleIdToken, setGoogleIdToken] = useState<string | null>(null);
-  const [isSignUpModalVisible, setIsSignUpModalVisible] =
-    useState<boolean>(false);
+  const [isSignUpModalVisible, setIsSignUpModalVisible] = useState<boolean>(false);
   const { handleLogin, registerGooglePublic } = useAuth();
   const navigate = useNavigate();
 
@@ -55,7 +45,7 @@ const LoginPage = () => {
     try {
       const result = await AuthService.login({
         email: values.username,
-        password: values.password,
+        password: values.password
       });
 
       if (result.status === HTTP_STATUS.OK && result.data?.data?.token) {
@@ -71,7 +61,7 @@ const LoginPage = () => {
           draggable: true,
           progress: undefined,
           theme: "colored",
-          style: { backgroundColor: "#1a237e" },
+          style: { backgroundColor: "#1a237e" }
         });
 
         const userRole = localStorage.getItem("role");
@@ -211,83 +201,32 @@ const LoginPage = () => {
             <Lottie animationData={loginAnimation} loop={true} />
           </Link>
           <h2 className="text-4xl font-extrabold text-white">Edu Learn</h2>
-          <p className="mt-4 text-center text-lg text-white">
-            Elevate Your Learning Experience
-          </p>
+          <p className="mt-4 text-center text-lg text-white">Elevate Your Learning Experience</p>
         </div>
         <div className="w-full bg-gradient-to-br from-white to-gray-100 p-12 md:w-1/2">
-          <Link
-            to="/"
-            className="mb-8 flex items-center text-lg text-[#1a237e] transition-colors duration-300 hover:text-[#1a237e]/80"
-          >
+          <Link to="/" className="mb-8 flex items-center text-lg text-[#1a237e] transition-colors duration-300 hover:text-[#1a237e]/80">
             <HomeOutlined className="mr-2" />
             Back to Home
           </Link>
           <div className="mb-8">
-            <h2 className="text-4xl font-extrabold text-[#1a237e]">
-              Welcome Back
-            </h2>
+            <h2 className="text-4xl font-extrabold text-[#1a237e]">Welcome Back</h2>
             <p className="mt-2 text-gray-600">Please sign in to your account</p>
           </div>
-          <Form
-            name="normal_login"
-            className="login-form"
-            initialValues={{ remember: true }}
-            onFinish={onFinish}
-          >
-            <Form.Item
-              name="username"
-              rules={[{ validator: validateUsername }]}
-            >
-              <Input
-                prefix={
-                  <UserOutlined className="site-form-item-icon text-[#1a237e]" />
-                }
-                placeholder="Username or Email"
-                className="rounded-lg px-4 py-2"
-              />
+          <Form name="normal_login" className="login-form" initialValues={{ remember: true }} onFinish={onFinish}>
+            <Form.Item name="username" rules={[{ validator: validateUsername }]}>
+              <Input prefix={<UserOutlined className="site-form-item-icon text-[#1a237e]" />} placeholder="Username or Email" className="rounded-lg px-4 py-2" />
             </Form.Item>
-            <Form.Item
-              name="password"
-              rules={[{ validator: validatePassword }]}
-            >
-              <Input
-                prefix={
-                  <LockOutlined className="site-form-item-icon text-indigo-600" />
-                }
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                className="rounded-lg px-4 py-2"
-                suffix={
-                  showPassword ? (
-                    <EyeTwoTone
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="cursor-pointer text-indigo-600"
-                    />
-                  ) : (
-                    <EyeInvisibleOutlined
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="cursor-pointer text-indigo-600"
-                    />
-                  )
-                }
-              />
+            <Form.Item name="password" rules={[{ validator: validatePassword }]}>
+              <Input prefix={<LockOutlined className="site-form-item-icon text-indigo-600" />} type={showPassword ? "text" : "password"} placeholder="Password" className="rounded-lg px-4 py-2" suffix={showPassword ? <EyeTwoTone onClick={() => setShowPassword(!showPassword)} className="cursor-pointer text-indigo-600" /> : <EyeInvisibleOutlined onClick={() => setShowPassword(!showPassword)} className="cursor-pointer text-indigo-600" />} />
             </Form.Item>
             <Form.Item>
-              <Link
-                className="login-form-forgot text-sm text-indigo-600 transition-colors duration-300 hover:text-indigo-800"
-                to="/forgot-password"
-              >
+              <Link className="login-form-forgot text-sm text-indigo-600 transition-colors duration-300 hover:text-indigo-800" to="/forgot-password">
                 Forgot password?
               </Link>
             </Form.Item>
 
             <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                className="login-form-button w-full rounded-lg bg-gradient-to-r from-[#1a237e] to-[#1a237e]/80 py-3 text-lg font-semibold text-white shadow-md transition-all duration-300 hover:from-[#1a237e]/90 hover:to-[#1a237e]/70"
-              >
+              <Button type="primary" htmlType="submit" className="login-form-button w-full rounded-lg bg-gradient-to-r from-[#1a237e] to-[#1a237e]/80 py-3 text-lg font-semibold text-white shadow-md transition-all duration-300 hover:from-[#1a237e]/90 hover:to-[#1a237e]/70">
                 Sign In
               </Button>
             </Form.Item>
@@ -297,23 +236,14 @@ const LoginPage = () => {
             </Divider>
             <GoogleOAuthProvider clientId={CLIENT_ID}>
               <Form.Item>
-                <LoginGoogle
-                  onLoginError={handleGoogleLoginError}
-                  onLoginSuccess={onFinishGoogle}
-                />
+                <LoginGoogle onLoginError={handleGoogleLoginError} onLoginSuccess={onFinishGoogle} />
               </Form.Item>
             </GoogleOAuthProvider>
 
             {loginError && (
               <p className="mt-4 text-center text-red-500">
                 {loginError}
-                {loginError.includes("ERR_BLOCKED_BY_CLIENT") && (
-                  <span>
-                    {" "}
-                    This may be due to ad-blocking or privacy protection
-                    software. Please disable these and try again.
-                  </span>
-                )}
+                {loginError.includes("ERR_BLOCKED_BY_CLIENT") && <span> This may be due to ad-blocking or privacy protection software. Please disable these and try again.</span>}
               </p>
             )}
 
@@ -334,12 +264,7 @@ const LoginPage = () => {
         </div>
       </div>
 
-      <Modal
-        title="Sign Up"
-        open={isSignUpModalVisible}
-        onCancel={handleSignUpModalCancel}
-        footer={null}
-      >
+      <Modal title="Sign Up" open={isSignUpModalVisible} onCancel={handleSignUpModalCancel} footer={null}>
         <SignUpForm googleIdToken={googleIdToken} />
       </Modal>
     </div>

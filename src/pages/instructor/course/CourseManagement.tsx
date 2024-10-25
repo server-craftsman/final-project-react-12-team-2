@@ -10,51 +10,51 @@ const CourseManagement = () => {
     {
       name: "New",
       color: "blue",
-      title: "(This is a new course)",
+      title: "(This is a new course)"
     },
     {
       name: "Waiting Approve",
       color: "gold",
-      title: "(Awaiting approval from admin)",
+      title: "(Awaiting approval from admin)"
     },
     {
       name: "Approve",
       color: "green",
-      title: "(Course has been approved)",
+      title: "(Course has been approved)"
     },
     {
       name: "Reject",
       color: "volcano",
-      title: "(Course has been rejected)",
+      title: "(Course has been rejected)"
     },
     {
       name: "Active",
       color: "geekblue",
-      title: "(Course is currently active)",
+      title: "(Course is currently active)"
     },
     {
       name: "Inactive",
       color: "gray",
-      title: "(Course is currently inactive)",
-    },
+      title: "(Course is currently inactive)"
+    }
   ];
 
   const itemsTab = [
     {
       key: "course",
       label: "Course",
-      children: <CourseComponent />,
+      children: <CourseComponent />
     },
     {
       key: "session",
       label: "Session",
-      children: <SessionComponent />,
+      children: <SessionComponent />
     },
     {
       key: "lesson",
       label: "Lesson",
-      children: <LessionComponent />,
-    },
+      children: <LessionComponent />
+    }
   ];
 
   const renderTagMenu = () => {

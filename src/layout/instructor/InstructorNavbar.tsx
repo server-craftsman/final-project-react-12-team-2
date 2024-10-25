@@ -1,11 +1,6 @@
 import React from "react";
 import { Layout, Menu } from "antd";
-import {
-  DashboardOutlined,
-  UserOutlined,
-  FileTextOutlined,
-  StarOutlined,
-} from "@ant-design/icons";
+import { DashboardOutlined, UserOutlined, FileTextOutlined, StarOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import useResponsiveCollapse from "../../hooks/useResponsiveCollapse";
 const { Sider } = Layout;
@@ -18,23 +13,23 @@ const InstructorNavbar: React.FC = () => {
     {
       key: "1",
       icon: <DashboardOutlined />,
-      label: <Link to="/instructor/">Dashboard</Link>,
+      label: <Link to="/instructor/">Dashboard</Link>
     },
 
     {
       key: "2",
       icon: <FileTextOutlined />,
-      label: <Link to="/instructor/courses">Manage Courses</Link>,
+      label: <Link to="/instructor/courses">Manage Courses</Link>
     },
     {
       key: "3",
       icon: <FileTextOutlined />,
-      label: <Link to="/instructor/purchases">Sales History</Link>,
+      label: <Link to="/instructor/purchases">Sales History</Link>
     },
     {
       key: "4",
       icon: <FileTextOutlined />,
-      label: <Link to="/instructor/payout">Manage Payout</Link>,
+      label: <Link to="/instructor/payout">Manage Payout</Link>
     },
 
     // {
@@ -45,18 +40,18 @@ const InstructorNavbar: React.FC = () => {
     {
       key: "5",
       icon: <StarOutlined />,
-      label: <Link to="/instructor/reviews">Reviews</Link>,
+      label: <Link to="/instructor/reviews">Reviews</Link>
     },
     {
       key: "6",
       icon: <FileTextOutlined />,
-      label: <Link to="/instructor/subscription">Subscription</Link>,
+      label: <Link to="/instructor/subscription">Subscription</Link>
     },
     {
       key: "7",
       icon: <UserOutlined />,
-      label: <Link to="/instructor/setting">Setting</Link>,
-    },
+      label: <Link to="/instructor/setting">Setting</Link>
+    }
   ];
 
   return (
@@ -72,14 +67,8 @@ const InstructorNavbar: React.FC = () => {
     >
       <Link to="/">
         <div className="logo flex items-center space-x-4 p-4">
-          <img
-            src={logo1}
-            alt="logo"
-            className="h-12 w-12 rounded-full border-2 border-white"
-          />
-          {!collapsed && (
-            <h1 className="text-xl font-bold text-white">Instructor Panel</h1>
-          )}
+          <img src={logo1} alt="logo" className="h-12 w-12 rounded-full border-2 border-white" />
+          {!collapsed && <h1 className="text-xl font-bold text-white">Instructor Panel</h1>}
         </div>
       </Link>
       <Menu theme="dark" mode="vertical" items={menuItems} />

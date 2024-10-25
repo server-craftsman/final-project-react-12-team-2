@@ -7,13 +7,13 @@ const Setting = () => {
     {
       label: "Information",
       key: "1",
-      children: <StudentInformation />,
+      children: <StudentInformation />
     },
     {
       label: "Change Password",
       key: "2",
-      children: <ChangePassword visible={true} currentPassword="" />,
-    },
+      children: <ChangePassword visible={true} currentPassword="" />
+    }
   ];
 
   return (

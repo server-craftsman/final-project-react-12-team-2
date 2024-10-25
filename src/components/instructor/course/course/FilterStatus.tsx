@@ -31,13 +31,7 @@ const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange }) => {
   };
 
   return (
-    <Select
-      style={{ width: 200 }}
-      placeholder="Filter by status"
-      allowClear
-      onChange={handleChange}
-      defaultValue=""
-    >
+    <Select style={{ width: 200 }} placeholder="Filter by status" allowClear onChange={handleChange} defaultValue="">
       <Select.Option key="all" value="">
         All
       </Select.Option>

@@ -16,23 +16,18 @@ const ManageCourses = () => {
     {
       key: "1",
       label: "Courses",
-      children: (
-        <CoursesManagement
-          searchTerm={searchTerm}
-          statusFilter={statusFilter}
-        />
-      ),
+      children: <CoursesManagement searchTerm={searchTerm} statusFilter={statusFilter} />
     },
     {
       key: "2",
       label: "Sessions",
-      children: <SessionManagement searchTerm={searchTerm} />,
+      children: <SessionManagement searchTerm={searchTerm} />
     },
     {
       key: "3",
       label: "Lessons",
-      children: <LessonManagement searchTerm={searchTerm} />,
-    },
+      children: <LessonManagement searchTerm={searchTerm} />
+    }
   ];
 
   const handleSearch = (value: string) => {
@@ -50,21 +45,10 @@ const ManageCourses = () => {
   return (
     <div className="w-full flex-col gap-4">
       <div className="flex items-center justify-between">
-        <CustomSearch
-          onSearch={handleSearch}
-          placeholder={`Search ${activeKey === "1" ? "courses" : activeKey === "2" ? "sessions" : "lessons"}...`}
-          className="search-input mb-4"
-        />
-        {activeKey === "1" && (
-          <FilterStatus onStatusChange={handleStatusChange} />
-        )}
+        <CustomSearch onSearch={handleSearch} placeholder={`Search ${activeKey === "1" ? "courses" : activeKey === "2" ? "sessions" : "lessons"}...`} className="search-input mb-4" />
+        {activeKey === "1" && <FilterStatus onStatusChange={handleStatusChange} />}
       </div>
-      <Tabs
-        defaultActiveKey="1"
-        activeKey={activeKey}
-        onChange={handleTabChange}
-        items={items}
-      />
+      <Tabs defaultActiveKey="1" activeKey={activeKey} onChange={handleTabChange} items={items} />
     </div>
   );
 };

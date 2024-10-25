@@ -7,10 +7,7 @@ const PurchaseCheckbox: React.FC<{
 }> = ({ checked, onChange }) => {
   return (
     <div>
-      <Checkbox
-        checked={checked}
-        onChange={(e) => onChange(e.target.checked)}
-      />
+      <Checkbox checked={checked} onChange={(e) => onChange(e.target.checked)} />
     </div>
   );
 };

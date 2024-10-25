@@ -6,10 +6,7 @@ interface RequestPurchasesProps {
   disabled: boolean; // Add this prop to control button state
 }
 
-const RequestPurchases: React.FC<RequestPurchasesProps> = ({
-  onRequestComplete,
-  disabled,
-}) => {
+const RequestPurchases: React.FC<RequestPurchasesProps> = ({ onRequestComplete, disabled }) => {
   const [isRequesting, setIsRequesting] = useState(false);
 
   const handleRequestPurchases = async () => {
@@ -21,7 +18,7 @@ const RequestPurchases: React.FC<RequestPurchasesProps> = ({
       onRequestComplete();
       notification.success({
         message: "Success",
-        description: "Payout request completed successfully.",
+        description: "Payout request completed successfully."
       });
     } catch (error) {
       console.error("Error requesting purchases:", error);
@@ -33,7 +30,7 @@ const RequestPurchases: React.FC<RequestPurchasesProps> = ({
   const showConfirm = () => {
     Modal.confirm({
       title: "Are you sure you want to create a payout?",
-      onOk: handleRequestPurchases,
+      onOk: handleRequestPurchases
     });
   };
 

@@ -15,5 +15,5 @@ export enum CartStatusEnum {
   new,
   waiting_paid,
   cancel,
-  completed,
+  completed
 }

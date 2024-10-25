@@ -22,7 +22,7 @@ export const ROUTER_URL: RoutePaths = {
     CATEGORIES_DETAILS_ID: "/admin/categories/categories-details/:id",
     COURSES_LOG: "/admin/courses-log",
     SUBSCRIPTION: "/admin/subscription",
-    REQUEST_ACCOUNT: "/admin/request-account",
+    REQUEST_ACCOUNT: "/admin/request-account"
   },
   INSTRUCTOR: {
     BASE: "/instructor",
@@ -35,14 +35,14 @@ export const ROUTER_URL: RoutePaths = {
     VIEW_TRANSACTIONS: "/instructor/payout/view-transactions/:id",
     ORDERS: "/instructor/orders",
     COURSES: "/instructor/courses",
-    SUBSCRIPTION: "/instructor/subscription",
+    SUBSCRIPTION: "/instructor/subscription"
   },
   STUDENT: {
     BASE: "/dashboard-student",
     SETTING: "/dashboard-student/student-setting",
     ORDERS: "/dashboard-student/student-orders",
     SUBSCRIPTION: "/dashboard-student/student-subscription",
-    EDIT_USER: "/dashboard-student/student/edit-user/:id",
+    EDIT_USER: "/dashboard-student/student/edit-user/:id"
   },
   COMMON: {
     HOME: "/",
@@ -50,12 +50,11 @@ export const ROUTER_URL: RoutePaths = {
     COURSE_BY_ID: "/course/:id",
     COURSE_BY_ID_LESSON: "/course/:courseId/lesson/:lessonId",
     COURSE_BY_ID_SESSION: "/course/:courseId/session/:sessionId",
-    COURSE_BY_ID_SESSION_LESSON:
-      "/course/:courseId/session/:sessionId/lesson/:lessonId",
+    COURSE_BY_ID_SESSION_LESSON: "/course/:courseId/session/:sessionId/lesson/:lessonId",
     SESSION_DETAILS: "/session-details",
     LESSON_DETAILS: "/lesson-details",
     CART: "/cart",
-    ABOUT: "/about",
+    ABOUT: "/about"
   },
-  UNAUTHORIZED: "/unauthorized",
+  UNAUTHORIZED: "/unauthorized"
 };
