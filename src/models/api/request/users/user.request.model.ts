@@ -10,3 +10,9 @@ export interface UpdateUserParams {
   bank_account_name: string;
   dob: string;
 }
+
+export interface ChangePasswordParams {
+  user_id: string;
+  old_password: string;
+  new_password: string;
+}

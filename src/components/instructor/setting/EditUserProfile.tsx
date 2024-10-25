@@ -1,42 +1,91 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Form, Input, Button, message, DatePicker } from "antd";
-import { User } from "../../../models/prototype/User";
-import usersData from "../../../data/users.json";
+import { Form, Input, Button, message, DatePicker, Avatar } from "antd";
 import { Rule } from "antd/es/form";
 import moment from "moment";
 import { Editor } from "@tinymce/tinymce-react";
 import { TINY_API_KEY } from "../../../services/config/apiClientTiny";
+import { UserService } from "../../../services/admin/user.service";
+import { GetCurrentUserResponse } from "../../../models/api/responsive/authentication/auth.responsive.model";
+import { formatDate } from "../../../utils/helper";
+import { UpdateUserParams } from "../../../models/api/request/users/user.request.model";
+import tinymce from "tinymce";
+
 const EditUserProfile = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [user, setUser] = useState<User | null>(null);
+  // const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<GetCurrentUserResponse | null>(null);
   const [form] = Form.useForm();
 
+  // useEffect(() => {
+  //   const userData = usersData.users.find((user) => user.id === id);
+  //   if (userData) {
+  //     const userWithDateDob = {
+  //       ...userData,
+  //       dob: userData.dob ? moment(userData.dob) : null,
+  //     };
+  //     setUser(userWithDateDob as unknown as User);
+  //     form.setFieldsValue({
+  //       name: userData.name,
+  //       email: userData.email,
+  //       phone_number: userData.phone_number,
+  //       role: userData.role,
+  //       status: userData.status ? "Active" : "Inactive",
+  //       description: userData.description,
+  //       dob: userData.dob ? moment(userData.dob) : null,
+  //     });
+  //   }
+  // }, [id, form]);
+
   useEffect(() => {
-    const userData = usersData.users.find((user) => user.id === id);
-    if (userData) {
-      const userWithDateDob = {
-        ...userData,
-        dob: userData.dob ? moment(userData.dob) : null,
-      };
-      setUser(userWithDateDob as unknown as User);
-      form.setFieldsValue({
-        name: userData.name,
-        email: userData.email,
-        phone_number: userData.phone_number,
-        role: userData.role,
-        status: userData.status ? "Active" : "Inactive",
-        description: userData.description,
-        dob: userData.dob ? moment(userData.dob) : null,
+    UserService.getUserDetails(id as string).then((res) => {
+      setUser({
+        success: true,
+        data: {
+          ...res.data.data,
+          verification_token_expires: res.data.data.verification_token_expires 
+            ? res.data.data.verification_token_expires.toString() 
+            : "", // Provide a default value if undefined
+          created_at: formatDate(new Date(res.data.data.created_at)),
+          updated_at: formatDate(new Date(res.data.data.updated_at)),
+          dob: new Date(res.data.data.dob), // Ensure dob is a Date object
+        }
       });
-    }
+      form.setFieldsValue({
+        name: res.data.data.name,
+        email: res.data.data.email,
+        phone_number: res.data.data.phone_number,
+        role: res.data.data.role,
+        status: res.data.data.status ? "Active" : "Inactive", 
+        description: res.data.data.description,
+        dob: res.data.data.dob ? moment(res.data.data.dob) : null,
+      });
+    });
   }, [id, form]);
 
-  const handleFormSubmit = (values: unknown) => {
-    console.log("Updated User Information:", values);
-    message.success("Profile updated successfully");
-    navigate("/instructor/instructor-info");
+  const handleFormSubmit = (values: UpdateUserParams) => {
+    const editorContent = tinymce.get('description-editor')?.getContent() || "";
+    const updatedValues = {
+      ...values,
+      description: editorContent,
+      dob: moment(values.dob).isValid() ? moment(values.dob).format("YYYY-MM-DD") : "",
+      avatar_url: "",
+      video_url: "",
+      bank_name: "",
+      bank_account_no: "",
+      bank_account_name: "",
+    };
+
+    UserService.updateUser(id as string, updatedValues)
+      .then(() => {
+        message.success("Profile updated successfully");
+        navigate("/admin/admin-info");
+      })
+      .catch((error) => {
+        console.error("Error updating profile:", error);
+        message.error("Failed to update profile");
+      });
   };
 
   if (!user) {
@@ -107,6 +156,8 @@ const EditUserProfile = () => {
         >
           <Input />
         </Form.Item>
+        <Avatar src={user.data.avatar_url} size={100} />
+
         <Form.Item
           label="Description"
           name="description"

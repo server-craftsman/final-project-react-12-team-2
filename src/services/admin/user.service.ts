@@ -5,12 +5,12 @@ import {
   ChangeStatusParams,
   ChangeRoleParams,
 } from "../../models/api/request/admin/user.request.model";
-import { UpdateUserParams } from "../../models/api/request/users/user.request.model";
+import { UpdateUserParams, ChangePasswordParams } from "../../models/api/request/users/user.request.model";
 import {
   GetUsersAdminResponse,
   GetUserDetailsResponse,
 } from "../../models/api/responsive/admin/user.responsive.model";
-import { GetCurrentUserResponse } from "../../models/api/responsive/authentication/auth.responsive.model";
+import { GetCurrentUserResponse, ChangePasswordResponse } from "../../models/api/responsive/authentication/auth.responsive.model";
 
 export const UserService = {
   getUsersAdmin(params: GetUsersAdminParams) {
@@ -51,6 +51,15 @@ export const UserService = {
   changeRole(userId: string, params: ChangeRoleParams) {
     return BaseService.put<GetCurrentUserResponse>({
       url: API.ADMIN.CHANGE_ROLE.replace(":id", userId),
+      payload: params,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+  },
+  changePassword(userId: string, params: ChangePasswordParams) {
+    return BaseService.put<ChangePasswordResponse>({
+      url: API.ADMIN.CHANGE_PASSWORD.replace(":id", userId),
       payload: params,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,

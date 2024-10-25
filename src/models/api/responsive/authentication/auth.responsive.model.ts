@@ -55,3 +55,9 @@ export interface RegisterGooglePublicResponse {
     __v: number;
   };
 }
+
+export interface ChangePasswordResponse {
+  success: boolean;
+  data: null;
+}
+
