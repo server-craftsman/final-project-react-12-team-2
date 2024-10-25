@@ -9,74 +9,54 @@ import { UserService } from "../../../services/admin/user.service";
 import { GetCurrentUserResponse } from "../../../models/api/responsive/authentication/auth.responsive.model";
 import { formatDate } from "../../../utils/helper";
 import { UpdateUserParams } from "../../../models/api/request/users/user.request.model";
-// eslint-disable-next-line no-undef
-import tinymce from "tinymce";
 
 const EditUserProfile = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  // const [user, setUser] = useState<User | null>(null);
   const [user, setUser] = useState<GetCurrentUserResponse | null>(null);
   const [form] = Form.useForm();
 
   useEffect(() => {
     UserService.getUserDetails(id as string).then((res) => {
+      const userData = res.data.data;
       setUser({
         success: true,
         data: {
-          ...res.data.data,
-          verification_token_expires: res.data.data.verification_token_expires.toString(),
-          created_at: formatDate(new Date(res.data.data.created_at)),
-          updated_at: formatDate(new Date(res.data.data.updated_at)),
-          dob: new Date(res.data.data.dob), // Ensure dob is a Date object
+          ...userData,
+          verification_token_expires: userData.verification_token_expires.toString(),
+          created_at: formatDate(new Date(userData.created_at)),
+          updated_at: formatDate(new Date(userData.updated_at)),
+          dob: userData.dob ? new Date(userData.dob) : new Date(),
         }
       });
+
       form.setFieldsValue({
-        name: res.data.data.name,
-        email: res.data.data.email,
-        phone_number: res.data.data.phone_number,
-        role: res.data.data.role,
-        status: res.data.data.status ? "Active" : "Inactive", 
-        description: res.data.data.description,
-        dob: res.data.data.dob ? moment(res.data.data.dob) : null,
+        name: userData.name,
+        email: userData.email,
+        phone_number: userData.phone_number,
+        role: userData.role,
+        status: userData.status ? "Active" : "Inactive",
+        description: userData.description || '',
+        dob: userData.dob ? moment(userData.dob) : null,
       });
     });
   }, [id, form]);
 
-  // useEffect(() => {
-  //   const userData = usersData.users.find((user) => user.id === id);
-  //   if (userData) {
-  //     const userWithDateDob = {
-  //       ...userData,
-  //       dob: userData.dob ? moment(userData.dob) : null,
-  //     };
-  //     setUser(userWithDateDob as unknown as User);
-  //     form.setFieldsValue({
-  //       name: userData.name,
-  //       email: userData.email,
-  //       phone_number: userData.phone_number,
-  //       role: userData.role,
-  //       status: userData.status ? "Active" : "Inactive",
-  //       description: userData.description,
-  //       dob: userData.dob ? moment(userData.dob) : null,
-  //     });
-  //   }
-  // }, [id, form]);
-
   const handleFormSubmit = (values: UpdateUserParams) => {
-    const editorContent = tinymce.get('description-editor')?.getContent() || "";
     const updatedValues = {
-      ...values,
-      description: editorContent,
-      dob: moment(values.dob).isValid() ? moment(values.dob).format("YYYY-MM-DD") : "",
-      avatar_url: "",
+      name: values.name,
+      email: values.email,
+      phone_number: values.phone_number,
+      description: values.description || '',
+      dob: values.dob ? moment(values.dob).format('YYYY-MM-DD') : null,
+      avatar_url: user?.data.avatar_url || "",
       video_url: "",
       bank_name: "",
       bank_account_no: "",
       bank_account_name: "",
     };
 
-    UserService.updateUser(id as string, updatedValues)
+    UserService.updateUser(id as string, updatedValues as UpdateUserParams)
       .then(() => {
         message.success("Profile updated successfully");
         navigate("/admin/admin-info");
@@ -113,17 +93,18 @@ const EditUserProfile = () => {
       { required: true, message: "Please enter the date of birth" },
       {
         validator: (_: unknown, value: moment.Moment | null) => {
-          if (
-            !value ||
-            (value.isBefore(moment()) &&
-              value.isAfter(moment().subtract(100, "years")))
-          ) {
+          if (!value) {
+            return Promise.reject(new Error("Date of birth is required"));
+          }
+          
+          if (value.isValid() && 
+              value.isBefore(moment()) && 
+              value.isAfter(moment().subtract(100, "years"))) {
             return Promise.resolve();
           }
+          
           return Promise.reject(
-            new Error(
-              "Please enter a valid date of birth within the last 100 years.",
-            ),
+            new Error("Please enter a valid date of birth within the last 100 years")
           );
         },
       },
@@ -131,61 +112,65 @@ const EditUserProfile = () => {
   };
 
   return (
-    <div className="mx-auto max-w-2xl p-5">
-      <h1 className="mb-4 text-2xl font-bold">Edit User Profile</h1>
-      <Form form={form} layout="vertical" onFinish={handleFormSubmit}>
+    <div className="mx-auto max-w-10xl p-8 bg-white shadow-2xl rounded-xl">
+      <h1 className="mb-6 text-3xl text-center font-bold text-[#1a237e]">Edit User Profile</h1>
+      <Form 
+        form={form} 
+        layout="vertical" 
+        onFinish={handleFormSubmit}
+        className="space-y-4"
+      >
+        <div className="mb-4 flex">
+          <Avatar src={user.data.avatar_url} size={100} className="border-2 border-[#1a237e]" />
+        </div>
         <Form.Item
-          label="Name"
+          label={<span className="text-[#1a237e] font-medium">Name</span>}
           name="name"
           rules={validationRules.name as Rule[]}
         >
-          <Input />
+          <Input className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
         </Form.Item>
         <Form.Item
-          label="Email Address"
+          label={<span className="text-[#1a237e] font-medium">Email Address</span>}
           name="email"
           rules={validationRules.email as Rule[]}
         >
-          <Input />
+          <Input className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
         </Form.Item>
         <Form.Item
-          label="Phone Number"
+          label={<span className="text-[#1a237e] font-medium">Phone Number</span>}
           name="phone_number"
           rules={validationRules.phone_number as Rule[]}
         >
-          <Input />
+          <Input className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
         </Form.Item>
-        <Avatar src={user.data.avatar_url} size={100} />
+       
         <Form.Item
-          label="Description"
+          label={<span className="text-[#1a237e] font-medium">Description</span>}
           name="description"
           rules={validationRules.description as Rule[]}
         >
           <Editor
             apiKey={TINY_API_KEY}
             id="description-editor"
-            initialValue={form.getFieldValue('description')}
+            initialValue={user?.data.description || ''}
             init={{
-              base_url: '/tinymce', // Set the base URL for TinyMCE
-              suffix: '.min', // Use minified versions of the plugins
-              plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
-              toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-              // Ensure the paths to plugins are correct
-              external_plugins: {
-                'anchor': '/tinymce/plugins/anchor/plugin.min.js',
-                'autolink': '/tinymce/plugins/autolink/plugin.min.js',
-                'charmap': '/tinymce/plugins/charmap/plugin.min.js',
-                'codesample': '/tinymce/plugins/codesample/plugin.min.js',
-                'emoticons': '/tinymce/plugins/emoticons/plugin.min.js',
-                'image': '/tinymce/plugins/image/plugin.min.js',
-                'link': '/tinymce/plugins/link/plugin.min.js',
-                'lists': '/tinymce/plugins/lists/plugin.min.js',
-                'media': '/tinymce/plugins/media/plugin.min.js',
-                'searchreplace': '/tinymce/plugins/searchreplace/plugin.min.js',
-                'table': '/tinymce/plugins/table/plugin.min.js',
-                'visualblocks': '/tinymce/plugins/visualblocks/plugin.min.js',
-                'wordcount': '/tinymce/plugins/wordcount/plugin.min.js',
-              }
+              height: 300,
+              menubar: true,
+              plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'help', 'wordcount'
+              ],
+              toolbar: 'undo redo | formatselect | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+              content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+              tracking: false,
+              promotion: false,
+              skin: 'oxide',
+              content_css: 'default'
             }}
             onEditorChange={(content) => {
               form.setFieldsValue({ description: content });
@@ -193,19 +178,32 @@ const EditUserProfile = () => {
           />
         </Form.Item>
         <Form.Item
-          label="Date of Birth"
+          label={<span className="text-[#1a237e] font-medium">Date of Birth</span>}
           name="dob"
           rules={validationRules.dob as Rule[]}
         >
-          <DatePicker format="YYYY-MM-DD" />
+          <DatePicker 
+            format="YYYY-MM-DD"
+            className="w-full rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]"
+            disabledDate={(current) => {
+              return current && (
+                current > moment().endOf('day') ||
+                current < moment().subtract(100, 'years')
+              );
+            }}
+          />
         </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
+        <Form.Item className="flex justify-end gap-4 mt-6">
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="bg-[#1a237e] hover:bg-[#0d1453] border-none h-10 px-8 mr-2"
+          >
             Update
           </Button>
           <Button
             onClick={() => navigate("/admin/admin-info")}
-            className="ml-2"
+            className="border-[#1a237e] text-[#1a237e] hover:text-[#0d1453] hover:border-[#0d1453] h-10 px-8"
           >
             Cancel
           </Button>
