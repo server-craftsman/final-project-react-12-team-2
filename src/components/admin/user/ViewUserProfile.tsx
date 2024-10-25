@@ -293,9 +293,10 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
       baseColumns.splice(baseColumns.length - 1, 0, {
         title: "Verify",
         key: "verify", 
-        render: (_: unknown, record: User) => (
+        render: (_: unknown) => (
           <div className="flex items-center justify-center">
             <button
+              // onClick={() => handleVerifyUser(record._id)}  // Add onClick handler
               className="px-4 py-1.5 rounded-full bg-gradient-to-r from-gray-400 to-gray-500 text-white"
             >
               Not Verified
