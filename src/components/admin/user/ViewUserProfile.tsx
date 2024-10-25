@@ -10,6 +10,7 @@ import { UserRole } from "../../../models/prototype/User";
 import { GetUsersAdminParams } from "../../../models/api/request/admin/user.request.model";
 import { GetUsersAdminResponse } from "../../../models/api/responsive/admin/user.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model";
+import { ROUTER_URL } from "../../../const/router.path";
 
 interface SearchCondition {
   keyword: string;
@@ -102,15 +103,9 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({
 
   const handleViewDetails = async (userId: string) => {
     try {
-      const userDetails = await UserService.getUsersAdmin({
-        ...defaultParams,
-        searchCondition: {
-          ...defaultParams.searchCondition,
-          keyword: userId,
-        },
-      });
+      const userDetails = await UserService.getUserDetails(userId);
       console.log(userDetails);
-      navigate(`/admin/view-user/${userId}`);
+      navigate(ROUTER_URL.ADMIN.VIEW_USER_DETAILS.replace(":id", userId));
     } catch (error) {
       console.error("Failed to fetch user details:", error);
     }

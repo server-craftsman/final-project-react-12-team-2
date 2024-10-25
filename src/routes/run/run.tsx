@@ -29,7 +29,7 @@ const RunRoutes = (): JSX.Element => {
   const getDefaultPath = (role: string) => {
     switch (role) {
       case 'admin':
-        return ROUTER_URL.ADMIN_PATH;
+        return ROUTER_URL.ADMIN.BASE;
       case 'instructor':
         return ROUTER_URL.INSTRUCTOR.BASE;
       case 'student':
@@ -65,7 +65,7 @@ const RunRoutes = (): JSX.Element => {
     return (
       <>
         <Route
-          path={ROUTER_URL.ADMIN_PATH}
+          path={ROUTER_URL.ADMIN.BASE}
           element={
             <GuardProtectedRoute
               component={<AdminLayout />}
@@ -75,7 +75,7 @@ const RunRoutes = (): JSX.Element => {
             />
           }
         >
-          {adminSubPaths[ROUTER_URL.ADMIN_PATH]?.map((route) => (
+          {adminSubPaths[ROUTER_URL.ADMIN.BASE]?.map((route) => (
             <Route
               key={route.path || 'index'}
               index={route.index} //loading index

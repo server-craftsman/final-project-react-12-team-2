@@ -1,11 +1,13 @@
 export interface RoutePaths {
   LOGIN: string;
   REGISTER: string;
-  ADMIN_PATH: string;
+  // ADMIN_PATH: string;
   ADMIN: {
+    BASE: string;
     INFO: string;
     MANAGE_USER: string;
     VIEW_USER: string;
+    VIEW_USER_DETAILS: string;
     EDIT_USER: string;
     PAYOUT: string;
     PURCHASE: string;
