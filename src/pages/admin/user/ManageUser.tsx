@@ -28,20 +28,33 @@ const ManageUser = () => {
   const [selectedStatus, setSelectedStatus] = useState<boolean | null>(null);
   const [activeTab, setActiveTab] = useState("all");
   const [users, setUsers] = useState<User[] | null>(null);
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
+
+  // Reset filters when changing tabs
+  const handleTabChange = (key: string) => {
+    setActiveTab(key);
+    // Reset all filters when switching tabs
+    setSelectedRole(null);
+    setSelectedStatus(null);
+    setSearchQuery("");
   };
 
+  // Reset tab when applying filters
   const handleRoleChange = (role: UserRole | null) => {
     setSelectedRole(role);
+    if (activeTab !== "all") {
+      setActiveTab("all");
+    }
   };
 
   const handleStatusChange = (status: boolean | null) => {
     setSelectedStatus(status);
+    if (activeTab !== "all") {
+      setActiveTab("all");
+    }
   };
 
-  const handleTabChange = (key: string) => {
-    setActiveTab(key);
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
   };
 
   const fetchUsers = async (params: GetUsersAdminParams) => {
@@ -84,19 +97,36 @@ const ManageUser = () => {
   useEffect(() => {
     const fetchUsersData = async () => {
       try {
+        let searchCondition = {
+          keyword: searchQuery,
+          role: selectedRole || UserRole.all,
+          status: selectedStatus !== null ? selectedStatus : true,
+          is_verified: true,
+          is_deleted: false,
+        };
+
+        // Modify search conditions based on active tab
+        if (activeTab === "blocked") {
+          searchCondition = {
+            ...searchCondition,
+            status: false,
+            is_deleted: true,
+          };
+        } else if (activeTab === "unverified") {
+          searchCondition = {
+            ...searchCondition,
+            is_verified: false,
+          };
+        }
+
         const response = await fetchUsers({
-          searchCondition: {
-            keyword: searchQuery,
-            role: selectedRole || UserRole.all,
-            status: selectedStatus !== null ? selectedStatus : true,
-            is_verified: true,
-            is_delete: false,
-          },
+          searchCondition,
           pageInfo: {
             pageNum: 1,
             pageSize: 10,
           },
         });
+
         if (response && response.success) {
           setUsers(response.data.pageData);
         }
@@ -106,7 +136,7 @@ const ManageUser = () => {
     };
 
     fetchUsersData();
-  }, [selectedRole, selectedStatus, activeTab]); // Ensure all dependencies are included
+  }, [searchQuery, selectedRole, selectedStatus, activeTab]); // Added searchQuery to dependencies
 
   const tabItems = [
     { label: "All", key: "all" },
@@ -118,15 +148,19 @@ const ManageUser = () => {
     return <div>Loading...</div>;
   } else {
     return (
-    <div className="items-center justify-center border-b border-gray-300">
-      <div className="flex flex-col items-center p-4 md:flex-row">
-        <CustomSearch
-          onSearch={handleSearch}
-          placeholder="Search by name or email"
-          className="search-input mr-4"
-        />
-        <FilterRole onRoleChange={handleRoleChange} />
-        <FilterStatus onStatusChange={handleStatusChange} />
+      <div className="items-center justify-center border-b border-gray-300">
+        <div className="flex flex-col items-center p-4 md:flex-row">
+          <CustomSearch
+            onSearch={handleSearch}
+            placeholder="Search by name or email"
+            className="search-input mr-4"
+          />
+          {activeTab === "all" && (
+            <>
+              <FilterRole onRoleChange={handleRoleChange} />
+              <FilterStatus onStatusChange={handleStatusChange} />
+            </>
+          )}
           <CreateUserProfile />
         </div>
         <Tabs defaultActiveKey="all" onChange={handleTabChange} items={tabItems} className="ml-4" />
@@ -135,7 +169,7 @@ const ManageUser = () => {
           selectedRole={selectedRole}
           selectedStatus={selectedStatus}
           activeTab={activeTab}
-      />
+        />
       </div>
     );
   }
