@@ -2,7 +2,7 @@ import { BaseService } from "../config/base.service";
 import { API } from "../../const/api.path";
 import { RegisterGooglePublicResponse } from "../../models/api/responsive/authentication/auth.responsive.model";
 import { RegisterStudentPublicParams, RegisterInstructorPublicParams } from "../../models/api/request/authentication/auth.request.model";
-import { ResponseSuccess } from "../../app/interface/responseSuccess.interface";
+import { ResponseSuccess } from "../../app/interface";
 import { User } from "../../models/api/responsive/users/users.model"; //data user
 
 export const AuthService = {

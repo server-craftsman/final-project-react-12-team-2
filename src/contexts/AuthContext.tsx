@@ -1,25 +1,28 @@
 import { createContext, useContext, ReactNode, useState } from "react";
 import { UserRole } from "../models/prototype/User";
-import { GetCurrentUserResponse, RegisterGooglePublicResponse } from "../models/api/responsive/authentication/auth.responsive.model";
+import { RegisterGooglePublicResponse } from "../models/api/responsive/authentication/auth.responsive.model";
 import { AuthService } from "../services/authentication/auth.service";
 import { RegisterStudentPublicParams, RegisterInstructorPublicParams } from "../models/api/request/authentication/auth.request.model";
 import { HTTP_STATUS } from "../app/enums";
 import { HttpException } from "../app/exceptions";
+
+import { User } from "../models/api/responsive/users/users.model";
+import { ResponseSuccess } from "../app/interface/responseSuccess.interface";
 
 interface AuthContextType {
   role: UserRole | null;
   setRole: (role: UserRole | null) => void;
   token: string | null;
   setToken: (token: string | null) => void;
-  userInfo: GetCurrentUserResponse["data"] | null;
+  userInfo: ResponseSuccess<User>["data"] | null;
   getCurrentUser: () => Promise<void>;
-  setUserInfo: (userInfo: GetCurrentUserResponse["data"] | null) => void;
+  setUserInfo: (userInfo: ResponseSuccess<User>["data"] | null) => void;
   logout: () => void;
   handleLogin: (token: string) => Promise<void>;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
   loginGoogle: (googleId: string) => Promise<void>;
-  registerGooglePublic: (params: RegisterStudentPublicParams | RegisterInstructorPublicParams) => Promise<RegisterGooglePublicResponse>;
+  registerGooglePublic: (params: RegisterStudentPublicParams | RegisterInstructorPublicParams) => Promise<ResponseSuccess<User>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -34,9 +37,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return storedToken as string | null;
   });
 
-  const [userInfo, setUserInfo] = useState<GetCurrentUserResponse["data"] | null>(null);
+  const [userInfo, setUserInfo] = useState<ResponseSuccess<User>["data"] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  //get current user
   const getCurrentUser = async () => {
     try {
       const storedToken = localStorage.getItem("token");
@@ -47,7 +51,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!response.data?.data) {
         throw new HttpException("Invalid response data", HTTP_STATUS.BAD_REQUEST);
       }
-      setUserInfo(response.data.data as GetCurrentUserResponse["data"]);
+      setUserInfo(response.data.data);
     } catch (error) {
       console.error("Failed to get current user:", error);
       logout();
@@ -55,6 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  //login google
   const loginGoogle = async (googleId: string) => {
     try {
       const response = await AuthService.loginGoogle({ google_id: googleId });
@@ -71,6 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  //logout
   const logout = () => {
     setRole(null);
     setToken(null);
@@ -80,6 +86,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     window.location.href = "/login";
   };
 
+  //handle login
   const handleLogin = async (token: string) => {
     try {
       if (!token) {
@@ -103,13 +110,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const registerGooglePublic = async (params: RegisterStudentPublicParams | RegisterInstructorPublicParams): Promise<RegisterGooglePublicResponse> => {
+  //register google public ---can be used for student and instructor
+  const registerGooglePublic = async (params: RegisterStudentPublicParams | RegisterInstructorPublicParams): Promise<ResponseSuccess<User>> => {
     try {
       const response = await AuthService.registerGooglePublic(params);
       if (!response.data) {
         throw new HttpException("Invalid registration response", HTTP_STATUS.BAD_REQUEST);
       }
-      return response.data;
+      return response.data as unknown as ResponseSuccess<User>;  // Use double type assertion
     } catch (error) {
       console.error("Failed to register with Google:", error);
       throw error instanceof HttpException ? error : new HttpException("Failed to register with Google", HTTP_STATUS.INTERNAL_SERVER_ERROR);

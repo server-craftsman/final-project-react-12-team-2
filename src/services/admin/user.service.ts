@@ -3,7 +3,7 @@ import { API } from "../../const/api.path";
 import { GetUsersAdminParams, ChangeStatusParams, ChangeRoleParams } from "../../models/api/request/admin/user.request.model";
 import { UpdateUserParams } from "../../models/api/request/users/user.request.model";
 import { GetUsersAdminResponse } from "../../models/api/responsive/admin/user.responsive.model";
-import { ResponseSuccess } from "../../app/interface/responseSuccess.interface";
+import { ResponseSuccess } from "../../app/interface";
 import { User } from "../../models/api/responsive/users/users.model";
 
 export const UserService = {

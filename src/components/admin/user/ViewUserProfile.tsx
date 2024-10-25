@@ -2,9 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Table, Modal, message, Button, Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import { EditOutlined, LockOutlined, UnlockOutlined } from "@ant-design/icons";
-// import usersData from "../../../data/users.json"; // Adjust the path as necessary
-// import { User, UserRole } from "../../../models/prototype/User";
-// import { userStatusColor } from "../../../utils/userStatus";
 import { userRoleColor } from "../../../utils/userRole";
 import { userStatusColor } from "../../../utils/userStatus";
 import { UserService } from "../../../services/admin/user.service";
@@ -108,7 +105,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
         throw new HttpException("Failed to fetch users", HTTP_STATUS.BAD_REQUEST);
       }
 
-      setUsers(response.data?.data ? response.data : null);
+      setUsers(response.data?.data ? response.data.data : null);
     } catch (error) {
       if (error instanceof HttpException) {
         message.error(error.message);
@@ -323,7 +320,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
 
   return (
     <div className="-mt-3 mb-64 p-4">
-      <Table<User> className="shadow-lg" columns={columns} dataSource={users?.data.pageData || []} rowKey="_id" pagination={{ pageSize: 10 }} />
+      <Table<User> className="shadow-lg" columns={columns} dataSource={users?.pageData || []} rowKey="_id" pagination={{ pageSize: 10 }} />
     </div>
   );
 };
