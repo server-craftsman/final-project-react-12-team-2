@@ -2,7 +2,6 @@ import axios, { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } 
 import { ApiRequestModel } from "../../models/api/interceptor/ApiRequestModel";
 import { toast } from "react-toastify";
 import { getItemInLocalStorage, removeItemInLocalStorage } from "../../utils/storage";
-// import { useToggleLoading } from "../../hooks/toggleLoading";
 import { DOMAIN_ADMIN, LOCAL_STORAGE } from "../../const/domain";
 import { ROUTER_URL } from "../../const/router.path";
 import { store } from "../../app/store";

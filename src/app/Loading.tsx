@@ -25,9 +25,9 @@ const Loading: React.FC<{ timeout?: number }> = ({ timeout = 10000 }) => {
             animation: "float 4s ease-in-out infinite"
           }}
         />
-        <h2 className="text-shadow-xl glow-effect animate-pulse font-serif text-4xl tracking-widest text-white drop-shadow-xl transition-all duration-500 hover:scale-110">
+        {/* <h2 className="text-shadow-xl glow-effect animate-pulse font-serif text-4xl tracking-widest text-white drop-shadow-xl transition-all duration-500 hover:scale-110">
           Loading<span className="loading-dots">...</span>
-        </h2>
+        </h2> */}
 
         {showTimeout && <p className="mt-4 text-xl text-yellow-400">It's taking longer than expected. Please check your internet connection.</p>}
       </div>

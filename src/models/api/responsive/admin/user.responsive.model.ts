@@ -1,5 +1,4 @@
 import { User } from "../../responsive/users/users.model";
-
 export interface PageInfo {
   pageNum: number;
   pageSize: number;
@@ -7,19 +6,6 @@ export interface PageInfo {
   totalPages: number;
 }
 export interface GetUsersAdminResponse {
-  success: boolean;
-  data: {
-    pageData: User[];
-    pageInfo: PageInfo;
-  };
-}
-
-export interface GetUserDetailsResponse {
-  success: boolean;
-  data: User;
-}
-
-export interface ChangeStatusResponse {
-  success: boolean;
-  data: string;
+  pageData: User[];
+  pageInfo: PageInfo;
 }
