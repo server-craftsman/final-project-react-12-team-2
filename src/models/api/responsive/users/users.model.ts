@@ -24,3 +24,8 @@ export interface User {
   is_deleted: boolean;
   __v: number;
 }
+
+export interface ChangePasswordResponse {
+  message: string;
+  data: string;
+}

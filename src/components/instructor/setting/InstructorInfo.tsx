@@ -1,65 +1,92 @@
-import usersData from "../../../data/users.json"; // Adjust the path as necessary
-import { UserRole } from "../../../models/prototype/User";
-import { Typography, Descriptions, Button } from "antd";
+import { useEffect } from "react";
+import { Descriptions, Button } from "antd";
 import { useNavigate } from "react-router-dom";
-import { formatDate } from "../../../utils/helper";
-const { Title } = Typography;
-
+import { useAuth } from "../../../contexts/AuthContext";
+import { helpers } from "../../../utils";
+import parse from "html-react-parser";
+import { EditOutlined } from "@ant-design/icons";
 const InstructorInfo = () => {
   const navigate = useNavigate();
-  const instructorUser = usersData.users.find((user) => user.role === UserRole.instructor);
+  // const instructorUser = usersData.users.find((user) => user.role === UserRole.instructor);
+  const { getCurrentUser, userInfo } = useAuth();
 
-  if (!instructorUser) {
-    return <div className="text-center text-red-500">No instructor user found.</div>;
-  }
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
+
 
   const handleEdit = () => {
-    navigate(`/instructor/edit-user/${instructorUser.id}`);
+    navigate(`/instructor/edit-user/${userInfo?._id}`);
   };
 
+  if (!userInfo) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="font-serif text-2xl italic text-[#1a237e]">No admin user found.</div>
+      </div>
+    );
+  } else {
   return (
-    <div className="min-h-screen bg-gray-100 md:p-10">
-      <div className="flex-col items-center justify-between md:flex-row">
-        <Title className="text-2xl font-bold">Setting</Title>
+    <div className="max-w-10xl animate-fade-in mx-auto rounded-xl bg-white p-8 shadow-2xl">
+        <div className="mb-8 flex flex-col items-center">
+          {userInfo.avatar_url ? (
+            <img src={userInfo.avatar_url} alt="User avatar" className="h-40 w-40 rounded-full border-4 border-[#1a237e] object-cover shadow-lg transition-transform duration-300 hover:scale-105" />
+          ) : (
+            <div className="flex h-40 w-40 items-center justify-center rounded-full border-4 border-[#1a237e] bg-gray-200">
+              <span className="text-2xl text-gray-500">No Avatar</span>
+            </div>
+          )}
+          <h2 className="mt-4 text-2xl font-bold text-[#1a237e]">{userInfo.name}</h2>
+          <p className="italic text-gray-600">{userInfo.role}</p>
+        </div>
 
-        <Descriptions bordered column={1} className="mt-4">
-          <Descriptions.Item label="Email" className="text-sm md:text-base">
-            {instructorUser.email}
+        <Descriptions
+          bordered
+          column={1}
+          className="mt-4"
+          labelStyle={{
+            backgroundColor: "#f0f2ff",
+            fontFamily: "sans-serif",
+            fontSize: "1rem",
+            padding: "0.75rem",
+            color: "#666"
+          }}
+          contentStyle={{
+            fontFamily: "sans-serif",
+            fontSize: "1rem",
+            padding: "0.75rem"
+          }}
+        >
+          <Descriptions.Item label="Email" className="text-base">
+            {userInfo.email}
           </Descriptions.Item>
-          <Descriptions.Item label="Name" className="text-sm md:text-base">
-            {instructorUser.name}
+          <Descriptions.Item label="Description" className="text-base">
+            <div className="prose max-w-none">{userInfo.description ? parse(userInfo.description) : ""}</div>
           </Descriptions.Item>
-          <Descriptions.Item label="Role" className="text-sm md:text-base">
-            {instructorUser.role}
+          <Descriptions.Item label="Phone Number" className="text-base">
+            {helpers.formatPhoneNumber(userInfo.phone_number as string)}
           </Descriptions.Item>
-          <Descriptions.Item label="Status" className="text-sm md:text-base">
-            {instructorUser.status ? "Active" : "Inactive"}
+          <Descriptions.Item label="Date of Birth" className="text-base">
+            {helpers.formatDate(new Date(userInfo.dob))}
           </Descriptions.Item>
-          <Descriptions.Item label="Description" className="text-sm md:text-base">
-            {instructorUser.description}
+          <Descriptions.Item label="Verified" className="text-base">
+            <span className={userInfo.is_verified ? "text-green-600" : "text-red-600"}>{userInfo.is_verified ? "Yes" : "No"}</span>
           </Descriptions.Item>
-          <Descriptions.Item label="Phone Number" className="text-sm md:text-base">
-            {instructorUser.phone_number}
+          <Descriptions.Item label="Created At" className="text-base">
+            {helpers.formatDate(new Date(userInfo.created_at))}
           </Descriptions.Item>
-          <Descriptions.Item label="Date of Birth" className="text-sm md:text-base">
-            {instructorUser.dob}
-          </Descriptions.Item>
-          <Descriptions.Item label="Verified" className="text-sm md:text-base">
-            {instructorUser.is_verified ? "Yes" : "No"}
-          </Descriptions.Item>
-          <Descriptions.Item label="Created At" className="text-sm md:text-base">
-            {formatDate(new Date(instructorUser.created_at))}
-          </Descriptions.Item>
-          <Descriptions.Item label="Updated At" className="text-sm md:text-base">
-            {formatDate(new Date(instructorUser.updated_at))}
+          <Descriptions.Item label="Updated At" className="text-base">
+            {helpers.formatDate(new Date(userInfo.updated_at))}
           </Descriptions.Item>
         </Descriptions>
-        <Button type="primary" onClick={handleEdit} className="mt-4 md:-ml-0 md:mt-2">
-          Edit Profile
-        </Button>
+        <div className="mt-6 flex justify-end">
+          <Button type="primary" onClick={handleEdit} className="flex h-auto items-center gap-2 border-none bg-[#1a237e] px-8 py-4 text-lg transition-colors duration-300 hover:bg-[#0d1453]">
+            <EditOutlined />
+          </Button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default InstructorInfo;

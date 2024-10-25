@@ -14,5 +14,10 @@ export const API = {
     CHANGE_STATUS: "api/users/change-status",
     CHANGE_ROLE: "api/users/change-role",
     DELETE_USER: "api/users/:id"
+  },
+  INSTRUCTOR: {
+    GET_USER_DETAILS: "api/users/:id",
+    UPDATE_USER: "api/users/:id",
+    CHANGE_PASSWORD: "api/users/change-password"
   }
 };
