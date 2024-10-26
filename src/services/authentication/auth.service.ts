@@ -34,7 +34,7 @@ export const AuthService = {
     });
   },
   verifyToken(token: string) {
-    return BaseService.get<ResponseSuccess<User>>({
+    return BaseService.get<ResponseSuccess<string>>({
       url: API.AUTH.VERIFY_TOKEN,
       payload: { token },
       isLoading: true

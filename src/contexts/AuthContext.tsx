@@ -9,7 +9,7 @@ import { HTTP_STATUS } from "../app/enums";
 import { HttpException } from "../app/exceptions";
 
 import { User } from "../models/api/responsive/users/users.model";
-import { ResponseSuccess, ResponseMessage, MultiErrors } from "../app/interface";
+import { ResponseSuccess } from "../app/interface";
 
 interface AuthContextType {
   role: UserRole | null;
@@ -27,7 +27,7 @@ interface AuthContextType {
   registerGooglePublic: (params: RegisterStudentPublicParams | RegisterInstructorPublicParams) => Promise<ResponseSuccess<User>>;
   changePassword: (params: ChangePasswordParams) => Promise<ResponseSuccess<User>>;
   register: (params: RegisterParams) => Promise<ResponseSuccess<User>>;  // Updated return type
-  verifyToken: (token: string) => Promise<ResponseMessage<MultiErrors>>;
+  verifyToken: (token: string) => Promise<ResponseSuccess<string>>;
   resendToken: (params: { email: string }) => Promise<ResponseSuccess<string>>;
 }
 
@@ -178,13 +178,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   //verify token
-  const verifyToken = async (token: string): Promise<ResponseSuccess<User>> => {
+  const verifyToken = async (token: string): Promise<ResponseSuccess<string>> => {
     try {
       const response = await AuthService.verifyToken(token);
       if (!response.data) {
         throw new HttpException("Invalid verify token response", HTTP_STATUS.BAD_REQUEST);
       }
-      return response.data as unknown as ResponseSuccess<User>;
+      return response.data as unknown as ResponseSuccess<string>;
     } catch (error) {
       console.error("Failed to verify token:", error);
       throw error instanceof HttpException ? error : new HttpException("Failed to verify token", HTTP_STATUS.INTERNAL_SERVER_ERROR);
