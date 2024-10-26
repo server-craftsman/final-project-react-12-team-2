@@ -145,13 +145,15 @@ const EditUserProfile = () => {
           }
         }
 
-        // Update user profile with all values including new avatar URL
+        // Extract description safely
+        const description = form.getFieldValue('description') || "";
+
+        // Ensure all values are primitive or simple objects
         const updatedValues = {
           name: values.name,
           email: values.email,
           phone_number: values.phone_number,
-          description: values.description || "",
-          // Sửa lại cách xử lý DOB
+          description, // Use the extracted description
           dob: values.dob ? helpers.formatDate(new Date(values.dob)) : null,
           avatar_url: avatarUrl,
           video_url: "",
@@ -159,6 +161,8 @@ const EditUserProfile = () => {
           bank_account_no: "",
           bank_account_name: ""
         };
+
+        // console.log("Updated Values:", updatedValues);
 
         await UserService.updateUser(id as string, updatedValues as UpdateUserParams);
         message.success("Profile updated successfully");
@@ -178,7 +182,7 @@ const EditUserProfile = () => {
         setState((prev) => ({ ...prev, uploading: false }));
       }
     },
-    [id, navigate, state.user?.data.avatar_url, state.selectedFile]
+    [id, navigate, state.user?.data.avatar_url, state.selectedFile, form]
   );
 
   const handleImageUpload = useCallback((file: File) => {
