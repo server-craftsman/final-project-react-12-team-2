@@ -34,8 +34,8 @@ export const AuthService = {
     });
   },
   verifyToken(token: string) {
-    return BaseService.get<ResponseSuccess<string>>({
-      url: `${API.AUTH.VERIFY_TOKEN}/${token}`, // Changed to use token in URL path
+    return BaseService.post<ResponseSuccess<string>>({
+      url: `${API.AUTH.VERIFY_TOKEN}/${token}`,
       isLoading: true
     });
   },
