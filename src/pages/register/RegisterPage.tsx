@@ -34,22 +34,32 @@ const RegisterPage = () => {
     try {
       if (!role) {
         helpers.notification("Please select a role");
-        return;
-      }
-
-      // Upload avatar and video files
-      const avatarFile = form.getFieldValue('avatar_file')?.originFileObj;
-      const videoFile = form.getFieldValue('video_file')?.originFileObj;
-
-      const avatarUrl = avatarFile ? await handleUploadFile(avatarFile, 'avatar') : null;
-      const videoUrl = videoFile ? await handleUploadFile(videoFile, 'video') : null;
-
-      if (!avatarUrl || !videoUrl) {
-        helpers.notification("Failed to upload files. Please try again.");
         setIsLoading(false);
         return;
       }
 
+      // Validate form fields
+      await form.validateFields();
+
+      // Upload avatar file
+      const avatarFile = form.getFieldValue('avatar_file')?.originFileObj;
+      const avatarUrl = avatarFile ? await handleUploadFile(avatarFile, 'avatar') : null;
+      if (!avatarUrl) {
+        helpers.notification("Failed to upload avatar. Please try again.");
+        setIsLoading(false);
+        return;
+      }
+
+      // Upload video file
+      const videoFile = form.getFieldValue('video_file')?.originFileObj;
+      const videoUrl = videoFile ? await handleUploadFile(videoFile, 'video') : null;
+      if (!videoUrl) {
+        helpers.notification("Failed to upload video. Please try again.");
+        setIsLoading(false);
+        return;
+      }
+
+      // Prepare registration parameters
       const params: RegisterParams = {
         name: values.name,
         email: values.email,
@@ -64,6 +74,7 @@ const RegisterPage = () => {
         bank_name: values.bank_name
       };
 
+      // Call register API
       const response = await register(params);
 
       if (response.data) {
