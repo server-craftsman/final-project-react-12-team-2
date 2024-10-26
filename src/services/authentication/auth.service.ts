@@ -47,6 +47,13 @@ export const AuthService = {
       isLoading: true
     });
   },
+  forgotPassword(params: { email: string }) {
+    return BaseService.post<ResponseSuccess<string>>({
+      url: API.AUTH.FORGOT_PASSWORD,
+      payload: params,
+      isLoading: true
+    });
+  },
   getUserRole(token: string) {
     return BaseService.get<ResponseSuccess<User>>({
       url: API.AUTH.LOGIN,
