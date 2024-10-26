@@ -1,13 +1,11 @@
 import { createContext, useContext, ReactNode, useState } from "react";
 import { UserRole } from "../models/prototype/User";
-// import { RegisterGooglePublicResponse } from "../models/api/responsive/authentication/auth.responsive.model";
 import { AuthService } from "../services/authentication/auth.service";
 import { UserService } from "../services/admin/user.service";
 import { RegisterStudentPublicParams, RegisterInstructorPublicParams, RegisterParams } from "../models/api/request/authentication/auth.request.model";
 import { ChangePasswordParams } from "../models/api/request/admin/user.request.model";
 import { HTTP_STATUS } from "../app/enums";
 import { HttpException } from "../app/exceptions";
-
 import { User } from "../models/api/responsive/users/users.model";
 import { ResponseSuccess } from "../app/interface";
 
@@ -240,7 +238,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new HttpException("useAuth must be used within an AuthProvider", HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
   return context;
 };

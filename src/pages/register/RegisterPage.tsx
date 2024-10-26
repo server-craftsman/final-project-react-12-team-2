@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Form, Input, Button, Typography, Divider } from "antd";
+import { Form, Input, Button, Typography, Divider, Modal } from "antd";
 import { UserOutlined, MailOutlined, LockOutlined, HomeOutlined } from "@ant-design/icons";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { CLIENT_ID } from "../../const/authentication";
-import LoginGoogle from "../../pages/login/LoginGoogle";
+import LoginGoogle from "../google/GoogleModal";
 import registerAnimation from "../../data/registerAnimation.json";
 import Lottie from "lottie-react";
 import ButtonDivideStudentAndInstructor from "../../components/generic/register/ButtonDivideStudentAndInstructor";
 import RegisterInfoOfInstructor from "../../components/generic/register/RegisterInfoOfInstructor";
+import RegisterViaGoogle from "./RegisterViaGoogle"; // Import the RegisterViaGoogle component
 const { Title, Text } = Typography;
 import { handleUploadFile } from "../../utils/upload";
 
@@ -28,6 +29,8 @@ const RegisterPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [isGoogleModalVisible, setIsGoogleModalVisible] = useState(false); // State to control modal visibility
+  const [googleId, setGoogleId] = useState<string>(""); // Add state for googleId
 
   const onFinish = async (values: any) => {
     setIsLoading(true);
@@ -127,8 +130,10 @@ const RegisterPage = () => {
     },
   });
 
-  const onFinishGoogle = (googleIdToken: string) => {
-    console.log("Google ID Token: ", googleIdToken);
+  const onFinishGoogle = (token: string, googleId: string) => {
+    console.log("Google ID Token: ", token);
+    setGoogleId(token); // Set the token state
+    setIsGoogleModalVisible(true); // Show the modal when Google login is successful
   };
 
   const handleGoogleLoginError = (error: string) => {
@@ -197,6 +202,16 @@ const RegisterPage = () => {
           <div className="text-center mt-4">Already have an account? <Link to="/login" className="font-semibold text-indigo-600 transition-colors duration-300 hover:text-indigo-800">Sign in</Link></div>
         </div>
       </div>
+
+      {/* Modal for Google Registration */}
+      <Modal
+        title="Register via Google"
+        open={isGoogleModalVisible}
+        onCancel={() => setIsGoogleModalVisible(false)}
+        footer={null}
+      >
+        <RegisterViaGoogle googleId={googleId} />
+      </Modal>
     </div>
   );
 };

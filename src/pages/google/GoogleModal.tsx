@@ -2,12 +2,12 @@ import React from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 
-interface LoginGoogleProps {
+interface GoogleModalProps {
   onLoginError: (error: string) => void;
-  onLoginSuccess: (token: string) => void;
+  onLoginSuccess: (token: string, googleId: string) => void;
 }
 
-const LoginGoogle: React.FC<LoginGoogleProps> = ({ onLoginError, onLoginSuccess }) => {
+const GoogleModal: React.FC<GoogleModalProps> = ({ onLoginError, onLoginSuccess }) => {
   const onSuccess = (credentialResponse: any) => {
     try {
       // Add validation for callback
@@ -22,9 +22,13 @@ const LoginGoogle: React.FC<LoginGoogleProps> = ({ onLoginError, onLoginSuccess 
       const decodedToken: any = jwtDecode(credentialResponse.credential);
       console.log("Decoded Token: ", decodedToken);
 
+      // Extract Google ID from the decoded token
+      const googleId = decodedToken.sub; // Assuming 'sub' contains the Google ID
+      console.log("Google ID: ", googleId);
+
       localStorage.setItem("googleToken", credentialResponse.credential);
-      onLoginSuccess(credentialResponse.credential);
-      console.log("Google Token saved to localStorage");
+      onLoginSuccess(credentialResponse.credential, googleId); // Pass googleId
+      console.log("Google Token saved to localStorage and Google ID passed to onLoginSuccess");
     } catch (error) {
       console.error("Error decoding token: ", error);
       onLoginError("Error decoding token: " + (error as Error).message);
@@ -44,4 +48,4 @@ const LoginGoogle: React.FC<LoginGoogleProps> = ({ onLoginError, onLoginSuccess 
   );
 };
 
-export default LoginGoogle;
+export default GoogleModal;

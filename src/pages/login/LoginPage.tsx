@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Form, Input, Button, Divider, Modal } from "antd";
 import { UserOutlined, LockOutlined, HomeOutlined, EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import LoginGoogle from "./LoginGoogle";
+import GoogleModal from "../google/GoogleModal";
 import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { AuthService } from "../../services/authentication/auth.service";
@@ -233,7 +233,7 @@ const LoginPage = () => {
             <div className="flex justify-center">
               <GoogleOAuthProvider clientId={CLIENT_ID}>
                 <Form.Item>
-                <LoginGoogle onLoginError={handleGoogleLoginError} onLoginSuccess={onFinishGoogle} />
+                  <GoogleModal onLoginError={handleGoogleLoginError} onLoginSuccess={onFinishGoogle} />
                 </Form.Item>
               </GoogleOAuthProvider>
             </div>
@@ -261,9 +261,9 @@ const LoginPage = () => {
         </div>
       </div>
 
-      <Modal title="Sign Up" open={isSignUpModalVisible} onCancel={handleSignUpModalCancel} footer={null}>
-        <div>Sign Up Test</div>
-      </Modal>
+        <Modal title="Sign Up" open={isSignUpModalVisible} onCancel={handleSignUpModalCancel} footer={null}>
+          <div>Sign Up Test</div>
+        </Modal>
     </div>
   );
 };
