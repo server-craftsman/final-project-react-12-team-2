@@ -1,53 +1,71 @@
-import { Form, Input, Button } from "antd";
-const ChangePassword = ({ visible, currentPassword }: { visible: boolean; currentPassword: string }) => {
-  const [form] = Form.useForm();
+import { Form, Input, Button, Typography, message } from "antd";
+const { Title } = Typography;
+import { useAuth } from "../../../contexts/AuthContext";
+import { useEffect } from "react";
+import { UserService } from "../../../services/student/user.service";
 
-  const handleOk = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        console.log("Password changed:", values);
-      })
-      .catch((info) => {
-        console.log("Validate Failed:", info);
+interface ChangePasswordProps {
+  visible: boolean;
+  currentPassword: string;
+}
+
+const ChangePassword: React.FC<ChangePasswordProps> = () => {
+  const [passwordForm] = Form.useForm();
+  const { getCurrentUser, userInfo } = useAuth();
+
+  useEffect(() => {
+    getCurrentUser();
+  }, []);
+
+  const onFinish = async (values: any) => {
+    if (!userInfo) {
+      console.error("User information is not available.");
+      return;
+    }
+    try {
+      const response = await UserService.changePassword(userInfo._id, {
+        user_id: userInfo._id,
+        old_password: values.currentPassword,
+        new_password: values.newPassword,
       });
+      console.log("Password change successful", response);
+      message.success("Password changed successfully");
+    } catch (error) {
+      console.error("Password change failed", error);
+      message.error("Failed to change password. Please try again.");
+    }
   };
 
-  const validatePassword = (_: unknown, value: string) => {
-    const hasUpperCase = /[A-Z]/.test(value);
-    const hasNumber = /\d/.test(value);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value); // Added special character validation
-    if (!value || value.length < 8 || !hasUpperCase || !hasNumber || !hasSpecialChar) {
-      return Promise.reject(new Error("Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character."));
+  const validateConfirmPassword = ({ getFieldValue }: any) => ({
+    validator(_: any, value: string) {
+      if (!value || getFieldValue("newPassword") === value) {
+        return Promise.resolve();
+      }
+      return Promise.reject(new Error("The two passwords do not match!"));
     }
-    return Promise.resolve();
-  };
-
-  const validateConfirmPassword = (_: unknown, value: string) => {
-    if (!value || value !== form.getFieldValue("newPassword")) {
-      return Promise.reject(new Error("The two passwords that you entered do not match!"));
-    }
-    return Promise.resolve();
-  };
+  });
 
   return (
-    <div className={`change-password-form ${visible ? "visible" : "hidden"}`} style={{ forcedColorAdjust: "auto" }}>
-      <Form form={form} layout="vertical" name="change_password_form">
-        <Form.Item name="currentPassword" label="Current Password" initialValue={currentPassword} rules={[{ required: true, message: "Please input your current password!" }]}>
-          <Input.Password visibilityToggle={true} />
+    <div style={{ maxWidth: 400, marginLeft: "30px" }}>
+      <Title level={2}>Change Password</Title>
+      <Form form={passwordForm} layout="vertical" onFinish={onFinish} autoComplete="off">
+        <Form.Item name="currentPassword" label="Current Password" rules={[{ required: true, message: "Please input your current password!" }]}>
+          <Input.Password />
         </Form.Item>
 
-        <Form.Item name="newPassword" label="New Password" rules={[{ required: true, message: "Please input your new password!" }, { validator: validatePassword }]}>
-          <Input.Password visibilityToggle={true} />
+        <Form.Item name="newPassword" label="New Password" rules={[{ required: true, message: "Please input your new password!" }]}>
+          <Input.Password />
         </Form.Item>
-        <Form.Item name="confirmPassword" label="Confirm Password" dependencies={["newPassword"]} rules={[{ required: true, message: "Please confirm your password!" }, { validator: validateConfirmPassword }]}>
-          <Input.Password visibilityToggle={true} />
+
+        <Form.Item name="confirmPassword" label="Confirm New Password" dependencies={["newPassword"]} rules={[{ required: true, message: "Please confirm your new password!" }, validateConfirmPassword]}>
+          <Input.Password />
         </Form.Item>
-        <div className="form-footer">
-          <Button type="primary" onClick={handleOk}>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit" className="border-blue-500 bg-blue-500 text-white hover:border-blue-600 hover:bg-blue-600">
             Change Password
           </Button>
-        </div>
+        </Form.Item>
       </Form>
     </div>
   );
