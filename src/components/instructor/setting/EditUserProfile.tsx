@@ -168,7 +168,7 @@ const EditUserProfile = () => {
 
         await UserService.updateUser(id as string, updatedValues as UpdateUserParams);
         message.success("Profile updated successfully");
-        navigate(ROUTER_URL.ADMIN.INFO);
+        navigate(ROUTER_URL.INSTRUCTOR.SETTING);
       } catch (error: any) {
         console.error("Error updating profile:", error);
         if (error instanceof HttpException) {
