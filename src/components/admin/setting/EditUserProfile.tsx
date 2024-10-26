@@ -33,24 +33,24 @@ const EditUserProfile = () => {
   // Memoize validation rules to prevent recreation on each render
   const validationRules = useMemo(
     () => ({
-      name: [{ required: true, message: "Please enter the name" }],
+      name: [{ required: helpers.isEmptyObject, message: "Please enter the name" }],
       email: [
-        { required: true, message: "Please enter the email address" },
+        { required: helpers.isEmptyObject, message: "Please enter the email address" },
         {
           type: "email",
           message: "Please enter a valid email address. Please include a @ symbol."
         }
       ],
       phone_number: [
-        { required: true, message: "Please enter the phone number." },
+        { required: helpers.isEmptyObject, message: "Please enter the phone number." },
         {
           pattern: /^[0-9]+$/,
           message: "Please enter a valid phone number. Only numbers are allowed."
         }
       ],
-      description: [{ required: true, message: "Please enter the description" }],
+      description: [{ required: helpers.isEmptyObject, message: "Please enter the description" }],
       dob: [
-        { required: true, message: "Please enter the date of birth" },
+        { required: helpers.isEmptyObject, message: "Please enter the date of birth" },
         {
           validator: (_: unknown, value: moment.Moment | null) => {
             if (!value) {
@@ -248,17 +248,17 @@ const EditUserProfile = () => {
               <h3 className="text-lg font-medium text-[#1a237e]">{state.user.data.name}</h3>
             </div>
           </div>
-          <Form.Item label={<span className="font-medium text-[#1a237e]">Name</span>} name="name" rules={validationRules.name as Rule[]}>
+          <Form.Item label={<span className="font-medium text-[#1a237e]">Name</span>} name="name" rules={validationRules.name as unknown as Rule[]}>
             <Input className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
           </Form.Item>
           <Form.Item label={<span className="font-medium text-[#1a237e]">Email Address</span>} name="email" rules={validationRules.email as Rule[]}>
             <Input className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
           </Form.Item>
-          <Form.Item label={<span className="font-medium text-[#1a237e]">Phone Number</span>} name="phone_number" rules={validationRules.phone_number as Rule[]}>
+          <Form.Item label={<span className="font-medium text-[#1a237e]">Phone Number</span>} name="phone_number" rules={validationRules.phone_number as unknown as Rule[]}>
             <Input className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
           </Form.Item>
 
-          <Form.Item label={<span className="font-medium text-[#1a237e]">Description</span>} name="description" rules={validationRules.description as Rule[]}>
+          <Form.Item label={<span className="font-medium text-[#1a237e]">Description</span>} name="description" rules={validationRules.description as unknown as Rule[]}>
             <Editor
               apiKey={TINY_API_KEY}
               id="description-editor"
@@ -269,7 +269,7 @@ const EditUserProfile = () => {
               }}
             />
           </Form.Item>
-          <Form.Item label={<span className="font-medium text-[#1a237e]">Date of Birth</span>} name="dob" rules={validationRules.dob as Rule[]}>
+          <Form.Item label={<span className="font-medium text-[#1a237e]">Date of Birth</span>} name="dob" rules={validationRules.dob as unknown as Rule[]}>
             <DatePicker
               format="YYYY-MM-DD"
               className="w-full rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]"

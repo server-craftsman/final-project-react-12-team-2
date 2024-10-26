@@ -1,6 +1,6 @@
 import { BaseService } from "../config/base.service";
 import { API } from "../../const/api.path";
-import { GetUsersAdminParams, ChangeStatusParams, ChangeRoleParams } from "../../models/api/request/admin/user.request.model";
+import { GetUsersAdminParams, ChangeStatusParams, ChangeRoleParams, ChangePasswordParams } from "../../models/api/request/admin/user.request.model";
 import { UpdateUserParams } from "../../models/api/request/users/user.request.model";
 import { GetUsersAdminResponse } from "../../models/api/responsive/admin/user.responsive.model";
 import { ResponseSuccess } from "../../app/interface";
@@ -45,6 +45,15 @@ export const UserService = {
   changeRole(userId: string, params: ChangeRoleParams) {
     return BaseService.put<ResponseSuccess<User>>({
       url: API.ADMIN.CHANGE_ROLE.replace(":id", userId),
+      payload: params,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    });
+  },
+  changePassword(params: ChangePasswordParams) {
+    return BaseService.put<ResponseSuccess<User>>({
+      url: API.ADMIN.CHANGE_PASSWORD,
       payload: params,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`

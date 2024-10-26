@@ -13,6 +13,7 @@ export const API = {
     UPDATE_USER: "api/users/:id",
     CHANGE_STATUS: "api/users/change-status",
     CHANGE_ROLE: "api/users/change-role",
+    CHANGE_PASSWORD: "api/users/change-password",
     DELETE_USER: "api/users/:id"
   },
   INSTRUCTOR: {

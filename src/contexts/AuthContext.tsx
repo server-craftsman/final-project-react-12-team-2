@@ -1,8 +1,10 @@
 import { createContext, useContext, ReactNode, useState } from "react";
 import { UserRole } from "../models/prototype/User";
-import { RegisterGooglePublicResponse } from "../models/api/responsive/authentication/auth.responsive.model";
+// import { RegisterGooglePublicResponse } from "../models/api/responsive/authentication/auth.responsive.model";
 import { AuthService } from "../services/authentication/auth.service";
+import { UserService } from "../services/admin/user.service";
 import { RegisterStudentPublicParams, RegisterInstructorPublicParams } from "../models/api/request/authentication/auth.request.model";
+import { ChangePasswordParams } from "../models/api/request/admin/user.request.model";
 import { HTTP_STATUS } from "../app/enums";
 import { HttpException } from "../app/exceptions";
 
@@ -23,6 +25,7 @@ interface AuthContextType {
   setIsLoading: (isLoading: boolean) => void;
   loginGoogle: (googleId: string) => Promise<void>;
   registerGooglePublic: (params: RegisterStudentPublicParams | RegisterInstructorPublicParams) => Promise<ResponseSuccess<User>>;
+  changePassword: (params: ChangePasswordParams) => Promise<ResponseSuccess<User>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -124,6 +127,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  //change password
+  const changePassword = async (params: ChangePasswordParams): Promise<ResponseSuccess<User>> => {
+    try {
+      // Lấy token và userInfo hiện tại
+      const storedToken = localStorage.getItem("token");
+      if (!storedToken) {
+        throw new HttpException("No token found", HTTP_STATUS.UNAUTHORIZED);
+      }
+
+      // Lấy thông tin user hiện tại để có user_id
+      await getCurrentUser();
+      if (!userInfo?._id) {
+        throw new HttpException("User ID not found", HTTP_STATUS.BAD_REQUEST);
+      }
+
+      // Tạo params với user_id
+      const updatedParams: ChangePasswordParams = {
+        old_password: params.old_password,
+        new_password: params.new_password,
+        user_id: userInfo._id
+      };
+
+      const response = await UserService.changePassword(updatedParams);
+      if (!response.data) {
+        throw new HttpException("Invalid change password response", HTTP_STATUS.BAD_REQUEST);
+      }
+      return response.data;
+    } catch (error) {
+      console.error("Failed to change password:", error);
+      throw error instanceof HttpException ? error : new HttpException("Failed to change password", HTTP_STATUS.INTERNAL_SERVER_ERROR);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -139,6 +175,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setIsLoading,
         loginGoogle,
         registerGooglePublic,
+        changePassword,
         getCurrentUser
       }}
     >

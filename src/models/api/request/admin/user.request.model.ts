@@ -23,3 +23,9 @@ export interface ChangeRoleParams {
   user_id: string;
   role: UserRole;
 }
+
+export interface ChangePasswordParams {
+  user_id: string;
+  old_password: string;
+  new_password: string;
+}
