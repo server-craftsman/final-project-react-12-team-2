@@ -20,12 +20,16 @@ const VerifyEmail: React.FC = () => {
         await verifyToken(token);
         setStatus(true);  // Success case
         setIsExpired(false);
+        setMessage(''); // Clear any error messages
+        
       } catch (error) {
         setStatus(false);
-        setIsExpired(true);
+        // Chỉ set isExpired khi thực sự token hết hạn
         if (error instanceof HttpException && error.status === HTTP_STATUS.NOT_FOUND) {
+          setIsExpired(true);
           setMessage('Token has expired. Please request a new verification link.');
         } else {
+          setIsExpired(false); // Các lỗi khác không phải do token hết hạn
           setMessage('Verification failed. Please try again or request a new verification link.');
         }
       }
