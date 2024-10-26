@@ -5,5 +5,6 @@ import * as purchasesStatus from "./purchasesStatus";
 import * as storage from "./storage";
 import * as userRole from "./userRole";
 import * as validation from "./validation";
+import * as upload from "./upload";
 
-export { helpers, courseStatus, userStatus, purchasesStatus, storage, userRole, validation };
+export { helpers, courseStatus, userStatus, purchasesStatus, storage, userRole, validation, upload };

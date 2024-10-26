@@ -10,12 +10,11 @@ import Lottie from "lottie-react";
 import ButtonDivideStudentAndInstructor from "../../components/generic/register/ButtonDivideStudentAndInstructor";
 import RegisterInfoOfInstructor from "../../components/generic/register/RegisterInfoOfInstructor";
 const { Title, Text } = Typography;
+import { handleUploadFile } from "../../utils/upload";
 
-//call api to register
+// Call API to register
 import { useAuth } from "../../contexts/AuthContext";
 import { RegisterParams } from "../../models/api/request/authentication/auth.request.model";
-// import { ResponseSuccess } from "../../app/interface";
-// import { HTTP_STATUS } from "../../app/enums";
 import { ROUTER_URL } from "../../const/router.path";
 import { HttpException } from "../../app/exceptions";
 import { helpers } from "../../utils";
@@ -23,10 +22,12 @@ import { UserRoles } from "../../app/enums";
 
 const RegisterPage = () => {
   const [form] = Form.useForm();
-  const [role, setRole] = useState<string | null>(null);
+  const [role, setRole] = useState<string>("student");
   const { register } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   const onFinish = async (values: any) => {
     setIsLoading(true);
@@ -36,29 +37,47 @@ const RegisterPage = () => {
         return;
       }
 
+      // Upload avatar and video files
+      const avatarFile = form.getFieldValue('avatar_file')?.originFileObj;
+      const videoFile = form.getFieldValue('video_file')?.originFileObj;
+
+      const avatarUrl = avatarFile ? await handleUploadFile(avatarFile, 'avatar') : null;
+      const videoUrl = videoFile ? await handleUploadFile(videoFile, 'video') : null;
+
+      if (!avatarUrl || !videoUrl) {
+        helpers.notification("Failed to upload files. Please try again.");
+        setIsLoading(false);
+        return;
+      }
+
       const params: RegisterParams = {
         name: values.name,
         email: values.email,
         password: values.password,
         role: role as UserRoles,
         description: values.description,
-        avatar_url: values.avatar_url,
+        avatar_url: avatarUrl,
         phone_number: values.phone_number,
-        video_url: values.video_url,
+        video_url: videoUrl,
         bank_account_name: values.bank_account_name,
         bank_account_no: values.bank_account_no,
         bank_name: values.bank_name
       };
+
       const response = await register(params);
 
       if (response.data) {
-        const message = params.role === "instructor" ? "Registration successful! Please wait for admin review." : "Registration successful! Please check your email to verify your account.";
+        const message = params.role === "instructor" 
+          ? "Registration successful! Please wait for admin review." 
+          : "Registration successful! Please check your email to verify your account.";
 
         helpers.notification(message);
         navigate(ROUTER_URL.LOGIN);
       }
     } catch (error: any) {
-      const errorMessage = error instanceof HttpException ? error.message : (error.response?.data?.message ?? "Registration failed. Please try again.");
+      const errorMessage = error instanceof HttpException 
+        ? error.message 
+        : (error.response?.data?.message ?? "Registration failed. Please try again.");
 
       helpers.notification(errorMessage);
     } finally {
@@ -70,36 +89,32 @@ const RegisterPage = () => {
     setRole(selectedRole);
   };
 
-  // const validateUsername = (_: any, value: string) => {
-  //   if (!value || value.includes(" ") || value.length < 6) {
-  //     return Promise.reject(new Error("Username must be at least 6 characters long and contain no spaces."));
-  //   }
-  //   return Promise.resolve();
-  // };
-
-  const validateEmail = (_: any, value: string) => {
-    if (!value || !value.endsWith("@gmail.com")) {
-      return Promise.reject(new Error("Email must end with @gmail.com."));
+  const validateEmail = async (_: any, value: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!value || !emailRegex.test(value)) {
+      return Promise.reject(new Error("Please enter a valid email address."));
     }
     return Promise.resolve();
   };
 
-  const validatePassword = (_: any, value: string) => {
+  const validatePassword = async (_: any, value: string) => {
     const hasUpperCase = /[A-Z]/.test(value);
     const hasNumber = /\d/.test(value);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value); // Added special character validation
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value);
     if (!value || value.length < 8 || !hasUpperCase || !hasNumber || !hasSpecialChar) {
       return Promise.reject(new Error("Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character."));
     }
     return Promise.resolve();
   };
 
-  const validateConfirmPassword = (_: any, value: string) => {
-    if (!value || value !== form.getFieldValue("password")) {
-      return Promise.reject(new Error("The two passwords that you entered do not match!"));
-    }
-    return Promise.resolve();
-  };
+  const validateConfirmPassword = ({ getFieldValue }: any) => ({
+    validator(_: any, value: string) {
+      if (!value || getFieldValue('password') === value) {
+        return Promise.resolve();
+      }
+      return Promise.reject(new Error('The two passwords that you entered do not match!'));
+    },
+  });
 
   const onFinishGoogle = (googleIdToken: string) => {
     console.log("Google ID Token: ", googleIdToken);
@@ -129,9 +144,6 @@ const RegisterPage = () => {
           </Title>
 
           <Form form={form} name="register" onFinish={onFinish} scrollToFirstError layout="vertical">
-            {/* <Form.Item name="username" rules={[{ required: true, message: "Please input your username!" }, { validator: validateUsername }]}>
-              <Input prefix={<UserOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Username" className="rounded-lg px-4 py-2" />
-            </Form.Item> */}
             <Form.Item name="name" rules={[{ required: true, message: "Please input your name!" }]}>
               <Input prefix={<UserOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Name" className="rounded-lg px-4 py-2" />
             </Form.Item>
@@ -144,11 +156,19 @@ const RegisterPage = () => {
               <Input.Password prefix={<LockOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Password" className="rounded-lg px-4 py-2" />
             </Form.Item>
 
-            <Form.Item name="confirm" dependencies={["password"]} hasFeedback rules={[{ required: true, message: "Please confirm your password!" }, { validator: validateConfirmPassword }]}>
+            <Form.Item name="confirm" dependencies={["password"]} hasFeedback rules={[{ required: true, message: "Please confirm your password!" }, validateConfirmPassword]}>
               <Input.Password prefix={<LockOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Confirm Password" className="rounded-lg px-4 py-2" />
             </Form.Item>
             <ButtonDivideStudentAndInstructor onSelectRole={handleRoleSelection} />
-            {role === "instructor" && <RegisterInfoOfInstructor />}
+            {role === "instructor" && (
+              <RegisterInfoOfInstructor
+                form={form}
+                uploadingVideo={uploadingVideo}
+                uploadingAvatar={uploadingAvatar}
+                setUploadingVideo={setUploadingVideo}
+                setUploadingAvatar={setUploadingAvatar}
+              />
+            )}
             <Form.Item>
               <Button loading={isLoading} type="primary" htmlType="submit" className="w-full rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 py-3 text-lg font-semibold text-white shadow-md transition-all duration-300 hover:from-indigo-700 hover:to-purple-700">
                 Register

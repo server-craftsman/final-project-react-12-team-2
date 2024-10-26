@@ -26,7 +26,7 @@ interface AuthContextType {
   loginGoogle: (googleId: string) => Promise<void>;
   registerGooglePublic: (params: RegisterStudentPublicParams | RegisterInstructorPublicParams) => Promise<ResponseSuccess<User>>;
   changePassword: (params: ChangePasswordParams) => Promise<ResponseSuccess<User>>;
-  register: (params: RegisterParams) => Promise<ResponseSuccess<User>>; // Updated return type
+  register: (params: RegisterParams) => Promise<ResponseSuccess<User>>;
   verifyToken: (params: { token: string }) => Promise<ResponseSuccess<string>>;
   resendToken: (params: { email: string }) => Promise<ResponseSuccess<string>>;
 }
@@ -170,9 +170,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!response.data) {
         throw new HttpException("Invalid registration response", HTTP_STATUS.BAD_REQUEST);
       }
-      return response.data as unknown as ResponseSuccess<User>;
+      return response.data;
     } catch (error) {
-      console.error("Failed to register:", error);
+      // Log a simplified error message instead of the entire error object
+      console.error("Failed to register:", error instanceof HttpException ? error.message : "Unknown error");
+
+      // Throw a new HttpException with a simplified message
       throw error instanceof HttpException ? error : new HttpException("Failed to register", HTTP_STATUS.INTERNAL_SERVER_ERROR);
     }
   };

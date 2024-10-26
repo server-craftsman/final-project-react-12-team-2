@@ -56,7 +56,8 @@ export const AuthService = {
   register(params: RegisterParams) {
     return BaseService.post<ResponseSuccess<User>>({
       url: API.AUTH.REGISTER,
-      payload: params
+      payload: params,
+      isLoading: true
     });
   }
 };
