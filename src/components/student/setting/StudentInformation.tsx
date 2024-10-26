@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { helpers } from "../../../utils";
 import parse from "html-react-parser";
 import { EditOutlined } from "@ant-design/icons";
+import { ROUTER_URL } from "../../../const/router.path";
 const StudentInformation = () => {
   const navigate = useNavigate();
   // const studentUser = usersData.users.find((user) => user.role === UserRole.student);
@@ -15,7 +16,7 @@ const StudentInformation = () => {
   }, []);
 
   const handleEdit = () => {
-    navigate(`/dashboard-student/student/edit-user/${userInfo?._id}`);
+    navigate(ROUTER_URL.STUDENT.EDIT_USER.replace(":id", userInfo?._id as string));
   };
 
   if (!userInfo) {
@@ -66,16 +67,16 @@ const StudentInformation = () => {
             {helpers.formatPhoneNumber(userInfo.phone_number as string)}
           </Descriptions.Item>
           <Descriptions.Item label="Date of Birth" className="text-base">
-            {helpers.formatDate(new Date(userInfo.dob))}
+            {userInfo.dob ? helpers.formatDate(new Date(userInfo.dob)) : "-"}
           </Descriptions.Item>
           <Descriptions.Item label="Verified" className="text-base">
             <span className={userInfo.is_verified ? "text-green-600" : "text-red-600"}>{userInfo.is_verified ? "Yes" : "No"}</span>
           </Descriptions.Item>
           <Descriptions.Item label="Created At" className="text-base">
-            {helpers.formatDate(new Date(userInfo.created_at))}
+            {userInfo.created_at ? helpers.formatDate(new Date(userInfo.created_at)) : "-"}
           </Descriptions.Item>
           <Descriptions.Item label="Updated At" className="text-base">
-            {helpers.formatDate(new Date(userInfo.updated_at))}
+            {userInfo.updated_at ? helpers.formatDate(new Date(userInfo.updated_at)) : "-"}
           </Descriptions.Item>
         </Descriptions>
         <div className="mt-6 flex justify-end">
