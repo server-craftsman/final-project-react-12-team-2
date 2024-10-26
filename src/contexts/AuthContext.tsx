@@ -184,6 +184,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!response.data) {
         throw new HttpException("Invalid verify token response", HTTP_STATUS.BAD_REQUEST);
       }
+      // Return the entire response since the API returns ResponseSuccess<string>
       return response.data;
     } catch (error) {
       console.error("Failed to verify token:", error);
@@ -195,7 +196,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const resendToken = async (params: { email: string }): Promise<ResponseSuccess<string>> => {
     try {
       const response = await AuthService.resendToken(params);
-      return response.data as unknown as ResponseSuccess<string>;
+      if (!response.data) {
+        throw new HttpException("Invalid resend token response", HTTP_STATUS.BAD_REQUEST);
+      }
+      // Return the entire response since the API returns ResponseSuccess<string>
+      return response.data;
     } catch (error) {
       console.error("Failed to resend token:", error);
       throw error instanceof HttpException ? error : new HttpException("Failed to resend token", HTTP_STATUS.INTERNAL_SERVER_ERROR);

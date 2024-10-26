@@ -17,23 +17,29 @@ const VerifyEmail: React.FC = () => {
     const verify = async () => {
       if (!token) return;
 
-      setIsLoading(true); // Start loading
+      setIsLoading(true);
       try {
-        await verifyToken({ token });
+        const response = await verifyToken({ token });
         setStatus(true);
         setIsExpired(false);
-        setMessage("");
+        // You can display the success message from the API if needed
+        setMessage(response.data || "Email verified successfully!");
       } catch (error) {
         setStatus(false);
-        if (error instanceof HttpException && error.status === HTTP_STATUS.NOT_FOUND) {
-          setIsExpired(true);
-          setMessage("Token has expired. Please request a new verification link.");
+        if (error instanceof HttpException) {
+          if (error.status === HTTP_STATUS.NOT_FOUND) {
+            setIsExpired(true);
+            setMessage("Token has expired. Please request a new verification link.");
+          } else {
+            setIsExpired(false);
+            setMessage(error.message || "Verification failed. Please try again.");
+          }
         } else {
           setIsExpired(false);
           setMessage("Verification failed. Please try again or request a new verification link.");
         }
       } finally {
-        setIsLoading(false); // End loading regardless of outcome
+        setIsLoading(false);
       }
     };
     verify();
@@ -43,11 +49,12 @@ const VerifyEmail: React.FC = () => {
     async (e: React.FormEvent) => {
       e.preventDefault();
       try {
-        await resendToken({ email });
-        setMessage("New verification link has been sent to your email.");
+        const response = await resendToken({ email });
+        // Display the success message from the API
+        setMessage(response.data || "New verification link has been sent to your email.");
       } catch (error) {
         if (error instanceof HttpException) {
-          setMessage(`Failed to resend verification link: ${error.message}`);
+          setMessage(error.message || "Failed to resend verification link.");
         } else {
           setMessage("Failed to resend verification link. Please try again.");
         }
