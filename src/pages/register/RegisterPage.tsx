@@ -137,7 +137,7 @@ const RegisterPage = () => {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-purple-900/20 to-indigo-900/20 backdrop-blur-md">
-      <div className="relative flex w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl md:flex-row">
+      <div className="relative flex w-full max-w-[85rem] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl md:flex-row">
         <div className="flex w-full flex-col items-center justify-center bg-gradient-to-br from-indigo-900 to-purple-900 p-12 md:w-1/2">
           <Link to="/">
             <Lottie animationData={registerAnimation} loop={true} />
@@ -181,22 +181,20 @@ const RegisterPage = () => {
               />
             )}
             <Form.Item>
-              <Button loading={isLoading} type="primary" htmlType="submit" className="w-full rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 py-3 text-lg font-semibold text-white shadow-md transition-all duration-300 hover:from-indigo-700 hover:to-purple-700">
+              <Button loading={isLoading} type="primary" htmlType="submit" className="mt-4 w-full h-12 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 py-3 text-lg font-semibold text-white shadow-md transition-all duration-300 hover:from-indigo-700 hover:to-purple-700">
                 Register
               </Button>
             </Form.Item>
-            <GoogleOAuthProvider clientId={CLIENT_ID}>
-              <LoginGoogle onLoginSuccess={onFinishGoogle} onLoginError={handleGoogleLoginError} />
-            </GoogleOAuthProvider>
+            <Divider plain className="text-gray-400">
+              Or
+            </Divider>
+            <div className="flex justify-center">
+              <GoogleOAuthProvider clientId={CLIENT_ID}>
+                <LoginGoogle onLoginSuccess={onFinishGoogle} onLoginError={handleGoogleLoginError} />
+              </GoogleOAuthProvider>
+            </div>
           </Form>
-          <Divider plain className="text-gray-400">
-            Already have an account?
-          </Divider>
-          <div className="text-center">
-            <Link to="/login" className="font-semibold text-indigo-600 transition-colors duration-300 hover:text-indigo-800">
-              Sign in
-            </Link>
-          </div>
+          <div className="text-center mt-4">Already have an account? <Link to="/login" className="font-semibold text-indigo-600 transition-colors duration-300 hover:text-indigo-800">Sign in</Link></div>
         </div>
       </div>
     </div>

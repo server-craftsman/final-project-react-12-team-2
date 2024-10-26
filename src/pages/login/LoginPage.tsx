@@ -12,13 +12,10 @@ import { CLIENT_ID } from "../../const/authentication";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-// import SignUpForm from "./SignUpGoogle";
 import { ROUTER_URL } from "../../const/router.path";
 import { HTTP_STATUS } from "../../app/enums";
 import { HttpException } from "../../app/exceptions";
 import { validation } from "../../utils";
-
-// import { RegisterStudentPublicParams, RegisterInstructorPublicParams } from "../../models/api/request/authentication/auth.request.model";
 
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
@@ -194,7 +191,7 @@ const LoginPage = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-[#1a237e]/20 to-[#1a237e]/40 backdrop-blur-md">
       <ToastContainer />
-      <div className="relative flex w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl md:flex-row">
+      <div className="relative flex w-full max-w-7xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl md:flex-row">
         <div className="flex w-full flex-col items-center justify-center bg-gradient-to-br from-[#1a237e] to-[#1a237e]/80 p-12 md:w-1/2">
           <Link to="/">
             <Lottie animationData={loginAnimation} loop={true} />
@@ -233,12 +230,14 @@ const LoginPage = () => {
             <Divider plain className="text-gray-400">
               or continue with
             </Divider>
-            <GoogleOAuthProvider clientId={CLIENT_ID}>
-              <Form.Item>
+            <div className="flex justify-center">
+              <GoogleOAuthProvider clientId={CLIENT_ID}>
+                <Form.Item>
                 <LoginGoogle onLoginError={handleGoogleLoginError} onLoginSuccess={onFinishGoogle} />
-              </Form.Item>
-            </GoogleOAuthProvider>
-
+                </Form.Item>
+              </GoogleOAuthProvider>
+            </div>
+    
             {loginError && (
               <p className="mt-4 text-center text-red-500">
                 {loginError}
@@ -248,14 +247,13 @@ const LoginPage = () => {
 
             <Form.Item>
               <div className="text-center">
-                <span className="text-gray-600">New to Edu Learn? </span>
+                <span className="text-gray-500">Don't have an account yet? </span>
                 <Button
                   type="link"
-                  className="font-semibold text-[#1a237e] transition-colors duration-300 hover:text-[#1a237e]/80"
-                  // onClick={showSignUpModal}
+                  className="font-medium text-[#1a237e] transition-all duration-300 hover:text-[#1a237e]/80 hover:underline focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:ring-offset-2"
                   onClick={() => navigate("/register")}
                 >
-                  Create an Account
+                  Sign up now
                 </Button>
               </div>
             </Form.Item>

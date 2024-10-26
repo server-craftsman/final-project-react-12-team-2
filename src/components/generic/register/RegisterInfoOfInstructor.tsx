@@ -22,6 +22,8 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({
 }) => {
   const [videoFileList, setVideoFileList] = useState<UploadFile<any>[]>([]);
   const [avatarFileList, setAvatarFileList] = useState<UploadFile<any>[]>([]);
+  const [videoPreview, setVideoPreview] = useState<string>('');
+  const [avatarPreview, setAvatarPreview] = useState<string>('');
 
   const handleEditorChange = (content: string) => {
     if (form) {
@@ -50,8 +52,32 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({
 
     if (type === 'video') {
       setUploadingVideo(true);
+      // Generate video thumbnail
+      const videoUrl = URL.createObjectURL(file);
+      const video = document.createElement('video');
+      video.src = videoUrl;
+
+      video.addEventListener('loadeddata', () => {
+        video.currentTime = 1; // Seek to 1 second
+      });
+
+      video.addEventListener('seeked', () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
+        setVideoPreview(canvas.toDataURL());
+        URL.revokeObjectURL(videoUrl); // Clean up the object URL
+      });
     } else {
       setUploadingAvatar(true);
+      // Generate image preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setAvatarPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
     }
 
     setTimeout(() => {
@@ -69,67 +95,55 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({
   }, [form, setUploadingVideo, setUploadingAvatar]);
 
   return (
-    <div className="space-y-8 p-6 bg-white rounded-xl shadow-lg">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Form.Item 
-          name="phone_number" 
-          rules={[{ required: true, message: "Please input your phone number!" }]}
-          className="mb-0"
-        >
-          <Input 
-            prefix={<PhoneOutlined className="text-indigo-600" />} 
-            placeholder="Phone Number"
-            className="h-12 rounded-lg border-2 border-indigo-100 focus:border-indigo-500 hover:border-indigo-300"
-          />
+    <div className="space-y-8 p-8 bg-white rounded-xl shadow-lg">
+      <div className="col-span-1">
+        <Form.Item name="phone_number" rules={[{ required: true, message: "Please input your phone number!" }]} className="mb-0">
+          <Input prefix={<PhoneOutlined className="text-indigo-600" />} placeholder="Phone Number" className="h-12 rounded-lg border-2 border-indigo-200 focus:border-indigo-500 hover:border-indigo-300 transition duration-200" />
         </Form.Item>
+      </div>
 
-        <div className="flex gap-6">
-          <Form.Item 
-            name="video_file" 
-            label={<span className="text-gray-700 font-medium">Introduction Video</span>}
-            rules={[{ required: true, message: "Please upload an introduction video!" }]}
-            className="flex-1 mb-0"
-          >
-            <Upload
-              accept="video/*"
-              showUploadList={{ showPreviewIcon: true, showRemoveIcon: true }}
-              beforeUpload={(file) => handleFileUpload(file, 'video')}
-              fileList={videoFileList}
-              onChange={({ fileList }) => setVideoFileList(fileList as UploadFile<any>[])}
-            >
-              <Button 
-                icon={<UploadOutlined />}
-                className="w-full h-12 rounded-lg border-2 border-indigo-100 hover:border-indigo-300 hover:text-indigo-600"
-                loading={uploadingVideo}
-              >
-                Select Video
-              </Button>
-            </Upload>
-          </Form.Item>
-
-          <Form.Item 
-            name="avatar_file" 
-            label={<span className="text-gray-700 font-medium">Profile Picture</span>}
-            rules={[{ required: true, message: "Please upload an avatar!" }]}
-            className="flex-1 mb-0"
-          >
-            <Upload
-              accept="image/*"
-              showUploadList={{ showPreviewIcon: true, showRemoveIcon: true }}
-              beforeUpload={(file) => handleFileUpload(file, 'avatar')}
-              fileList={avatarFileList}
+      <div className="flex flex-grow gap-6">
+        <Form.Item name="avatar_file" label={<span className="text-gray-700 font-medium">Profile Picture</span>} rules={[{ required: true, message: "Please upload an avatar!" }]} className="mb-0">
+          <div>
+            <Upload 
+              accept="image/*" 
+              showUploadList={false}
+              beforeUpload={(file) => handleFileUpload(file, 'avatar')} 
+              fileList={avatarFileList} 
               onChange={({ fileList }) => setAvatarFileList(fileList)}
             >
-              <Button 
-                icon={<UploadOutlined />}
-                className="w-full h-12 rounded-lg border-2 border-indigo-100 hover:border-indigo-300 hover:text-indigo-600"
-                loading={uploadingAvatar}
-              >
+              <Button icon={<UploadOutlined />} className="w-full h-12 rounded-lg border-2 border-indigo-200 hover:border-indigo-300 hover:text-indigo-600 transition duration-200" loading={uploadingAvatar}>
                 Select Avatar
               </Button>
             </Upload>
-          </Form.Item>
-        </div>
+            {avatarPreview && (
+              <div className="mt-4">
+                <img src={avatarPreview} alt="Avatar preview" className="w-32 h-32 object-cover rounded-lg" />
+              </div>
+            )}
+          </div>
+        </Form.Item>
+
+        <Form.Item name="video_file" label={<span className="text-gray-700 font-medium">Introduction Video</span>} rules={[{ required: true, message: "Please upload an introduction video!" }]} className="mb-0">
+          <div>
+            <Upload 
+              accept="video/*" 
+              showUploadList={false}
+              beforeUpload={(file) => handleFileUpload(file, 'video')} 
+              fileList={videoFileList} 
+              onChange={({ fileList }) => setVideoFileList(fileList as UploadFile<any>[])}
+            >
+              <Button icon={<UploadOutlined />} className="w-full h-12 rounded-lg border-2 border-indigo-200 hover:border-indigo-300 hover:text-indigo-600 transition duration-200" loading={uploadingVideo}>
+                Select Video
+              </Button>
+            </Upload>
+            {videoPreview && (
+              <div className="mt-4">
+                <img src={videoPreview} alt="Video thumbnail" className="w-32 h-32 object-cover rounded-lg" />
+              </div>
+            )}
+          </div>
+        </Form.Item>
       </div>
 
       <Form.Item 
@@ -154,45 +168,43 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({
         />
       </Form.Item>
 
-      <div className="bg-gray-50 p-6 rounded-xl space-y-6">
+      <div className="bg-gray-50 p-8 rounded-xl space-y-6">
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Banking Information</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Form.Item 
-            name="bank_name" 
-            rules={[{ required: true, message: "Please input your bank name!" }]}
-            className="mb-0"
-          >
-            <Input 
-              prefix={<BankOutlined className="text-indigo-600" />}
-              placeholder="Bank Name"
-              className="h-12 rounded-lg border-2 border-indigo-100 focus:border-indigo-500 hover:border-indigo-300"
-            />
-          </Form.Item>
-          
-          <Form.Item 
-            name="bank_account_no" 
-            rules={[{ required: true, message: "Please input your bank account number!" }]}
-            className="mb-0"
-          >
-            <Input 
-              prefix={<NumberOutlined className="text-indigo-600" />}
-              placeholder="Account Number"
-              className="h-12 rounded-lg border-2 border-indigo-100 focus:border-indigo-500 hover:border-indigo-300"
-            />
-          </Form.Item>
-          
-          <Form.Item 
-            name="bank_account_name" 
-            rules={[{ required: true, message: "Please input your bank account name!" }]}
-            className="mb-0"
-          >
-            <Input 
-              prefix={<UserOutlined className="text-indigo-600" />}
-              placeholder="Account Name"
-              className="h-12 rounded-lg border-2 border-indigo-100 focus:border-indigo-500 hover:border-indigo-300"
-            />
-          </Form.Item>
-        </div>
+        <Form.Item 
+          name="bank_name" 
+          rules={[{ required: true, message: "Please input your bank name!" }]}
+          className="mb-0"
+        >
+          <Input 
+            prefix={<BankOutlined className="text-indigo-600" />}
+            placeholder="Bank Name"
+            className="h-12 rounded-lg border-2 border-indigo-200 focus:border-indigo-500 hover:border-indigo-300 transition duration-200"
+          />
+        </Form.Item>
+
+        <Form.Item 
+          name="bank_account_no" 
+          rules={[{ required: true, message: "Please input your bank account number!" }]}
+          className="mb-0"
+        >
+          <Input 
+            prefix={<NumberOutlined className="text-indigo-600" />}
+            placeholder="Account Number" 
+            className="h-12 rounded-lg border-2 border-indigo-200 focus:border-indigo-500 hover:border-indigo-300 transition duration-200"
+          />
+        </Form.Item>
+
+        <Form.Item 
+          name="bank_account_name" 
+          rules={[{ required: true, message: "Please input your bank account name!" }]}
+          className="mb-0"
+        >
+          <Input 
+            prefix={<UserOutlined className="text-indigo-600" />}
+            placeholder="Account Name"
+            className="h-12 rounded-lg border-2 border-indigo-200 focus:border-indigo-500 hover:border-indigo-300 transition duration-200" 
+          />
+        </Form.Item>
       </div>
     </div>
   );
