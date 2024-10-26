@@ -159,7 +159,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.error("Failed to change password:", error);
       throw error instanceof HttpException ? error : new HttpException("Failed to change password", HTTP_STATUS.INTERNAL_SERVER_ERROR);
     }
-  };
+  }
 
   //register
   const register = async (params: RegisterParams): Promise<ResponseSuccess<User>> => {

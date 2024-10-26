@@ -57,33 +57,6 @@ const ManageUser = () => {
     }
   };
 
-  // const handleSearchSubmit = () => {
-  //   fetchUsersData();
-  // };
-
-  // const fetchUsersData = async () => {
-  //   try {
-  //     const response = await fetchUsers({
-  //       searchCondition: {
-  //         keyword: searchQuery,
-  //         role: selectedRole || UserRole.all,
-  //         status: selectedStatus !== null ? selectedStatus : true,
-  //         is_verified: true,
-  //         is_delete: false,
-  //       },
-  //       pageInfo: {
-  //         pageNum: 1,
-  //         pageSize: 10,
-  //       },
-  //     });
-  //     if (response && response.success) {
-  //       setUsers(response.data.pageData);
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to fetch users:", error);
-  //   }
-  // };
-
   useEffect(() => {
     const fetchUsersData = async () => {
       try {
@@ -126,7 +99,7 @@ const ManageUser = () => {
     };
 
     fetchUsersData();
-  }, [searchQuery, selectedRole, selectedStatus, activeTab]); // Added searchQuery to dependencies
+  }, [searchQuery, selectedRole, selectedStatus, activeTab]);
 
   const tabItems = [
     { label: "All", key: "all" },
@@ -154,8 +127,9 @@ const ManageUser = () => {
           searchQuery={searchQuery} 
           selectedRole={selectedRole} 
           selectedStatus={selectedStatus} 
-          activeTab={activeTab} 
-          showActionColumn={activeTab !== "unverified"} // Add this line
+          activeTab={activeTab}
+          showActionColumn={activeTab !== "unverified"}
+          disableActions={activeTab === "unverified"} // Add this prop to disable actions for unverified tab
         />
       </div>
     );

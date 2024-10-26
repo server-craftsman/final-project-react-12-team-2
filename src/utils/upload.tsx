@@ -1,9 +1,5 @@
 import { message } from "antd";
 import cloudinaryConfig from "../services/config/cloudinaryConfig";
-import { useState } from "react";
-
-// const [uploadingVideo, setUploadingVideo] = useState(false);
-// const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
 export const handleUploadFile = async (file: File, type: 'video' | 'avatar') => {
     const formData = new FormData();

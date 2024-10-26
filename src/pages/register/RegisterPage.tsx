@@ -130,7 +130,7 @@ const RegisterPage = () => {
     },
   });
 
-  const onFinishGoogle = (token: string, googleId: string) => {
+  const onFinishGoogle = (token: string) => {
     console.log("Google ID Token: ", token);
     setGoogleId(token); // Set the token state
     setIsGoogleModalVisible(true); // Show the modal when Google login is successful
@@ -209,6 +209,7 @@ const RegisterPage = () => {
         open={isGoogleModalVisible}
         onCancel={() => setIsGoogleModalVisible(false)}
         footer={null}
+        width={1200}
       >
         <RegisterViaGoogle googleId={googleId} />
       </Modal>

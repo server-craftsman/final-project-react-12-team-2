@@ -32,9 +32,10 @@ interface ViewUserProfileProps {
   selectedStatus: boolean | null;
   activeTab: string;
   showActionColumn: boolean;
+  disableActions: boolean;
 }
 
-const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selectedRole, selectedStatus, activeTab, showActionColumn }) => {
+const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selectedRole, selectedStatus, activeTab, showActionColumn, disableActions }) => {
   const navigate = useNavigate();
   const [users, setUsers] = useState<GetUsersAdminResponse | null>(null);
 
@@ -241,7 +242,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
         dataIndex: "email",
         key: "email"
       },
-      {
+      !disableActions && {
         title: "Role",
         dataIndex: "role",
         key: "role",
@@ -256,7 +257,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
           </div>
         )
       },
-      {
+      !disableActions && {
         title: "Status",
         dataIndex: "status",
         key: "status",
@@ -304,7 +305,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
         title: "Verify",
         key: "verify",
         render: (_: unknown) => (
-          <div className="flex items-center justify-center">
+          <div>
             <button
               // onClick={() => handleVerifyUser(record._id)}  // Add onClick handler
               className="rounded-full bg-gradient-to-r from-gray-400 to-gray-500 px-4 py-1.5 text-white"
@@ -317,7 +318,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
     }
 
     return baseColumns;
-  }, [activeTab, handleViewDetails, handleChangeStatus, handleChangeRole]);
+  }, [activeTab, handleViewDetails, handleChangeStatus, handleChangeRole, disableActions]);
 
   return (
     <div className="-mt-3 mb-64 p-4">

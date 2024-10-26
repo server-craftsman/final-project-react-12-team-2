@@ -6,7 +6,8 @@ import { Editor } from "@tinymce/tinymce-react";
 import { TINY_API_KEY } from "../../services/config/apiClientTiny";
 import { message } from "antd";
 import { jwtDecode } from "jwt-decode";
-
+import { useNavigate } from "react-router-dom";
+import { ROUTER_URL } from "../../const/router.path";
 interface RegisterViaGoogleProps {
   googleId: string;
 }
@@ -14,6 +15,7 @@ interface RegisterViaGoogleProps {
 const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = ({ googleId }) => {
   const { registerGooglePublic } = useAuth();
   const [form] = Form.useForm();
+  const navigate = useNavigate();
   const [role, setRole] = useState<"student" | "instructor">("student");
   const [description, setDescription] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -30,12 +32,10 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = ({ googleId }) => {
   const [avatarPreview, setAvatarPreview] = useState<string>('');
 
   useEffect(() => {
-    // Get Google token from localStorage
     const googleToken = localStorage.getItem("googleToken");
     if (googleToken) {
       try {
         const decodedToken: any = jwtDecode(googleToken);
-        // Use sub (Google ID) as password hash
         setPassword(decodedToken.sub);
       } catch (error) {
         console.error("Error decoding Google token:", error);
@@ -49,9 +49,9 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = ({ googleId }) => {
   };
 
   const handleFileUpload = useCallback((file: File, type: 'video' | 'avatar') => {
-    const maxSize = type === 'video' ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
+    const maxSize = type === 'video' ? 100 * 1024 * 1024 : 5 * 1024 * 1024; // Increased video size to 100MB
     if (file.size > maxSize) {
-      message.error(`File size should not exceed ${type === 'video' ? '50MB' : '5MB'}`);
+      message.error(`File size should not exceed ${type === 'video' ? '100MB' : '5MB'}`);
       return false;
     }
 
@@ -68,7 +68,7 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = ({ googleId }) => {
       video.src = videoUrl;
 
       video.addEventListener('loadeddata', () => {
-        video.currentTime = 1;
+        video.currentTime = 30; // Changed to 30 seconds for a longer preview
       });
 
       video.addEventListener('seeked', () => {
@@ -108,13 +108,12 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = ({ googleId }) => {
       const commonParams = {
         google_id: googleId,
         role,
-        password, // Using Google ID as password hash
+        password,
       };
 
       const params = role === "student"
         ? {
             ...commonParams,
-            // Ensure no additional fields are included for students
           }
         : {
             ...commonParams,
@@ -127,30 +126,60 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = ({ googleId }) => {
             bank_account_name: bankAccountName,
           };
 
-      const response = await registerGooglePublic(params as any);
-      console.log("Registration successful:", response);
-    } catch (error) {
-      console.error("Failed to register via Google:", error);
+      await registerGooglePublic(params as any);
+      message.success("You have successfully registered your profile for the instructor role. Please wait for admin to review the application and notify you via email!");
+      navigate(ROUTER_URL.LOGIN);
+    } catch (error: any) {
+      if (error.code === 11000 && error.keyPattern?.email) {
+        message.error("This email is already registered. Please use a different email.");
+      } else {
+        console.error("Failed to register via Google:", error);
+        message.error("An error occurred during registration. Please try again.");
+      }
     }
   };
 
   return (
-    <div>
-      <input
-        type="text"
-        placeholder="Phone Number"
-        value={phoneNumber}
-        onChange={(e) => setPhoneNumber(e.target.value)}
-      />
-      <select value={role} onChange={(e) => setRole(e.target.value as "student" | "instructor")}>
-        <option value="student">Student</option>
-        <option value="instructor">Instructor</option>
-      </select>
+    <Form form={form} layout="vertical" className="w-full max-w-[1200px] mx-auto p-6">
+      <Form.Item 
+        label="Phone Number"
+        name="phone_number"
+        rules={[{ required: true, message: 'Please input your phone number!' }]}
+        className="mb-4"
+      >
+        <Input
+          prefix={<PhoneOutlined className="text-gray-400" />}
+          placeholder="Enter your phone number"
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
+          className="h-10 rounded-lg"
+        />
+      </Form.Item>
+
+      <Form.Item
+        label="Role"
+        name="role"
+        className="mb-6"
+      >
+        <select 
+          value={role} 
+          onChange={(e) => setRole(e.target.value as "student" | "instructor")}
+          className="w-full h-10 rounded-lg border border-gray-300 px-3"
+        >
+          <option value="student">Student</option>
+          <option value="instructor">Instructor</option>
+        </select>
+      </Form.Item>
+
       {role === "instructor" && (
-        <div className="space-y-8 p-8 bg-white rounded-xl shadow-lg">
-          <div className="flex flex-grow gap-6">
-            <Form.Item name="avatar_file" label={<span className="text-gray-700 font-medium">Profile Picture</span>} rules={[{ required: true, message: "Please upload an avatar!" }]} className="mb-0">
-              <div>
+        <div className="space-y-8 bg-white rounded-xl shadow-lg p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Form.Item 
+              name="avatar_file" 
+              label="Profile Picture"
+              rules={[{ required: true, message: "Please upload an avatar!" }]}
+            >
+              <div className="space-y-4">
                 <Upload 
                   accept="image/*" 
                   showUploadList={false}
@@ -158,35 +187,43 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = ({ googleId }) => {
                   fileList={avatarFileList} 
                   onChange={({ fileList }) => setAvatarFileList(fileList)}
                 >
-                  <Button icon={<UploadOutlined />} className="w-full h-12 rounded-lg border-2 border-indigo-200 hover:border-indigo-300 hover:text-indigo-600 transition duration-200" loading={uploadingAvatar}>
+                  <Button 
+                    icon={<UploadOutlined />} 
+                    className="w-full h-12 rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" 
+                    loading={uploadingAvatar}
+                  >
                     Select Avatar
                   </Button>
                 </Upload>
                 {avatarPreview && (
-                  <div className="mt-4">
-                    <img src={avatarPreview} alt="Avatar preview" className="w-32 h-32 object-cover rounded-lg" />
-                  </div>
+                  <img src={avatarPreview} alt="Avatar preview" className="w-32 h-32 object-cover rounded-lg" />
                 )}
               </div>
             </Form.Item>
 
-            <Form.Item name="video_file" label={<span className="text-gray-700 font-medium">Introduction Video</span>} rules={[{ required: true, message: "Please upload an introduction video!" }]} className="mb-0">
-              <div>
+            <Form.Item 
+              name="video_file" 
+              label="Introduction Video"
+              rules={[{ required: true, message: "Please upload an introduction video!" }]}
+            >
+              <div className="space-y-4">
                 <Upload 
                   accept="video/*" 
                   showUploadList={false}
                   beforeUpload={(file) => handleFileUpload(file, 'video')} 
                   fileList={videoFileList} 
-                  onChange={({ fileList }) => setVideoFileList(fileList as UploadFile<any>[])}
+                  onChange={({ fileList }) => setVideoFileList(fileList)}
                 >
-                  <Button icon={<UploadOutlined />} className="w-full h-12 rounded-lg border-2 border-indigo-200 hover:border-indigo-300 hover:text-indigo-600 transition duration-200" loading={uploadingVideo}>
+                  <Button 
+                    icon={<UploadOutlined />} 
+                    className="w-full h-12 rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" 
+                    loading={uploadingVideo}
+                  >
                     Select Video
                   </Button>
                 </Upload>
                 {videoPreview && (
-                  <div className="mt-4">
-                    <img src={videoPreview} alt="Video thumbnail" className="w-32 h-32 object-cover rounded-lg" />
-                  </div>
+                  <img src={videoPreview} alt="Video thumbnail" className="w-32 h-32 object-cover rounded-lg" />
                 )}
               </div>
             </Form.Item>
@@ -194,9 +231,8 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = ({ googleId }) => {
 
           <Form.Item 
             name="description" 
-            label={<span className="text-gray-700 font-medium">Professional Description</span>}
+            label="Professional Description"
             rules={[{ required: true, message: "Please input a description!" }]}
-            className="mb-6"
           >
             <Editor
               apiKey={TINY_API_KEY}
@@ -205,43 +241,59 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = ({ googleId }) => {
                 menubar: false,
                 plugins: ['advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor',
                   'searchreplace', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media', 'table', 'help', 'wordcount'],
-                toolbar: 'undo redo | formatselect | bold italic | \
-                  alignleft aligncenter alignright alignjustify | \
-                  bullist numlist outdent indent | help'
+                toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | help'
               }}
               onEditorChange={handleEditorChange}
               value={description}
             />
           </Form.Item>
 
-          <div className="bg-gray-50 p-8 rounded-xl space-y-6">
+          <div className="bg-gray-50 p-6 rounded-xl space-y-4">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Banking Information</h3>
-            <Input 
-              prefix={<BankOutlined className="text-indigo-600" />}
-              placeholder="Bank Name"
-              value={bankName}
-              onChange={(e) => setBankName(e.target.value)}
-              className="h-12 rounded-lg border-2 border-indigo-200 focus:border-indigo-500 hover:border-indigo-300 transition duration-200"
-            />
-            <Input 
-              prefix={<NumberOutlined className="text-indigo-600" />}
-              placeholder="Account Number"
-              value={bankAccountNo}
-              onChange={(e) => setBankAccountNo(e.target.value)}
-              className="h-12 rounded-lg border-2 border-indigo-200 focus:border-indigo-500 hover:border-indigo-300 transition duration-200"
-            />
-            <Input 
-              prefix={<UserOutlined className="text-indigo-600" />}
-              placeholder="Account Name"
-              value={bankAccountName}
-              onChange={(e) => setBankAccountName(e.target.value)}
-              className="h-12 rounded-lg border-2 border-indigo-200 focus:border-indigo-500 hover:border-indigo-300 transition duration-200"
-            />
+            
+            <Form.Item name="bank_name" label="Bank Name">
+              <Input 
+                prefix={<BankOutlined className="text-blue-600" />}
+                placeholder="Enter bank name"
+                value={bankName}
+                onChange={(e) => setBankName(e.target.value)}
+                className="h-12 rounded-lg"
+              />
+            </Form.Item>
+
+            <Form.Item name="bank_account_no" label="Account Number">
+              <Input 
+                prefix={<NumberOutlined className="text-blue-600" />}
+                placeholder="Enter account number"
+                value={bankAccountNo}
+                onChange={(e) => setBankAccountNo(e.target.value)}
+                className="h-12 rounded-lg"
+              />
+            </Form.Item>
+
+            <Form.Item name="bank_account_name" label="Account Name">
+              <Input 
+                prefix={<UserOutlined className="text-blue-600" />}
+                placeholder="Enter account name"
+                value={bankAccountName}
+                onChange={(e) => setBankAccountName(e.target.value)}
+                className="h-12 rounded-lg"
+              />
+            </Form.Item>
           </div>
         </div>
       )}
-      <button onClick={handleRegister}>Register with Google</button>
-    </div>
+
+      <Form.Item className="mt-6">
+        <Button 
+          type="primary" 
+          onClick={handleRegister}
+          className="w-full h-12 rounded-lg bg-[#1a237e] hover:bg-[#02005dc6] text-white font-medium"
+        >
+          Register with Google
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
 

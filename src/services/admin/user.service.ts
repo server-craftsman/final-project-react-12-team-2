@@ -59,5 +59,13 @@ export const UserService = {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     });
+  },
+  deleteUser(userId: string) {
+    return BaseService.remove<ResponseSuccess<User>>({
+      url: API.ADMIN.DELETE_USER.replace(":id", userId),
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    });
   }
 };
