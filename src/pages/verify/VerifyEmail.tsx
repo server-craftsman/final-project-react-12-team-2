@@ -7,7 +7,8 @@ import { HttpException } from '../../app/exceptions';
 const VerifyEmail: React.FC = () => {
   const { token } = useParams();
   const { verifyToken, resendToken } = useAuth();
-  const [status, setStatus] = useState<'verifying' | 'expired' | 'success'>('verifying');
+  const [status, setStatus] = useState(false);  // Changed to boolean
+  const [isExpired, setIsExpired] = useState(false);  // New state for expired status
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
 
@@ -17,13 +18,14 @@ const VerifyEmail: React.FC = () => {
       
       try {
         await verifyToken(token);
-        setStatus('success');
+        setStatus(true);  // Success case
+        setIsExpired(false);
       } catch (error) {
+        setStatus(false);
+        setIsExpired(true);
         if (error instanceof HttpException && error.status === HTTP_STATUS.NOT_FOUND) {
-          setStatus('expired');
           setMessage('Token has expired. Please request a new verification link.');
         } else {
-          setStatus('expired');
           setMessage('Verification failed. Please try again or request a new verification link.');
         }
       }
@@ -90,9 +92,9 @@ const VerifyEmail: React.FC = () => {
 
   return (
     <div className="max-w-[500px] mx-auto my-[60px] p-8 text-center rounded-lg shadow-lg bg-white border border-gray-200">
-      {status === 'verifying' && renderVerifying()}
-      {status === 'success' && renderSuccess()}
-      {status === 'expired' && renderExpired()}
+      {!status && !isExpired && renderVerifying()}
+      {status && renderSuccess()}
+      {!status && isExpired && renderExpired()}
     </div>
   );
 };
