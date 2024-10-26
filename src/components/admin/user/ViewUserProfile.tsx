@@ -31,9 +31,10 @@ interface ViewUserProfileProps {
   selectedRole: UserRole | null;
   selectedStatus: boolean | null;
   activeTab: string;
+  showActionColumn: boolean;
 }
 
-const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selectedRole, selectedStatus, activeTab }) => {
+const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selectedRole, selectedStatus, activeTab, showActionColumn }) => {
   const navigate = useNavigate();
   const [users, setUsers] = useState<GetUsersAdminResponse | null>(null);
 
@@ -284,7 +285,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
         key: "created_at",
         render: (created_at: string) => helpers.formatDate(new Date(created_at))
       },
-      {
+      showActionColumn && {
         title: "Action",
         key: "action",
         render: (_: unknown, record: User) => (
@@ -295,7 +296,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
           </div>
         )
       }
-    ];
+    ].filter((column): column is Exclude<typeof column, false> => Boolean(column));
 
     // Add verify column if on unverified tab
     if (activeTab === "unverified") {
