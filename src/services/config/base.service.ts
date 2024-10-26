@@ -16,7 +16,7 @@ export const axiosInstance = axios.create({
   timeoutErrorMessage: `Connection is timeout exceeded`
 });
 
-// export const getState = (store: any) => {REgister 
+// export const getState = (store: any) => {REgister
 //   return store.getState();
 // };
 

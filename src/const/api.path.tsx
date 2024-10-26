@@ -28,4 +28,3 @@ export const API = {
     CHANGE_PASSWORD: "api/users/change-password"
   }
 };
-  

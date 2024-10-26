@@ -33,9 +33,17 @@ export const AuthService = {
       isLoading: true
     });
   },
-  verifyToken(token: string) {
+  verifyToken(params: { token: string }) {
     return BaseService.post<ResponseSuccess<string>>({
-      url: `${API.AUTH.VERIFY_TOKEN}/${token}`,
+      url: `${API.AUTH.VERIFY_TOKEN}/${params.token}`,
+      payload: params,
+      isLoading: true
+    });
+  },
+  resendToken(params: { email: string }) {
+    return BaseService.post<ResponseSuccess<string>>({
+      url: API.AUTH.RESEND_TOKEN,
+      payload: params,
       isLoading: true
     });
   },
@@ -48,12 +56,6 @@ export const AuthService = {
   register(params: RegisterParams) {
     return BaseService.post<ResponseSuccess<User>>({
       url: API.AUTH.REGISTER,
-      payload: params
-    });
-  },
-  resendToken(params: { email: string }) {
-    return BaseService.post<ResponseSuccess<string>>({
-      url: API.AUTH.RESEND_TOKEN,
       payload: params
     });
   }

@@ -234,8 +234,8 @@ const EditUserProfile = () => {
   if (!state.user) {
     return <div>User not found</div>;
   } else {
-  return (
-    <div className="max-w-10xl mx-auto rounded-xl bg-white p-8 shadow-2xl">
+    return (
+      <div className="max-w-10xl mx-auto rounded-xl bg-white p-8 shadow-2xl">
         <h1 className="mb-6 text-center text-3xl font-bold text-[#1a237e]">Edit User Profile</h1>
         <Form form={form} layout="vertical" onFinish={handleFormSubmit} className="space-y-4">
           <div className="mb-6 flex flex-col items-center gap-6 sm:flex-row sm:items-center">

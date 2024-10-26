@@ -11,7 +11,6 @@ import ButtonDivideStudentAndInstructor from "../../components/generic/register/
 import RegisterInfoOfInstructor from "../../components/generic/register/RegisterInfoOfInstructor";
 const { Title, Text } = Typography;
 
-
 //call api to register
 import { useAuth } from "../../contexts/AuthContext";
 import { RegisterParams } from "../../models/api/request/authentication/auth.request.model";
@@ -48,25 +47,19 @@ const RegisterPage = () => {
         video_url: values.video_url,
         bank_account_name: values.bank_account_name,
         bank_account_no: values.bank_account_no,
-        bank_name: values.bank_name,
+        bank_name: values.bank_name
       };
       const response = await register(params);
-      
+
       if (response.data) {
-        const message = params.role === 'instructor' 
-          ? "Registration successful! Please wait for admin review."
-          : "Registration successful! Please check your email to verify your account.";
-        
+        const message = params.role === "instructor" ? "Registration successful! Please wait for admin review." : "Registration successful! Please check your email to verify your account.";
+
         helpers.notification(message);
         navigate(ROUTER_URL.LOGIN);
       }
-
-
     } catch (error: any) {
-      const errorMessage = error instanceof HttpException 
-        ? error.message 
-        : error.response?.data?.message ?? "Registration failed. Please try again.";
-      
+      const errorMessage = error instanceof HttpException ? error.message : (error.response?.data?.message ?? "Registration failed. Please try again.");
+
       helpers.notification(errorMessage);
     } finally {
       setIsLoading(false);
@@ -157,12 +150,7 @@ const RegisterPage = () => {
             <ButtonDivideStudentAndInstructor onSelectRole={handleRoleSelection} />
             {role === "instructor" && <RegisterInfoOfInstructor />}
             <Form.Item>
-              <Button 
-                loading={isLoading}
-                type="primary" 
-                htmlType="submit" 
-                className="w-full rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 py-3 text-lg font-semibold text-white shadow-md transition-all duration-300 hover:from-indigo-700 hover:to-purple-700"
-              >
+              <Button loading={isLoading} type="primary" htmlType="submit" className="w-full rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 py-3 text-lg font-semibold text-white shadow-md transition-all duration-300 hover:from-indigo-700 hover:to-purple-700">
                 Register
               </Button>
             </Form.Item>

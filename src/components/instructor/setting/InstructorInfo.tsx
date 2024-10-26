@@ -14,7 +14,6 @@ const InstructorInfo = () => {
     getCurrentUser();
   }, []);
 
-
   const handleEdit = () => {
     navigate(`/instructor/edit-user/${userInfo?._id}`);
   };
@@ -26,8 +25,8 @@ const InstructorInfo = () => {
       </div>
     );
   } else {
-  return (
-    <div className="max-w-10xl animate-fade-in mx-auto rounded-xl bg-white p-8 shadow-2xl">
+    return (
+      <div className="max-w-10xl animate-fade-in mx-auto rounded-xl bg-white p-8 shadow-2xl">
         <div className="mb-8 flex flex-col items-center">
           {userInfo.avatar_url ? (
             <img src={userInfo.avatar_url} alt="User avatar" className="h-40 w-40 rounded-full border-4 border-[#1a237e] object-cover shadow-lg transition-transform duration-300 hover:scale-105" />

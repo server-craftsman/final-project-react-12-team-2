@@ -67,7 +67,7 @@ const AdminInfo: React.FC = () => {
             {helpers.formatPhoneNumber(userInfo.phone_number as string)}
           </Descriptions.Item>
           <Descriptions.Item label="Date of Birth" className="text-base">
-            {userInfo.dob ? helpers.formatDate(new Date(userInfo.dob)) : '-'}
+            {userInfo.dob ? helpers.formatDate(new Date(userInfo.dob)) : "-"}
           </Descriptions.Item>
           <Descriptions.Item label="Verified" className="text-base">
             <span className={userInfo.is_verified ? "text-green-600" : "text-red-600"}>{userInfo.is_verified ? "Yes" : "No"}</span>

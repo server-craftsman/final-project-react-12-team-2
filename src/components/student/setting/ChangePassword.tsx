@@ -26,7 +26,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = () => {
       const response = await UserService.changePassword(userInfo._id, {
         user_id: userInfo._id,
         old_password: values.currentPassword,
-        new_password: values.newPassword,
+        new_password: values.newPassword
       });
       console.log("Password change successful", response);
       message.success("Password changed successfully");

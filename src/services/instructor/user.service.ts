@@ -26,12 +26,12 @@ export const UserService = {
     });
   },
   changePassword(userId: string, params: ChangePasswordParams) {
-    return BaseService.put<ChangePasswordResponse>({   
+    return BaseService.put<ChangePasswordResponse>({
       url: API.INSTRUCTOR.CHANGE_PASSWORD.replace(":id", userId),
       payload: params,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }
     });
-  } 
+  }
 };

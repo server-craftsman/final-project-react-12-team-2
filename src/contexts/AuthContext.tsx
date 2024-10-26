@@ -26,8 +26,8 @@ interface AuthContextType {
   loginGoogle: (googleId: string) => Promise<void>;
   registerGooglePublic: (params: RegisterStudentPublicParams | RegisterInstructorPublicParams) => Promise<ResponseSuccess<User>>;
   changePassword: (params: ChangePasswordParams) => Promise<ResponseSuccess<User>>;
-  register: (params: RegisterParams) => Promise<ResponseSuccess<User>>;  // Updated return type
-  verifyToken: (token: string) => Promise<ResponseSuccess<string>>;
+  register: (params: RegisterParams) => Promise<ResponseSuccess<User>>; // Updated return type
+  verifyToken: (params: { token: string }) => Promise<ResponseSuccess<string>>;
   resendToken: (params: { email: string }) => Promise<ResponseSuccess<string>>;
 }
 
@@ -178,13 +178,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   //verify token
-  const verifyToken = async (token: string): Promise<ResponseSuccess<string>> => {
+  const verifyToken = async (params: { token: string }): Promise<ResponseSuccess<string>> => {
     try {
-      const response = await AuthService.verifyToken(token);
+      const response = await AuthService.verifyToken(params);
       if (!response.data) {
         throw new HttpException("Invalid verify token response", HTTP_STATUS.BAD_REQUEST);
       }
-      return response.data as unknown as ResponseSuccess<string>;
+      return response.data;
     } catch (error) {
       console.error("Failed to verify token:", error);
       throw error instanceof HttpException ? error : new HttpException("Failed to verify token", HTTP_STATUS.INTERNAL_SERVER_ERROR);
