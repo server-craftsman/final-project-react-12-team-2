@@ -11,27 +11,29 @@ const VerifyEmail: React.FC = () => {
   const [isExpired, setIsExpired] = useState(false);  // New state for expired status
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(true);  // Add new loading state
 
   useEffect(() => {
     const verify = async () => {
       if (!token) return;
       
+      setIsLoading(true);  // Start loading
       try {
         await verifyToken(token);
-        setStatus(true);  // Success case
+        setStatus(true);
         setIsExpired(false);
-        setMessage(''); // Clear any error messages
-        
+        setMessage('');
       } catch (error) {
         setStatus(false);
-        // Chỉ set isExpired khi thực sự token hết hạn
         if (error instanceof HttpException && error.status === HTTP_STATUS.NOT_FOUND) {
           setIsExpired(true);
           setMessage('Token has expired. Please request a new verification link.');
         } else {
-          setIsExpired(false); // Các lỗi khác không phải do token hết hạn
+          setIsExpired(false);
           setMessage('Verification failed. Please try again or request a new verification link.');
         }
+      } finally {
+        setIsLoading(false);  // End loading regardless of outcome
       }
     };
     verify();
@@ -96,9 +98,9 @@ const VerifyEmail: React.FC = () => {
 
   return (
     <div className="max-w-[500px] mx-auto my-[60px] p-8 text-center rounded-lg shadow-lg bg-white border border-gray-200">
-      {!status && !isExpired && renderVerifying()}
-      {status && renderSuccess()}
-      {!status && isExpired && renderExpired()}
+      {isLoading && renderVerifying()}
+      {!isLoading && status && renderSuccess()}
+      {!isLoading && !status && isExpired && renderExpired()}
     </div>
   );
 };
