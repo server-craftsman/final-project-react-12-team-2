@@ -12,20 +12,19 @@ import { CLIENT_ID } from "../../const/authentication";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-import SignUpForm from "./SignUpGoogle";
+// import SignUpForm from "./SignUpGoogle";
 import { ROUTER_URL } from "../../const/router.path";
 import { HTTP_STATUS } from "../../app/enums";
 import { HttpException } from "../../app/exceptions";
 import { validation } from "../../utils";
 
-import { RegisterStudentPublicParams, RegisterInstructorPublicParams } from "../../models/api/request/authentication/auth.request.model";
+// import { RegisterStudentPublicParams, RegisterInstructorPublicParams } from "../../models/api/request/authentication/auth.request.model";
 
 const LoginPage = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [googleIdToken, setGoogleIdToken] = useState<string | null>(null);
   const [isSignUpModalVisible, setIsSignUpModalVisible] = useState<boolean>(false);
-  const { handleLogin, registerGooglePublic } = useAuth();
+  const { handleLogin } = useAuth();
   const navigate = useNavigate();
 
   const getDefaultPath = (userRole: string) => {
@@ -265,7 +264,7 @@ const LoginPage = () => {
       </div>
 
       <Modal title="Sign Up" open={isSignUpModalVisible} onCancel={handleSignUpModalCancel} footer={null}>
-        <SignUpForm googleIdToken={googleIdToken} />
+        <div>Sign Up Test</div>
       </Modal>
     </div>
   );

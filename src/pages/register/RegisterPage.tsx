@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Form, Input, Button, Typography, Divider } from "antd";
 import { UserOutlined, MailOutlined, LockOutlined, HomeOutlined } from "@ant-design/icons";
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -11,25 +11,78 @@ import ButtonDivideStudentAndInstructor from "../../components/generic/register/
 import RegisterInfoOfInstructor from "../../components/generic/register/RegisterInfoOfInstructor";
 const { Title, Text } = Typography;
 
+
+//call api to register
+import { useAuth } from "../../contexts/AuthContext";
+import { RegisterParams } from "../../models/api/request/authentication/auth.request.model";
+// import { ResponseSuccess } from "../../app/interface";
+// import { HTTP_STATUS } from "../../app/enums";
+import { ROUTER_URL } from "../../const/router.path";
+import { HttpException } from "../../app/exceptions";
+import { helpers } from "../../utils";
+import { UserRoles } from "../../app/enums";
+
 const RegisterPage = () => {
   const [form] = Form.useForm();
   const [role, setRole] = useState<string | null>(null);
+  const { register } = useAuth();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const onFinish = (values: any) => {
-    console.log("Received values of form: ", values);
-    console.log("Selected role: ", role);
+  const onFinish = async (values: any) => {
+    setIsLoading(true);
+    try {
+      if (!role) {
+        helpers.notification("Please select a role");
+        return;
+      }
+
+      const params: RegisterParams = {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+        role: role as UserRoles,
+        description: values.description,
+        avatar_url: values.avatar_url,
+        phone_number: values.phone_number,
+        video_url: values.video_url,
+        bank_account_name: values.bank_account_name,
+        bank_account_no: values.bank_account_no,
+        bank_name: values.bank_name,
+      };
+      const response = await register(params);
+      
+      if (response.data) {
+        const message = params.role === 'instructor' 
+          ? "Registration successful! Please wait for admin review."
+          : "Registration successful! Please check your email to verify your account.";
+        
+        helpers.notification(message);
+        navigate(ROUTER_URL.LOGIN);
+      }
+
+
+    } catch (error: any) {
+      const errorMessage = error instanceof HttpException 
+        ? error.message 
+        : error.response?.data?.message ?? "Registration failed. Please try again.";
+      
+      helpers.notification(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleRoleSelection = (selectedRole: string) => {
     setRole(selectedRole);
   };
 
-  const validateUsername = (_: any, value: string) => {
-    if (!value || value.includes(" ") || value.length < 6) {
-      return Promise.reject(new Error("Username must be at least 6 characters long and contain no spaces."));
-    }
-    return Promise.resolve();
-  };
+  // const validateUsername = (_: any, value: string) => {
+  //   if (!value || value.includes(" ") || value.length < 6) {
+  //     return Promise.reject(new Error("Username must be at least 6 characters long and contain no spaces."));
+  //   }
+  //   return Promise.resolve();
+  // };
 
   const validateEmail = (_: any, value: string) => {
     if (!value || !value.endsWith("@gmail.com")) {
@@ -81,9 +134,13 @@ const RegisterPage = () => {
           <Title level={2} className="mb-8 text-indigo-900">
             Create an Account
           </Title>
+
           <Form form={form} name="register" onFinish={onFinish} scrollToFirstError layout="vertical">
-            <Form.Item name="username" rules={[{ required: true, message: "Please input your username!" }, { validator: validateUsername }]}>
+            {/* <Form.Item name="username" rules={[{ required: true, message: "Please input your username!" }, { validator: validateUsername }]}>
               <Input prefix={<UserOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Username" className="rounded-lg px-4 py-2" />
+            </Form.Item> */}
+            <Form.Item name="name" rules={[{ required: true, message: "Please input your name!" }]}>
+              <Input prefix={<UserOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Name" className="rounded-lg px-4 py-2" />
             </Form.Item>
 
             <Form.Item name="email" rules={[{ required: true, message: "Please input your E-mail!" }, { validator: validateEmail }]}>
@@ -100,7 +157,12 @@ const RegisterPage = () => {
             <ButtonDivideStudentAndInstructor onSelectRole={handleRoleSelection} />
             {role === "instructor" && <RegisterInfoOfInstructor />}
             <Form.Item>
-              <Button type="primary" htmlType="submit" className="w-full rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 py-3 text-lg font-semibold text-white shadow-md transition-all duration-300 hover:from-indigo-700 hover:to-purple-700">
+              <Button 
+                loading={isLoading}
+                type="primary" 
+                htmlType="submit" 
+                className="w-full rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 py-3 text-lg font-semibold text-white shadow-md transition-all duration-300 hover:from-indigo-700 hover:to-purple-700"
+              >
                 Register
               </Button>
             </Form.Item>

@@ -4,7 +4,7 @@ export const API = {
     LOGOUT: "api/auth/logout",
     LOGIN_GOOGLE: "api/auth/google",
     REGISTER_GOOGLE_PUBLIC: "api/users/google",
-    REGISTER: "api/auth/register",
+    REGISTER: "api/users",
     VERIFY_TOKEN: "api/auth/verify-token"
   },
   ADMIN: {

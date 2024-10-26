@@ -1,11 +1,11 @@
 import { DATE_FORMAT } from "../const/date.constant";
+import { toast } from "react-toastify";
 
 export const formatDate = (date: Date, format: string = DATE_FORMAT.YYYYMMDD) => {
   const d = new Date(date);
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
-
   switch (format) {
     case DATE_FORMAT.YYYYMMDD:
       return `${year}-${month}-${day}`;
@@ -76,4 +76,10 @@ export const formatPhoneNumber = (phoneNumber: string): string => {
   }
 
   return phoneNumber;
+};
+
+export const notification = (message: string) => {
+  return toast(message, {
+    type: "success"
+  });
 };

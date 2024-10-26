@@ -16,7 +16,7 @@ export const axiosInstance = axios.create({
   timeoutErrorMessage: `Connection is timeout exceeded`
 });
 
-// export const getState = (store: any) => {
+// export const getState = (store: any) => {REgister 
 //   return store.getState();
 // };
 
@@ -36,9 +36,9 @@ export const BaseService = {
       headers: headers || {}
     });
   },
-  post<T = any>({ url, isLoading = true, payload, headers, toggleLoading, toggleLoadingAdmin }: Partial<ApiRequestModel>): Promise<PromiseState<T>> {
+  post<T = any>({ url, isLoading = true, payload, headers, toggleLoading }: Partial<ApiRequestModel>): Promise<PromiseState<T>> {
     if (toggleLoading) toggleLoading(isLoading);
-    if (toggleLoadingAdmin) toggleLoadingAdmin(isLoading);
+    // if (toggleLoadingAdmin) toggleLoadingAdmin(isLoading);
     // console.log("payload: ", payload);
     return axiosInstance.post<T, PromiseState<T>>(`${url}`, payload, {
       headers: headers || {}

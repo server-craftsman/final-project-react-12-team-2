@@ -1,7 +1,7 @@
 import { BaseService } from "../config/base.service";
 import { API } from "../../const/api.path";
 import { RegisterGooglePublicResponse } from "../../models/api/responsive/authentication/auth.responsive.model";
-import { RegisterStudentPublicParams, RegisterInstructorPublicParams } from "../../models/api/request/authentication/auth.request.model";
+import { RegisterStudentPublicParams, RegisterInstructorPublicParams, RegisterParams } from "../../models/api/request/authentication/auth.request.model";
 import { ResponseSuccess } from "../../app/interface";
 import { User } from "../../models/api/responsive/users/users.model"; //data user
 
@@ -34,9 +34,9 @@ export const AuthService = {
     });
   },
   verifyToken(token: string) {
-    return BaseService.get<ResponseSuccess<string>>({
+    return BaseService.get<ResponseSuccess<User>>({
       url: API.AUTH.VERIFY_TOKEN,
-      headers: { Authorization: `Bearer ${token}` },
+      payload: { token },
       isLoading: true
     });
   },
@@ -44,6 +44,12 @@ export const AuthService = {
     return BaseService.get<ResponseSuccess<User>>({
       url: API.AUTH.LOGIN,
       headers: { Authorization: `Bearer ${token}` }
+    });
+  },
+  register(params: RegisterParams) {
+    return BaseService.post<ResponseSuccess<User>>({
+      url: API.AUTH.REGISTER,
+      payload: params
     });
   }
 };

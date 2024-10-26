@@ -1,13 +1,13 @@
 import AdminInfo from "../../../components/admin/setting/AdminInfo";
 import { Typography, Tabs } from "antd";
-import usersData from "../../../data/users.json"; // Adjust the path as necessary
-import { UserRole } from "../../../models/prototype/User";
+// import usersData from "../../../data/users.json"; // Adjust the path as necessary
+// import { UserRole } from "../../../models/prototype/User";
 import ChangePasswordAdmin from "../../../components/admin/setting/ChangePasswordAdmin";
 
 const { Title } = Typography;
 
 const Profile = () => {
-  const adminUser = usersData.users.find((user) => user.role === UserRole.admin);
+  // const adminUser = usersData.users.find((user) => user.role === UserRole.admin);
 
   const items = [
     {
@@ -18,7 +18,7 @@ const Profile = () => {
     {
       label: "Change Password",
       key: "2",
-      children: <ChangePasswordAdmin visible={true} currentPassword={adminUser ? adminUser.password : ""} />
+      children: <ChangePasswordAdmin visible={true} />
     }
   ];
 

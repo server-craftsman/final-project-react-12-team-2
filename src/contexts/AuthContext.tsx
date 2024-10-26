@@ -3,13 +3,13 @@ import { UserRole } from "../models/prototype/User";
 // import { RegisterGooglePublicResponse } from "../models/api/responsive/authentication/auth.responsive.model";
 import { AuthService } from "../services/authentication/auth.service";
 import { UserService } from "../services/admin/user.service";
-import { RegisterStudentPublicParams, RegisterInstructorPublicParams } from "../models/api/request/authentication/auth.request.model";
+import { RegisterStudentPublicParams, RegisterInstructorPublicParams, RegisterParams } from "../models/api/request/authentication/auth.request.model";
 import { ChangePasswordParams } from "../models/api/request/admin/user.request.model";
 import { HTTP_STATUS } from "../app/enums";
 import { HttpException } from "../app/exceptions";
 
 import { User } from "../models/api/responsive/users/users.model";
-import { ResponseSuccess } from "../app/interface/responseSuccess.interface";
+import { ResponseSuccess, ResponseMessage, MultiErrors } from "../app/interface";
 
 interface AuthContextType {
   role: UserRole | null;
@@ -26,6 +26,8 @@ interface AuthContextType {
   loginGoogle: (googleId: string) => Promise<void>;
   registerGooglePublic: (params: RegisterStudentPublicParams | RegisterInstructorPublicParams) => Promise<ResponseSuccess<User>>;
   changePassword: (params: ChangePasswordParams) => Promise<ResponseSuccess<User>>;
+  register: (params: RegisterParams) => Promise<ResponseSuccess<User>>;  // Updated return type
+  verifyToken: (token: string) => Promise<ResponseMessage<MultiErrors>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -120,7 +122,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!response.data) {
         throw new HttpException("Invalid registration response", HTTP_STATUS.BAD_REQUEST);
       }
-      return response.data as unknown as ResponseSuccess<User>;  // Use double type assertion
+      return response.data as unknown as ResponseSuccess<User>;
     } catch (error) {
       console.error("Failed to register with Google:", error);
       throw error instanceof HttpException ? error : new HttpException("Failed to register with Google", HTTP_STATUS.INTERNAL_SERVER_ERROR);
@@ -160,6 +162,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  //register
+  const register = async (params: RegisterParams): Promise<ResponseSuccess<User>> => {
+    try {
+      const response = await AuthService.register(params);
+      if (!response.data) {
+        throw new HttpException("Invalid registration response", HTTP_STATUS.BAD_REQUEST);
+      }
+      return response.data as unknown as ResponseSuccess<User>;
+    } catch (error) {
+      console.error("Failed to register:", error);
+      throw error instanceof HttpException ? error : new HttpException("Failed to register", HTTP_STATUS.INTERNAL_SERVER_ERROR);
+    }
+  };
+
+  //verify token
+  const verifyToken = async (token: string): Promise<ResponseSuccess<User>> => {
+    try {
+      const response = await AuthService.verifyToken(token);
+      if (!response.data) {
+        throw new HttpException("Invalid verify token response", HTTP_STATUS.BAD_REQUEST);
+      }
+      return response.data as unknown as ResponseSuccess<User>;
+    } catch (error) {
+      console.error("Failed to verify token:", error);
+      throw error instanceof HttpException ? error : new HttpException("Failed to verify token", HTTP_STATUS.INTERNAL_SERVER_ERROR);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -176,6 +206,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         loginGoogle,
         registerGooglePublic,
         changePassword,
+        register,
+        verifyToken,
         getCurrentUser
       }}
     >
