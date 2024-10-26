@@ -51,5 +51,11 @@ export const AuthService = {
       url: API.AUTH.REGISTER,
       payload: params
     });
+  },
+  resendToken(params: { email: string }) {
+    return BaseService.post<ResponseSuccess<string>>({
+      url: API.AUTH.RESEND_TOKEN,
+      payload: params
+    });
   }
 };

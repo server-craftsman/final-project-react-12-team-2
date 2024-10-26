@@ -1,6 +1,7 @@
 export interface RoutePaths {
   LOGIN: string;
   REGISTER: string;
+  VERIFY_EMAIL: string;
   // ADMIN_PATH: string;
   ADMIN: {
     BASE: string;

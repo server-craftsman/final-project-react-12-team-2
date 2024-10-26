@@ -1,8 +1,9 @@
-import { RoutePaths } from "../models/router/route.constructor";
+// import { RoutePaths } from "../models/router/route.constructor";
 
-export const ROUTER_URL: RoutePaths = {
+export const ROUTER_URL = {
   LOGIN: "/login",
   REGISTER: "/register",
+  VERIFY_EMAIL: "/verify-email/:token",
   // ADMIN_PATH: "/admin",
   ADMIN: {
     BASE: "/admin",

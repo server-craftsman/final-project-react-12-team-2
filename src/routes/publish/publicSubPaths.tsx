@@ -12,7 +12,7 @@ const LessonDetails = lazy(() => import("../../components/generic/lessons/Lesson
 const SessionDetails = lazy(() => import("../../components/generic/sessions/SessionDetails"));
 const CartPage = lazy(() => import("../../components/generic/cart/CartPage"));
 const About = lazy(() => import("../../components/generic/home/About"));
-
+const VerifyEmail = lazy(() => import("../../pages/verify/VerifyEmail"));
 //======================================================
 //export public sub paths
 export const publicSubPaths: Record<string, RouteObject[]> = {
@@ -55,6 +55,10 @@ export const publicSubPaths: Record<string, RouteObject[]> = {
     {
       path: ROUTER_URL.REGISTER,
       element: <RegisterPage />
+    },
+    {
+      path: ROUTER_URL.VERIFY_EMAIL,
+      element: <VerifyEmail />
     }
   ]
 };

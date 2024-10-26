@@ -28,6 +28,7 @@ interface AuthContextType {
   changePassword: (params: ChangePasswordParams) => Promise<ResponseSuccess<User>>;
   register: (params: RegisterParams) => Promise<ResponseSuccess<User>>;  // Updated return type
   verifyToken: (token: string) => Promise<ResponseMessage<MultiErrors>>;
+  resendToken: (params: { email: string }) => Promise<ResponseSuccess<string>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -190,6 +191,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  //resend token
+  const resendToken = async (params: { email: string }): Promise<ResponseSuccess<string>> => {
+    try {
+      const response = await AuthService.resendToken(params);
+      return response.data as unknown as ResponseSuccess<string>;
+    } catch (error) {
+      console.error("Failed to resend token:", error);
+      throw error instanceof HttpException ? error : new HttpException("Failed to resend token", HTTP_STATUS.INTERNAL_SERVER_ERROR);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -208,6 +220,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         changePassword,
         register,
         verifyToken,
+        resendToken,
         getCurrentUser
       }}
     >
