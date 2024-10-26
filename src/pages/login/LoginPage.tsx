@@ -233,7 +233,11 @@ const LoginPage = () => {
             <div className="flex justify-center">
               <GoogleOAuthProvider clientId={CLIENT_ID}>
                 <Form.Item>
-                  <GoogleModal onLoginError={handleGoogleLoginError} onLoginSuccess={onFinishGoogle} />
+                  <GoogleModal 
+                    onLoginError={handleGoogleLoginError} 
+                    onLoginSuccess={onFinishGoogle} 
+                    context="login" // Pass context as "login"
+                  />
                 </Form.Item>
               </GoogleOAuthProvider>
             </div>

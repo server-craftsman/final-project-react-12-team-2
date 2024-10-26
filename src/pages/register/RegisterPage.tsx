@@ -195,7 +195,11 @@ const RegisterPage = () => {
             </Divider>
             <div className="flex justify-center">
               <GoogleOAuthProvider clientId={CLIENT_ID}>
-                <LoginGoogle onLoginSuccess={onFinishGoogle} onLoginError={handleGoogleLoginError} />
+                <LoginGoogle 
+                  onLoginSuccess={onFinishGoogle} 
+                  onLoginError={handleGoogleLoginError} 
+                  context="register" // Pass context as "register"
+                />
               </GoogleOAuthProvider>
             </div>
           </Form>

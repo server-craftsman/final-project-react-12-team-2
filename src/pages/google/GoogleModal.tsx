@@ -5,12 +5,12 @@ import { jwtDecode } from "jwt-decode";
 interface GoogleModalProps {
   onLoginError: (error: string) => void;
   onLoginSuccess: (token: string, googleId: string) => void;
+  context: "login" | "register"; // Add context prop
 }
 
-const GoogleModal: React.FC<GoogleModalProps> = ({ onLoginError, onLoginSuccess }) => {
+const GoogleModal: React.FC<GoogleModalProps> = ({ onLoginError, onLoginSuccess, context }) => {
   const onSuccess = (credentialResponse: any) => {
     try {
-      // Add validation for callback
       if (typeof onLoginSuccess !== "function") {
         throw new Error("onLoginSuccess callback is not properly defined");
       }
@@ -20,30 +20,31 @@ const GoogleModal: React.FC<GoogleModalProps> = ({ onLoginError, onLoginSuccess 
       }
 
       const decodedToken: any = jwtDecode(credentialResponse.credential);
-      console.log("Decoded Token: ", decodedToken);
-
-      // Extract Google ID from the decoded token
       const googleId = decodedToken.sub; // Assuming 'sub' contains the Google ID
-      console.log("Google ID: ", googleId);
 
       localStorage.setItem("googleToken", credentialResponse.credential);
       onLoginSuccess(credentialResponse.credential, googleId); // Pass googleId
-      console.log("Google Token saved to localStorage and Google ID passed to onLoginSuccess");
     } catch (error) {
-      console.error("Error decoding token: ", error);
       onLoginError("Error decoding token: " + (error as Error).message);
     }
   };
 
   const onError = () => {
     const errorMessage = "Google Login Failed. This may be due to ad-blocking or privacy protection software.";
-    console.error(errorMessage);
     onLoginError(errorMessage + " (ERR_BLOCKED_BY_CLIENT)");
   };
 
   return (
     <div>
-      <GoogleLogin onSuccess={onSuccess} onError={onError} useOneTap={false} auto_select={false} context="signin" />
+      {/* <h3>{context === "login" ? "Login with Google" : "Register with Google"}</h3> */}
+      <GoogleLogin
+        onSuccess={onSuccess}
+        onError={onError}
+        useOneTap={false}
+        auto_select={false}
+        context="signin"
+        text={context === "login" ? "signin_with" : "signup_with"} // Customize button text
+      />
     </div>
   );
 };
