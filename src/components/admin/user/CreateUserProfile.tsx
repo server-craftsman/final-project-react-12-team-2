@@ -223,8 +223,8 @@ const CreateUserProfile = () => {
       <Button 
         type="primary" 
         onClick={handleModalToggle}
-        className="ml-4 h-12 rounded-lg bg-gradient-to-r from-[#1a237e] to-[#1a237e] font-semibold text-white shadow-lg transition-all hover:from-[#1a237e] hover:to-[#1a237e] hover:shadow-xl"
-        icon={<UserOutlined />}
+        className="ml-4 h-10 rounded-lg bg-gradient-to-r from-[#1a237e] to-[#1a237e] font-semibold text-white shadow-lg transition-all hover:from-[#1a237e] hover:to-[#1a237e] hover:shadow-xl"
+        // icon={<UserOutlined />}
       >
         Create User
       </Button>
