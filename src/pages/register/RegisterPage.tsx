@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Form, Input, Button, Typography, Divider, Modal } from "antd";
 import { UserOutlined, MailOutlined, LockOutlined, HomeOutlined } from "@ant-design/icons";
@@ -32,76 +32,123 @@ const RegisterPage = () => {
   const [isGoogleModalVisible, setIsGoogleModalVisible] = useState(false); // State to control modal visibility
   const [googleId, setGoogleId] = useState<string>(""); // Add state for googleId
 
-  const onFinish = async (values: any) => {
+  const onFinish = useCallback(async (values: any) => {
+    if (!role) {
+      helpers.notification("Please select a role");
+      return;
+    }
+
     setIsLoading(true);
     try {
-      if (!role) {
-        helpers.notification("Please select a role");
-        setIsLoading(false);
-        return;
-      }
-
-      // Validate form fields
-      await form.validateFields();
-
-      // Upload avatar file
-      const avatarFile = form.getFieldValue('avatar_file')?.originFileObj;
-      const avatarUrl = avatarFile ? await handleUploadFile(avatarFile, 'avatar') : null;
-      if (!avatarUrl) {
-        helpers.notification("Failed to upload avatar. Please try again.");
-        setIsLoading(false);
-        return;
-      }
-
-      // Upload video file
-      const videoFile = form.getFieldValue('video_file')?.originFileObj;
-      const videoUrl = videoFile ? await handleUploadFile(videoFile, 'video') : null;
-      if (!videoUrl) {
-        helpers.notification("Failed to upload video. Please try again.");
-        setIsLoading(false);
-        return;
-      }
-
-      // Prepare registration parameters
+      // Prepare registration parameters with default values
       const params: RegisterParams = {
-        name: values.name,
-        email: values.email,
-        password: values.password,
+        name: values.name || '',
+        email: values.email || '', 
+        password: values.password || '',
         role: role as UserRoles,
-        description: values.description,
-        avatar_url: avatarUrl,
-        phone_number: values.phone_number,
-        video_url: videoUrl,
-        bank_account_name: values.bank_account_name,
-        bank_account_no: values.bank_account_no,
-        bank_name: values.bank_name
+        description: '',
+        avatar_url: '',
+        phone_number: '',
+        video_url: '',
+        bank_account_name: '',
+        bank_account_no: '',
+        bank_name: ''
       };
 
-      // Call register API
-      const response = await register(params);
+      // Only validate and upload files for instructor role
+      if (role === 'instructor') {
+        // Validate required instructor fields
+        const requiredFields = ['phone_number', 'description', 'bank_account_name', 'bank_account_no', 'bank_name'];
+        const missingFields = requiredFields.filter(field => !values[field]);
+        
+        if (missingFields.length > 0) {
+          throw new Error(`Please fill in all required fields: ${missingFields.join(', ')}`);
+        }
 
-      if (response.data) {
-        const message = params.role === "instructor" 
-          ? "Registration successful! Please wait for admin review." 
-          : "Registration successful! Please check your email to verify your account.";
+        // Update instructor specific fields
+        Object.assign(params, {
+          description: values.description,
+          phone_number: values.phone_number,
+          bank_account_name: values.bank_account_name,
+          bank_account_no: values.bank_account_no,
+          bank_name: values.bank_name
+        });
 
-        helpers.notification(message);
-        navigate(ROUTER_URL.LOGIN);
+        // Quick validation of file existence before upload
+        const avatarFile = form.getFieldValue('avatar_file')?.originFileObj;
+        const videoFile = form.getFieldValue('video_file')?.originFileObj;
+
+        if (!avatarFile || !videoFile) {
+          throw new Error('Please upload both avatar and video files');
+        }
+
+        // Set longer timeout for large files
+        const timeout = 5 * 60 * 1000; // 5 minutes timeout
+        
+        // Upload files concurrently with timeout
+        const uploadWithTimeout = async (promise: Promise<any>) => {
+          return Promise.race([
+            promise,
+            new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('Upload timed out - file may be too large')), timeout)
+            )
+          ]);
+        };
+
+        try {
+          const [avatarUrl, videoUrl] = await Promise.all([
+            uploadWithTimeout(handleFileUpload('avatar_file', 'avatar')),
+            uploadWithTimeout(handleFileUpload('video_file', 'video'))
+          ]);
+
+          params.avatar_url = avatarUrl;
+          params.video_url = videoUrl;
+        } catch (uploadError: any) {
+          throw new Error(`File upload failed: ${uploadError.message}. Please try with smaller files or check your connection.`);
+        }
       }
-    } catch (error: any) {
-      const errorMessage = error instanceof HttpException 
-        ? error.message 
-        : (error.response?.data?.message ?? "Registration failed. Please try again.");
 
-      helpers.notification(errorMessage);
+      await register(params);
+      helpers.notification(getRegistrationSuccessMessage(params.role));
+      navigate(ROUTER_URL.LOGIN);
+
+    } catch (error: any) {
+      helpers.notification(getErrorMessage(error));
     } finally {
       setIsLoading(false);
     }
+  }, [role, register, navigate]);
+
+  const handleFileUpload = useCallback(async (fieldName: string, type: 'avatar' | 'video') => {
+    const file = form.getFieldValue(fieldName)?.originFileObj;
+    if (!file) {
+      throw new Error(`Please upload ${type}`);
+    }
+
+    try {
+      const url = await handleUploadFile(file, type);
+      if (!url) {
+        throw new Error(`Failed to upload ${type}`);
+      }
+      return url;
+    } catch (error) {
+      console.error(`Error uploading ${type}:`, error);
+      throw new Error(`Failed to upload ${type}. Please try again.`);
+    }
+  }, [form]);
+
+
+  const getRegistrationSuccessMessage = (role: UserRoles) => {
+    return role === 'instructor' ? "Register as instructor successfully" : "Register as student successfully";
   };
 
-  const handleRoleSelection = (selectedRole: string) => {
-    setRole(selectedRole);
+  const getErrorMessage = (error: any) => {
+    return error instanceof HttpException ? error.message : "An error occurred during registration. Please try again.";
   };
+
+  const handleRoleSelection = useCallback((selectedRole: string) => {
+    setRole(selectedRole);
+  }, []);
 
   const validateEmail = async (_: any, value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

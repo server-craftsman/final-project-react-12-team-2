@@ -27,6 +27,7 @@ interface AuthContextType {
   register: (params: RegisterParams) => Promise<ResponseSuccess<User>>;
   verifyToken: (params: { token: string }) => Promise<ResponseSuccess<string>>;
   resendToken: (params: { email: string }) => Promise<ResponseSuccess<string>>;
+  forgotPassword: (params: { email: string }) => Promise<ResponseSuccess<string>>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -208,6 +209,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  //forgot password
+  const forgotPassword = async (params: { email: string }): Promise<ResponseSuccess<string>> => {
+    try {
+      const response = await AuthService.forgotPassword(params);
+      return response.data;
+    } catch (error) {
+      console.error("Failed to forgot password:", error);
+      throw error instanceof HttpException ? error : new HttpException("Failed to forgot password", HTTP_STATUS.INTERNAL_SERVER_ERROR);
+    }
+  };
+  
   return (
     <AuthContext.Provider
       value={{
@@ -227,6 +239,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         register,
         verifyToken,
         resendToken,
+        forgotPassword,
         getCurrentUser
       }}
     >

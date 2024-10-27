@@ -4,6 +4,7 @@ import { RegisterGooglePublicResponse } from "../../models/api/responsive/authen
 import { RegisterStudentPublicParams, RegisterInstructorPublicParams, RegisterParams } from "../../models/api/request/authentication/auth.request.model";
 import { ResponseSuccess } from "../../app/interface";
 import { User } from "../../models/api/responsive/users/users.model"; //data user
+import { GetBankResponse } from "../../models/api/responsive/authentication/auth.responsive.model";
 
 export const AuthService = {
   login(params: { email: string; password: string }) {
@@ -48,7 +49,7 @@ export const AuthService = {
     });
   },
   forgotPassword(params: { email: string }) {
-    return BaseService.post<ResponseSuccess<string>>({
+    return BaseService.put<ResponseSuccess<string>>({
       url: API.AUTH.FORGOT_PASSWORD,
       payload: params,
       isLoading: true
@@ -65,6 +66,11 @@ export const AuthService = {
       url: API.AUTH.REGISTER,
       payload: params,
       isLoading: true
+    });
+  },
+  getBank() {
+    return BaseService.get<GetBankResponse>({
+      url: API.BANK.GET_BANK
     });
   }
 };

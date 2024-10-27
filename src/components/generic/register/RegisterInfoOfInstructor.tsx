@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Form, Input, Upload, Button, UploadFile } from "antd";
+import { Form, Input, Upload, Button, UploadFile, Select } from "antd";
 import { UploadOutlined, PhoneOutlined, BankOutlined, NumberOutlined, UserOutlined } from "@ant-design/icons";
 import { Editor } from "@tinymce/tinymce-react";
 import { TINY_API_KEY } from "../../../services/config/apiClientTiny";
 import { message } from "antd";
+import { AuthService } from "../../../services/authentication/auth.service";
 
 interface RegisterInfoOfInstructorProps {
   form: any;
@@ -24,6 +25,8 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({
   const [avatarFileList, setAvatarFileList] = useState<UploadFile<any>[]>([]);
   const [videoPreview, setVideoPreview] = useState<string>('');
   const [avatarPreview, setAvatarPreview] = useState<string>('');
+  const [bankNames, setBankNames] = useState<string[]>([]);
+  const [bankLogos, setBankLogos] = useState<{[key: string]: string}>({});
 
   const handleEditorChange = (content: string) => {
     if (form) {
@@ -37,14 +40,34 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({
     }
   }, [form]);
 
+  useEffect(() => {
+    const fetchBankNames = async () => {
+      try {
+        const response = await AuthService.getBank();
+        setBankNames(response.data.data.map((bank: any) => bank.name));
+        
+        // Create mapping of bank names to logos
+        const logoMapping: {[key: string]: string} = {};
+        response.data.data.forEach((bank: any) => {
+          logoMapping[bank.name] = bank.logo;
+        });
+        setBankLogos(logoMapping);
+      } catch (error) {
+        console.error("Failed to fetch bank names", error);
+      }
+    };
+
+    fetchBankNames();
+  }, []);
+
   const handleFileUpload = useCallback((file: File, type: 'video' | 'avatar') => {
-    const maxSize = type === 'video' ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
+    const maxSize = type === 'video' ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
     if (file.size > maxSize) {
-      message.error(`File size should not exceed ${type === 'video' ? '50MB' : '5MB'}`);
+      message.error(`File size should not exceed ${type === 'video' ? '50MB' : '10MB'}`);
       return false;
     }
 
-    const allowedTypes = type === 'video' ? ['video/mp4', 'video/avi', 'video/mov'] : ['image/jpeg', 'image/png', 'image/gif'];
+    const allowedTypes = type === 'video' ? ['video/mp4', 'video/avi', 'video/mov', 'video/webm'] : ['image/jpeg', 'image/png', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {
       message.error(`Please upload a valid ${type} file`);
       return false;
@@ -58,7 +81,7 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({
       video.src = videoUrl;
 
       video.addEventListener('loadeddata', () => {
-        video.currentTime = 1; // Seek to 1 second
+        video.currentTime = 10; // Seek to 10 seconds
       });
 
       video.addEventListener('seeked', () => {
@@ -172,14 +195,22 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Banking Information</h3>
         <Form.Item 
           name="bank_name" 
-          rules={[{ required: true, message: "Please input your bank name!" }]}
+          rules={[{ required: true, message: "Please select your bank name!" }]}
           className="mb-0"
         >
-          <Input 
-            prefix={<BankOutlined className="text-indigo-600" />}
-            placeholder="Bank Name"
+          <Select 
+            placeholder={<div className="flex items-center gap-2"><BankOutlined className="text-indigo-600" />Select Bank Name</div>}
             className="h-12 rounded-lg border-2 border-indigo-200 focus:border-indigo-500 hover:border-indigo-300 transition duration-200"
-          />
+          >
+            {bankNames.map((bankName) => (
+              <Select.Option key={bankName} value={bankName} className="flex items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <img src={bankLogos[bankName]} alt={bankName} className="h-6 w-6 object-contain" />
+                  {bankName}
+                </div>
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <Form.Item 

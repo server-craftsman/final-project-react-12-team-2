@@ -4,6 +4,7 @@ export const ROUTER_URL = {
   LOGIN: "/login",
   REGISTER: "/register",
   VERIFY_EMAIL: "/verify-email/:token",
+  FORGOT_PASSWORD: "/forgot-password",
   // ADMIN_PATH: "/admin",
   ADMIN: {
     BASE: "/admin",
