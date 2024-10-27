@@ -35,7 +35,7 @@ export interface CreateUserParams {
   email: string;
   password: string;
   role: UserRole;
-  description: string;
+  description: string | "";
   avatar_url: string;
   video_url: string;
   phone_number: string;

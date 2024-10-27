@@ -1,5 +1,5 @@
 import { Form, Input, Button } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 import { HttpException } from "../../../app/exceptions";
 import { message } from "antd";
@@ -90,6 +90,12 @@ const ChangePasswordAdmin = ({ visible }: { visible: boolean }) => {
         <Form.Item name="confirm_password" label={<span className="font-medium text-[#1a237e]">Confirm Password</span>} dependencies={["new_password"]} rules={[{ validator: validateConfirmPassword }]}>
           <Input.Password visibilityToggle={true} className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
         </Form.Item>
+
+        <div className="text-right">
+          <Link to="/forgot-password" className="text-[#1a237e] hover:text-[#0d1453]">
+            Forgot Password?
+          </Link>
+        </div>
 
         <Form.Item className="mt-6 flex justify-end gap-4">
           <Button type="primary" onClick={handleOk} className="mr-2 h-10 border-none bg-[#1a237e] px-8 hover:bg-[#0d1453]">
