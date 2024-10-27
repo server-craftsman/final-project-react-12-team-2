@@ -1,13 +1,3 @@
-// import { useState, useEffect } from "react";
-// import { useParams, useNavigate } from "react-router-dom";
-// import { Form, Input, Button, message, DatePicker } from "antd";
-// import { User } from "../../../models/prototype/User";
-// import usersData from "../../../data/users.json";
-// import { Rule } from "antd/es/form";
-// import moment from "moment";
-// import { Editor } from "@tinymce/tinymce-react";
-// import { TINY_API_KEY } from "../../../services/config/apiClientTiny";
-
 import { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Form, Input, Button, message, DatePicker, Avatar, Upload } from "antd";
@@ -29,7 +19,8 @@ import { HttpException } from "../../../app/exceptions";
 const EditUserProfile = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  // const [user, setUser] = useState<User | null>(null);
+
+  
   const [form] = Form.useForm();
 
   const [state, setState] = useState({
@@ -90,9 +81,9 @@ const EditUserProfile = () => {
             success: true,
             data: {
               ...userData,
-              verification_token_expires: userData.verification_token_expires ? userData.verification_token_expires.toString() : "",
-              created_at: helpers.formatDate(new Date(userData.created_at)),
-              updated_at: helpers.formatDate(new Date(userData.updated_at)),
+              verification_token_expires: userData.verification_token_expires?.toString() || "-",
+              created_at: userData.created_at ? helpers.formatDate(new Date(userData.created_at)) : "-",
+              updated_at: userData.updated_at ? helpers.formatDate(new Date(userData.updated_at)) : "-",
               dob: userData.dob || null
             }
           }
@@ -292,7 +283,7 @@ const EditUserProfile = () => {
             <Button type="primary" htmlType="submit" className="mr-2 h-10 border-none bg-[#1a237e] px-8 hover:bg-[#0d1453]">
               Update
             </Button>
-            <Button onClick={() => navigate("/instructor/setting")} className="h-10 border-[#1a237e] px-8 text-[#1a237e] hover:border-[#0d1453] hover:text-[#0d1453]">
+            <Button onClick={() => navigate(ROUTER_URL.INSTRUCTOR.SETTING)} className="h-10 border-[#1a237e] px-8 text-[#1a237e] hover:border-[#0d1453] hover:text-[#0d1453]">
               Cancel
             </Button>
           </Form.Item>
