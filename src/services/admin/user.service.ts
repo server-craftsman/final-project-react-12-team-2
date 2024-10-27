@@ -1,6 +1,6 @@
 import { BaseService } from "../config/base.service";
 import { API } from "../../const/api.path";
-import { GetUsersAdminParams, ChangeStatusParams, ChangeRoleParams, ChangePasswordParams } from "../../models/api/request/admin/user.request.model";
+import { GetUsersAdminParams, ChangeStatusParams, ChangeRoleParams, ChangePasswordParams, CreateUserParams } from "../../models/api/request/admin/user.request.model";
 import { UpdateUserParams } from "../../models/api/request/users/user.request.model";
 import { GetUsersAdminResponse } from "../../models/api/responsive/admin/user.responsive.model";
 import { ResponseSuccess } from "../../app/interface";
@@ -63,6 +63,15 @@ export const UserService = {
   deleteUser(userId: string) {
     return BaseService.remove<ResponseSuccess<User>>({
       url: API.ADMIN.DELETE_USER.replace(":id", userId),
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    });
+  },
+  createUser(params: CreateUserParams) {
+    return BaseService.post<ResponseSuccess<User>>({
+      url: API.ADMIN.CREATE_USER,
+      payload: params,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       }

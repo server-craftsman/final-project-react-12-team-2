@@ -5,7 +5,6 @@ import { RegisterStudentPublicParams, RegisterInstructorPublicParams, RegisterPa
 import { ResponseSuccess } from "../../app/interface";
 import { User } from "../../models/api/responsive/users/users.model"; //data user
 import { GetBankResponse } from "../../models/api/responsive/authentication/auth.responsive.model";
-import cloudinaryConfig from "../config/cloudinaryConfig";
 
 export const AuthService = {
   login(params: { email: string; password: string }) {
@@ -73,54 +72,5 @@ export const AuthService = {
     return BaseService.get<GetBankResponse>({
       url: API.BANK.GET_BANK
     });
-  },
-  uploadToCloudinary(file: File, type: "image" | "video") {
-    const url = `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/${type}/upload`;
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", cloudinaryConfig.uploadPreset);
-    formData.append("api_key", cloudinaryConfig.apiKey);
-    formData.append("timestamp", String(Math.round(new Date().getTime() / 1000)));
-
-    // Generate signature
-    const params = {
-      timestamp: (formData.get("timestamp") as string) || "",
-      upload_preset: cloudinaryConfig.uploadPreset,
-      api_key: cloudinaryConfig.apiKey
-    };
-    const signature = this.generateSignature(params, cloudinaryConfig.apiSecret);
-    formData.append("signature", signature);
-
-    const options = {
-      method: "POST",
-      body: formData,
-      timeout: 300000, // 5 minute timeout
-      isLoading: true
-    };
-
-    return fetch(url, options)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Upload failed: ${response.statusText}`);
-        }
-        return response;
-      })
-      .catch((error) => {
-        console.error("Upload error:", error);
-        if (error.name === "AbortError") {
-          throw new Error("Upload timed out - please try uploading a smaller file");
-        }
-        throw new Error(`Upload failed: ${error.message}. Please try again.`);
-      });
-  },
-  generateSignature(params: Record<string, string | undefined>, apiSecret: string): string {
-    const sortedKeys = Object.keys(params).sort();
-    const stringToSign = sortedKeys.map((key) => `${key}=${params[key]}`).join("&");
-
-    return require("crypto")
-      .createHash("sha256")
-      .update(stringToSign + apiSecret)
-      .digest("hex");
   }
 };

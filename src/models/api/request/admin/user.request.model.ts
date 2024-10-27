@@ -29,3 +29,17 @@ export interface ChangePasswordParams {
   old_password: string;
   new_password: string;
 }
+
+export interface CreateUserParams {
+  name: string;
+  email: string;
+  password: string;
+  role: UserRole;
+  description: string;
+  avatar_url: string;
+  video_url: string;
+  phone_number: string;
+  bank_name: string;
+  bank_account_no: string;
+  bank_account_name: string;
+}
