@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Form, Input, Button, message, DatePicker, Avatar, Upload } from "antd";
 import { Rule } from "antd/es/form";
 import moment from "moment";
-import dayjs from "dayjs"; // Add this import
+import dayjs from "dayjs";
 import { Editor } from "@tinymce/tinymce-react";
 import { TINY_API_KEY } from "../../../services/config/apiClientTiny";
 import { UserService } from "../../../services/admin/user.service";
@@ -11,7 +11,8 @@ import { GetCurrentUserResponse } from "../../../models/api/responsive/authentic
 import { helpers } from "../../../utils";
 import { UpdateUserParams } from "../../../models/api/request/users/user.request.model";
 import { UploadOutlined } from "@ant-design/icons";
-import cloudinaryConfig from "../../../services/config/cloudinaryConfig";
+import { handleUploadFile } from "../../../utils/upload";
+
 import { ROUTER_URL } from "../../../const/router.path";
 import { HTTP_STATUS } from "../../../app/enums";
 import { HttpException } from "../../../app/exceptions";
@@ -125,23 +126,9 @@ const EditUserProfile = () => {
         let avatarUrl = state.user?.data.avatar_url || "";
 
         if (state.selectedFile) {
-          const formData = new FormData();
-          formData.append("file", state.selectedFile);
-          formData.append("upload_preset", cloudinaryConfig.uploadPreset);
-          formData.append("cloud_name", cloudinaryConfig.cloudName);
-
-          const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/upload`, {
-            method: "POST",
-            body: formData
-          });
-
-          const data = await response.json();
-          if (!response.ok) {
-            throw new HttpException(data.error?.message || "Upload failed", HTTP_STATUS.BAD_REQUEST);
-          }
-
-          if (data.secure_url) {
-            avatarUrl = data.secure_url;
+          const uploadedUrl = await handleUploadFile(state.selectedFile, "image");
+          if (uploadedUrl) {
+            avatarUrl = uploadedUrl;
           }
         }
 
