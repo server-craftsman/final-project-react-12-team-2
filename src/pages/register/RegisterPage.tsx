@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Form, Input, Button, Typography, Divider, Modal } from "antd";
 import { UserOutlined, MailOutlined, LockOutlined, HomeOutlined } from "@ant-design/icons";
@@ -9,11 +9,10 @@ import registerAnimation from "../../data/registerAnimation.json";
 import Lottie from "lottie-react";
 import ButtonDivideStudentAndInstructor from "../../components/generic/register/ButtonDivideStudentAndInstructor";
 import RegisterInfoOfInstructor from "../../components/generic/register/RegisterInfoOfInstructor";
-import RegisterViaGoogle from "./RegisterViaGoogle"; // Import the RegisterViaGoogle component
+import RegisterViaGoogle from "./RegisterViaGoogle";
 const { Title, Text } = Typography;
 import { handleUploadFile } from "../../utils/upload";
 
-// Call API to register
 import { useAuth } from "../../contexts/AuthContext";
 import { RegisterParams } from "../../models/api/request/authentication/auth.request.model";
 import { ROUTER_URL } from "../../const/router.path";
@@ -29,8 +28,47 @@ const RegisterPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
-  const [isGoogleModalVisible, setIsGoogleModalVisible] = useState(false); // State to control modal visibility
-  const [googleId, setGoogleId] = useState<string>(""); // Add state for googleId
+  const [isGoogleModalVisible, setIsGoogleModalVisible] = useState(false);
+  const [googleId, setGoogleId] = useState<string>("");
+
+  const getRegistrationSuccessMessage = useCallback((role: UserRoles) => {
+    return role === 'instructor' ? "Register as instructor successfully. Waiting Admin for approval..." : "Register as student successfully";
+  }, []);
+
+  const getErrorMessage = useCallback((error: any) => {
+    return error instanceof HttpException ? error.message : "An error occurred during registration. Please try again.";
+  }, []);
+
+  const handleRoleSelection = useCallback((selectedRole: string) => {
+    setRole(selectedRole);
+  }, []);
+
+  const validateEmail = useCallback(async (_: any, value: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!value || !emailRegex.test(value)) {
+      return Promise.reject(new Error("Please enter a valid email address."));
+    }
+    return Promise.resolve();
+  }, []);
+
+  const validatePassword = useCallback(async (_: any, value: string) => {
+    const hasUpperCase = /[A-Z]/.test(value);
+    const hasNumber = /\d/.test(value);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value);
+    if (!value || value.length < 8 || !hasUpperCase || !hasNumber || !hasSpecialChar) {
+      return Promise.reject(new Error("Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character."));
+    }
+    return Promise.resolve();
+  }, []);
+
+  const validateConfirmPassword = useCallback(({ getFieldValue }: any) => ({
+    validator(_: any, value: string) {
+      if (!value || getFieldValue('password') === value) {
+        return Promise.resolve();
+      }
+      return Promise.reject(new Error('The two passwords that you entered do not match!'));
+    },
+  }), []);
 
   const onFinish = useCallback(async (values: any) => {
     if (!role) {
@@ -40,7 +78,6 @@ const RegisterPage = () => {
 
     setIsLoading(true);
     try {
-      // Prepare registration parameters with default values
       const params: RegisterParams = {
         name: values.name || '',
         email: values.email || '', 
@@ -55,9 +92,7 @@ const RegisterPage = () => {
         bank_name: ''
       };
 
-      // Only validate and upload files for instructor role
       if (role === 'instructor') {
-        // Validate required instructor fields
         const requiredFields = ['phone_number', 'description', 'bank_account_name', 'bank_account_no', 'bank_name'];
         const missingFields = requiredFields.filter(field => !values[field]);
         
@@ -65,7 +100,6 @@ const RegisterPage = () => {
           throw new Error(`Please fill in all required fields: ${missingFields.join(', ')}`);
         }
 
-        // Update instructor specific fields
         Object.assign(params, {
           description: values.description,
           phone_number: values.phone_number,
@@ -74,7 +108,6 @@ const RegisterPage = () => {
           bank_name: values.bank_name
         });
 
-        // Quick validation of file existence before upload
         const avatarFile = form.getFieldValue('avatar_file')?.originFileObj;
         const videoFile = form.getFieldValue('video_file')?.originFileObj;
 
@@ -82,10 +115,8 @@ const RegisterPage = () => {
           throw new Error('Please upload both avatar and video files');
         }
 
-        // Set longer timeout for large files
-        const timeout = 5 * 60 * 1000; // 5 minutes timeout
+        const timeout = 5 * 60 * 1000;
         
-        // Upload files concurrently with timeout
         const uploadWithTimeout = async (promise: Promise<any>) => {
           return Promise.race([
             promise,
@@ -97,8 +128,8 @@ const RegisterPage = () => {
 
         try {
           const [avatarUrl, videoUrl] = await Promise.all([
-            uploadWithTimeout(handleFileUpload('avatar_file', 'avatar')),
-            uploadWithTimeout(handleFileUpload('video_file', 'video'))
+            uploadWithTimeout(handleUploadFile(avatarFile, 'image')),
+            uploadWithTimeout(handleUploadFile(videoFile, 'video'))
           ]);
 
           params.avatar_url = avatarUrl;
@@ -117,86 +148,42 @@ const RegisterPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [role, register, navigate]);
+  }, [role, register, navigate, form, getRegistrationSuccessMessage, getErrorMessage]);
 
-  const handleFileUpload = useCallback(async (fieldName: string, type: 'avatar' | 'video') => {
-    const file = form.getFieldValue(fieldName)?.originFileObj;
-    if (!file) {
-      throw new Error(`Please upload ${type}`);
-    }
-
-    try {
-      const url = await handleUploadFile(file, type);
-      if (!url) {
-        throw new Error(`Failed to upload ${type}`);
-      }
-      return url;
-    } catch (error) {
-      console.error(`Error uploading ${type}:`, error);
-      throw new Error(`Failed to upload ${type}. Please try again.`);
-    }
-  }, [form]);
-
-
-  const getRegistrationSuccessMessage = (role: UserRoles) => {
-    return role === 'instructor' ? "Register as instructor successfully" : "Register as student successfully";
-  };
-
-  const getErrorMessage = (error: any) => {
-    return error instanceof HttpException ? error.message : "An error occurred during registration. Please try again.";
-  };
-
-  const handleRoleSelection = useCallback((selectedRole: string) => {
-    setRole(selectedRole);
+  const onFinishGoogle = useCallback((token: string) => {
+    setGoogleId(token);
+    setIsGoogleModalVisible(true);
   }, []);
 
-  const validateEmail = async (_: any, value: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!value || !emailRegex.test(value)) {
-      return Promise.reject(new Error("Please enter a valid email address."));
-    }
-    return Promise.resolve();
-  };
-
-  const validatePassword = async (_: any, value: string) => {
-    const hasUpperCase = /[A-Z]/.test(value);
-    const hasNumber = /\d/.test(value);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(value);
-    if (!value || value.length < 8 || !hasUpperCase || !hasNumber || !hasSpecialChar) {
-      return Promise.reject(new Error("Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character."));
-    }
-    return Promise.resolve();
-  };
-
-  const validateConfirmPassword = ({ getFieldValue }: any) => ({
-    validator(_: any, value: string) {
-      if (!value || getFieldValue('password') === value) {
-        return Promise.resolve();
-      }
-      return Promise.reject(new Error('The two passwords that you entered do not match!'));
-    },
-  });
-
-  const onFinishGoogle = (token: string) => {
-    console.log("Google ID Token: ", token);
-    setGoogleId(token); // Set the token state
-    setIsGoogleModalVisible(true); // Show the modal when Google login is successful
-  };
-
-  const handleGoogleLoginError = (error: string) => {
+  const handleGoogleLoginError = useCallback((error: string) => {
     console.error("Google Login Error: ", error);
-  };
+  }, []);
+
+  const handleModalClose = useCallback(() => {
+    setIsGoogleModalVisible(false);
+  }, []);
+
+  const formRules = useMemo(() => ({
+    name: [{ required: true, message: "Please input your name!" }],
+    email: [{ required: true, message: "Please input your E-mail!" }, { validator: validateEmail }],
+    password: [{ required: true, message: "Please input your password!" }, { validator: validatePassword }],
+    confirm: [{ required: true, message: "Please confirm your password!" }, validateConfirmPassword]
+  }), [validateEmail, validatePassword, validateConfirmPassword]);
+
+  const renderLeftPanel = useMemo(() => (
+    <div className="flex w-full flex-col items-center justify-center bg-gradient-to-br from-indigo-900 to-purple-900 p-12 md:w-1/2">
+      <Link to="/">
+        <Lottie animationData={registerAnimation} loop={true} />
+      </Link>
+      <h2 className="text-3xl font-bold text-white">Edu Learn</h2>
+      <Text className="mt-4 text-center text-lg text-white">Elevate Your Learning Experience</Text>
+    </div>
+  ), []);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-purple-900/20 to-indigo-900/20 backdrop-blur-md">
       <div className="relative flex w-full max-w-[85rem] flex-col overflow-hidden rounded-2xl bg-white shadow-2xl md:flex-row">
-        <div className="flex w-full flex-col items-center justify-center bg-gradient-to-br from-indigo-900 to-purple-900 p-12 md:w-1/2">
-          <Link to="/">
-            <Lottie animationData={registerAnimation} loop={true} />
-          </Link>
-          <h2 className="text-3xl font-bold text-white">Edu Learn</h2>
-          <Text className="mt-4 text-center text-lg text-white">Elevate Your Learning Experience</Text>
-        </div>
+        {renderLeftPanel}
         <div className="w-full bg-gradient-to-br from-white to-gray-100 p-12 md:w-1/2">
           <Link to="/" className="mb-8 flex items-center text-lg text-indigo-600 transition-colors duration-300 hover:text-indigo-800">
             <HomeOutlined className="mr-2" />
@@ -207,19 +194,19 @@ const RegisterPage = () => {
           </Title>
 
           <Form form={form} name="register" onFinish={onFinish} scrollToFirstError layout="vertical">
-            <Form.Item name="name" rules={[{ required: true, message: "Please input your name!" }]}>
+            <Form.Item name="name" rules={formRules.name}>
               <Input prefix={<UserOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Name" className="rounded-lg px-4 py-2" />
             </Form.Item>
 
-            <Form.Item name="email" rules={[{ required: true, message: "Please input your E-mail!" }, { validator: validateEmail }]}>
+            <Form.Item name="email" rules={formRules.email}>
               <Input prefix={<MailOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Email" className="rounded-lg px-4 py-2" />
             </Form.Item>
 
-            <Form.Item name="password" rules={[{ required: true, message: "Please input your password!" }, { validator: validatePassword }]} hasFeedback>
+            <Form.Item name="password" rules={formRules.password} hasFeedback>
               <Input.Password prefix={<LockOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Password" className="rounded-lg px-4 py-2" />
             </Form.Item>
 
-            <Form.Item name="confirm" dependencies={["password"]} hasFeedback rules={[{ required: true, message: "Please confirm your password!" }, validateConfirmPassword]}>
+            <Form.Item name="confirm" dependencies={["password"]} hasFeedback rules={formRules.confirm}>
               <Input.Password prefix={<LockOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Confirm Password" className="rounded-lg px-4 py-2" />
             </Form.Item>
             <ButtonDivideStudentAndInstructor onSelectRole={handleRoleSelection} />
@@ -245,7 +232,7 @@ const RegisterPage = () => {
                 <LoginGoogle 
                   onLoginSuccess={onFinishGoogle} 
                   onLoginError={handleGoogleLoginError} 
-                  context="register" // Pass context as "register"
+                  context="register"
                 />
               </GoogleOAuthProvider>
             </div>
@@ -254,11 +241,10 @@ const RegisterPage = () => {
         </div>
       </div>
 
-      {/* Modal for Google Registration */}
       <Modal
         title="Register via Google"
         open={isGoogleModalVisible}
-        onCancel={() => setIsGoogleModalVisible(false)}
+        onCancel={handleModalClose}
         footer={null}
         width={1200}
       >

@@ -1,19 +1,20 @@
-import React, { useState, useCallback, useEffect } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import { Form, Input, Upload, Button, UploadFile } from "antd";
-import { UploadOutlined, PhoneOutlined, BankOutlined, NumberOutlined, UserOutlined } from "@ant-design/icons";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
+import { Form, Input, Upload, Button, UploadFile, Select } from "antd";
+import { UploadOutlined, PhoneOutlined, NumberOutlined, BankOutlined, UserOutlined } from "@ant-design/icons";
 import { Editor } from "@tinymce/tinymce-react";
 import { TINY_API_KEY } from "../../services/config/apiClientTiny";
 import { message } from "antd";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { ROUTER_URL } from "../../const/router.path";
-interface RegisterViaGoogleProps {
+import { handleUploadFile } from "../../utils/upload";
+import { AuthService } from "../../services/authentication/auth.service";
+
+interface RegisterViaGoogleProps extends React.HTMLAttributes<HTMLFormElement> {
   googleId: string;
 }
 
-const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = ({ googleId }) => {
-  const { registerGooglePublic } = useAuth();
+const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ googleId }) => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [role, setRole] = useState<"student" | "instructor">("student");
@@ -23,14 +24,53 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = ({ googleId }) => {
   const [bankAccountNo, setBankAccountNo] = useState("");
   const [bankAccountName, setBankAccountName] = useState("");
   const [password, setPassword] = useState("");
-
+  const [isLoading, setIsLoading] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [videoFileList, setVideoFileList] = useState<UploadFile<any>[]>([]);
   const [avatarFileList, setAvatarFileList] = useState<UploadFile<any>[]>([]);
   const [videoPreview, setVideoPreview] = useState<string>('');
   const [avatarPreview, setAvatarPreview] = useState<string>('');
+  const [bankData, setBankData] = useState<{
+    banks: any[];
+    bankNames: string[];
+    bankLogos: { [key: string]: string };
+  }>({
+    banks: [],
+    bankNames: [],
+    bankLogos: {},
+  });
 
+  // Fetch banks data only once on mount
+  useEffect(() => {
+    let isMounted = true;
+    
+    const fetchBanks = async () => {
+      try {
+        const response = await AuthService.getBank();
+        if (isMounted) {
+          const banks = response.data.data;
+          const bankNames = banks.map((bank: any) => bank.name);
+          const bankLogos = banks.reduce((acc: { [key: string]: string }, bank: any) => {
+            acc[bank.name] = bank.logo;
+            return acc;
+          }, {});
+
+          setBankData({ banks, bankNames, bankLogos });
+        }
+      } catch (error) {
+        console.error("Error fetching banks:", error);
+        if (isMounted) {
+          message.error("Failed to load bank list");
+        }
+      }
+    };
+
+    fetchBanks();
+    return () => { isMounted = false };
+  }, []);
+
+  // Decode Google token only once on mount
   useEffect(() => {
     const googleToken = localStorage.getItem("googleToken");
     if (googleToken) {
@@ -44,100 +84,169 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = ({ googleId }) => {
     }
   }, []);
 
-  const handleEditorChange = (content: string) => {
+  const handleEditorChange = useCallback((content: string) => {
     setDescription(content);
-  };
+  }, []);
 
-  const handleFileUpload = useCallback((file: File, type: 'video' | 'avatar') => {
-    const maxSize = type === 'video' ? 100 * 1024 * 1024 : 5 * 1024 * 1024; // Increased video size to 100MB
-    if (file.size > maxSize) {
-      message.error(`File size should not exceed ${type === 'video' ? '100MB' : '5MB'}`);
-      return false;
-    }
-
-    const allowedTypes = type === 'video' ? ['video/mp4', 'video/avi', 'video/mov'] : ['image/jpeg', 'image/png', 'image/gif'];
-    if (!allowedTypes.includes(file.type)) {
-      message.error(`Please upload a valid ${type} file`);
-      return false;
-    }
-
-    if (type === 'video') {
-      setUploadingVideo(true);
-      const videoUrl = URL.createObjectURL(file);
-      const video = document.createElement('video');
-      video.src = videoUrl;
-
-      video.addEventListener('loadeddata', () => {
-        video.currentTime = 30; // Changed to 30 seconds for a longer preview
-      });
-
-      video.addEventListener('seeked', () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        const ctx = canvas.getContext('2d');
-        ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
-        setVideoPreview(canvas.toDataURL());
-        URL.revokeObjectURL(videoUrl);
-      });
-    } else {
-      setUploadingAvatar(true);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setAvatarPreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-
-    setTimeout(() => {
-      const fileUrl = `https://example.com/uploads/${file.name}`;
-      form.setFieldsValue({ [`${type}_file`]: { originFileObj: file, url: fileUrl } });
-      
-      if (type === 'video') {
-        setUploadingVideo(false);
-      } else {
-        setUploadingAvatar(false);
-      }
-    }, 2000);
-
-    return false;
-  }, [form]);
-
-  const handleRegister = async () => {
+  const handleFileUpload = useCallback(async (file: File, type: "image" | "video") => {
     try {
+      const url = await handleUploadFile(file, type);
+      if (!url) throw new Error(`Failed to upload ${type}`);
+      return url;
+    } catch (error: any) {
+      throw new Error(`${type} upload failed: ${error.message}`);
+    }
+  }, []);
+
+  const handleRegister = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const descriptionValue = description || '';
+
       const commonParams = {
         google_id: googleId,
         role,
         password,
+        description: descriptionValue,
+        avatar_url: '',
+        phone_number: form.getFieldValue('phone_number'),
+        video_url: '',
+        bank_account_name: form.getFieldValue('bank_account_name'),
+        bank_account_no: form.getFieldValue('bank_account_no'),
+        bank_name: form.getFieldValue('bank_name')
       };
 
-      const params = role === "student"
-        ? {
-            ...commonParams,
-          }
-        : {
-            ...commonParams,
-            description,
-            phone_number: phoneNumber,
-            avatar_url: form.getFieldValue('avatar_file')?.url,
-            video_url: form.getFieldValue('video_file')?.url,
-            bank_name: bankName,
-            bank_account_no: bankAccountNo,
-            bank_account_name: bankAccountName,
-          };
+      if (role === "instructor") {
+        const requiredFields = ['phone_number', 'description', 'bank_account_name', 'bank_account_no', 'bank_name'];
+        const missingFields = requiredFields.filter(field => 
+          field === 'description' ? !descriptionValue : !form.getFieldValue(field)
+        );
 
-      await registerGooglePublic(params as any);
-      message.success("You have successfully registered your profile for the instructor role. Please wait for admin to review the application and notify you via email!");
-      navigate(ROUTER_URL.LOGIN);
-    } catch (error: any) {
-      if (error.code === 11000 && error.keyPattern?.email) {
-        message.error("This email is already registered. Please use a different email.");
-      } else {
-        console.error("Failed to register via Google:", error);
-        message.error("An error occurred during registration. Please try again.");
+        if (missingFields.length > 0) {
+          throw new Error(`Please fill in all required fields: ${missingFields.join(', ')}`);
+        }
+
+        const avatarFile = avatarFileList[0]?.originFileObj;
+        const videoFile = videoFileList[0]?.originFileObj;
+
+        if (!avatarFile || !videoFile) {
+          throw new Error('Please upload both avatar and video files');
+        }
+
+        setUploadingAvatar(true);
+        setUploadingVideo(true);
+
+        try {
+          const [avatarUrl, videoUrl] = await Promise.all([
+            handleFileUpload(avatarFile, "image"),
+            handleFileUpload(videoFile, "video")
+          ]);
+
+          commonParams.avatar_url = avatarUrl;
+          commonParams.video_url = videoUrl;
+
+        } catch (uploadError: any) {
+          throw new Error(`File upload failed: ${uploadError.message}. Please try again.`);
+        }
       }
+
+      const response = await AuthService.registerGooglePublic(commonParams as any);
+      
+      if (response.data.success) {
+        message.success("Registration successful! Please wait for admin review.");
+        navigate(ROUTER_URL.LOGIN);
+      } else {
+        throw new Error("Registration failed. Please try again.");
+      }
+
+    } catch (error: any) {
+      if (error.response?.data?.code === 11000) {
+        message.error("This email is already registered");
+      } else {
+        console.error("Registration failed:", error);
+        message.error(error.message || "Registration failed");
+      }
+    } finally {
+      setIsLoading(false);
+      setUploadingAvatar(false);
+      setUploadingVideo(false);
     }
-  };
+  }, [googleId, role, form, navigate, password, avatarFileList, videoFileList, description, handleFileUpload]);
+
+  const editorConfig = useMemo(() => ({
+    height: 300,
+    menubar: false,
+    plugins: ['advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor',
+      'searchreplace', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media', 'table', 'help', 'wordcount'],
+    toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | help'
+  }), []);
+
+  const handleAvatarPreview = useCallback((file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setAvatarPreview(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+    return handleUploadFile(file, 'image');
+  }, []);
+
+  const handleVideoPreview = useCallback((file: File) => {
+    const videoElement = document.createElement('video');
+    videoElement.preload = 'metadata';
+    videoElement.onloadedmetadata = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = videoElement.videoWidth;
+      canvas.height = videoElement.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx?.drawImage(videoElement, 0, 0);
+      setVideoPreview(canvas.toDataURL());
+    };
+    videoElement.src = URL.createObjectURL(file);
+    return handleUploadFile(file, 'video');
+  }, []);
+
+  const renderBankingFields = useMemo(() => (
+    <div className="bg-gray-50 p-6 rounded-xl space-y-4">
+      <h3 className="text-lg font-semibold text-gray-800 mb-4">Banking Information</h3>
+      
+      <Form.Item name="bank_name" label="Bank Name">
+        <Select
+          value={bankName}
+          onChange={setBankName}
+          placeholder={<div className="flex items-center gap-2"><BankOutlined className="text-indigo-600" />Select Bank Name</div>}
+          // className="w-full h-12 rounded-lg border border-gray-300 px-3"
+        >
+          {bankData.banks.map((bank) => (
+            <Select.Option key={bank.id} value={bank.name}>
+              <div className="flex items-center">
+                <img src={bank.logo} alt={bank.name} className="w-6 h-6 inline-block mr-2" /> {bank.bank_code} - {bank.name}
+              </div>
+            </Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item name="bank_account_no" label="Account Number">
+        <Input 
+          prefix={<NumberOutlined className="text-blue-600" />}
+          placeholder="Enter account number"
+          value={bankAccountNo}
+          onChange={(e) => setBankAccountNo(e.target.value)}
+          className="h-12 rounded-lg"
+        />
+      </Form.Item>
+
+      <Form.Item name="bank_account_name" label="Account Name">
+        <Input 
+          prefix={<UserOutlined className="text-blue-600" />}
+          placeholder="Enter account name"
+          value={bankAccountName}
+          onChange={(e) => setBankAccountName(e.target.value)}
+          className="h-12 rounded-lg"
+        />
+      </Form.Item>
+    </div>
+  ), [bankName, bankAccountNo, bankAccountName, bankData.banks]);
 
   return (
     <Form form={form} layout="vertical" className="w-full max-w-[1200px] mx-auto p-6">
@@ -183,7 +292,7 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = ({ googleId }) => {
                 <Upload 
                   accept="image/*" 
                   showUploadList={false}
-                  beforeUpload={(file) => handleFileUpload(file, 'avatar')} 
+                  beforeUpload={handleAvatarPreview}
                   fileList={avatarFileList} 
                   onChange={({ fileList }) => setAvatarFileList(fileList)}
                 >
@@ -210,7 +319,7 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = ({ googleId }) => {
                 <Upload 
                   accept="video/*" 
                   showUploadList={false}
-                  beforeUpload={(file) => handleFileUpload(file, 'video')} 
+                  beforeUpload={handleVideoPreview}
                   fileList={videoFileList} 
                   onChange={({ fileList }) => setVideoFileList(fileList)}
                 >
@@ -236,51 +345,13 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = ({ googleId }) => {
           >
             <Editor
               apiKey={TINY_API_KEY}
-              init={{
-                height: 300,
-                menubar: false,
-                plugins: ['advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor',
-                  'searchreplace', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media', 'table', 'help', 'wordcount'],
-                toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | help'
-              }}
+              init={editorConfig}
               onEditorChange={handleEditorChange}
               value={description}
             />
           </Form.Item>
 
-          <div className="bg-gray-50 p-6 rounded-xl space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Banking Information</h3>
-            
-            <Form.Item name="bank_name" label="Bank Name">
-              <Input 
-                prefix={<BankOutlined className="text-blue-600" />}
-                placeholder="Enter bank name"
-                value={bankName}
-                onChange={(e) => setBankName(e.target.value)}
-                className="h-12 rounded-lg"
-              />
-            </Form.Item>
-
-            <Form.Item name="bank_account_no" label="Account Number">
-              <Input 
-                prefix={<NumberOutlined className="text-blue-600" />}
-                placeholder="Enter account number"
-                value={bankAccountNo}
-                onChange={(e) => setBankAccountNo(e.target.value)}
-                className="h-12 rounded-lg"
-              />
-            </Form.Item>
-
-            <Form.Item name="bank_account_name" label="Account Name">
-              <Input 
-                prefix={<UserOutlined className="text-blue-600" />}
-                placeholder="Enter account name"
-                value={bankAccountName}
-                onChange={(e) => setBankAccountName(e.target.value)}
-                className="h-12 rounded-lg"
-              />
-            </Form.Item>
-          </div>
+          {renderBankingFields}
         </div>
       )}
 
@@ -289,12 +360,13 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = ({ googleId }) => {
           type="primary" 
           onClick={handleRegister}
           className="w-full h-12 rounded-lg bg-[#1a237e] hover:bg-[#02005dc6] text-white font-medium"
+          loading={isLoading}
         >
           Register with Google
         </Button>
       </Form.Item>
     </Form>
   );
-};
+});
 
 export default RegisterViaGoogle;
