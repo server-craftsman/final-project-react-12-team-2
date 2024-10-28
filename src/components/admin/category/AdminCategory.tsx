@@ -1,65 +1,130 @@
-import { Table, Space, Modal, message } from "antd";
-import { useState } from "react";
+import { Table, Space, message, Modal } from "antd";
+import React, { useEffect, useState, useCallback } from "react";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import categoriesData from "../../../data/categories.json";
-// import { useNavigate } from "react-router-dom";
-import { Category } from "../../../models/prototype/Category";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { GetCategoryResponse } from "../../../models/api/responsive/admin/category.responsive.model";
+import { GetCategoryParams } from "../../../models/api/request/admin/category.request.model";
+import { CategoryService } from "../../../services/category/category.service";
+import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
+import parse from "html-react-parser";
+import { ROUTER_URL } from "../../../const/router.path";
+import { HttpException } from "../../../app/exceptions";
 
-const AdminCategory = ({ searchTerm }: { searchTerm: string }) => {
-  // const navigate = useNavigate();
-  const [categories, setCategories] = useState(categoriesData.categories);
+interface SearchCategoryCondition {
+  keyword: string;
+  is_parent: boolean;
+  is_delete: boolean;
+}
 
-  // const handleViewDetails = (id: string) => {
-  //   navigate(`/admin/categories/categories-details/${id}`);
-  // };
+interface AdminCategoryProps {
+  searchQuery: string;
+}
 
-  const handleDelete = (id: string) => {
+const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
+  const [category, setCategory] = useState<GetCategoryResponse | null>(null);
+  const navigate = useNavigate();
+
+  const defaultParams = {
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10
+    },
+    searchCondition: {
+      keyword: "",
+      is_parent: false,
+      is_delete: false,
+    }
+  } as const; // Make immutable
+
+  // Memoize the search condition logic
+  const getSearchCondition = React.useCallback((searchQuery: string): SearchCategoryCondition => {
+    return {
+      keyword: searchQuery || defaultParams.searchCondition.keyword,
+      is_parent: false,
+      is_delete: false,
+    };
+  }, []);
+
+  const fetchCategories = React.useCallback(async () => {
+    try {
+      const searchCondition = getSearchCondition(searchQuery);
+      const params = {
+        pageInfo: defaultParams.pageInfo,
+        searchCondition
+      };
+      const response = await CategoryService.getCategory(params as GetCategoryParams);
+      setCategory(response.data?.data ? response.data.data : null);
+    } catch (error) {
+      message.error("An unexpected error occurred while fetching categories");
+    }
+  }, [searchQuery, getSearchCondition]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  const handleDeleteCategory = useCallback((categoryId: string) => {
     Modal.confirm({
       title: "Are you sure you want to delete this category?",
-      onOk: () => {
-        setCategories(categories.filter((category: Category) => category.id !== id));
-        message.success("Category deleted successfully");
+      onOk: async () => {
+        try {
+          const response = await CategoryService.deleteCategory(categoryId);
+          if (response.data.success) {
+            message.success("Category deleted successfully.");
+            navigate(ROUTER_URL.ADMIN.CATEGORIES);
+          }
+        } catch (error) {
+          message.error(error instanceof HttpException ? error.message : "An error occurred while deleting the category");
+          console.error("Failed to delete category:", error);
+        }
       }
     });
-  };
+  }, [navigate]);
 
   // Filter categories based on the search term
-  const filteredData = categories.filter((category: Category) => {
-    return category.name.toLowerCase().includes(searchTerm.toLowerCase()) || category.description.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredData = category?.pageData?.filter((category: Category) => {
+    return (
+      (category.name && category.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (category.description && category.description.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
   });
 
   const columns = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id"
-    },
-    {
-      title: "Name",
+      title: "Category Name",
       dataIndex: "name",
       key: "name"
     },
     {
+      title: "Parent Category",
+      dataIndex: "parent_category_id",
+      key: "parent_category_id",
+      render: (parent_category_id: string) => {
+        const parentCategory = category?.pageData?.find(category => category._id === parent_category_id);
+        return parentCategory ? parentCategory.name : "N/A";
+      }
+    },
+    {
       title: "Description",
       dataIndex: "description",
-      key: "description"
+      key: "description",
+      render: (description: string) => <div className="prose max-w-none">{parse(description)}</div>
     },
     {
       title: "Action",
       key: "action",
       render: (record: Category) => (
         <Space size="middle">
-          <Link to={`/admin/edit-category/${record.id}`}>
+          <Link to={`/admin/edit-category/${record._id}`}>
             <EditOutlined />
           </Link>
-          <DeleteOutlined onClick={() => handleDelete(record.id)} />
+          <DeleteOutlined onClick={() => handleDeleteCategory(record._id)} />
         </Space>
       )
     }
   ];
 
-  return <Table columns={columns} dataSource={filteredData} rowKey="id" />;
+  return <Table columns={columns} dataSource={filteredData || []} rowKey="id" />;
 };
 
 export default AdminCategory;
