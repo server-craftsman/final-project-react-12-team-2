@@ -32,7 +32,7 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
     searchCondition: {
       keyword: "",
       is_parent: false,
-      is_delete: false,
+      is_delete: false
     }
   } as const; // Make immutable
 
@@ -41,7 +41,7 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
     return {
       keyword: searchQuery || defaultParams.searchCondition.keyword,
       is_parent: false,
-      is_delete: false,
+      is_delete: false
     };
   }, []);
 
@@ -63,30 +63,30 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
     fetchCategories();
   }, [fetchCategories]);
 
-  const handleDeleteCategory = useCallback((categoryId: string) => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this category?",
-      onOk: async () => {
-        try {
-          const response = await CategoryService.deleteCategory(categoryId);
-          if (response.data.success) {
-            message.success("Category deleted successfully.");
-            navigate(ROUTER_URL.ADMIN.CATEGORIES);
+  const handleDeleteCategory = useCallback(
+    (categoryId: string) => {
+      Modal.confirm({
+        title: "Are you sure you want to delete this category?",
+        onOk: async () => {
+          try {
+            const response = await CategoryService.deleteCategory(categoryId);
+            if (response.data.success) {
+              message.success("Category deleted successfully.");
+              navigate(ROUTER_URL.ADMIN.CATEGORIES);
+            }
+          } catch (error) {
+            message.error(error instanceof HttpException ? error.message : "An error occurred while deleting the category");
+            console.error("Failed to delete category:", error);
           }
-        } catch (error) {
-          message.error(error instanceof HttpException ? error.message : "An error occurred while deleting the category");
-          console.error("Failed to delete category:", error);
         }
-      }
-    });
-  }, [navigate]);
+      });
+    },
+    [navigate]
+  );
 
   // Filter categories based on the search term
   const filteredData = category?.pageData?.filter((category: Category) => {
-    return (
-      (category.name && category.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (category.description && category.description.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
+    return (category.name && category.name.toLowerCase().includes(searchQuery.toLowerCase())) || (category.description && category.description.toLowerCase().includes(searchQuery.toLowerCase()));
   });
 
   const columns = [
@@ -100,7 +100,7 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
       dataIndex: "parent_category_id",
       key: "parent_category_id",
       render: (parent_category_id: string) => {
-        const parentCategory = category?.pageData?.find(category => category._id === parent_category_id);
+        const parentCategory = category?.pageData?.find((category) => category._id === parent_category_id);
         return parentCategory ? parentCategory.name : "N/A";
       }
     },

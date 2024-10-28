@@ -31,7 +31,7 @@ const RegisterPage = () => {
   const [googleId, setGoogleId] = useState<string>("");
 
   const getRegistrationSuccessMessage = useCallback((role: UserRoles) => {
-    return role === 'instructor' ? "Register as instructor successfully. Waiting Admin for approval..." : "Register as student successfully";
+    return role === "instructor" ? "Register as instructor successfully. Waiting Admin for approval..." : "Register as student successfully";
   }, []);
 
   const getErrorMessage = useCallback((error: any) => {
@@ -60,94 +60,91 @@ const RegisterPage = () => {
     return Promise.resolve();
   }, []);
 
-  const validateConfirmPassword = useCallback(({ getFieldValue }: any) => ({
-    validator(_: any, value: string) {
-      if (!value || getFieldValue('password') === value) {
-        return Promise.resolve();
+  const validateConfirmPassword = useCallback(
+    ({ getFieldValue }: any) => ({
+      validator(_: any, value: string) {
+        if (!value || getFieldValue("password") === value) {
+          return Promise.resolve();
+        }
+        return Promise.reject(new Error("The two passwords that you entered do not match!"));
       }
-      return Promise.reject(new Error('The two passwords that you entered do not match!'));
-    },
-  }), []);
+    }),
+    []
+  );
 
-  const onFinish = useCallback(async (values: any) => {
-    if (!role) {
-      helpers.notification("Please select a role");
-      return;
-    }
+  const onFinish = useCallback(
+    async (values: any) => {
+      if (!role) {
+        helpers.notification("Please select a role");
+        return;
+      }
 
-    setIsLoading(true);
-    try {
-      const params: RegisterParams = {
-        name: values.name || '',
-        email: values.email || '', 
-        password: values.password || '',
-        role: role as UserRoles,
-        description: '',
-        avatar_url: '',
-        phone_number: '',
-        video_url: '',
-        bank_account_name: '',
-        bank_account_no: '',
-        bank_name: ''
-      };
-
-      if (role === 'instructor') {
-        const requiredFields = ['phone_number', 'description', 'bank_account_name', 'bank_account_no', 'bank_name'];
-        const missingFields = requiredFields.filter(field => !values[field]);
-        
-        if (missingFields.length > 0) {
-          throw new Error(`Please fill in all required fields: ${missingFields.join(', ')}`);
-        }
-
-        Object.assign(params, {
-          description: values.description,
-          phone_number: values.phone_number,
-          bank_account_name: values.bank_account_name,
-          bank_account_no: values.bank_account_no,
-          bank_name: values.bank_name
-        });
-
-        const avatarFile = form.getFieldValue('avatar_file')?.originFileObj;
-        const videoFile = form.getFieldValue('video_file')?.originFileObj;
-
-        if (!avatarFile || !videoFile) {
-          throw new Error('Please upload both avatar and video files');
-        }
-
-        const timeout = 5 * 60 * 1000;
-        
-        const uploadWithTimeout = async (promise: Promise<any>) => {
-          return Promise.race([
-            promise,
-            new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Upload timed out - file may be too large')), timeout)
-            )
-          ]);
+      setIsLoading(true);
+      try {
+        const params: RegisterParams = {
+          name: values.name || "",
+          email: values.email || "",
+          password: values.password || "",
+          role: role as UserRoles,
+          description: "",
+          avatar_url: "",
+          phone_number: "",
+          video_url: "",
+          bank_account_name: "",
+          bank_account_no: "",
+          bank_name: ""
         };
 
-        try {
-          const [avatarUrl, videoUrl] = await Promise.all([
-            uploadWithTimeout(handleUploadFile(avatarFile, 'image')),
-            uploadWithTimeout(handleUploadFile(videoFile, 'video'))
-          ]);
+        if (role === "instructor") {
+          const requiredFields = ["phone_number", "description", "bank_account_name", "bank_account_no", "bank_name"];
+          const missingFields = requiredFields.filter((field) => !values[field]);
 
-          params.avatar_url = avatarUrl;
-          params.video_url = videoUrl;
-        } catch (uploadError: any) {
-          throw new Error(`File upload failed: ${uploadError.message}. Please try with smaller files or check your connection.`);
+          if (missingFields.length > 0) {
+            throw new Error(`Please fill in all required fields: ${missingFields.join(", ")}`);
+          }
+
+          Object.assign(params, {
+            description: values.description,
+            phone_number: values.phone_number,
+            bank_account_name: values.bank_account_name,
+            bank_account_no: values.bank_account_no,
+            bank_name: values.bank_name
+          });
+
+          const avatarFile = form.getFieldValue("avatar_file")?.originFileObj;
+          const videoFile = form.getFieldValue("video_file")?.originFileObj;
+
+          if (!avatarFile || !videoFile) {
+            throw new Error("Please upload both avatar and video files");
+          }
+
+          const timeout = 5 * 60 * 1000;
+
+          const uploadWithTimeout = async (promise: Promise<any>) => {
+            return Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error("Upload timed out - file may be too large")), timeout))]);
+          };
+
+          try {
+            const [avatarUrl, videoUrl] = await Promise.all([uploadWithTimeout(handleUploadFile(avatarFile, "image")), uploadWithTimeout(handleUploadFile(videoFile, "video"))]);
+
+            params.avatar_url = avatarUrl;
+            params.video_url = videoUrl;
+          } catch (uploadError: any) {
+            throw new Error(`File upload failed: ${uploadError.message}. Please try with smaller files or check your connection.`);
+          }
         }
+
+        await register(params);
+        helpers.notification(getRegistrationSuccessMessage(params.role));
+        navigate(ROUTER_URL.LOGIN);
+      } catch (error: any) {
+        helpers.notification(getErrorMessage(error));
+      } finally {
+        setIsLoading(false);
       }
-
-      await register(params);
-      helpers.notification(getRegistrationSuccessMessage(params.role));
-      navigate(ROUTER_URL.LOGIN);
-
-    } catch (error: any) {
-      helpers.notification(getErrorMessage(error));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [role, register, navigate, form, getRegistrationSuccessMessage, getErrorMessage]);
+    },
+    [role, register, navigate, form, getRegistrationSuccessMessage, getErrorMessage]
+  );
 
   const onFinishGoogle = useCallback((token: string) => {
     setGoogleId(token);
@@ -162,22 +159,28 @@ const RegisterPage = () => {
     setIsGoogleModalVisible(false);
   }, []);
 
-  const formRules = useMemo(() => ({
-    name: [{ required: true, message: "Please input your name!" }],
-    email: [{ required: true, message: "Please input your E-mail!" }, { validator: validateEmail }],
-    password: [{ required: true, message: "Please input your password!" }, { validator: validatePassword }],
-    confirm: [{ required: true, message: "Please confirm your password!" }, validateConfirmPassword]
-  }), [validateEmail, validatePassword, validateConfirmPassword]);
+  const formRules = useMemo(
+    () => ({
+      name: [{ required: true, message: "Please input your name!" }],
+      email: [{ required: true, message: "Please input your E-mail!" }, { validator: validateEmail }],
+      password: [{ required: true, message: "Please input your password!" }, { validator: validatePassword }],
+      confirm: [{ required: true, message: "Please confirm your password!" }, validateConfirmPassword]
+    }),
+    [validateEmail, validatePassword, validateConfirmPassword]
+  );
 
-  const renderLeftPanel = useMemo(() => (
-    <div className="flex w-full flex-col items-center justify-center bg-gradient-to-br from-indigo-900 to-purple-900 p-12 md:w-1/2">
-      <Link to="/">
-        <Lottie animationData={registerAnimation} loop={true} />
-      </Link>
-      <h2 className="text-3xl font-bold text-white">Edu Learn</h2>
-      <Text className="mt-4 text-center text-lg text-white">Elevate Your Learning Experience</Text>
-    </div>
-  ), []);
+  const renderLeftPanel = useMemo(
+    () => (
+      <div className="flex w-full flex-col items-center justify-center bg-gradient-to-br from-indigo-900 to-purple-900 p-12 md:w-1/2">
+        <Link to="/">
+          <Lottie animationData={registerAnimation} loop={true} />
+        </Link>
+        <h2 className="text-3xl font-bold text-white">Edu Learn</h2>
+        <Text className="mt-4 text-center text-lg text-white">Elevate Your Learning Experience</Text>
+      </div>
+    ),
+    []
+  );
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-purple-900/20 to-indigo-900/20 backdrop-blur-md">
@@ -209,17 +212,9 @@ const RegisterPage = () => {
               <Input.Password prefix={<LockOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Confirm Password" className="rounded-lg px-4 py-2" />
             </Form.Item>
             <ButtonDivideStudentAndInstructor onSelectRole={handleRoleSelection} />
-            {role === "instructor" && (
-              <RegisterInfoOfInstructor
-                form={form}
-                uploadingVideo={uploadingVideo}
-                uploadingAvatar={uploadingAvatar}
-                setUploadingVideo={setUploadingVideo}
-                setUploadingAvatar={setUploadingAvatar}
-              />
-            )}
+            {role === "instructor" && <RegisterInfoOfInstructor form={form} uploadingVideo={uploadingVideo} uploadingAvatar={uploadingAvatar} setUploadingVideo={setUploadingVideo} setUploadingAvatar={setUploadingAvatar} />}
             <Form.Item>
-              <Button loading={isLoading} type="primary" htmlType="submit" className="mt-4 w-full h-12 rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 py-3 text-lg font-semibold text-white shadow-md transition-all duration-300 hover:from-indigo-700 hover:to-purple-700">
+              <Button loading={isLoading} type="primary" htmlType="submit" className="mt-4 h-12 w-full rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 py-3 text-lg font-semibold text-white shadow-md transition-all duration-300 hover:from-indigo-700 hover:to-purple-700">
                 Register
               </Button>
             </Form.Item>
@@ -228,25 +223,20 @@ const RegisterPage = () => {
             </Divider>
             <div className="flex justify-center">
               <GoogleOAuthProvider clientId={CLIENT_ID}>
-                <LoginGoogle 
-                  onLoginSuccess={onFinishGoogle} 
-                  onLoginError={handleGoogleLoginError} 
-                  context="register"
-                />
+                <LoginGoogle onLoginSuccess={onFinishGoogle} onLoginError={handleGoogleLoginError} context="register" />
               </GoogleOAuthProvider>
             </div>
           </Form>
-          <div className="text-center mt-4">Already have an account? <Link to="/login" className="font-semibold text-indigo-600 transition-colors duration-300 hover:text-indigo-800">Sign in</Link></div>
+          <div className="mt-4 text-center">
+            Already have an account?{" "}
+            <Link to="/login" className="font-semibold text-indigo-600 transition-colors duration-300 hover:text-indigo-800">
+              Sign in
+            </Link>
+          </div>
         </div>
       </div>
 
-      <Modal
-        title="Register via Google"
-        open={isGoogleModalVisible}
-        onCancel={handleModalClose}
-        footer={null}
-        width={1200}
-      >
+      <Modal title="Register via Google" open={isGoogleModalVisible} onCancel={handleModalClose} footer={null} width={1200}>
         <RegisterViaGoogle googleId={googleId} />
       </Modal>
     </div>

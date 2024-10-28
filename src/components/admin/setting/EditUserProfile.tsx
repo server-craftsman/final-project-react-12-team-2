@@ -56,39 +56,42 @@ const EditUserProfile = () => {
     []
   );
 
-  const fetchUserDetails = useCallback(async (userId: string) => {
-    try {
-      const res = await UserService.getUserDetails(userId);
-      const userData = res.data.data;
+  const fetchUserDetails = useCallback(
+    async (userId: string) => {
+      try {
+        const res = await UserService.getUserDetails(userId);
+        const userData = res.data.data;
 
-      setState((prev) => ({
-        ...prev,
-        user: {
-          success: true,
-          data: {
-            ...userData,
-            verification_token_expires: userData.verification_token_expires?.toString() || "-",
-            created_at: userData.created_at ? helpers.formatDate(new Date(userData.created_at)) : "-",
-            updated_at: userData.updated_at ? helpers.formatDate(new Date(userData.updated_at)) : "-",
-            dob: userData.dob || null,
-            description: userData.description || ""
+        setState((prev) => ({
+          ...prev,
+          user: {
+            success: true,
+            data: {
+              ...userData,
+              verification_token_expires: userData.verification_token_expires?.toString() || "-",
+              created_at: userData.created_at ? helpers.formatDate(new Date(userData.created_at)) : "-",
+              updated_at: userData.updated_at ? helpers.formatDate(new Date(userData.updated_at)) : "-",
+              dob: userData.dob || null,
+              description: userData.description || ""
+            }
           }
-        }
-      }));
+        }));
 
-      form.setFieldsValue({
-        name: userData.name,
-        email: userData.email,
-        phone_number: userData.phone_number,
-        role: userData.role,
-        status: userData.status ? "Active" : "Inactive",
-        description: userData.description || "",
-        dob: userData.dob ? moment(userData.dob) : null
-      });
-    } catch (error) {
-      message.error("Failed to fetch user details. Please try again.");
-    }
-  }, [form]);
+        form.setFieldsValue({
+          name: userData.name,
+          email: userData.email,
+          phone_number: userData.phone_number,
+          role: userData.role,
+          status: userData.status ? "Active" : "Inactive",
+          description: userData.description || "",
+          dob: userData.dob ? moment(userData.dob) : null
+        });
+      } catch (error) {
+        message.error("Failed to fetch user details. Please try again.");
+      }
+    },
+    [form]
+  );
 
   useEffect(() => {
     if (id) {
@@ -96,42 +99,45 @@ const EditUserProfile = () => {
     }
   }, [id, fetchUserDetails]);
 
-  const handleFormSubmit = useCallback(async (values: UpdateUserParams) => {
-    setState((prev) => ({ ...prev, uploading: true }));
-    try {
-      let avatarUrl = state.user?.data.avatar_url || "";
+  const handleFormSubmit = useCallback(
+    async (values: UpdateUserParams) => {
+      setState((prev) => ({ ...prev, uploading: true }));
+      try {
+        let avatarUrl = state.user?.data.avatar_url || "";
 
-      if (state.selectedFile) {
-        const uploadedUrl = await handleUploadFile(state.selectedFile, "image");
-        if (uploadedUrl) {
-          avatarUrl = uploadedUrl;
+        if (state.selectedFile) {
+          const uploadedUrl = await handleUploadFile(state.selectedFile, "image");
+          if (uploadedUrl) {
+            avatarUrl = uploadedUrl;
+          }
         }
+
+        const description = parseTinyEditor.getTinyMCEContent("description-editor");
+
+        const updatedValues = {
+          name: values.name,
+          email: values.email,
+          phone_number: values.phone_number,
+          description,
+          dob: values.dob ? helpers.formatDate(new Date(values.dob)) : null,
+          avatar_url: avatarUrl,
+          video_url: "",
+          bank_name: "",
+          bank_account_no: "",
+          bank_account_name: ""
+        };
+
+        await UserService.updateUser(id as string, updatedValues as UpdateUserParams);
+        message.success("Profile updated successfully");
+        navigate(ROUTER_URL.ADMIN.INFO);
+      } catch (error: any) {
+        message.error("Failed to update profile. Please try again.");
+      } finally {
+        setState((prev) => ({ ...prev, uploading: false }));
       }
-
-      const description = parseTinyEditor.getTinyMCEContent("description-editor");
-
-      const updatedValues = {
-        name: values.name,
-        email: values.email,
-        phone_number: values.phone_number,
-        description,
-        dob: values.dob ? helpers.formatDate(new Date(values.dob)) : null,
-        avatar_url: avatarUrl,
-        video_url: "",
-        bank_name: "",
-        bank_account_no: "",
-        bank_account_name: ""
-      };
-
-      await UserService.updateUser(id as string, updatedValues as UpdateUserParams);
-      message.success("Profile updated successfully");
-      navigate(ROUTER_URL.ADMIN.INFO);
-    } catch (error: any) {
-      message.error("Failed to update profile. Please try again.");
-    } finally {
-      setState((prev) => ({ ...prev, uploading: false }));
-    }
-  }, [id, navigate, state.user?.data.avatar_url, state.selectedFile, form]);
+    },
+    [id, navigate, state.user?.data.avatar_url, state.selectedFile, form]
+  );
 
   const handleImageUpload = useCallback((file: File) => {
     const maxSize = 5 * 1024 * 1024;
@@ -168,7 +174,7 @@ const EditUserProfile = () => {
     parseTinyEditor.updateTinyMCEContent("description-editor", value);
     editor.selection.select(editor.getBody(), true);
     editor.selection.collapse(false);
-  }
+  };
 
   if (!state.user) {
     return <div>User not found</div>;

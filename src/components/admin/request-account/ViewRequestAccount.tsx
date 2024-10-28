@@ -42,15 +42,18 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, se
     }
   } as const;
 
-  const getSearchCondition = useCallback((searchQuery: string, selectedStatus: boolean | null): SearchCondition => {
-    return {
-      keyword: searchQuery || defaultParams.searchCondition.keyword,
-      status: selectedStatus !== null ? selectedStatus : defaultParams.searchCondition.status,
-      is_verified: false,
-      role: UserRoles.INSTRUCTOR,
-      is_deleted: false
-    };
-  }, [searchQuery, selectedStatus]);
+  const getSearchCondition = useCallback(
+    (searchQuery: string, selectedStatus: boolean | null): SearchCondition => {
+      return {
+        keyword: searchQuery || defaultParams.searchCondition.keyword,
+        status: selectedStatus !== null ? selectedStatus : defaultParams.searchCondition.status,
+        is_verified: false,
+        role: UserRoles.INSTRUCTOR,
+        is_deleted: false
+      };
+    },
+    [searchQuery, selectedStatus]
+  );
 
   const fetchingUsers = useCallback(async () => {
     try {
@@ -91,138 +94,131 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, se
     fetchingUsers();
   }, [fetchingUsers]);
 
-  const handleApprove = useCallback(async (userId: string, isVerified: boolean) => {
-    const user = filteredUsers.find((user) => user._id === userId);
+  const handleApprove = useCallback(
+    async (userId: string, isVerified: boolean) => {
+      const user = filteredUsers.find((user) => user._id === userId);
 
-    if (user) {
-      Modal.confirm({
-        title: `Are you sure you want to ${isVerified ? "approve" : "reject"} this user?`,
-        onOk: async () => {
-          if (isVerified && user.status === false) {
-            message.error("Cannot approve an inactive user.");
-            return;
-          }
-
-          try {
-            const statusString = isVerified ? "approve" : "reject";
-
-            const response = await UserService.reviewProfileInstructor({
-              user_id: userId,
-              status: statusString as ReviewStatus,
-              comment: ""
-            } as ReviewProfileInstructorParams);
-
-            if (response.data?.success) {
-              const updatedUserList = updatedUsers.includes(userId)
-                ? updatedUsers
-                : [...updatedUsers, userId];
-
-              setUpdatedUsers(updatedUserList);
-              message.success(`User ID: ${userId} has been ${statusString}`);
-            } else {
-              message.error("Failed to update user status.");
+      if (user) {
+        Modal.confirm({
+          title: `Are you sure you want to ${isVerified ? "approve" : "reject"} this user?`,
+          onOk: async () => {
+            if (isVerified && user.status === false) {
+              message.error("Cannot approve an inactive user.");
+              return;
             }
-          } catch (error: any) {
-            console.error("API error:", error);
-            message.error("An error occurred while updating user status.");
-          }
-        },
-        onCancel: () => {
-          message.info("Action canceled.");
-        }
-      });
-    }
-  }, [filteredUsers, updatedUsers]);
 
-  const columns = useMemo(() => [
-    {
-      title: "Avatar",
-      dataIndex: "avatar_url",
-      key: "avatar_url",
-      render: (avatar_url: string) => <Avatar src={avatar_url} />
+            try {
+              const statusString = isVerified ? "approve" : "reject";
+
+              const response = await UserService.reviewProfileInstructor({
+                user_id: userId,
+                status: statusString as ReviewStatus,
+                comment: ""
+              } as ReviewProfileInstructorParams);
+
+              if (response.data?.success) {
+                const updatedUserList = updatedUsers.includes(userId) ? updatedUsers : [...updatedUsers, userId];
+
+                setUpdatedUsers(updatedUserList);
+                message.success(`User ID: ${userId} has been ${statusString}`);
+              } else {
+                message.error("Failed to update user status.");
+              }
+            } catch (error: any) {
+              console.error("API error:", error);
+              message.error("An error occurred while updating user status.");
+            }
+          },
+          onCancel: () => {
+            message.info("Action canceled.");
+          }
+        });
+      }
     },
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name"
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email"
-    },
-    {
-      title: "Phone",
-      dataIndex: "phone_number",
-      key: "phone_number"
-    },
-    {
-      title: "Role",
-      dataIndex: "role",
-      key: "role",
-      render: (role: UserRoles) => <span className={userRoleColor(role)}>{role}</span>
-    },
-    {
-      title: "Created At",
-      dataIndex: "created_at",
-      key: "created_at",
-      render: (created_at: string) => helpers.formatDate(new Date(created_at))
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status: boolean) => (
-        <div className="flex items-center gap-2">
-          <Input
-            value={status ? "Active" : "Inactive"}
-            readOnly
-            className="w-32 border-none bg-gradient-to-r from-gray-50 to-gray-100 font-medium shadow-sm"
-            style={{
-              color: userStatusColor(status),
-              borderRadius: "0.5rem",
-              padding: "0.5rem 1rem",
-              textAlign: "center"
-            }}
-          />
-        </div>
-      )
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: (_: unknown, record: User) => (
-        <div className="flex items-center" style={{ minHeight: "48px" }}>
-          {!record.is_verified &&
-            !updatedUsers.includes(record._id) && (
+    [filteredUsers, updatedUsers]
+  );
+
+  const columns = useMemo(
+    () => [
+      {
+        title: "Avatar",
+        dataIndex: "avatar_url",
+        key: "avatar_url",
+        render: (avatar_url: string) => <Avatar src={avatar_url} />
+      },
+      {
+        title: "Name",
+        dataIndex: "name",
+        key: "name"
+      },
+      {
+        title: "Email",
+        dataIndex: "email",
+        key: "email"
+      },
+      {
+        title: "Phone",
+        dataIndex: "phone_number",
+        key: "phone_number"
+      },
+      {
+        title: "Role",
+        dataIndex: "role",
+        key: "role",
+        render: (role: UserRoles) => <span className={userRoleColor(role)}>{role}</span>
+      },
+      {
+        title: "Created At",
+        dataIndex: "created_at",
+        key: "created_at",
+        render: (created_at: string) => helpers.formatDate(new Date(created_at))
+      },
+      {
+        title: "Status",
+        dataIndex: "status",
+        key: "status",
+        render: (status: boolean) => (
+          <div className="flex items-center gap-2">
+            <Input
+              value={status ? "Active" : "Inactive"}
+              readOnly
+              className="w-32 border-none bg-gradient-to-r from-gray-50 to-gray-100 font-medium shadow-sm"
+              style={{
+                color: userStatusColor(status),
+                borderRadius: "0.5rem",
+                padding: "0.5rem 1rem",
+                textAlign: "center"
+              }}
+            />
+          </div>
+        )
+      },
+      {
+        title: "Action",
+        key: "action",
+        render: (_: unknown, record: User) => (
+          <div className="flex items-center" style={{ minHeight: "48px" }}>
+            {!record.is_verified && !updatedUsers.includes(record._id) && (
               <>
-                <Button
-                  onClick={() => handleApprove(record._id, true)}
-                  className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 transition-all duration-200"
-                  style={{ width: "48px", marginRight: "4px" }}
-                >
+                <Button onClick={() => handleApprove(record._id, true)} className="rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-200 hover:bg-blue-600" style={{ width: "48px", marginRight: "4px" }}>
                   <CheckOutlined />
                 </Button>
-                <Button onClick={() => handleApprove(record._id, false)} className="rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600 transition-all duration-200" style={{ width: "48px" }}>
+                <Button onClick={() => handleApprove(record._id, false)} className="rounded-md bg-red-500 px-4 py-2 text-white transition-all duration-200 hover:bg-red-600" style={{ width: "48px" }}>
                   <CloseOutlined />
                 </Button>
               </>
             )}
-          {updatedUsers.includes(record._id) && <span className="text-green-500">Completed</span>}
-        </div>
-      )
-    }
-  ], [handleApprove, updatedUsers]);
+            {updatedUsers.includes(record._id) && <span className="text-green-500">Completed</span>}
+          </div>
+        )
+      }
+    ],
+    [handleApprove, updatedUsers]
+  );
 
   return (
     <div className="-mt-3 mb-64 p-4">
-      <Table<User>
-        className="shadow-lg"
-        columns={columns}
-        dataSource={filteredUsers}
-        rowKey="_id"
-        pagination={{ pageSize: 10 }}
-      />
+      <Table<User> className="shadow-lg" columns={columns} dataSource={filteredUsers} rowKey="_id" pagination={{ pageSize: 10 }} />
     </div>
   );
 };

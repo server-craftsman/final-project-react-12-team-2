@@ -109,7 +109,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
       }
 
       // Filter out users with role ADMIN
-      const filteredUsers = response.data.data.pageData.filter(user => user.role !== UserRoles.ADMIN);
+      const filteredUsers = response.data.data.pageData.filter((user) => user.role !== UserRoles.ADMIN);
 
       setUsers({ ...response.data.data, pageData: filteredUsers });
     } catch (error) {
@@ -286,12 +286,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
         title: <Checkbox onChange={(e) => handleSelectAll(e.target.checked)} />,
         dataIndex: "_id",
         key: "select",
-        render: (userId: string) => (
-          <Checkbox
-            checked={selectedUserIds.has(userId)}
-            onChange={(e) => handleSelectUser(userId, e.target.checked)}
-          />
-        )
+        render: (userId: string) => <Checkbox checked={selectedUserIds.has(userId)} onChange={(e) => handleSelectUser(userId, e.target.checked)} />
       },
       {
         title: "Avatar",
@@ -388,21 +383,11 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
   }, [activeTab, handleViewDetails, handleChangeStatus, handleChangeRole, disableActions, selectedUserIds]);
 
   return (
-    <div className="-mt-3 mb-64 f p-4">
-      <Button
-        onClick={handleDeleteSelected}
-        disabled={selectedUserIds.size === 0}
-        className="mb-4 bg-red-500 text-white"
-      >
+    <div className="f -mt-3 mb-64 p-4">
+      <Button onClick={handleDeleteSelected} disabled={selectedUserIds.size === 0} className="mb-4 bg-red-500 text-white">
         <DeleteOutlined />
       </Button>
-      <Table<User>
-        className="shadow-lg"
-        columns={columns}
-        dataSource={users?.pageData || []}
-        rowKey="_id"
-        pagination={{ pageSize: 10 }}
-      />
+      <Table<User> className="shadow-lg" columns={columns} dataSource={users?.pageData || []} rowKey="_id" pagination={{ pageSize: 10 }} />
     </div>
   );
 };

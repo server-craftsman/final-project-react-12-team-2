@@ -63,7 +63,6 @@ const ChangePassword: React.FC<ChangePasswordProps> = () => {
     return Promise.resolve();
   };
 
-
   const validateConfirmPassword = (_: unknown, value: string) => {
     if (helpers.isEmptyObject(value)) {
       return Promise.reject(new Error("Please confirm your new password"));

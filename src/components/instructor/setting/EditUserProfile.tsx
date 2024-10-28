@@ -20,7 +20,6 @@ const EditUserProfile = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  
   const [form] = Form.useForm();
 
   const [state, setState] = useState({

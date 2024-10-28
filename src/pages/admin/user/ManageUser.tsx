@@ -124,10 +124,10 @@ const ManageUser = () => {
           <CreateUserProfile />
         </div>
         <Tabs defaultActiveKey="all" onChange={handleTabChange} items={tabItems} className="ml-4" />
-        <ViewUserProfile 
-          searchQuery={searchQuery} 
-          selectedRole={selectedRole} 
-          selectedStatus={selectedStatus} 
+        <ViewUserProfile
+          searchQuery={searchQuery}
+          selectedRole={selectedRole}
+          selectedStatus={selectedStatus}
           activeTab={activeTab}
           showActionColumn={activeTab !== "unverified"}
           disableActions={activeTab === "unverified"} // Add this prop to disable actions for unverified tab

@@ -49,57 +49,65 @@ const ViewUserProfileDetail = () => {
 
   const roleOptions = useMemo(() => Object.values(UserRoles).filter((role) => role !== UserRoles.ALL), []);
 
-  const handleChangeStatus = useCallback(async (status: boolean) => {
-    Modal.confirm({
-      title: "Confirm Status Change",
-      content: `Are you sure you want to turn ${status ? "ON" : "OFF"} the status for this user?`,
-      onOk: async () => {
-        try {
-          const response = await UserService.changeStatus(id as string, { user_id: id, status } as ChangeStatusParams);
-          if (response.data.success) {
-            message.success(`User status changed successfully to ${status ? "ON" : "OFF"}.`);
-            setUser((prev) => prev ? { ...prev, status } : null);
-          }
-        } catch (error) {
-          message.error(error instanceof HttpException ? error.message : "Failed to change user status");
-          console.error("Failed to change user status:", error);
-        }
-      }
-    });
-  }, [id]);
-
-  const handleChangeRole = useCallback(async (currentRole: UserRoles) => {
-    Modal.confirm({
-      title: "Change New Role",
-      content: (
-        <select id="roleSelect" className="mt-2 w-full rounded-md border p-2" defaultValue={currentRole}>
-          {roleOptions.map(role => (
-            <option key={role} value={role}>{role.toUpperCase()}</option>
-          ))}
-        </select>
-      ),
-      onOk: async () => {
-        const newRole = (document.getElementById("roleSelect") as HTMLSelectElement).value as UserRoles;
-        if (newRole === currentRole) return;
-
-        Modal.confirm({
-          title: "Confirm Role Change",
-          content: `Are you sure you want to change the role from ${currentRole.toUpperCase()} to ${newRole.toUpperCase()}?`,
-          onOk: async () => {
-            try {
-              const response = await UserService.changeRole(id as string, { user_id: id, role: newRole } as ChangeRoleParams);
-              if (response.data.success) {
-                message.success(`Role updated to ${newRole.toUpperCase()}`);
-                setUser((prev) => prev ? { ...prev, role: newRole } : null);
-              }
-            } catch {
-              message.error("Failed to update role");
+  const handleChangeStatus = useCallback(
+    async (status: boolean) => {
+      Modal.confirm({
+        title: "Confirm Status Change",
+        content: `Are you sure you want to turn ${status ? "ON" : "OFF"} the status for this user?`,
+        onOk: async () => {
+          try {
+            const response = await UserService.changeStatus(id as string, { user_id: id, status } as ChangeStatusParams);
+            if (response.data.success) {
+              message.success(`User status changed successfully to ${status ? "ON" : "OFF"}.`);
+              setUser((prev) => (prev ? { ...prev, status } : null));
             }
+          } catch (error) {
+            message.error(error instanceof HttpException ? error.message : "Failed to change user status");
+            console.error("Failed to change user status:", error);
           }
-        });
-      }
-    });
-  }, [id, roleOptions]);
+        }
+      });
+    },
+    [id]
+  );
+
+  const handleChangeRole = useCallback(
+    async (currentRole: UserRoles) => {
+      Modal.confirm({
+        title: "Change New Role",
+        content: (
+          <select id="roleSelect" className="mt-2 w-full rounded-md border p-2" defaultValue={currentRole}>
+            {roleOptions.map((role) => (
+              <option key={role} value={role}>
+                {role.toUpperCase()}
+              </option>
+            ))}
+          </select>
+        ),
+        onOk: async () => {
+          const newRole = (document.getElementById("roleSelect") as HTMLSelectElement).value as UserRoles;
+          if (newRole === currentRole) return;
+
+          Modal.confirm({
+            title: "Confirm Role Change",
+            content: `Are you sure you want to change the role from ${currentRole.toUpperCase()} to ${newRole.toUpperCase()}?`,
+            onOk: async () => {
+              try {
+                const response = await UserService.changeRole(id as string, { user_id: id, role: newRole } as ChangeRoleParams);
+                if (response.data.success) {
+                  message.success(`Role updated to ${newRole.toUpperCase()}`);
+                  setUser((prev) => (prev ? { ...prev, role: newRole } : null));
+                }
+              } catch {
+                message.error("Failed to update role");
+              }
+            }
+          });
+        }
+      });
+    },
+    [id, roleOptions]
+  );
 
   const handleDeleteUser = useCallback(async () => {
     try {
@@ -131,9 +139,7 @@ const ViewUserProfileDetail = () => {
                 <Col xs={24} sm={12}>
                   <Form.Item label="Role" className="mb-2">
                     <div className="flex items-center gap-2">
-                      <span className={`rounded-full px-3 py-1 ${userRoleColor(user.role as UserRoles)}`}>
-                        {user.role.toUpperCase()}
-                      </span>
+                      <span className={`rounded-full px-3 py-1 ${userRoleColor(user.role as UserRoles)}`}>{user.role.toUpperCase()}</span>
                       <Button onClick={() => handleChangeRole(user.role as UserRoles)} icon={<EditOutlined />} type="primary" size="small" />
                     </div>
                   </Form.Item>
@@ -163,19 +169,12 @@ const ViewUserProfileDetail = () => {
                         className="w-32 border-none bg-gradient-to-r from-gray-50 to-gray-100 font-medium shadow-sm"
                         style={{
                           color: userStatusColor(user.status),
-                          borderRadius: "0.5rem", 
+                          borderRadius: "0.5rem",
                           padding: "0.5rem 1rem",
                           textAlign: "center"
                         }}
                       />
-                      <Button 
-                        onClick={() => handleChangeStatus(!user.status)} 
-                        className={`ml-2 rounded-full px-4 py-1 font-medium transition-all duration-200 ${
-                          user.status 
-                            ? "bg-gradient-to-r from-green-400 to-green-500 text-white hover:from-green-500 hover:to-green-600" 
-                            : "bg-gradient-to-r from-red-400 to-red-500 text-white hover:from-red-500 hover:to-red-600"
-                        }`}
-                      >
+                      <Button onClick={() => handleChangeStatus(!user.status)} className={`ml-2 rounded-full px-4 py-1 font-medium transition-all duration-200 ${user.status ? "bg-gradient-to-r from-green-400 to-green-500 text-white hover:from-green-500 hover:to-green-600" : "bg-gradient-to-r from-red-400 to-red-500 text-white hover:from-red-500 hover:to-red-600"}`}>
                         {user.status ? <LockOutlined /> : <UnlockOutlined />}
                       </Button>
                     </div>
@@ -208,9 +207,13 @@ const ViewUserProfileDetail = () => {
             <h2 className="mt-3 text-xl font-bold">{user.name}</h2>
             <div className="mt-4 space-x-2">
               <Popconfirm title="Delete this account?" onConfirm={handleDeleteUser}>
-                <Button danger icon={<DeleteOutlined />}>Delete</Button>
+                <Button danger icon={<DeleteOutlined />}>
+                  Delete
+                </Button>
               </Popconfirm>
-              <Button icon={<HomeOutlined />} onClick={() => navigate("/admin/manage-user")}>Back</Button>
+              <Button icon={<HomeOutlined />} onClick={() => navigate("/admin/manage-user")}>
+                Back
+              </Button>
             </div>
           </Col>
         </Row>

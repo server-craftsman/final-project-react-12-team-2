@@ -22,6 +22,4 @@ export const CategoryService = {
       url: API.ADMIN.DELETE_CATEGORY.replace(":id", id)
     });
   }
-
 };
-

@@ -27,8 +27,8 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [videoFileList, setVideoFileList] = useState<UploadFile<any>[]>([]);
   const [avatarFileList, setAvatarFileList] = useState<UploadFile<any>[]>([]);
-  const [videoPreview, setVideoPreview] = useState<string>('');
-  const [avatarPreview, setAvatarPreview] = useState<string>('');
+  const [videoPreview, setVideoPreview] = useState<string>("");
+  const [avatarPreview, setAvatarPreview] = useState<string>("");
   const [bankData, setBankData] = useState<{
     banks: any[];
     bankNames: string[];
@@ -36,13 +36,13 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
   }>({
     banks: [],
     bankNames: [],
-    bankLogos: {},
+    bankLogos: {}
   });
 
   // Fetch banks data only once on mount
   useEffect(() => {
     let isMounted = true;
-    
+
     const fetchBanks = async () => {
       try {
         const response = await AuthService.getBank();
@@ -65,7 +65,9 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
     };
 
     fetchBanks();
-    return () => { isMounted = false };
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Decode Google token only once on mount
@@ -99,64 +101,57 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
   const handleRegister = useCallback(async () => {
     setIsLoading(true);
     try {
-      const descriptionValue = description || '';
+      const descriptionValue = description || "";
 
       const commonParams = {
         google_id: googleId,
         role,
         password,
         description: descriptionValue,
-        avatar_url: '',
-        phone_number: form.getFieldValue('phone_number'),
-        video_url: '',
-        bank_account_name: form.getFieldValue('bank_account_name'),
-        bank_account_no: form.getFieldValue('bank_account_no'),
-        bank_name: form.getFieldValue('bank_name')
+        avatar_url: "",
+        phone_number: form.getFieldValue("phone_number"),
+        video_url: "",
+        bank_account_name: form.getFieldValue("bank_account_name"),
+        bank_account_no: form.getFieldValue("bank_account_no"),
+        bank_name: form.getFieldValue("bank_name")
       };
 
       if (role === "instructor") {
-        const requiredFields = ['phone_number', 'description', 'bank_account_name', 'bank_account_no', 'bank_name'];
-        const missingFields = requiredFields.filter(field => 
-          field === 'description' ? !descriptionValue : !form.getFieldValue(field)
-        );
+        const requiredFields = ["phone_number", "description", "bank_account_name", "bank_account_no", "bank_name"];
+        const missingFields = requiredFields.filter((field) => (field === "description" ? !descriptionValue : !form.getFieldValue(field)));
 
         if (missingFields.length > 0) {
-          throw new Error(`Please fill in all required fields: ${missingFields.join(', ')}`);
+          throw new Error(`Please fill in all required fields: ${missingFields.join(", ")}`);
         }
 
         const avatarFile = avatarFileList[0]?.originFileObj;
         const videoFile = videoFileList[0]?.originFileObj;
 
         if (!avatarFile || !videoFile) {
-          throw new Error('Please upload both avatar and video files');
+          throw new Error("Please upload both avatar and video files");
         }
 
         setUploadingAvatar(true);
         setUploadingVideo(true);
 
         try {
-          const [avatarUrl, videoUrl] = await Promise.all([
-            handleFileUpload(avatarFile, "image"),
-            handleFileUpload(videoFile, "video")
-          ]);
+          const [avatarUrl, videoUrl] = await Promise.all([handleFileUpload(avatarFile, "image"), handleFileUpload(videoFile, "video")]);
 
           commonParams.avatar_url = avatarUrl;
           commonParams.video_url = videoUrl;
-
         } catch (uploadError: any) {
           throw new Error(`File upload failed: ${uploadError.message}. Please try again.`);
         }
       }
 
       const response = await AuthService.registerGooglePublic(commonParams as any);
-      
+
       if (response.data.success) {
         message.success("Registration successful! Please wait for admin review.");
         navigate(ROUTER_URL.LOGIN);
       } else {
         throw new Error("Registration failed. Please try again.");
       }
-
     } catch (error: any) {
       if (error.response?.data?.code === 11000) {
         message.error("This email is already registered");
@@ -177,159 +172,97 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
       setAvatarPreview(e.target?.result as string);
     };
     reader.readAsDataURL(file);
-    return handleUploadFile(file, 'image');
+    return handleUploadFile(file, "image");
   }, []);
 
   const handleVideoPreview = useCallback((file: File) => {
-    const videoElement = document.createElement('video');
+    const videoElement = document.createElement("video");
     videoElement.controls = true;
     videoElement.src = URL.createObjectURL(file);
     setVideoPreview(videoElement.outerHTML);
-    return handleUploadFile(file, 'video');
+    return handleUploadFile(file, "video");
   }, []);
 
-  const renderBankingFields = useMemo(() => (
-    <div className="bg-gray-50 p-6 rounded-xl space-y-4">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">Banking Information</h3>
-      
-      <Form.Item name="bank_name" label="Bank Name">
-        <Select
-          value={bankName}
-          onChange={setBankName}
-          placeholder={<div className="flex items-center gap-2"><BankOutlined className="text-indigo-600" />Select Bank Name</div>}
-          // className="w-full h-12 rounded-lg border border-gray-300 px-3"
-        >
-          {bankData.banks.map((bank) => (
-            <Select.Option key={bank.id} value={bank.name}>
-              <div className="flex items-center">
-                <img src={bank.logo} alt={bank.name} className="w-6 h-6 inline-block mr-2" /> {bank.bank_code} - {bank.name}
+  const renderBankingFields = useMemo(
+    () => (
+      <div className="space-y-4 rounded-xl bg-gray-50 p-6">
+        <h3 className="mb-4 text-lg font-semibold text-gray-800">Banking Information</h3>
+
+        <Form.Item name="bank_name" label="Bank Name">
+          <Select
+            value={bankName}
+            onChange={setBankName}
+            placeholder={
+              <div className="flex items-center gap-2">
+                <BankOutlined className="text-indigo-600" />
+                Select Bank Name
               </div>
-            </Select.Option>
-          ))}
-        </Select>
-      </Form.Item>
+            }
+            // className="w-full h-12 rounded-lg border border-gray-300 px-3"
+          >
+            {bankData.banks.map((bank) => (
+              <Select.Option key={bank.id} value={bank.name}>
+                <div className="flex items-center">
+                  <img src={bank.logo} alt={bank.name} className="mr-2 inline-block h-6 w-6" /> {bank.bank_code} - {bank.name}
+                </div>
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
 
-      <Form.Item name="bank_account_no" label="Account Number">
-        <Input 
-          prefix={<NumberOutlined className="text-blue-600" />}
-          placeholder="Enter account number"
-          value={bankAccountNo}
-          onChange={(e) => setBankAccountNo(e.target.value)}
-          className="h-12 rounded-lg"
-        />
-      </Form.Item>
+        <Form.Item name="bank_account_no" label="Account Number">
+          <Input prefix={<NumberOutlined className="text-blue-600" />} placeholder="Enter account number" value={bankAccountNo} onChange={(e) => setBankAccountNo(e.target.value)} className="h-12 rounded-lg" />
+        </Form.Item>
 
-      <Form.Item name="bank_account_name" label="Account Name">
-        <Input 
-          prefix={<UserOutlined className="text-blue-600" />}
-          placeholder="Enter account name"
-          value={bankAccountName}
-          onChange={(e) => setBankAccountName(e.target.value)}
-          className="h-12 rounded-lg"
-        />
-      </Form.Item>
-    </div>
-  ), [bankName, bankAccountNo, bankAccountName, bankData.banks]);
+        <Form.Item name="bank_account_name" label="Account Name">
+          <Input prefix={<UserOutlined className="text-blue-600" />} placeholder="Enter account name" value={bankAccountName} onChange={(e) => setBankAccountName(e.target.value)} className="h-12 rounded-lg" />
+        </Form.Item>
+      </div>
+    ),
+    [bankName, bankAccountNo, bankAccountName, bankData.banks]
+  );
 
   return (
-    <Form form={form} layout="vertical" className="w-full max-w-[1200px] mx-auto p-6">
-      <Form.Item 
-        label="Phone Number"
-        name="phone_number"
-        rules={[{ required: true, message: 'Please input your phone number!' }]}
-        className="mb-4"
-      >
-        <Input
-          prefix={<PhoneOutlined className="text-gray-400" />}
-          placeholder="Enter your phone number"
-          value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
-          className="h-10 rounded-lg"
-        />
+    <Form form={form} layout="vertical" className="mx-auto w-full max-w-[1200px] p-6">
+      <Form.Item label="Phone Number" name="phone_number" rules={[{ required: true, message: "Please input your phone number!" }]} className="mb-4">
+        <Input prefix={<PhoneOutlined className="text-gray-400" />} placeholder="Enter your phone number" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="h-10 rounded-lg" />
       </Form.Item>
 
-      <Form.Item
-        label="Role"
-        name="role"
-        className="mb-6"
-      >
-        <select 
-          value={role} 
-          onChange={(e) => setRole(e.target.value as "student" | "instructor")}
-          className="w-full h-10 rounded-lg border border-gray-300 px-3"
-        >
+      <Form.Item label="Role" name="role" className="mb-6">
+        <select value={role} onChange={(e) => setRole(e.target.value as "student" | "instructor")} className="h-10 w-full rounded-lg border border-gray-300 px-3">
           <option value="student">Student</option>
           <option value="instructor">Instructor</option>
         </select>
       </Form.Item>
 
       {role === "instructor" && (
-        <div className="space-y-8 bg-white rounded-xl shadow-lg p-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Form.Item 
-              name="avatar_file" 
-              label="Profile Picture"
-              rules={[{ required: true, message: "Please upload an avatar!" }]}
-            >
+        <div className="space-y-8 rounded-xl bg-white p-8 shadow-lg">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <Form.Item name="avatar_file" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
               <div className="space-y-4">
-                <Upload 
-                  accept="image/*" 
-                  showUploadList={false}
-                  beforeUpload={handleAvatarPreview}
-                  fileList={avatarFileList} 
-                  onChange={({ fileList }) => setAvatarFileList(fileList)}
-                >
-                  <Button 
-                    icon={<UploadOutlined />} 
-                    className="w-full h-12 rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" 
-                    loading={uploadingAvatar}
-                  >
+                <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
+                  <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingAvatar}>
                     Select Avatar
                   </Button>
                 </Upload>
-                {avatarPreview && (
-                  <img src={avatarPreview} alt="Avatar preview" className="w-32 h-32 object-cover rounded-lg" />
-                )}
+                {avatarPreview && <img src={avatarPreview} alt="Avatar preview" className="h-32 w-32 rounded-lg object-cover" />}
               </div>
             </Form.Item>
 
-            <Form.Item 
-              name="video_file" 
-              label="Introduction Video"
-              rules={[{ required: true, message: "Please upload an introduction video!" }]}
-            >
+            <Form.Item name="video_file" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
               <div className="space-y-4">
-                <Upload 
-                  accept="video/*" 
-                  showUploadList={false}
-                  beforeUpload={handleVideoPreview}
-                  fileList={videoFileList} 
-                  onChange={({ fileList }) => setVideoFileList(fileList)}
-                >
-                  <Button 
-                    icon={<UploadOutlined />} 
-                    className="w-full h-12 rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" 
-                    loading={uploadingVideo}
-                  >
+                <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList)}>
+                  <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingVideo}>
                     Select Video
                   </Button>
                 </Upload>
-                {videoPreview && (
-                  <img src={videoPreview} alt="Video thumbnail" className="w-32 h-32 object-cover rounded-lg" />
-                )}
+                {videoPreview && <img src={videoPreview} alt="Video thumbnail" className="h-32 w-32 rounded-lg object-cover" />}
               </div>
             </Form.Item>
           </div>
 
-          <Form.Item 
-            name="description" 
-            label="Professional Description"
-            rules={[{ required: true, message: "Please input a description!" }]}
-          >
-            <TinyMCEEditor
-              initialValue={description}
-              onEditorChange={handleEditorChange}
-            />
+          <Form.Item name="description" label="Professional Description" rules={[{ required: true, message: "Please input a description!" }]}>
+            <TinyMCEEditor initialValue={description} onEditorChange={handleEditorChange} />
           </Form.Item>
 
           {renderBankingFields}
@@ -337,12 +270,7 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
       )}
 
       <Form.Item className="mt-6">
-        <Button 
-          type="primary" 
-          onClick={handleRegister}
-          className="w-full h-12 rounded-lg bg-[#1a237e] hover:bg-[#02005dc6] text-white font-medium"
-          loading={isLoading}
-        >
+        <Button type="primary" onClick={handleRegister} className="h-12 w-full rounded-lg bg-[#1a237e] font-medium text-white hover:bg-[#02005dc6]" loading={isLoading}>
           Register with Google
         </Button>
       </Form.Item>

@@ -233,15 +233,15 @@ const LoginPage = () => {
             <div className="flex justify-center">
               <GoogleOAuthProvider clientId={CLIENT_ID}>
                 <Form.Item>
-                  <GoogleModal 
-                    onLoginError={handleGoogleLoginError} 
-                    onLoginSuccess={onFinishGoogle} 
+                  <GoogleModal
+                    onLoginError={handleGoogleLoginError}
+                    onLoginSuccess={onFinishGoogle}
                     context="login" // Pass context as "login"
                   />
                 </Form.Item>
               </GoogleOAuthProvider>
             </div>
-    
+
             {loginError && (
               <p className="mt-4 text-center text-red-500">
                 {loginError}
@@ -252,11 +252,7 @@ const LoginPage = () => {
             <Form.Item>
               <div className="text-center">
                 <span className="text-gray-500">Don't have an account yet? </span>
-                <Button
-                  type="link"
-                  className="font-medium text-[#1a237e] transition-all duration-300 hover:text-[#1a237e]/80 hover:underline focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:ring-offset-2"
-                  onClick={() => navigate("/register")}
-                >
+                <Button type="link" className="font-medium text-[#1a237e] transition-all duration-300 hover:text-[#1a237e]/80 hover:underline focus:outline-none focus:ring-2 focus:ring-[#1a237e]/20 focus:ring-offset-2" onClick={() => navigate("/register")}>
                   Sign up now
                 </Button>
               </div>
@@ -265,9 +261,9 @@ const LoginPage = () => {
         </div>
       </div>
 
-        <Modal title="Sign Up" open={isSignUpModalVisible} onCancel={handleSignUpModalCancel} footer={null}>
-          <div>Sign Up Test</div>
-        </Modal>
+      <Modal title="Sign Up" open={isSignUpModalVisible} onCancel={handleSignUpModalCancel} footer={null}>
+        <div>Sign Up Test</div>
+      </Modal>
     </div>
   );
 };
