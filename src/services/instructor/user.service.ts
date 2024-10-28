@@ -11,27 +11,18 @@ export const UserService = {
   getUserDetails(userId: string) {
     return BaseService.getById<ResponseSuccess<User>>({
       url: API.INSTRUCTOR.GET_USER_DETAILS.replace(":id", userId)
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`
-      // }
     });
   },
   updateUser(userId: string, params: UpdateUserParams) {
     return BaseService.put<GetCurrentUserResponse>({
       url: API.INSTRUCTOR.UPDATE_USER.replace(":id", userId),
       payload: params
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`
-      // }
     });
   },
   changePassword(userId: string, params: ChangePasswordParams) {
     return BaseService.put<ChangePasswordResponse>({
       url: API.INSTRUCTOR.CHANGE_PASSWORD.replace(":id", userId),
       payload: params
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`
-      // }
     });
   }
 };

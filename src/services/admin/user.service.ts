@@ -12,79 +12,52 @@ export const UserService = {
     return BaseService.post<ResponseSuccess<GetUsersAdminResponse>>({
       url: API.ADMIN.GET_USERS,
       payload: params
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`
-      // }
     });
   },
   getUserDetails(userId: string) {
     return BaseService.getById<ResponseSuccess<User>>({
       url: API.ADMIN.GET_USER_DETAILS.replace(":id", userId)
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`
-      // }
     });
   },
   updateUser(userId: string, params: UpdateUserParams) {
     return BaseService.put<ResponseSuccess<User>>({
       url: API.ADMIN.UPDATE_USER.replace(":id", userId),
       payload: params
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`
-      // }
     });
   },
   changeStatus(userId: string, params: ChangeStatusParams) {
     return BaseService.put<ResponseSuccess<User>>({
       url: API.ADMIN.CHANGE_STATUS.replace(":id", userId),
       payload: params
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`
-      // }
     });
   },
   changeRole(userId: string, params: ChangeRoleParams) {
     return BaseService.put<ResponseSuccess<User>>({
       url: API.ADMIN.CHANGE_ROLE.replace(":id", userId),
       payload: params
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`
-      // }
     });
   },
   changePassword(params: ChangePasswordParams) {
     return BaseService.put<ResponseSuccess<User>>({
       url: API.ADMIN.CHANGE_PASSWORD,
       payload: params
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`
-      // }
     });
   },
   deleteUser(userId: string) {
     return BaseService.remove<ResponseSuccess<User>>({
       url: API.ADMIN.DELETE_USER.replace(":id", userId)
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`
-      // }
     });
   },
   createUser(params: CreateUserParams) {
     return BaseService.post<ResponseSuccess<User>>({
       url: API.ADMIN.CREATE_USER,
       payload: params
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`
-      // }
     });
   },
   reviewProfileInstructor(params: ReviewProfileInstructorParams) {
     return BaseService.put<ResponseSuccess<User>>({
       url: API.ADMIN.REVIEW_PROFILE_INSTRUCTOR,
       payload: params
-      // headers: {
-      //   Authorization: `Bearer ${localStorage.getItem("token")}`
-      // }
     });
   }
 };
