@@ -1,13 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Form, Input, Upload, Button, UploadFile, Select } from "antd";
 import { UploadOutlined, PhoneOutlined, BankOutlined, NumberOutlined, UserOutlined } from "@ant-design/icons";
-// import { Editor } from "@tinymce/tinymce-react";
-// import { TINY_API_KEY } from "../../../services/config/apiClientTiny";
 import { message } from "antd";
 import { AuthService } from "../../../services/authentication/auth.service";
 import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
-import { parseTinyEditor } from "../../../utils";
-
 interface RegisterInfoOfInstructorProps {
   form: any;
   uploadingVideo: boolean;

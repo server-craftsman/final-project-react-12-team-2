@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Table, Modal, message, Button, Input } from "antd";
+import { Table, Modal, message, Button, Input, Checkbox } from "antd";
 import { useNavigate } from "react-router-dom";
-import { EditOutlined, LockOutlined, UnlockOutlined } from "@ant-design/icons";
+import { EditOutlined, LockOutlined, UnlockOutlined, DeleteOutlined } from "@ant-design/icons";
 import { userRoleColor } from "../../../utils/userRole";
 import { userStatusColor } from "../../../utils/userStatus";
 import { UserService } from "../../../services/admin/user.service";
@@ -38,6 +38,7 @@ interface ViewUserProfileProps {
 const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selectedRole, selectedStatus, activeTab, showActionColumn, disableActions }) => {
   const navigate = useNavigate();
   const [users, setUsers] = useState<GetUsersAdminResponse | null>(null);
+  const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(new Set());
 
   // Move outside component to prevent recreation on each render
   const defaultParams = {
@@ -107,7 +108,10 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
         throw new HttpException("Failed to fetch users", HTTP_STATUS.BAD_REQUEST);
       }
 
-      setUsers(response.data?.data ? response.data.data : null);
+      // Filter out users with role ADMIN
+      const filteredUsers = response.data.data.pageData.filter(user => user.role !== UserRoles.ADMIN);
+
+      setUsers({ ...response.data.data, pageData: filteredUsers });
     } catch (error) {
       if (error instanceof HttpException) {
         message.error(error.message);
@@ -223,9 +227,72 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
     });
   };
 
+  const handleSelectUser = (userId: string, checked: boolean) => {
+    setSelectedUserIds((prev) => {
+      const newSet = new Set(prev);
+      if (checked) {
+        newSet.add(userId);
+      } else {
+        newSet.delete(userId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      const allUserIds = users?.pageData.map((user) => user._id) || [];
+      setSelectedUserIds(new Set(allUserIds));
+    } else {
+      setSelectedUserIds(new Set());
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    Modal.confirm({
+      title: "Delete Selected Accounts",
+      content: "Are you sure you want to delete the selected accounts?",
+      onOk: async () => {
+        try {
+          const userIds = Array.from(selectedUserIds);
+          if (userIds.length === 0) {
+            message.warning("No users selected for deletion.");
+            return;
+          }
+
+          const response = await UserService.deleteUser(userIds[0]);
+
+          if (!response.data?.success) {
+            throw new HttpException("Failed to delete selected accounts", HTTP_STATUS.BAD_REQUEST);
+          }
+
+          message.success("Selected accounts have been successfully deleted.");
+          fetchUsers(); // Refresh the user list
+        } catch (error) {
+          if (error instanceof HttpException) {
+            message.error(error.message);
+          } else {
+            message.error("An error occurred while deleting accounts.");
+          }
+        }
+      }
+    });
+  };
+
   // Memoize columns to prevent unnecessary recreations
   const columns = React.useMemo(() => {
     const baseColumns = [
+      {
+        title: <Checkbox onChange={(e) => handleSelectAll(e.target.checked)} />,
+        dataIndex: "_id",
+        key: "select",
+        render: (userId: string) => (
+          <Checkbox
+            checked={selectedUserIds.has(userId)}
+            onChange={(e) => handleSelectUser(userId, e.target.checked)}
+          />
+        )
+      },
       {
         title: "Avatar",
         dataIndex: "avatar_url",
@@ -318,11 +385,24 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
     }
 
     return baseColumns;
-  }, [activeTab, handleViewDetails, handleChangeStatus, handleChangeRole, disableActions]);
+  }, [activeTab, handleViewDetails, handleChangeStatus, handleChangeRole, disableActions, selectedUserIds]);
 
   return (
-    <div className="-mt-3 mb-64 p-4">
-      <Table<User> className="shadow-lg" columns={columns} dataSource={users?.pageData || []} rowKey="_id" pagination={{ pageSize: 10 }} />
+    <div className="-mt-3 mb-64 f p-4">
+      <Button
+        onClick={handleDeleteSelected}
+        disabled={selectedUserIds.size === 0}
+        className="mb-4 bg-red-500 text-white"
+      >
+        <DeleteOutlined />
+      </Button>
+      <Table<User>
+        className="shadow-lg"
+        columns={columns}
+        dataSource={users?.pageData || []}
+        rowKey="_id"
+        pagination={{ pageSize: 10 }}
+      />
     </div>
   );
 };
