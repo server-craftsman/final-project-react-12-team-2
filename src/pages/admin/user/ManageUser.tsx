@@ -1,10 +1,11 @@
 import { lazy, useState, useEffect } from "react";
 import { Tabs } from "antd";
-import { UserRole } from "../../../models/prototype/User";
+// import { UserRole } from "../../../models/prototype/User";
 import { UserService } from "../../../services/admin/user.service";
 import { GetUsersAdminParams } from "../../../models/api/request/admin/user.request.model";
 // import { GetUsersAdminResponse } from "../../../models/api/responsive/admin/user.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model"; // Ensure this import is correct
+import { UserRoles } from "../../../app/enums";
 
 const ViewUserProfile = lazy(() => import("../../../components/admin/user/ViewUserProfile"));
 const CustomSearch = lazy(() => import("../../../components/generic/search/CustomSearch"));
@@ -14,7 +15,7 @@ const CreateUserProfile = lazy(() => import("../../../components/admin/user/Crea
 
 const ManageUser = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
+  const [selectedRole, setSelectedRole] = useState<UserRoles | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<boolean | null>(null);
   const [activeTab, setActiveTab] = useState("all");
   const [users, setUsers] = useState<User[] | null>(null);
@@ -29,7 +30,7 @@ const ManageUser = () => {
   };
 
   // Reset tab when applying filters
-  const handleRoleChange = (role: UserRole | null) => {
+  const handleRoleChange = (role: UserRoles | null) => {
     setSelectedRole(role);
     if (activeTab !== "all") {
       setActiveTab("all");
@@ -62,7 +63,7 @@ const ManageUser = () => {
       try {
         let searchCondition = {
           keyword: searchQuery,
-          role: selectedRole || UserRole.all,
+          role: selectedRole || UserRoles.ALL,
           status: selectedStatus !== null ? selectedStatus : true,
           is_verified: true,
           is_deleted: false

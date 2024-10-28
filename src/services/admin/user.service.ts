@@ -5,6 +5,7 @@ import { UpdateUserParams } from "../../models/api/request/users/user.request.mo
 import { GetUsersAdminResponse } from "../../models/api/responsive/admin/user.responsive.model";
 import { ResponseSuccess } from "../../app/interface";
 import { User } from "../../models/api/responsive/users/users.model";
+import { ReviewProfileInstructorParams } from "../../models/api/request/admin/user.request.model";
 
 export const UserService = {
   getUsersAdmin(params: GetUsersAdminParams) {
@@ -71,6 +72,15 @@ export const UserService = {
   createUser(params: CreateUserParams) {
     return BaseService.post<ResponseSuccess<User>>({
       url: API.ADMIN.CREATE_USER,
+      payload: params,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    });
+  },
+  reviewProfileInstructor(params: ReviewProfileInstructorParams) {
+    return BaseService.put<ResponseSuccess<User>>({
+      url: API.ADMIN.REVIEW_PROFILE_INSTRUCTOR,
       payload: params,
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`

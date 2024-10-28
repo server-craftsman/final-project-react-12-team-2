@@ -1,9 +1,9 @@
-import { UserRole } from "../../../../models/prototype/User";
+import { UserRoles } from "../../../../app/enums";
 
 export interface GetUsersAdminParams {
   searchCondition: {
     keyword?: string;
-    role?: UserRole | undefined;
+    role?: UserRoles | undefined;
     status?: boolean | undefined;
     is_verified?: boolean | undefined;
     is_delete?: boolean | undefined;
@@ -21,7 +21,7 @@ export interface ChangeStatusParams {
 
 export interface ChangeRoleParams {
   user_id: string;
-  role: UserRole;
+  role: UserRoles;
 }
 
 export interface ChangePasswordParams {
@@ -34,7 +34,7 @@ export interface CreateUserParams {
   name: string;
   email: string;
   password: string;
-  role: UserRole;
+  role: UserRoles;
   description: string | "";
   avatar_url: string;
   video_url: string;
@@ -42,4 +42,14 @@ export interface CreateUserParams {
   bank_name: string;
   bank_account_no: string;
   bank_account_name: string;
+}
+export interface ReviewProfileInstructorParams {
+  user_id: string;
+  status: ReviewStatus;
+  comment?: string;
+}
+
+export enum ReviewStatus {
+  APPROVE = "approve",
+  REJECT = "reject"
 }

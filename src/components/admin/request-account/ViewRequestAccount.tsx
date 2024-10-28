@@ -1,75 +1,145 @@
-import { Table, message, Modal } from "antd";
-// import { useNavigate } from "react-router-dom";
-import usersData from "../../../data/users.json"; // Adjust the path as necessary
-import { User, UserRole } from "../../../models/prototype/User";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
+import { Table, Modal, message, Button, Avatar, Input } from "antd";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
+import { UserRoles } from "../../../app/enums";
 import { userStatusColor } from "../../../utils/userStatus";
-import { useState } from "react";
+import { UserService } from "../../../services/admin/user.service";
+import { User } from "../../../models/api/responsive/users/users.model";
+import { GetUsersAdminParams, ReviewProfileInstructorParams, ReviewStatus } from "../../../models/api/request/admin/user.request.model";
+import { HTTP_STATUS } from "../../../app/enums";
+import { HttpException } from "../../../app/exceptions";
+import { helpers } from "../../../utils";
+import { userRoleColor } from "../../../utils/userRole";
 
-interface ViewRequestAccount {
+interface ViewRequestAccountProps {
   searchQuery: string;
   selectedStatus: boolean | null;
 }
 
-const ViewRequestAccount = ({ searchQuery, selectedStatus }: ViewRequestAccount) => {
-  const [updatedUsers, setUpdatedUsers] = useState<string[]>([]); // State to track updated user IDs
+interface SearchCondition {
+  keyword: string;
+  role: UserRoles | undefined;
+  status: boolean | null;
+  is_verified: boolean | undefined;
+  is_deleted: boolean | undefined;
+}
 
-  // const navigate = useNavigate();
+const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, selectedStatus }) => {
+  const [updatedUsers, setUpdatedUsers] = useState<string[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
 
-  // const handleViewDetails = (userId: string) => {
-  //   navigate(`/admin/view-user/${userId}`);
-  // };
+  const defaultParams = {
+    searchCondition: {
+      keyword: "",
+      status: true,
+      is_verified: false,
+      role: UserRoles.INSTRUCTOR,
+      is_deleted: false
+    },
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10
+    }
+  } as const;
 
-  // Filter users to only include those who are not verified (is_verified is false)
-  const filteredUsers = usersData.users
-    .filter(
-      (user) =>
-        !user.is_verified && // Only show users who are not verified
-        (user.name.toLowerCase().includes(searchQuery.toLowerCase()) || user.email.toLowerCase().includes(searchQuery.toLowerCase())) &&
-        (selectedStatus === null || user.status === selectedStatus)
-    )
-    .map((user) => ({
-      ...user,
-      role: user.role as UserRole
-    }));
+  const getSearchCondition = useCallback((searchQuery: string, selectedStatus: boolean | null): SearchCondition => {
+    return {
+      keyword: searchQuery || defaultParams.searchCondition.keyword,
+      status: selectedStatus !== null ? selectedStatus : defaultParams.searchCondition.status,
+      is_verified: false,
+      role: UserRoles.INSTRUCTOR,
+      is_deleted: false
+    };
+  }, [searchQuery, selectedStatus]);
 
-  // Handle approve/reject actions with confirmation
-  const handleApprove = (userId: string, isVerified: boolean) => {
-    const user = filteredUsers.find((user) => user.id === userId);
+  const fetchingUsers = useCallback(async () => {
+    try {
+      const searchCondition = getSearchCondition(searchQuery, selectedStatus);
+      const params = {
+        searchCondition,
+        pageInfo: defaultParams.pageInfo
+      };
+
+      const response = await UserService.getUsersAdmin(params as GetUsersAdminParams);
+
+      if (!response.data?.success) {
+        throw new HttpException("Failed to fetch users", HTTP_STATUS.BAD_REQUEST);
+      }
+
+      const users = response.data.data?.pageData.map((user: User) => ({
+        ...user,
+        role: user.role as UserRoles,
+        status: Boolean(user.status) // Ensure status is a boolean
+      }));
+
+      setFilteredUsers(users);
+    } catch (error: any) {
+      if (error.response) {
+        console.error("Error response:", error.response.data);
+        message.error(`Error: ${error.response.data.message || "An unexpected error occurred while fetching users"}`);
+      } else if (error.request) {
+        console.error("Error request:", error.request);
+        message.error("No response received from server.");
+      } else {
+        console.error("Error message:", error.message);
+        message.error("An unexpected error occurred.");
+      }
+    }
+  }, [searchQuery, selectedStatus, getSearchCondition]);
+
+  useEffect(() => {
+    fetchingUsers();
+  }, [fetchingUsers]);
+
+  const handleApprove = useCallback(async (userId: string, isVerified: boolean) => {
+    const user = filteredUsers.find((user) => user._id === userId);
 
     if (user) {
-      // Show confirmation modal before approving or rejecting
       Modal.confirm({
         title: `Are you sure you want to ${isVerified ? "approve" : "reject"} this user?`,
-        onOk: () => {
-          // Check if the user is active before approving
+        onOk: async () => {
           if (isVerified && user.status === false) {
             message.error("Cannot approve an inactive user.");
             return;
           }
 
-          // Update the users state to reflect the approval or rejection
-          const updatedUserList = updatedUsers.includes(userId)
-            ? updatedUsers // If already updated, keep the same list
-            : [...updatedUsers, userId]; // Otherwise, add the userId to the list
+          try {
+            const statusString = isVerified ? "approve" : "reject";
 
-          setUpdatedUsers(updatedUserList); // Update the state
+            const response = await UserService.reviewProfileInstructor({
+              user_id: userId,
+              status: statusString as ReviewStatus,
+              comment: ""
+            } as ReviewProfileInstructorParams);
 
-          // Here you would typically trigger an API call to update the backend
-          console.log("Updated user status for ID:", userId);
-          message.success(`User ID: ${userId} has been ${isVerified ? "approved" : "rejected"}`);
+            if (response.data?.success) {
+              const updatedUserList = updatedUsers.includes(userId)
+                ? updatedUsers
+                : [...updatedUsers, userId];
+
+              setUpdatedUsers(updatedUserList);
+              message.success(`User ID: ${userId} has been ${statusString}`);
+            } else {
+              message.error("Failed to update user status.");
+            }
+          } catch (error: any) {
+            console.error("API error:", error);
+            message.error("An error occurred while updating user status.");
+          }
         },
         onCancel: () => {
           message.info("Action canceled.");
         }
       });
     }
-  };
+  }, [filteredUsers, updatedUsers]);
 
-  const columns = [
+  const columns = useMemo(() => [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id"
+      title: "Avatar",
+      dataIndex: "avatar_url",
+      key: "avatar_url",
+      render: (avatar_url: string) => <Avatar src={avatar_url} />
     },
     {
       title: "Name",
@@ -89,64 +159,72 @@ const ViewRequestAccount = ({ searchQuery, selectedStatus }: ViewRequestAccount)
     {
       title: "Role",
       dataIndex: "role",
-      key: "role"
+      key: "role",
+      render: (role: UserRoles) => <span className={userRoleColor(role)}>{role}</span>
     },
     {
       title: "Created At",
       dataIndex: "created_at",
-      key: "created_at"
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description"
+      key: "created_at",
+      render: (created_at: string) => helpers.formatDate(new Date(created_at))
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: boolean) => <span className={userStatusColor(status)}>{status ? "Active" : "Inactive"}</span>
+      render: (status: boolean) => (
+        <div className="flex items-center gap-2">
+          <Input
+            value={status ? "Active" : "Inactive"}
+            readOnly
+            className="w-32 border-none bg-gradient-to-r from-gray-50 to-gray-100 font-medium shadow-sm"
+            style={{
+              color: userStatusColor(status),
+              borderRadius: "0.5rem",
+              padding: "0.5rem 1rem",
+              textAlign: "center"
+            }}
+          />
+        </div>
+      )
     },
     {
       title: "Action",
       key: "action",
       render: (_: unknown, record: User) => (
-        <div className="flex items-center justify-between" style={{ minHeight: "48px" }}>
+        <div className="flex items-center" style={{ minHeight: "48px" }}>
           {!record.is_verified &&
-            !updatedUsers.includes(record.id) && ( // Check if the action has been taken
+            !updatedUsers.includes(record._id) && (
               <>
-                <button
-                  onClick={() => handleApprove(record.id, true)}
-                  className="rounded-md bg-blue-500 px-4 py-2 text-white"
-                  style={{ width: "100px", marginRight: "4px" }} // Adjust margin for closeness
+                <Button
+                  onClick={() => handleApprove(record._id, true)}
+                  className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 transition-all duration-200"
+                  style={{ width: "48px", marginRight: "4px" }}
                 >
-                  Approve
-                </button>
-                <button onClick={() => handleApprove(record.id, false)} className="rounded-md bg-red-500 px-4 py-2 text-white" style={{ width: "70px" }}>
-                  Reject
-                </button>
+                  <CheckOutlined />
+                </Button>
+                <Button onClick={() => handleApprove(record._id, false)} className="rounded-md bg-red-500 px-4 py-2 text-white hover:bg-red-600 transition-all duration-200" style={{ width: "48px" }}>
+                  <CloseOutlined />
+                </Button>
               </>
             )}
-          {updatedUsers.includes(record.id) && <span className="text-green-500"></span>} {/* Show completed status */}
+          {updatedUsers.includes(record._id) && <span className="text-green-500">Completed</span>}
         </div>
       )
     }
-  ];
+  ], [handleApprove, updatedUsers]);
 
   return (
     <div className="-mt-3 mb-64 p-4">
       <Table<User>
         className="shadow-lg"
         columns={columns}
-        dataSource={filteredUsers.map((user) => ({
-          ...user,
-          dob: new Date(user.dob) // Ensure dob is formatted correctly if used elsewhere
-        }))}
-        rowKey="id"
+        dataSource={filteredUsers}
+        rowKey="_id"
         pagination={{ pageSize: 10 }}
       />
     </div>
   );
 };
 
-export default ViewRequestAccount;
+export default React.memo(ViewRequestAccount);

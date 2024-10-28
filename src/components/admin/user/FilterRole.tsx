@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { Select } from "antd";
-import { UserRole } from "../../../models/prototype/User";
+import { UserRoles } from "../../../app/enums";
 
 interface FilterRoleProps {
-  onRoleChange: (role: UserRole | null) => void;
+  onRoleChange: (role: UserRoles | null) => void;
 }
 
 const FilterRole: React.FC<FilterRoleProps> = ({ onRoleChange }) => {
-  const rolesToInclude = [UserRole.instructor, UserRole.admin, UserRole.student];
+  const rolesToInclude = [UserRoles.INSTRUCTOR, UserRoles.ADMIN, UserRoles.STUDENT];
 
   useEffect(() => {
     // Example API call
@@ -24,7 +24,7 @@ const FilterRole: React.FC<FilterRoleProps> = ({ onRoleChange }) => {
   }, []); // Empty dependency array means this runs once on mount
 
   return (
-    <Select placeholder="Select Role" onChange={(value) => onRoleChange(value === "all" ? null : (value as UserRole))} allowClear style={{ width: 120, marginBottom: 10, marginRight: 10 }} defaultValue="all">
+    <Select placeholder="Select Role" onChange={(value) => onRoleChange(value === "all" ? null : (value as UserRoles))} allowClear style={{ width: 120, marginBottom: 10, marginRight: 10 }} defaultValue="all">
       <Select.Option value="all">All</Select.Option>
       {rolesToInclude.map((role) => (
         <Select.Option key={role} value={role}>

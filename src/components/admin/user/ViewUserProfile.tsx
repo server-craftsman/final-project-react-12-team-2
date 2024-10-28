@@ -5,7 +5,7 @@ import { EditOutlined, LockOutlined, UnlockOutlined } from "@ant-design/icons";
 import { userRoleColor } from "../../../utils/userRole";
 import { userStatusColor } from "../../../utils/userStatus";
 import { UserService } from "../../../services/admin/user.service";
-import { UserRole } from "../../../models/prototype/User";
+// import { UserRole } from "../../../models/prototype/User";
 import { GetUsersAdminParams, ChangeStatusParams, ChangeRoleParams } from "../../../models/api/request/admin/user.request.model";
 import { GetUsersAdminResponse } from "../../../models/api/responsive/admin/user.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model";
@@ -15,12 +15,12 @@ import { ROUTER_URL } from "../../../const/router.path";
 import { helpers } from "../../../utils";
 
 // handle request - response
-import { HTTP_STATUS } from "../../../app/enums";
+import { HTTP_STATUS, UserRoles } from "../../../app/enums";
 import { HttpException } from "../../../app/exceptions";
 
 interface SearchCondition {
   keyword: string;
-  role: UserRole | undefined;
+  role: UserRoles | undefined;
   status: boolean | null;
   is_verified: boolean | null;
   is_deleted: boolean | null;
@@ -28,7 +28,7 @@ interface SearchCondition {
 
 interface ViewUserProfileProps {
   searchQuery: string;
-  selectedRole: UserRole | null;
+  selectedRole: UserRoles | null;
   selectedStatus: boolean | null;
   activeTab: string;
   showActionColumn: boolean;
@@ -47,7 +47,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
     },
     searchCondition: {
       keyword: "",
-      role: UserRole.all,
+      role: UserRoles.ALL,
       status: true,
       is_verified: true,
       is_deleted: false
@@ -55,10 +55,10 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
   } as const; // Make immutable
 
   // Memoize the search condition logic
-  const getSearchCondition = React.useCallback((searchQuery: string, selectedRole: UserRole | null, selectedStatus: boolean | null, activeTab: string): SearchCondition => {
+  const getSearchCondition = React.useCallback((searchQuery: string, selectedRole: UserRoles | null, selectedStatus: boolean | null, activeTab: string): SearchCondition => {
     const baseCondition = {
       keyword: searchQuery || defaultParams.searchCondition.keyword,
-      role: UserRole.all,
+      role: UserRoles.ALL,
       status: true,
       is_verified: true,
       is_deleted: false
@@ -68,7 +68,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
       case "all":
         return {
           ...baseCondition,
-          role: selectedRole || UserRole.all,
+          role: selectedRole || UserRoles.ALL,
           status: selectedStatus !== null ? selectedStatus : true
         };
       case "blocked":
@@ -172,8 +172,8 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
     });
   };
 
-  const handleChangeRole = async (userId: string, currentRole: UserRole) => {
-    const roleOptions = Object.values(UserRole).filter((role) => role !== UserRole.all);
+  const handleChangeRole = async (userId: string, currentRole: UserRoles) => {
+    const roleOptions = Object.values(UserRoles).filter((role) => role !== UserRoles.ALL);
 
     // Modal with role selection (removed first confirmation)
     Modal.confirm({
@@ -188,7 +188,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
         </select>
       ),
       onOk: async () => {
-        const newRole = (document.getElementById("roleSelect") as HTMLSelectElement).value as UserRole;
+        const newRole = (document.getElementById("roleSelect") as HTMLSelectElement).value as UserRoles;
         if (newRole === currentRole) {
           return;
         }
@@ -246,9 +246,9 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
         title: "Role",
         dataIndex: "role",
         key: "role",
-        render: (role: UserRole, record: User) => (
+        render: (role: UserRoles, record: User) => (
           <div className="flex items-center gap-2">
-            <span className={`rounded-full px-3 py-1 ${userRoleColor(role)}`}>{role.toUpperCase()}</span>
+            <span className={`rounded-full px-3 py-1 ${userRoleColor(role)}`}>{role}</span>
             <button onClick={() => handleChangeRole(record._id, role)} className="rounded-md bg-blue-500 px-3 py-1 text-white transition-colors duration-200 hover:bg-blue-600">
               <span className="text-sm">
                 <EditOutlined />

@@ -7,12 +7,12 @@ import { userRoleColor } from "../../../utils/userRole";
 import { helpers } from "../../../utils";
 import { ChangeStatusParams, ChangeRoleParams } from "../../../models/api/request/admin/user.request.model";
 import { User } from "../../../models/api/responsive/users/users.model";
-import { UserRole } from "../../../models/prototype/User";
+// import { UserRole } from "../../../models/prototype/User";
 import { UserService } from "../../../services/admin/user.service";
 import { ROUTER_URL } from "../../../const/router.path";
 import parse from "html-react-parser";
 import { HttpException } from "../../../app/exceptions";
-import { HTTP_STATUS } from "../../../app/enums";
+import { HTTP_STATUS, UserRoles } from "../../../app/enums";
 
 const ViewUserProfileDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -47,7 +47,7 @@ const ViewUserProfileDetail = () => {
     fetchUserDetails();
   }, [fetchUserDetails]);
 
-  const roleOptions = useMemo(() => Object.values(UserRole).filter((role) => role !== UserRole.all), []);
+  const roleOptions = useMemo(() => Object.values(UserRoles).filter((role) => role !== UserRoles.ALL), []);
 
   const handleChangeStatus = useCallback(async (status: boolean) => {
     Modal.confirm({
@@ -68,7 +68,7 @@ const ViewUserProfileDetail = () => {
     });
   }, [id]);
 
-  const handleChangeRole = useCallback(async (currentRole: UserRole) => {
+  const handleChangeRole = useCallback(async (currentRole: UserRoles) => {
     Modal.confirm({
       title: "Change New Role",
       content: (
@@ -79,7 +79,7 @@ const ViewUserProfileDetail = () => {
         </select>
       ),
       onOk: async () => {
-        const newRole = (document.getElementById("roleSelect") as HTMLSelectElement).value as UserRole;
+        const newRole = (document.getElementById("roleSelect") as HTMLSelectElement).value as UserRoles;
         if (newRole === currentRole) return;
 
         Modal.confirm({
@@ -131,10 +131,10 @@ const ViewUserProfileDetail = () => {
                 <Col xs={24} sm={12}>
                   <Form.Item label="Role" className="mb-2">
                     <div className="flex items-center gap-2">
-                      <span className={`rounded-full px-3 py-1 ${userRoleColor(user.role as UserRole)}`}>
+                      <span className={`rounded-full px-3 py-1 ${userRoleColor(user.role as UserRoles)}`}>
                         {user.role.toUpperCase()}
                       </span>
-                      <Button onClick={() => handleChangeRole(user.role as UserRole)} icon={<EditOutlined />} type="primary" size="small" />
+                      <Button onClick={() => handleChangeRole(user.role as UserRoles)} icon={<EditOutlined />} type="primary" size="small" />
                     </div>
                   </Form.Item>
                 </Col>
