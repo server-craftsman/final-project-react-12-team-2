@@ -19,7 +19,7 @@ const Loading: React.FC<{ timeout?: number }> = ({ timeout = 10000 }) => {
         <Lottie
           animationData={logoAnimation}
           loop={true}
-          className="h-80 w-80 animate-pulse opacity-95 drop-shadow-2xl filter transition-all duration-500 hover:scale-110"
+          className="h-[600px] w-[600px] animate-pulse opacity-95 drop-shadow-2xl filter transition-all duration-500 hover:scale-110"
           style={{
             filter: "drop-shadow(0 0 15px rgba(255,255,255,0.5))",
             animation: "float 4s ease-in-out infinite"

@@ -109,14 +109,19 @@ const EditUserProfile = () => {
         }
       }
     },
+
     [form]
   );
+
+  // console.log("form", form.getFieldsValue());
 
   useEffect(() => {
     if (id) {
       fetchUserDetails(id);
     }
   }, [id, fetchUserDetails]);
+
+  const [content, setContent] = useState("");
 
   // Memoize handlers to prevent recreation on each render
   const handleFormSubmit = useCallback(
@@ -133,8 +138,10 @@ const EditUserProfile = () => {
         }
 
         // Extract description safely
-        const description = form.getFieldValue('description') || "";
+        const description = content;
 
+        console.log("log form", form.getFieldsValue());
+        console.log("log content", content);
         // Ensure all values are primitive or simple objects
         const updatedValues = {
           name: values.name,
@@ -218,6 +225,12 @@ const EditUserProfile = () => {
     []
   );
 
+  const editChange = (value: string) => {
+    form.setFieldsValue({ description: value });
+    setContent(value);
+    console.log("content", value);
+  }
+
   if (!state.user) {
     return <div>User not found</div>;
   } else {
@@ -255,9 +268,7 @@ const EditUserProfile = () => {
               id="description-editor"
               initialValue={state.user?.data.description || ""}
               init={editorConfig}
-              onEditorChange={(content) => {
-                form.setFieldsValue({ description: content });
-              }}
+              onEditorChange={editChange}
             />
           </Form.Item>
           <Form.Item label={<span className="font-medium text-[#1a237e]">Date of Birth</span>} name="dob" rules={validationRules.dob as unknown as Rule[]}>

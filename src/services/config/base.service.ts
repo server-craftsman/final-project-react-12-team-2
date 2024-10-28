@@ -1,11 +1,13 @@
 import axios, { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { ApiRequestModel } from "../../models/api/interceptor/ApiRequestModel";
 import { toast } from "react-toastify";
-import { getItemInLocalStorage, removeItemInLocalStorage } from "../../utils/storage";
+import { clearLocalStorage, getItemInLocalStorage } from "../../utils/storage";
 import { DOMAIN_ADMIN, LOCAL_STORAGE } from "../../const/domain";
 import { ROUTER_URL } from "../../const/router.path";
 import { store } from "../../app/store";
 import { toggleLoading } from "../../app/loadingSlice";
+import { HTTP_STATUS } from "../../app/enums";
+import { HttpException } from "../../app/exceptions";
 
 export const axiosInstance = axios.create({
   baseURL: DOMAIN_ADMIN,
@@ -38,8 +40,6 @@ export const BaseService = {
   },
   post<T = any>({ url, isLoading = true, payload, headers, toggleLoading }: Partial<ApiRequestModel>): Promise<PromiseState<T>> {
     if (toggleLoading) toggleLoading(isLoading);
-    // if (toggleLoadingAdmin) toggleLoadingAdmin(isLoading);
-    // console.log("payload: ", payload);
     return axiosInstance.post<T, PromiseState<T>>(`${url}`, payload, {
       headers: headers || {}
     });
@@ -127,14 +127,14 @@ export interface PromiseState<T = unknown> extends AxiosResponse<T> {
 
 axiosInstance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
-    const user: any = getItemInLocalStorage(LOCAL_STORAGE.ACCOUNT_ADMIN);
+    const token = localStorage.getItem("token");
     if (!config.headers) config.headers = {};
-    if (user) config.headers["Authorization"] = `Bearer ${user.access_token}`;
+    if (token) config.headers["Authorization"] = `Bearer ${token}`;
     store.dispatch(toggleLoading(true)); // Show loading
     return config as InternalAxiosRequestConfig;
   },
   (err) => {
-    store.dispatch(toggleLoading(false)); // Hide loading on error
+    store.dispatch(toggleLoading(false));
     return handleErrorByToast(err);
   }
 );
@@ -147,13 +147,30 @@ axiosInstance.interceptors.response.use(
   (err) => {
     store.dispatch(toggleLoading(false)); // Hide loading on error
     const { response } = err;
-    if (response && response.status === 401) {
-      setTimeout(() => {
-        removeItemInLocalStorage(LOCAL_STORAGE.ACCOUNT_ADMIN);
-        window.location.href = ROUTER_URL.LOGIN;
-      }, 10000);
+    if (response) {
+      switch (response.status) {
+        case HTTP_STATUS.UNAUTHORIZED:
+          setTimeout(() => {
+            clearLocalStorage();
+            window.location.href = ROUTER_URL.LOGIN;
+          }, 10000);
+          break;
+        case HTTP_STATUS.FORBIDDEN:
+          toast.error("Access denied. You do not have permission to perform this action.");
+          break;
+        case HTTP_STATUS.NOT_FOUND:
+          toast.error("Requested resource not found.");
+          break;
+        case HTTP_STATUS.INTERNAL_SERVER_ERROR:
+          toast.error("Internal server error. Please try again later.");
+          break;
+        default:
+          toast.error(response.data?.message || "An error occurred. Please try again.");
+      }
+    } else {
+      toast.error(err.message || "An error occurred. Please try again.");
     }
-    return handleErrorByToast(err);
+    return Promise.reject(new HttpException(err.message, response?.status || HTTP_STATUS.INTERNAL_SERVER_ERROR));
   }
 );
 

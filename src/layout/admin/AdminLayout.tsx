@@ -20,11 +20,11 @@ const Admin: React.FC = () => {
       }
 
       try {
-        const response = await AuthService.getUserRole(token);
+        const response = await AuthService.getUserRole({ token });
         if (response.data?.data) {
           setUserInfo(response.data.data);
         } else {
-          logout(); // No user data, force logout
+          logout();
         }
       } catch (error) {
         console.error("Failed to fetch user info:", error);

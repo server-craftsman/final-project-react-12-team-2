@@ -55,10 +55,13 @@ export const AuthService = {
       isLoading: true
     });
   },
-  getUserRole(token: string) {
+  getUserRole(params: { token: string }) {
     return BaseService.get<ResponseSuccess<User>>({
       url: API.AUTH.LOGIN,
-      headers: { Authorization: `Bearer ${token}` }
+      payload: params
+      // headers: {
+      //   Authorization: `Bearer ${token}`
+      // }
     });
   },
   register(params: RegisterParams) {

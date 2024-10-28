@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (!storedToken) {
         throw new HttpException("No token found", HTTP_STATUS.UNAUTHORIZED);
       }
-      const response = await AuthService.getUserRole(storedToken);
+      const response = await AuthService.getUserRole({ token: storedToken });
       if (!response.data?.data) {
         throw new HttpException("Invalid response data", HTTP_STATUS.BAD_REQUEST);
       }
@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem("token", token);
       setToken(token);
 
-      const response = await AuthService.getUserRole(token);
+      const response = await AuthService.getUserRole({ token });
       if (!response.data?.data) {
         throw new HttpException("Invalid user data", HTTP_STATUS.BAD_REQUEST);
       }

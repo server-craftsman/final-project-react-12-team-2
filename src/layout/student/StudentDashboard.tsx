@@ -20,7 +20,7 @@ const StudentDashboard: React.FC = () => {
       }
 
       try {
-        const response = await AuthService.getUserRole(token);
+        const response = await AuthService.getUserRole({ token });
         if (response.data?.data) {
           setUserInfo(response.data.data);
         } else {
