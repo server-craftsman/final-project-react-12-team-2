@@ -12,7 +12,6 @@ import RegisterInfoOfInstructor from "../../components/generic/register/Register
 import RegisterViaGoogle from "./RegisterViaGoogle";
 const { Title, Text } = Typography;
 import { handleUploadFile } from "../../utils/upload";
-
 import { useAuth } from "../../contexts/AuthContext";
 import { RegisterParams } from "../../models/api/request/authentication/auth.request.model";
 import { ROUTER_URL } from "../../const/router.path";

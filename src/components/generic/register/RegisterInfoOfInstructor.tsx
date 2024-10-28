@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Form, Input, Upload, Button, UploadFile, Select } from "antd";
 import { UploadOutlined, PhoneOutlined, BankOutlined, NumberOutlined, UserOutlined } from "@ant-design/icons";
-import { Editor } from "@tinymce/tinymce-react";
-import { TINY_API_KEY } from "../../../services/config/apiClientTiny";
+// import { Editor } from "@tinymce/tinymce-react";
+// import { TINY_API_KEY } from "../../../services/config/apiClientTiny";
 import { message } from "antd";
 import { AuthService } from "../../../services/authentication/auth.service";
+import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
+import { parseTinyEditor } from "../../../utils";
 
 interface RegisterInfoOfInstructorProps {
   form: any;
@@ -175,19 +177,10 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({
         rules={[{ required: true, message: "Please input a description!" }]}
         className="mb-6"
       >
-        <Editor
-          apiKey={TINY_API_KEY}
-          init={{
-            height: 300,
-            menubar: false,
-            plugins: ['advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor',
-              'searchreplace', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media', 'table', 'help', 'wordcount'],
-            toolbar: 'undo redo | formatselect | bold italic | \
-              alignleft aligncenter alignright alignjustify | \
-              bullist numlist outdent indent | help'
-          }}
+        <TinyMCEEditor
+          key={form.getFieldValue('description')}
+          initialValue={form.getFieldValue('description')}
           onEditorChange={handleEditorChange}
-          value={String(form.getFieldValue('description') || '')}
         />
       </Form.Item>
 

@@ -38,7 +38,7 @@ export const handleUploadFile = async (file: File, type: "video" | "image") => {
 export const customUploadHandler = async (
   options: { 
     file: File;
-    onSuccess: () => void;
+    onSuccess: (url: string) => void;
     onError: () => void;
   }, 
   type: "video" | "image",
@@ -59,7 +59,7 @@ export const customUploadHandler = async (
     const url = await handleUploadFile(file, type);
     if (url) {
       onSuccessCallback(type, url);
-      onSuccess();
+      onSuccess(url);
       message.success(`${type} uploaded successfully`);
     } else {
       throw new Error('Upload failed');

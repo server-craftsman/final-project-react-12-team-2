@@ -1,15 +1,13 @@
 import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { Form, Input, Upload, Button, UploadFile, Select } from "antd";
 import { UploadOutlined, PhoneOutlined, NumberOutlined, BankOutlined, UserOutlined } from "@ant-design/icons";
-import { Editor } from "@tinymce/tinymce-react";
-import { TINY_API_KEY } from "../../services/config/apiClientTiny";
 import { message } from "antd";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { ROUTER_URL } from "../../const/router.path";
 import { handleUploadFile } from "../../utils/upload";
 import { AuthService } from "../../services/authentication/auth.service";
-
+import TinyMCEEditor from "../../components/generic/tiny/TinyMCEEditor";
 interface RegisterViaGoogleProps extends React.HTMLAttributes<HTMLFormElement> {
   googleId: string;
 }
@@ -173,14 +171,6 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
     }
   }, [googleId, role, form, navigate, password, avatarFileList, videoFileList, description, handleFileUpload]);
 
-  const editorConfig = useMemo(() => ({
-    height: 300,
-    menubar: false,
-    plugins: ['advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor',
-      'searchreplace', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media', 'table', 'help', 'wordcount'],
-    toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | help'
-  }), []);
-
   const handleAvatarPreview = useCallback((file: File) => {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -192,16 +182,9 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
 
   const handleVideoPreview = useCallback((file: File) => {
     const videoElement = document.createElement('video');
-    videoElement.preload = 'metadata';
-    videoElement.onloadedmetadata = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = videoElement.videoWidth;
-      canvas.height = videoElement.videoHeight;
-      const ctx = canvas.getContext('2d');
-      ctx?.drawImage(videoElement, 0, 0);
-      setVideoPreview(canvas.toDataURL());
-    };
+    videoElement.controls = true;
     videoElement.src = URL.createObjectURL(file);
+    setVideoPreview(videoElement.outerHTML);
     return handleUploadFile(file, 'video');
   }, []);
 
@@ -343,11 +326,9 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
             label="Professional Description"
             rules={[{ required: true, message: "Please input a description!" }]}
           >
-            <Editor
-              apiKey={TINY_API_KEY}
-              init={editorConfig}
+            <TinyMCEEditor
+              initialValue={description}
               onEditorChange={handleEditorChange}
-              value={description}
             />
           </Form.Item>
 

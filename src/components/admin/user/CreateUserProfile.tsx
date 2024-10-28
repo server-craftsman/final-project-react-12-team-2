@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState, useEffect } from "react";
 import { Form, Input, Button, Modal, message, Select, Upload } from "antd";
-import { Editor } from "@tinymce/tinymce-react";
-import { TINY_API_KEY } from "../../../services/config/apiClientTiny";
+import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
 import { UserService } from "../../../services/admin/user.service";
 import { AuthService } from "../../../services/authentication/auth.service";
 import { customUploadHandler } from "../../../utils/upload";
@@ -13,34 +12,19 @@ const CreateUserProfile = () => {
   const [form] = useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string>();
   const [videoPreview, setVideoPreview] = useState<string>();
   const [bankOptions, setBankOptions] = useState<{ value: string; label: string; logo: string }[]>([]);
   const [selectedBankLogo, setSelectedBankLogo] = useState<string>();
 
-  // Memoized editor config
-  const editorConfig = useMemo(() => ({
-    height: 300,
-    menubar: false,
-    plugins: [
-      "advlist autolink lists link image charmap preview anchor searchreplace",
-      "visualblocks code fullscreen media table paste code help wordcount"
-    ].join(" "),
-    toolbar: [
-      "undo redo | formatselect | bold italic",
-      "alignleft aligncenter alignright alignjustify",
-      "bullist numlist | link image | code"
-    ].join(" | "),
-    skin: "oxide-dark",
-    content_css: "dark",
-    resize: false,
-    statusbar: false
-  }), []);
-
   // Modal handlers
   const handleModalToggle = useCallback(() => {
     setIsModalVisible(prev => !prev);
     form.resetFields();
+    setAvatarFile(null);
+    setVideoFile(null);
     setAvatarPreview(undefined);
     setVideoPreview(undefined);
     setSelectedBankLogo(undefined);
@@ -77,69 +61,62 @@ const CreateUserProfile = () => {
     }
   }, [isModalVisible, fetchBankDetails]);
 
-  // // Handle file uploads
-  // const handleFileUpload = useCallback(async (file: File, type: 'avatar' | 'video') => {
-  //   try {
-  //     setUploading(true);
-  //     const uploadedUrl = await handleUploadFile(file, type === 'avatar' ? 'image' : 'video');
-  //     if (type === 'avatar') {
-  //       setAvatarPreview(uploadedUrl);
-  //       form.setFieldsValue({ avatar_url: uploadedUrl.toString() }); // Ensure it's a string
-  //     } else {
-  //       setVideoPreview(uploadedUrl);
-  //       form.setFieldsValue({ video_url: uploadedUrl.toString() }); // Ensure it's a string
-  //     }
-  //     message.success(`${type} uploaded successfully`);
-  //     return uploadedUrl;
-  //   } catch {
-  //     message.error(`Failed to upload ${type}`);
-  //     return "";
-  //   } finally {
-  //     setUploading(false);
-  //   }
-  // }, []);
-
-  // Handle file changes using customUploadHandler
-  const handleFileChange = useCallback((info: any, type: 'image' | 'video') => {
-    const file = info.file.originFileObj;
-    if (file) {
-      customUploadHandler(
-        {
-          file,
-          onSuccess: () => {
-            message.success(`${type} uploaded successfully`);
-          },
-          onError: () => {
-            message.error(`Failed to upload ${type}`);
-          }
-        },
-        type,
-        setUploading,
-        (uploadedType, url) => {
-          if (uploadedType === 'image') {
-            setAvatarPreview(url);
-            form.setFieldsValue({ avatar_url: url });
-          } else {
-            setVideoPreview(url);
-            form.setFieldsValue({ video_url: url });
-          }
-        }
-      );
+  // Handle file changes
+  const handleFileChange = useCallback((file: File, type: 'image' | 'video') => {
+    if (type === 'image') {
+      setAvatarFile(file);
+      setAvatarPreview(URL.createObjectURL(file));
+    } else {
+      setVideoFile(file);
+      setVideoPreview(URL.createObjectURL(file));
     }
-  }, [form]);
+  }, []);
 
   // Form submission
   const onFinish = useCallback(async (values: any) => {
     try {
       setUploading(true);
       const { avatar_url, video_url, ...restValues } = values;
-      // if (!avatar_url) {
-      //   throw new Error("avatar_url should not be empty!");
-      // }
-      // if (!video_url) {
-      //   throw new Error("video_url should not be empty!");
-      // }
-      await UserService.createUser({ ...restValues, avatar_url, video_url });
+
+      // Upload avatar and video files
+      if (avatarFile) {
+        await customUploadHandler({
+            file: avatarFile,
+            onSuccess: (url) => {
+              form.setFieldsValue({ avatar_url: url }); // Ensure URL is set correctly
+            },
+            onError: () => {
+              message.error("Failed to upload avatar");
+            }
+          },
+          'image', // Ensure this parameter is correct
+          setUploading,
+          (type, url) => {
+            console.log(`${type} uploaded to ${url}`);
+          } // Add this callback function
+        );
+      }
+
+      if (videoFile) {
+        await customUploadHandler(
+          {
+            file: videoFile,
+            onSuccess: (url) => {
+              form.setFieldsValue({ video_url: url }); // Ensure URL is set correctly
+            },
+            onError: () => {
+              message.error("Failed to upload video");
+            }
+          },
+          'video', // Ensure this parameter is correct
+          setUploading,
+          (type, url) => {
+            console.log(`${type} uploaded to ${url}`);
+          } // Add this callback function
+        );
+      }
+
+      await UserService.createUser({ ...restValues, avatar_url: form.getFieldValue('avatar_url'), video_url: form.getFieldValue('video_url') });
       message.success({
         content: "User created successfully!",
         className: "custom-success-message",
@@ -155,7 +132,7 @@ const CreateUserProfile = () => {
     } finally {
       setUploading(false);
     }
-  }, [handleModalToggle]);
+  }, [handleModalToggle, avatarFile, videoFile, form]);
 
   // Form validation rules
   const formRules = useMemo(() => ({
@@ -190,8 +167,8 @@ const CreateUserProfile = () => {
     <Upload
       listType="picture-card"
       showUploadList={false}
-      beforeUpload={async (file) => {
-        await handleFileChange({ file: { originFileObj: file } }, type);
+      beforeUpload={(file) => {
+        handleFileChange(file, type);
         return false; // Prevent default upload behavior
       }}
       accept={type === 'image' ? "image/*" : "video/*"}
@@ -313,14 +290,11 @@ const CreateUserProfile = () => {
               getFieldValue('role') === 'instructor' && (
                 <div className="space-y-6 rounded-xl bg-gray-50 p-6 shadow-sm">
                   <Form.Item name="description" label="Description" rules={[{ required: true, message: "Please input description!" }]}>
-                    <Editor
-                      apiKey={TINY_API_KEY}
-                      init={editorConfig}
-                      value={typeof form.getFieldValue('description') === 'string' ? form.getFieldValue('description') : ""} // Ensure value is a string
+                    <TinyMCEEditor
+                      initialValue={typeof form.getFieldValue('description') === 'string' ? form.getFieldValue('description') : ""}
                       onEditorChange={(content) => {
                         form.setFieldsValue({ description: content });
                       }}
-                      onBlur={() => form.validateFields(['description'])}
                     />
                   </Form.Item>
 
