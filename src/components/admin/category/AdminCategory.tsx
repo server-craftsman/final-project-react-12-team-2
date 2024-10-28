@@ -1,7 +1,7 @@
-import { Table, Space, message } from "antd";
+import { Table, Space, message, Modal } from "antd";
 import React, { useEffect, useState, useCallback } from "react";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { GetCategoryResponse } from "../../../models/api/responsive/admin/category.responsive.model";
 import { GetCategoryParams } from "../../../models/api/request/admin/category.request.model";
 import { CategoryService } from "../../../services/category/category.service";
@@ -23,7 +23,6 @@ interface AdminCategoryProps {
 const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
   const [category, setCategory] = useState<GetCategoryResponse | null>(null);
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
 
   const defaultParams = {
     pageInfo: {
@@ -64,27 +63,22 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
     fetchCategories();
   }, [fetchCategories]);
 
-  // const handleDelete = (id: string) => {
-  //   Modal.confirm({
-  //     title: "Are you sure you want to delete this category?",
-  //     onOk: () => {
-  //       setCategories(categories.filter((category: Category) => category.id !== id));
-  //       message.success("Category deleted successfully");
-  //     }
-  //   });
-  // };
-
-  const handleDeleteCategory = useCallback(async (categoryId: string) => {
-    try {
-      const response = await CategoryService.deleteCategory(categoryId);
-      if (response.data.success) {
-        message.success("Category deleted successfully.");
-        navigate(ROUTER_URL.ADMIN.CATEGORIES);
+  const handleDeleteCategory = useCallback((categoryId: string) => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this category?",
+      onOk: async () => {
+        try {
+          const response = await CategoryService.deleteCategory(categoryId);
+          if (response.data.success) {
+            message.success("Category deleted successfully.");
+            navigate(ROUTER_URL.ADMIN.CATEGORIES);
+          }
+        } catch (error) {
+          message.error(error instanceof HttpException ? error.message : "An error occurred while deleting the category");
+          console.error("Failed to delete category:", error);
+        }
       }
-    } catch (error) {
-      message.error(error instanceof HttpException ? error.message : "An error occurred while deleting the category");
-      console.error("Failed to delete category:", error);
-    }
+    });
   }, [navigate]);
 
   // Filter categories based on the search term

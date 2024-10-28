@@ -8,7 +8,6 @@ import { TINY_API_KEY } from "../../../services/config/apiClientTiny";
 
 const CreateCategory: React.FC = () => {
   const [categories, setCategories] = useState<GetCategoryResponse | null>(null);
-  const [createCategory, setCreateCategory] = useState<GetCategoryResponse | null>(null);
   const [isOpen, setOpen] = useState(false);
   const [form] = useForm();
 
@@ -68,7 +67,7 @@ const CreateCategory: React.FC = () => {
         }
       };
 
-      setCreateCategory(resolvedCategory);
+      setCategories(resolvedCategory);
 
       form.resetFields();
       setOpen(false);
