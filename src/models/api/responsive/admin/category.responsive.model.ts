@@ -19,3 +19,13 @@ export interface GetCategoryResponse {
   pageData: Category[];
   pageInfo: PageInfo;
 }
+
+export interface CreateCategoryResponse {
+  _id: string;
+  name: string;
+  parent_category_id: string | null;
+  description: string;
+  created_at: Date;
+  updated_at: Date;
+  is_deleted: boolean;
+}

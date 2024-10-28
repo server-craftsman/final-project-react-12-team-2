@@ -23,6 +23,8 @@ export const API = {
     DELETE_USER: "api/users/:id",
     REVIEW_PROFILE_INSTRUCTOR: "api/users/review-profile-instructor",
     GET_CATEGORY: "api/category/search",
+    CREATE_CATEGORY: "api/category",
+    DELETE_CATEGORY: "api/category/:id"
   },
   INSTRUCTOR: {
     GET_USER_DETAILS: "api/users/:id",

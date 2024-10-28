@@ -9,3 +9,9 @@ export interface GetCategoryParams {
     pageSize: number;
   };
 }
+
+export interface CreateCategoryParams {
+  name: string;
+  parent_category_id: string | null;
+  description: string;
+}

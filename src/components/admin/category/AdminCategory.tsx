@@ -1,13 +1,14 @@
 import { Table, Space, message } from "antd";
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { GetCategoryResponse } from "../../../models/api/responsive/admin/category.responsive.model";
 import { GetCategoryParams } from "../../../models/api/request/admin/category.request.model";
 import { CategoryService } from "../../../services/category/category.service";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
 import parse from "html-react-parser";
+import { ROUTER_URL } from "../../../const/router.path";
+import { HttpException } from "../../../app/exceptions";
 
 interface SearchCategoryCondition {
   keyword: string;
@@ -21,6 +22,8 @@ interface AdminCategoryProps {
 
 const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
   const [category, setCategory] = useState<GetCategoryResponse | null>(null);
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
 
   const defaultParams = {
     pageInfo: {
@@ -71,6 +74,19 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
   //   });
   // };
 
+  const handleDeleteCategory = useCallback(async (categoryId: string) => {
+    try {
+      const response = await CategoryService.deleteCategory(categoryId);
+      if (response.data.success) {
+        message.success("Category deleted successfully.");
+        navigate(ROUTER_URL.ADMIN.CATEGORIES);
+      }
+    } catch (error) {
+      message.error(error instanceof HttpException ? error.message : "An error occurred while deleting the category");
+      console.error("Failed to delete category:", error);
+    }
+  }, [navigate]);
+
   // Filter categories based on the search term
   const filteredData = category?.pageData?.filter((category: Category) => {
     return (
@@ -81,9 +97,18 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
 
   const columns = [
     {
-      title: "Name",
+      title: "Category Name",
       dataIndex: "name",
       key: "name"
+    },
+    {
+      title: "Parent Category",
+      dataIndex: "parent_category_id",
+      key: "parent_category_id",
+      render: (parent_category_id: string) => {
+        const parentCategory = category?.pageData?.find(category => category._id === parent_category_id);
+        return parentCategory ? parentCategory.name : "N/A";
+      }
     },
     {
       title: "Description",
@@ -99,7 +124,7 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
           <Link to={`/admin/edit-category/${record._id}`}>
             <EditOutlined />
           </Link>
-          <DeleteOutlined />
+          <DeleteOutlined onClick={() => handleDeleteCategory(record._id)} />
         </Space>
       )
     }

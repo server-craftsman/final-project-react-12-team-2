@@ -52,7 +52,7 @@ function ManageCategory() {
         console.error("Failed to fetch categories:", error);
       }
     };
-
+    
     fetchCategoriesData();
   }, [searchQuery]);
 
@@ -69,7 +69,7 @@ function ManageCategory() {
         >
           <div className="mb-4 flex items-center justify-between">
             <CustomSearch onSearch={handleSearch} placeholder="Search by name or description" className="search-input" />
-            <CreateCategory />
+            <CreateCategory/>
           </div>
           <AdminCategory searchQuery={searchQuery} />
         </Card>
