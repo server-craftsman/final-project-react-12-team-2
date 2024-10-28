@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { ROUTER_URL } from '../../const/router.path';
 
 const ForgotPassword: React.FC = () => {
-  const { forgotPassword } = useAuth();
+  const { forgotPassword, logout } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +18,9 @@ const ForgotPassword: React.FC = () => {
       toast.error(error);
     } else if (success) {
       toast.success(success);
+      setTimeout(() => {
+        setCountdown(3); // Start 3 second countdown after showing toast
+      }, 1000); // Delay starting countdown to allow toast to display
     }
   }, [error, success]);
 
@@ -28,13 +31,11 @@ const ForgotPassword: React.FC = () => {
         setCountdown(prev => prev - 1);
       }, 1000);
     } else if (countdown === 0 && success) {
-      // Ensure toast is shown before navigating
-      setTimeout(() => {
-        navigate(ROUTER_URL.LOGIN);
-      }, 1000); // Delay navigation to allow toast to display
+      logout(); // Clear unnecessary data by logging out
+      navigate(ROUTER_URL.LOGIN);
     }
     return () => clearTimeout(timer);
-  }, [countdown, navigate, success]);
+  }, [countdown, navigate, success, logout]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +44,6 @@ const ForgotPassword: React.FC = () => {
       await forgotPassword({ email });
       setSuccess("Password reset email sent successfully");
       setEmail("");
-      setCountdown(3); // Start 3 second countdown
     } catch (err) {
       setError("Failed to send password reset email");
     } finally {

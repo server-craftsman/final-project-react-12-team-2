@@ -1,14 +1,13 @@
 import { Form, Input, Button } from "antd";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
-import { HttpException } from "../../../app/exceptions";
 import { message } from "antd";
 import { helpers } from "../../../utils";
 import { ROUTER_URL } from "../../../const/router.path";
 
 const ChangePasswordAdmin = ({ visible }: { visible: boolean }) => {
   const [form] = Form.useForm();
-  const { changePassword } = useAuth();
+  const { changePassword, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleOk = async () => {
@@ -31,16 +30,12 @@ const ChangePasswordAdmin = ({ visible }: { visible: boolean }) => {
       const response = await changePassword(params);
       if (response) {
         message.success("Password changed successfully");
+        logout();
         form.resetFields();
         navigate(ROUTER_URL.ADMIN.INFO);
       }
     } catch (error) {
-      if (error instanceof HttpException) {
-        message.error(error.message || "Cannot change password");
-      } else {
-        message.error("Please check the information you entered");
-        console.error("Error changing password:", error);
-      }
+      message.error("Please check the information you entered");
     }
   };
 
@@ -101,9 +96,9 @@ const ChangePasswordAdmin = ({ visible }: { visible: boolean }) => {
           <Button type="primary" onClick={handleOk} className="mr-2 h-10 border-none bg-[#1a237e] px-8 hover:bg-[#0d1453]">
             Change Password
           </Button>
-          <Button onClick={() => navigate("/admin/admin-info")} className="h-10 border-[#1a237e] px-8 text-[#1a237e] hover:border-[#0d1453] hover:text-[#0d1453]">
+          {/* <Button onClick={() => navigate(ROUTER_URL.ADMIN.INFO)} className="h-10 border-[#1a237e] px-8 text-[#1a237e] hover:border-[#0d1453] hover:text-[#0d1453]">
             Cancel
-          </Button>
+          </Button> */}
         </Form.Item>
       </Form>
     </div>
