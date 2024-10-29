@@ -3,23 +3,19 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Form, Input, Button, message, DatePicker, Avatar, Upload } from "antd";
 import { Rule } from "antd/es/form";
 import moment from "moment";
-import dayjs from "dayjs"; // Add this import
-import { Editor } from "@tinymce/tinymce-react";
-import { TINY_API_KEY } from "../../../services/config/apiClientTiny";
+import dayjs from "dayjs";
 import { UserService } from "../../../services/admin/user.service";
 import { GetCurrentUserResponse } from "../../../models/api/responsive/authentication/auth.responsive.model";
-import { helpers } from "../../../utils";
+import { helpers, parseTinyEditor } from "../../../utils";
 import { UpdateUserParams } from "../../../models/api/request/users/user.request.model";
 import { UploadOutlined } from "@ant-design/icons";
-import cloudinaryConfig from "../../../services/config/cloudinaryConfig";
 import { ROUTER_URL } from "../../../const/router.path";
-import { HTTP_STATUS } from "../../../app/enums";
-import { HttpException } from "../../../app/exceptions";
+import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
+import { customUploadHandler, handleUploadFile } from "../../../utils/upload";
 
 const EditUserProfile = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-
   const [form] = Form.useForm();
 
   const [state, setState] = useState({
@@ -67,7 +63,6 @@ const EditUserProfile = () => {
     []
   );
 
-  // Memoize the fetch user function
   const fetchUserDetails = useCallback(
     async (userId: string) => {
       try {
@@ -98,11 +93,7 @@ const EditUserProfile = () => {
           dob: userData.dob ? moment(userData.dob) : null
         });
       } catch (error) {
-        if (error instanceof HttpException) {
-          message.error(error.message);
-        } else {
-          message.error("Failed to fetch user details. Please try again.");
-        }
+        message.error("Failed to fetch user details. Please try again.");
       }
     },
     [form]
@@ -120,34 +111,20 @@ const EditUserProfile = () => {
       try {
         let avatarUrl = state.user?.data.avatar_url || "";
 
+        
         if (state.selectedFile) {
-          const formData = new FormData();
-          formData.append("file", state.selectedFile);
-          formData.append("upload_preset", cloudinaryConfig.uploadPreset);
-          formData.append("cloud_name", cloudinaryConfig.cloudName);
-
-          const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/upload`, {
-            method: "POST",
-            body: formData
-          });
-
-          const data = await response.json();
-          if (!response.ok) {
-            throw new HttpException(data.error?.message || "Upload failed", HTTP_STATUS.BAD_REQUEST);
-          }
-
-          if (data.secure_url) {
-            avatarUrl = data.secure_url;
+          const uploadedUrl = await handleUploadFile(state.selectedFile, "image");
+          if (uploadedUrl) {
+            avatarUrl = uploadedUrl;
           }
         }
 
-        // Update user profile with all values including new avatar URL
+        const description = parseTinyEditor.getTinyMCEContent("description-editor");
         const updatedValues = {
           name: values.name,
           email: values.email,
           phone_number: values.phone_number,
-          description: values.description || "",
-          // Sửa lại cách xử lý DOB
+          description,
           dob: values.dob ? helpers.formatDate(new Date(values.dob)) : null,
           avatar_url: avatarUrl,
           video_url: "",
@@ -160,21 +137,12 @@ const EditUserProfile = () => {
         message.success("Profile updated successfully");
         navigate(ROUTER_URL.INSTRUCTOR.SETTING);
       } catch (error: any) {
-        console.error("Error updating profile:", error);
-        if (error instanceof HttpException) {
-          message.error(`Failed to update profile: ${error.message}`);
-        } else if (error.response?.status === HTTP_STATUS.UNAUTHORIZED || error.response?.status === HTTP_STATUS.FORBIDDEN) {
-          message.error("Unauthorized access. Please login again.");
-        } else if (error.response?.status === HTTP_STATUS.BAD_REQUEST) {
-          message.error(error.response.data.message || "Invalid input data");
-        } else {
-          message.error("Failed to update profile. Please try again.");
-        }
+        message.error(error.message || "Failed to update profile. Please try again.");
       } finally {
         setState((prev) => ({ ...prev, uploading: false }));
       }
     },
-    [id, navigate, state.user?.data.avatar_url, state.selectedFile]
+    [id, navigate, state.user?.data.avatar_url]
   );
 
   const handleImageUpload = useCallback((file: File) => {
@@ -202,25 +170,20 @@ const EditUserProfile = () => {
             }
           }
         : null
-    }));
+      }));
 
-    return false;
-  }, []);
-
-  const editorConfig = useMemo(
-    () => ({
-      height: 300,
-      menubar: true,
-      plugins: ["advlist", "autolink", "lists", "link", "image", "charmap", "preview", "anchor", "searchreplace", "visualblocks", "code", "fullscreen", "insertdatetime", "media", "table", "help", "wordcount"],
-      toolbar: "undo redo | formatselect | " + "bold italic backcolor | alignleft aligncenter " + "alignright alignjustify | bullist numlist outdent indent | " + "removeformat | help",
-      content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-      tracking: false,
-      promotion: false,
-      skin: "oxide",
-      content_css: "default"
-    }),
+      return false;
+    },
     []
   );
+
+  const editChange = (value: string, editor: any) => {
+    form.setFieldsValue({ description: value });
+    parseTinyEditor.updateTinyMCEContent("description-editor", value);
+    editor.selection.select(editor.getBody(), true);
+    editor.selection.collapse(false);
+  };
+  
   if (!state.user) {
     return <div>User not found</div>;
   } else {
@@ -231,7 +194,7 @@ const EditUserProfile = () => {
           <div className="mb-6 flex flex-col items-center gap-6 sm:flex-row sm:items-center">
             <div className="group relative">
               <Avatar src={state.user.data.avatar_url} size={120} className="border-4 border-[#1a237e] shadow-lg transition-transform hover:scale-105" />
-              <Upload accept="image/*" showUploadList={false} beforeUpload={(file) => handleImageUpload(file)}>
+              <Upload accept="image/*" showUploadList={false} beforeUpload={handleImageUpload}>
                 <div className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                   <UploadOutlined className="text-2xl text-white" />
                 </div>
@@ -253,14 +216,9 @@ const EditUserProfile = () => {
           </Form.Item>
 
           <Form.Item label={<span className="font-medium text-[#1a237e]">Description</span>} name="description" rules={validationRules.description as Rule[]}>
-            <Editor
-              apiKey={TINY_API_KEY}
-              id="description-editor"
+            <TinyMCEEditor
               initialValue={state.user?.data.description || ""}
-              init={editorConfig}
-              onEditorChange={(content) => {
-                form.setFieldsValue({ description: content });
-              }}
+              onEditorChange={editChange}
             />
           </Form.Item>
           <Form.Item label={<span className="font-medium text-[#1a237e]">Date of Birth</span>} name="dob" rules={validationRules.dob as Rule[]}>
@@ -291,4 +249,5 @@ const EditUserProfile = () => {
     );
   }
 };
+
 export default memo(EditUserProfile);

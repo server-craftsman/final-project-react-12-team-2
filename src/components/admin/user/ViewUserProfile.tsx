@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Table, Modal, message, Button, Input, Checkbox } from "antd";
 import { useNavigate } from "react-router-dom";
-import { EditOutlined, LockOutlined, UnlockOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EditOutlined, LockOutlined, UnlockOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { userRoleColor } from "../../../utils/userRole";
 import { userStatusColor } from "../../../utils/userStatus";
 import { UserService } from "../../../services/admin/user.service";
-// import { UserRole } from "../../../models/prototype/User";
 import { GetUsersAdminParams, ChangeStatusParams, ChangeRoleParams } from "../../../models/api/request/admin/user.request.model";
 import { GetUsersAdminResponse } from "../../../models/api/responsive/admin/user.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model";
@@ -254,16 +253,18 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
       content: "Are you sure you want to delete the selected accounts?",
       onOk: async () => {
         try {
-          const userIds = Array.from(selectedUserIds);
-          if (userIds.length === 0) {
-            message.warning("No users selected for deletion.");
-            return;
-          }
+          const userIdsToDelete = users?.pageData
+            .filter((user) => selectedUserIds.has(user._id) && (activeTab === "blocked" ? user.is_deleted : !user.is_verified))
+            .map((user) => user._id);
 
-          const response = await UserService.deleteUser(userIds[0]);
+          if (userIdsToDelete) { // Check if userIdsToDelete is defined
+            for (const userId of userIdsToDelete) {
+              const response = await UserService.deleteUser(userId);
 
-          if (!response.data?.success) {
-            throw new HttpException("Failed to delete selected accounts", HTTP_STATUS.BAD_REQUEST);
+              if (!response.data?.success) {
+                throw new HttpException("Failed to delete selected accounts", HTTP_STATUS.BAD_REQUEST);
+              }
+            }
           }
 
           message.success("Selected accounts have been successfully deleted.");
@@ -354,7 +355,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
         render: (_: unknown, record: User) => (
           <div>
             <button onClick={() => handleViewDetails(record._id)} className="bg-gradient-tone rounded-md px-4 py-2 text-white">
-              View Details
+              <EyeOutlined />
             </button>
           </div>
         )

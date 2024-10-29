@@ -130,7 +130,7 @@ const ManageUser = () => {
           selectedStatus={selectedStatus}
           activeTab={activeTab}
           showActionColumn={activeTab !== "unverified"}
-          disableActions={activeTab === "unverified"} // Add this prop to disable actions for unverified tab
+          disableActions={activeTab === "unverified"}
         />
       </div>
     );
