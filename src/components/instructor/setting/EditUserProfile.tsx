@@ -11,7 +11,7 @@ import { UpdateUserParams } from "../../../models/api/request/users/user.request
 import { UploadOutlined } from "@ant-design/icons";
 import { ROUTER_URL } from "../../../const/router.path";
 import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
-import { customUploadHandler, handleUploadFile } from "../../../utils/upload";
+import { handleUploadFile } from "../../../utils/upload";
 
 const EditUserProfile = () => {
   const { id } = useParams<{ id: string }>();
@@ -183,7 +183,7 @@ const EditUserProfile = () => {
     editor.selection.select(editor.getBody(), true);
     editor.selection.collapse(false);
   };
-  
+
   if (!state.user) {
     return <div>User not found</div>;
   } else {
