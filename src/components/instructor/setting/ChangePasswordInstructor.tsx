@@ -9,7 +9,7 @@ import { ROUTER_URL } from "../../../const/router.path";
 const ChangePasswordInstructor: React.FC = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const { getCurrentUser, userInfo } = useAuth();
+  const { getCurrentUser, userInfo, logout } = useAuth();
 
   useEffect(() => {
     getCurrentUser();
@@ -29,7 +29,8 @@ const ChangePasswordInstructor: React.FC = () => {
       if (response) {
         message.success("Password changed successfully");
         form.resetFields();
-        navigate(ROUTER_URL.INSTRUCTOR.SETTING);
+        logout();
+        navigate(ROUTER_URL.LOGIN);
       }
     } catch (error) {
       if (error instanceof HttpException) {

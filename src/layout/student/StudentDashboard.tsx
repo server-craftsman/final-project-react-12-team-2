@@ -55,7 +55,7 @@ const StudentDashboard: React.FC = () => {
           <header className="mb-4 rounded-lg bg-gradient-to-r from-indigo-600 via-indigo-700 to-indigo-800 p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <Avatar size={48} icon={<UserOutlined />} className="bg-indigo-400" />
+                <Avatar size={48} src={userInfo?.avatar_url} icon={!userInfo?.avatar_url && <UserOutlined />} className="bg-indigo-400" />
                 <div className="text-white">
                   <h2 className="text-xl font-bold">Welcome, {userInfo?.name || "Admin"}</h2>
                 </div>
