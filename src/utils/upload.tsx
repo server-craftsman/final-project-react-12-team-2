@@ -23,15 +23,15 @@ export const handleUploadFile = async (file: File, type: "video" | "image") => {
       const errorData = await response.json();
       console.error("Upload failed:", errorData);
       message.error(`Failed to upload ${type}: ${errorData.error?.message || "Unknown error"}`);
-      return null;
+      return "";  // Return empty string instead of null
     }
 
     const data = await response.json();
-    return data.secure_url;
+    return data.secure_url || ""; // Ensure we return empty string if secure_url is undefined
   } catch (error) {
     console.error("Upload error:", error);
     message.error(`Failed to upload ${type}. Please try again.`);
-    return null;
+    return ""; // Return empty string instead of null
   }
 };
 

@@ -1,13 +1,19 @@
 import { BaseService } from "../config/base.service";
 import { API } from "../../const/api.path";
 import { ResponseSuccess } from "../../app/interface";
-import { GetCourseParams } from "../../models/api/request/course/course.request.model";
-import { GetCourseResponse } from "../../models/api/responsive/course/course.response.model";
+import { CreateCourseParams, GetCourseParams } from "../../models/api/request/course/course.request.model";
+import { CreateCourseResponse, GetCourseResponse } from "../../models/api/responsive/course/course.response.model";
 
 export const CourseService = {
-  getCourse: async (params: GetCourseParams) => {
+  getCourse(params: GetCourseParams) {
     return BaseService.post<ResponseSuccess<GetCourseResponse>>({
       url: API.COURSE.GET_COURSE,
+      payload: params
+    });
+  },
+  createCourse(params: CreateCourseParams) {
+    return BaseService.post<ResponseSuccess<CreateCourseResponse>>({
+      url: API.COURSE.CREATE_COURSE,
       payload: params
     });
   }
