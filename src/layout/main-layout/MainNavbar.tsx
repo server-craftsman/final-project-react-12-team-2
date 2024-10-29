@@ -202,30 +202,12 @@ const Navbar = () => {
             <Link to="/about" className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">
               About
             </Link>
-          </div>
-          <div className="border-t border-indigo-700 pb-3 pt-4">
-            <div className="flex items-center px-5">
-              <div className="flex-shrink-0">
-                <FaUserCircle className="h-10 w-10 text-gray-300" />
-              </div>
-              <div className="ml-3">
-                <div className="text-base font-medium leading-none text-white">User Name</div>
-                <div className="text-sm font-medium leading-none text-gray-400">user@example.com</div>
-              </div>
-              <button className="ml-auto flex-shrink-0 rounded-full bg-indigo-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                <span className="sr-only">View notifications</span>
-                <FaBell className="h-6 w-6" />
-              </button>
-            </div>
-            <div className="mt-3 space-y-1 px-2">
-              <Link to="/profile" className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-indigo-700 hover:text-white">
-                Your Profile
+            <div className="mt-4 flex flex-col space-y-2 px-3">
+              <Link to="/login" className="rounded-full bg-gradient-to-r from-[#8529ff] to-[#5e17eb] px-4 py-2 text-center text-base font-medium text-white shadow-md transition-all duration-200 ease-in-out hover:from-[#7020d9] hover:to-[#4c11c2] hover:shadow-lg">
+                Login
               </Link>
-              <Link to="/settings" className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-indigo-700 hover:text-white">
-                Settings
-              </Link>
-              <Link to="/logout" className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-indigo-700 hover:text-white">
-                Sign out
+              <Link to="/register" className="rounded-full bg-gradient-to-r from-[#ffd700] to-[#ffa500] px-4 py-2 text-center text-base font-medium text-indigo-900 shadow-md transition-all duration-200 ease-in-out hover:from-[#ffcc00] hover:to-[#ff9500] hover:shadow-lg">
+                Signup
               </Link>
             </div>
           </div>
