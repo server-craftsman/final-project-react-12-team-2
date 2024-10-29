@@ -9,8 +9,8 @@ import { CreateCourseParams } from "../../../../models/api/request/course/course
 import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
 import { upload } from "../../../../utils";
 import { GetCategoryParams } from "../../../../models/api/request/admin/category.request.model";
-import { store } from "../../../../app/store";
-import { toggleLoading } from "../../../../app/loadingSlice";
+// import { store } from "../../../../app/store";
+// import { toggleLoading } from "../../../../app/loadingSlice";
 
 const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -144,18 +144,18 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
         discount: form.getFieldValue("discount") || 0,
       };
 
-      const response = await CourseService.createCourse(params);
+      await CourseService.createCourse(params);
       message.success("Course created successfully!");
 
       if (onCourseCreated) {
         onCourseCreated();
       }
-      // window.location.href = ROUTER_URL.INSTRUCTOR.COURSES;
-      store.dispatch(toggleLoading(true));
-      setTimeout(() => {
-        store.dispatch(toggleLoading(false));
-      }, 1000);
-      return response.data;
+      window.location.reload();
+      // store.dispatch(toggleLoading(true));
+      // setTimeout(() => {
+      //   store.dispatch(toggleLoading(false));
+      // }, 1000);
+      // return response.data;
     } catch (error) {
       console.error("Error creating course:", error);
       message.error("Failed to create course. Please try again.");

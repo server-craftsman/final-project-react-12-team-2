@@ -39,7 +39,12 @@ export const API = {
     CHANGE_PASSWORD: "api/users/change-password"
   },
   COURSE: {
+    //instructor
     GET_COURSE: "api/course/search",
-    CREATE_COURSE: "api/course" //instructor
+    CREATE_COURSE: "api/course",
+    //=========================================
+    //public
+    GET_PUBLIC_COURSE: "api/client/course/search"
+    //=========================================
   }
 };

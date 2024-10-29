@@ -36,7 +36,6 @@ const LoginPage = () => {
         return ROUTER_URL.COMMON.HOME;
     }
   };
-
   const onFinish = async (values: any) => {
     try {
       const result = await AuthService.login({
@@ -48,22 +47,27 @@ const LoginPage = () => {
         const token = result.data.data.token;
         await handleLogin(token);
 
-        toast.success("Login Success", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-          style: { backgroundColor: "#1a237e" }
-        });
-
         const userRole = localStorage.getItem("role");
         const defaultPath = getDefaultPath(userRole || "");
         if (typeof defaultPath === "string") {
-          navigate(defaultPath);
+          // Show toast notification before navigation
+          toast.success("Login Success", {
+            position: "top-right", 
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            style: { backgroundColor: "#1a237e" }
+          });
+
+          // Add small delay to ensure toast is visible
+          setTimeout(() => {
+            navigate(defaultPath);
+          }, 2000);
+
         } else {
           console.error("Invalid path:", defaultPath);
         }
@@ -89,7 +93,23 @@ const LoginPage = () => {
         const userRole = localStorage.getItem("role");
         const defaultPath = getDefaultPath(userRole || "");
         if (typeof defaultPath === "string") {
-          navigate(defaultPath);
+          toast.success("Login Success", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            style: { backgroundColor: "#1a237e" }
+          });
+
+          // Add small delay to ensure toast is visible
+          setTimeout(() => {
+            navigate(defaultPath);
+          }, 2000);
+
         } else {
           console.error("Invalid path:", defaultPath);
         }

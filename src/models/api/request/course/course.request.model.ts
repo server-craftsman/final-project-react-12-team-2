@@ -25,3 +25,10 @@ export interface CreateCourseParams {
   price: number;
   discount: number;
 }
+
+//==================CLIENT PUBLIC=======================
+
+export interface GetPublicCourseParams {
+  searchCondition: SearchCondition;
+  pageInfo: PageInfo;
+}

@@ -75,6 +75,7 @@ const CreateCategory: React.FC = () => {
       updateTinyMCEContent("description-editor", ""); // Clear the editor content
       setOpen(false);
       message.success("Category created successfully!");
+      window.location.reload();
     } catch (error) {
       console.error("Error creating category:", error);
       message.error("Failed to create category. Please try again.");
