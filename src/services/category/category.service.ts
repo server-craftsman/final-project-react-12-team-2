@@ -2,7 +2,7 @@ import { BaseService } from "../config/base.service";
 import { API } from "../../const/api.path";
 import { CreateCategoryParams, GetCategoryParams, UpdateCategoryParams } from "../../models/api/request/admin/category.request.model";
 import { ResponseSuccess } from "../../app/interface";
-import { CreateCategoryResponse, GetCategoryResponse, UpdateCategoryResponse } from "../../models/api/responsive/admin/category.responsive.model";
+import { CreateCategoryResponse, GetCategoryResponse, UpdateCategoryResponse, Category } from "../../models/api/responsive/admin/category.responsive.model";
 
 export const CategoryService = {
   getCategory(params: GetCategoryParams) {
@@ -29,7 +29,7 @@ export const CategoryService = {
     });
   },
   getCategoryDetails(id: string) {
-    return BaseService.get<ResponseSuccess<GetCategoryResponse>>({
+    return BaseService.get<ResponseSuccess<Category>>({
       url: API.ADMIN.GET_CATEGORY_DETAILS.replace(":id", id)
     });
   }
