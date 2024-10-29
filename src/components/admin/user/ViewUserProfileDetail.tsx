@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useMemo, memo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Row, Col, Form, Input, Popconfirm, Button, Modal, message } from "antd";
+import { Row, Col, Form, Input, Button, Modal, message } from "antd";
 import { HomeOutlined, DeleteOutlined, LockOutlined, UnlockOutlined, EditOutlined } from "@ant-design/icons";
 import { userStatusColor } from "../../../utils/userStatus";
 import { userRoleColor } from "../../../utils/userRole";
@@ -10,7 +10,7 @@ import { User } from "../../../models/api/responsive/users/users.model";
 // import { UserRole } from "../../../models/prototype/User";
 import { UserService } from "../../../services/admin/user.service";
 import { ROUTER_URL } from "../../../const/router.path";
-import parse from "html-react-parser";
+// import parse from "html-react-parser";
 import { HttpException } from "../../../app/exceptions";
 import { HTTP_STATUS, UserRoles } from "../../../app/enums";
 
@@ -123,105 +123,82 @@ const ViewUserProfileDetail = () => {
   }, [id, navigate]);
 
   const renderUserContent = useMemo(() => {
-    if (!user) return <div className="text-center text-xl font-bold text-gray-500">User not found</div>;
+    if (!user) {
+      return <div className="text-center text-xl font-bold text-gray-500">User not found</div>;
+    } else {
+      return (
+        <div className="max-w-10xl mx-auto rounded-lg bg-white p-8 shadow-lg">
+          <Row gutter={[24, 24]} align="top">
+            <Col xs={24} lg={8} className="text-center">
+              <img src={user.avatar_url || ""} alt={`${user.name}'s avatar`} className="mx-auto h-40 w-40 rounded-full border-4 border-gray-300 shadow-md" />
+              <h2 className="mt-4 text-2xl font-bold text-gray-800">{user.name}</h2>
+              <p className="text-gray-600">{user.email}</p>
+              <p className="text-gray-600">{helpers.formatPhoneNumber(user.phone_number as string)}</p>
+            </Col>
 
-    return (
-      <div className="max-w-10xl mx-auto rounded-lg bg-white p-6 shadow-lg">
-        <Row gutter={[16, 16]} align="top">
-          <Col xs={24} lg={16}>
-            <Form layout="vertical" className="space-y-4">
-              <Row gutter={16}>
-                <Col xs={24} sm={12}>
-                  <Form.Item label="Name" className="mb-2">
-                    <Input value={user.name} readOnly className="bg-gray-50" />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={12}>
-                  <Form.Item label="Role" className="mb-2">
-                    <div className="flex items-center gap-2">
-                      <span className={`rounded-full px-3 py-1 ${userRoleColor(user.role as UserRoles)}`}>{user.role.toUpperCase()}</span>
-                      <Button onClick={() => handleChangeRole(user.role as UserRoles)} icon={<EditOutlined />} type="primary" size="small" />
-                    </div>
-                  </Form.Item>
-                </Col>
-              </Row>
+            <Col xs={24} lg={16}>
+              <div className={`bg-[#1a237e] text-white p-4 rounded-md mb-6`}>
+                <h3 className="text-lg font-semibold">Information</h3>
+                <p>Name: {user.name}</p>
+                <p>Email: {user.email}</p>
+                <p>Phone: {helpers.formatPhoneNumber(user.phone_number as string)}</p>
+              </div>
 
-              <Row gutter={16}>
-                <Col xs={24} sm={12}>
-                  <Form.Item label="Email" className="mb-2">
-                    <Input value={user.email} readOnly className="bg-gray-50" />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={12}>
-                  <Form.Item label="Phone" className="mb-2">
-                    <Input value={helpers.formatPhoneNumber(user.phone_number as string) || ""} readOnly className="bg-gray-50" />
-                  </Form.Item>
-                </Col>
-              </Row>
+              <Form layout="vertical" className="space-y-6">
+                <Row gutter={24}>
+                  <Col xs={24} sm={12}>
+                    <Form.Item label="Role" className="mb-4">
+                      <div className="flex items-center gap-4">
+                        <span className={`rounded-md px-4 py-2 text-[#000] ${userRoleColor(user.role as UserRoles)}`}>{user.role.toUpperCase()}</span>
+                        <Button onClick={() => handleChangeRole(user.role as UserRoles)} icon={<EditOutlined />} type="primary" size="small" className="bg-blue-500 hover:bg-blue-600 text-white rounded-md px-4 py-2" />
+                      </div>
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={12}>
+                    <Form.Item label="Status" className="mb-4">
+                      <div className="flex items-center gap-4">
+                        <Input
+                          value={user.status ? "Active" : "Inactive"}
+                          readOnly
+                          className={`${userStatusColor(user.status)}`}
+                        />
+                        <Button onClick={() => handleChangeStatus(!user.status)} className={`ml-2 rounded-md px-4 py-2 font-medium transition-all duration-200 ${user.status ? "bg-green-500 text-white hover:bg-green-600" : "bg-red-500 text-white hover:bg-red-600"}`}>
+                          {user.status ? <LockOutlined /> : <UnlockOutlined />}
+                        </Button>
+                      </div>
+                    </Form.Item>
+                  </Col>
+                </Row>
 
-              <Row gutter={16}>
-                <Col xs={24} sm={12}>
-                  <Form.Item label="Status" className="mb-2">
-                    <div className="flex items-center gap-2">
-                      <Input
-                        value={user.status ? "Active" : "Inactive"}
-                        readOnly
-                        className="w-32 border-none bg-gradient-to-r from-gray-50 to-gray-100 font-medium shadow-sm"
-                        style={{
-                          color: userStatusColor(user.status),
-                          borderRadius: "0.5rem",
-                          padding: "0.5rem 1rem",
-                          textAlign: "center"
-                        }}
-                      />
-                      <Button onClick={() => handleChangeStatus(!user.status)} className={`ml-2 rounded-full px-4 py-1 font-medium transition-all duration-200 ${user.status ? "bg-gradient-to-r from-green-400 to-green-500 text-white hover:from-green-500 hover:to-green-600" : "bg-gradient-to-r from-red-400 to-red-500 text-white hover:from-red-500 hover:to-red-600"}`}>
-                        {user.status ? <LockOutlined /> : <UnlockOutlined />}
-                      </Button>
-                    </div>
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={12}>
-                  <Form.Item label="Description" className="mb-2">
-                    <div className="max-h-20 overflow-y-auto rounded bg-gray-50 p-2">{parse(user.description || "")}</div>
-                  </Form.Item>
-                </Col>
-              </Row>
-
-              <Row gutter={16}>
-                <Col xs={24} sm={12}>
-                  <Form.Item label="Date of Birth" className="mb-2">
-                    <Input value={helpers.formatDate(user.dob)} readOnly className="bg-gray-50" />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} sm={12}>
-                  <Form.Item label="Balance" className="mb-2">
-                    <Input value={user.balance} readOnly className="bg-gray-50" />
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Form>
-          </Col>
-
-          <Col xs={24} lg={8} className="text-center">
-            <img src={user.avatar_url || ""} alt={`${user.name}'s avatar`} className="mx-auto h-32 w-32 rounded-full border-2 border-gray-200 shadow" />
-            <h2 className="mt-3 text-xl font-bold">{user.name}</h2>
-            <div className="mt-4 space-x-2">
-              <Popconfirm title="Delete this account?" onConfirm={handleDeleteUser}>
-                <Button danger icon={<DeleteOutlined />}>
-                  Delete
-                </Button>
-              </Popconfirm>
-              <Button icon={<HomeOutlined />} onClick={() => navigate("/admin/manage-user")}>
-                Back
-              </Button>
-            </div>
-          </Col>
-        </Row>
-      </div>
-    );
+                <Row gutter={24}>
+                  <Col xs={24} sm={12}>
+                    <Form.Item label="Date of Birth" className="mb-4">
+                      <Input value={helpers.formatDate(user.dob)} readOnly className="bg-gray-50 border border-gray-300 rounded-md p-2" />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} sm={12}>
+                    <Form.Item label="Balance" className="mb-4">
+                      <Input value={user.balance} readOnly className="bg-gray-50 border border-gray-300 rounded-md p-2" />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Form>
+            </Col>
+          </Row>
+          <div className="flex justify-end mt-4">
+            <Button onClick={handleDeleteUser} type="primary" danger className="mr-2">
+              <DeleteOutlined />
+            </Button>
+            <Button onClick={() => navigate(ROUTER_URL.ADMIN.MANAGE_USER)} type="default">
+              <HomeOutlined />
+            </Button>
+          </div>
+        </div>
+      );
+    }
   }, [user, handleDeleteUser, navigate, handleChangeRole, handleChangeStatus]);
 
-  return renderUserContent;
+  return <>{renderUserContent}</>;
 };
 
 export default memo(ViewUserProfileDetail);
