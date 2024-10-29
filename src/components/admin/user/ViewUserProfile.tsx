@@ -248,16 +248,18 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
   };
 
   const handleDeleteSelected = async () => {
+    if (activeTab !== "blocked" && activeTab !== "all") return;
+
     Modal.confirm({
       title: "Delete Selected Accounts",
       content: "Are you sure you want to delete the selected accounts?",
       onOk: async () => {
         try {
           const userIdsToDelete = users?.pageData
-            .filter((user) => selectedUserIds.has(user._id) && (activeTab === "blocked" ? user.is_deleted : !user.is_verified))
+            .filter((user) => selectedUserIds.has(user._id)) // Consider all selected users
             .map((user) => user._id);
 
-          if (userIdsToDelete) { // Check if userIdsToDelete is defined
+          if (userIdsToDelete) {
             for (const userId of userIdsToDelete) {
               const response = await UserService.deleteUser(userId);
 
@@ -283,7 +285,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
   // Memoize columns to prevent unnecessary recreations
   const columns = React.useMemo(() => {
     const baseColumns = [
-      {
+      activeTab !== "unverified" && {
         title: <Checkbox onChange={(e) => handleSelectAll(e.target.checked)} />,
         dataIndex: "_id",
         key: "select",
@@ -385,9 +387,11 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
 
   return (
     <div className="f -mt-3 mb-64 p-4">
-      <Button onClick={handleDeleteSelected} disabled={selectedUserIds.size === 0} className="mb-4 bg-red-500 text-white">
-        <DeleteOutlined />
-      </Button>
+      {(activeTab === "blocked" || activeTab === "all") && ( // Show delete button only in "blocked" tab
+        <Button onClick={handleDeleteSelected} disabled={selectedUserIds.size === 0} className="mb-4 bg-red-500 text-white">
+          <DeleteOutlined />
+        </Button>
+      )}
       <Table<User> className="shadow-lg" columns={columns} dataSource={users?.pageData || []} rowKey="_id" pagination={{ pageSize: 10 }} />
     </div>
   );
