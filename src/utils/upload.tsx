@@ -1,5 +1,6 @@
 import { message } from "antd";
 import cloudinaryConfig from "../services/config/cloudinaryConfig";
+// import { useCallback } from "react";
 
 export const handleUploadFile = async (file: File, type: "video" | "image") => {
   // Create FormData object for multipart/form-data upload
@@ -71,3 +72,36 @@ export const customUploadHandler = async (
     setUploading(false);
   }
 };
+
+// export const handleImageUpload = useCallback(
+//   (file: File, setState: (value: React.SetStateAction<any>) => void) => {
+//     const maxSize = 10 * 1024 * 1024;
+//     if (file.size > maxSize) {
+//     message.error("File size should not exceed 10MB");
+//     return false;
+//   }
+
+//     const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+//     if (!allowedTypes.includes(file.type)) {
+//       message.error("Please upload an image file (JPEG, PNG, or GIF)");
+//       return false;
+//     }
+
+//     setState((prev: any) => ({
+//       ...prev,
+//       selectedFile: file,
+//       user: prev.user
+//       ? {
+//           ...prev.user,
+//           data: {
+//             ...prev.user.data,
+//             avatar_url: URL.createObjectURL(file)
+//           }
+//         }
+//       : null
+//     }));
+
+//     return false;
+//   },
+//   []
+// );

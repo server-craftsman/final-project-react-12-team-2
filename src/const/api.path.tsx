@@ -29,11 +29,14 @@ export const API = {
   INSTRUCTOR: {
     GET_USER_DETAILS: "api/users/:id",
     UPDATE_USER: "api/users/:id",
-    CHANGE_PASSWORD: "api/users/change-password"
+    CHANGE_PASSWORD: "api/users/change-password",
   },
   STUDENT: {
     GET_USER_DETAILS: "api/users/:id",
     UPDATE_USER: "api/users/:id",
     CHANGE_PASSWORD: "api/users/change-password"
+  },
+  COURSE: {
+    GET_COURSE: "api/course/search"
   }
 };

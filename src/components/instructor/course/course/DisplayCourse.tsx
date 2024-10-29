@@ -5,7 +5,6 @@ import { Course, CourseStatusEnum } from "../../../../models/prototype/Course";
 import { useEffect, useState } from "react";
 import { Button, message, Modal, Pagination, Select } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
-import { courses as coursesData } from "../../../../data/courses.json";
 import { categories } from "../../../../data/categories.json";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
@@ -13,6 +12,10 @@ import CreateCourseButton from "./CreateButton";
 import FilterStatus from "./FilterStatus";
 import { capitalizeWords, courseStatusName } from "../../../../const/constCommon";
 const { Option } = Select;
+
+//import service
+import { CourseService } from "../../../../services/course/course.service";
+import { GetCourseParams } from "../../../../models/api/request/course/course.request.model";
 
 const DisplayCourse: React.FC<{
   searchTerm: string;
@@ -30,17 +33,47 @@ const DisplayCourse: React.FC<{
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
-    const coursesTempData = coursesData.map((course) => {
-      const category = categories.find((category) => category.id === course.category_id);
-      return {
-        ...course,
-        category_name: category?.name
-      };
-    }) as unknown as [];
-    setCourses(coursesTempData);
-    setTotalItems(coursesTempData.length);
-    setFilteredCourses(coursesTempData);
-  }, [statusFilter]); // Add statusFilter as a dependency
+    const fetchCourses = async () => {
+      try {
+        const params: GetCourseParams = {
+          searchCondition: {
+            keyword: searchTerm,
+            category_id: statusFilter,
+            status: statusFilter,
+            is_delete: false
+          },
+          pageInfo: {
+            pageNum,
+            pageSize
+          }
+        };
+
+        const response = await CourseService.getCourse(params);
+
+        // Check if the response is successful
+        if (response.status === 200 && response.data) {
+          const pageData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [];
+          const coursesTempData = pageData.map((course: Course) => {
+            const category = categories.find((category) => category.id === course.category_id);
+            return {
+              ...course,
+              category_name: category?.name
+            };
+          });
+          setCourses(coursesTempData);
+          setTotalItems(response.data.data.pageInfo.totalItems); // Assuming totalItems is part of the response
+          setFilteredCourses(coursesTempData);
+        } else {
+          throw new Error("Failed to fetch courses");
+        }
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+        message.error("Failed to fetch courses");
+      }
+    };
+
+    fetchCourses();
+  }, [searchTerm, statusFilter, pageNum, pageSize]);
 
   const renderStatusChange = (record: Course) => {
     const isWaitingApprove = [CourseStatusEnum.new, CourseStatusEnum.waiting_approve].includes(record.status);
@@ -70,7 +103,6 @@ const DisplayCourse: React.FC<{
     return courseStatusName[status] || "Unknown status";
   };
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     setSelectedCourse(selectedRowKeys as unknown as any);
   }, [selectedRowKeys, setSelectedCourse]);
 
@@ -79,17 +111,15 @@ const DisplayCourse: React.FC<{
   const paginatedCourses = () => {
     const startIndex = (pageNum - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    return filteredCoursesData.slice(startIndex, endIndex); // Use filteredCoursesData
+    return filteredCoursesData.slice(startIndex, endIndex);
   };
   const handleSearch = (searchText: string) => {
     if (searchText === "") {
       setFilteredCourses(courses);
     } else {
       const filtered = courses.filter((course) =>
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (course as any).name.toLowerCase().includes(searchText.toLowerCase())
       );
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setFilteredCourses(filtered as any);
     }
     setPageNum(1);
@@ -168,7 +198,7 @@ const DisplayCourse: React.FC<{
         <CustomSearch
           onSearch={(value) => {
             handleSearch(value);
-            onSearch(value); // Use the onSearch prop here
+            onSearch(value);
           }}
           placeholder="Search by course name"
           className="w-1/5"
