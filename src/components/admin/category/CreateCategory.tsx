@@ -5,6 +5,7 @@ import { GetCategoryResponse } from "../../../models/api/responsive/admin/catego
 import { CategoryService } from "../../../services/category/category.service";
 import { Editor } from "@tinymce/tinymce-react";
 import { TINY_API_KEY } from "../../../services/config/apiClientTiny";
+import { getTinyMCEContent, updateTinyMCEContent } from "../../../utils/parse.tiny.editor";
 
 const CreateCategory: React.FC = () => {
   const [categories, setCategories] = useState<GetCategoryResponse | null>(null);
@@ -30,7 +31,8 @@ const CreateCategory: React.FC = () => {
   const handleSubmit = async () => {
     try {
       // Extract only the necessary fields from the form
-      const { name, description, parent_category_id } = form.getFieldsValue();
+      const { name, parent_category_id } = form.getFieldsValue();
+      const description = getTinyMCEContent("description-editor") || "";
 
       // Log the values to debug
       console.log("Form Values:", { name, description, parent_category_id });
@@ -38,7 +40,7 @@ const CreateCategory: React.FC = () => {
       // Create a new category object with only the necessary fields
       const newCategory = {
         name,
-        description: typeof description === "string" ? description : "", // Ensure description is a string
+        description,
         parent_category_id
       };
 
@@ -70,6 +72,7 @@ const CreateCategory: React.FC = () => {
       setCategories(resolvedCategory);
 
       form.resetFields();
+      updateTinyMCEContent("description-editor", ""); // Clear the editor content
       setOpen(false);
       message.success("Category created successfully!");
     } catch (error) {
@@ -106,7 +109,7 @@ const CreateCategory: React.FC = () => {
             <Editor
               apiKey={TINY_API_KEY}
               init={editorConfig}
-              value={typeof form.getFieldValue("description") === "string" ? form.getFieldValue("description") : ""}
+              id="description-editor"
               onEditorChange={(content) => {
                 form.setFieldsValue({ description: content });
                 console.log("Content:", content);

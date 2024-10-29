@@ -15,3 +15,9 @@ export interface CreateCategoryParams {
   parent_category_id: string | null;
   description: string;
 }
+
+export interface UpdateCategoryParams {
+  name:	string;
+  parent_category_id: string | null;
+  description: string;
+}

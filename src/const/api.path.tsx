@@ -24,7 +24,9 @@ export const API = {
     REVIEW_PROFILE_INSTRUCTOR: "api/users/review-profile-instructor",
     GET_CATEGORY: "api/category/search",
     CREATE_CATEGORY: "api/category",
-    DELETE_CATEGORY: "api/category/:id"
+    DELETE_CATEGORY: "api/category/:id",
+    UPDATE_CATEGORY: "api/category/:id",
+    GET_CATEGORY_DETAILS: "api/category/:id"
   },
   INSTRUCTOR: {
     GET_USER_DETAILS: "api/users/:id",
