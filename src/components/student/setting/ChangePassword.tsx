@@ -14,7 +14,7 @@ interface ChangePasswordProps {
 const ChangePassword: React.FC<ChangePasswordProps> = () => {
   const navigate = useNavigate();
   const [passwordForm] = Form.useForm();
-  const { getCurrentUser, userInfo } = useAuth();
+  const { getCurrentUser, userInfo, logout } = useAuth();
 
   useEffect(() => {
     getCurrentUser();
@@ -34,7 +34,8 @@ const ChangePassword: React.FC<ChangePasswordProps> = () => {
       if (response) {
         message.success("Password changed successfully");
         passwordForm.resetFields();
-        navigate(ROUTER_URL.STUDENT.BASE);
+        logout();
+        navigate(ROUTER_URL.LOGIN);
       }
     } catch (error) {
       if (error instanceof HttpException) {

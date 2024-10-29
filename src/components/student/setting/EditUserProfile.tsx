@@ -4,8 +4,6 @@ import { Form, Input, Button, message, DatePicker, Avatar, Upload } from "antd";
 import { Rule } from "antd/es/form";
 import moment from "moment";
 import dayjs from "dayjs";
-import { Editor } from "@tinymce/tinymce-react";
-import { TINY_API_KEY } from "../../../services/config/apiClientTiny";
 import { UserService } from "../../../services/student/user.service";
 import { GetCurrentUserResponse } from "../../../models/api/responsive/authentication/auth.responsive.model";
 import { helpers } from "../../../utils";
@@ -15,6 +13,8 @@ import cloudinaryConfig from "../../../services/config/cloudinaryConfig";
 import { ROUTER_URL } from "../../../const/router.path";
 import { HTTP_STATUS } from "../../../app/enums";
 import { HttpException } from "../../../app/exceptions";
+import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
+import { parseTinyEditor } from "../../../utils";
 
 const EditUserProfile = () => {
   const { id } = useParams<{ id: string }>();
@@ -203,20 +203,12 @@ const EditUserProfile = () => {
     return false;
   }, []);
 
-  const editorConfig = useMemo(
-    () => ({
-      height: 300,
-      menubar: true,
-      plugins: ["advlist", "autolink", "lists", "link", "image", "charmap", "preview", "anchor", "searchreplace", "visualblocks", "code", "fullscreen", "insertdatetime", "media", "table", "help", "wordcount"],
-      toolbar: "undo redo | formatselect | " + "bold italic backcolor | alignleft aligncenter " + "alignright alignjustify | bullist numlist outdent indent | " + "removeformat | help",
-      content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-      tracking: false,
-      promotion: false,
-      skin: "oxide",
-      content_css: "default"
-    }),
-    []
-  );
+  const editChange = (value: string, editor: any) => {
+    form.setFieldsValue({ description: value });
+    parseTinyEditor.updateTinyMCEContent("description-editor", value);
+    editor.selection.select(editor.getBody(), true);
+    editor.selection.collapse(false);
+  };
 
   if (!state.user) {
     return <div>User not found</div>;
@@ -248,17 +240,8 @@ const EditUserProfile = () => {
           <Form.Item label={<span className="font-medium text-[#1a237e]">Phone Number</span>} name="phone_number" rules={validationRules.phone_number as Rule[]}>
             <Input className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
           </Form.Item>
-
           <Form.Item label={<span className="font-medium text-[#1a237e]">Description</span>} name="description" rules={validationRules.description as Rule[]}>
-            <Editor
-              apiKey={TINY_API_KEY}
-              id="description-editor"
-              initialValue={state.user?.data.description || ""}
-              init={editorConfig}
-              onEditorChange={(content) => {
-                form.setFieldsValue({ description: content });
-              }}
-            />
+            <TinyMCEEditor initialValue={state.user?.data.description || ""} onEditorChange={editChange} />
           </Form.Item>
           <Form.Item label={<span className="font-medium text-[#1a237e]">Date of Birth</span>} name="dob" rules={validationRules.dob as Rule[]}>
             <DatePicker
