@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import { Button, Col, Form, Input, InputNumber, message, Modal, Radio, Row, Select, Upload, UploadFile } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 const { Option } = Select;
-import { useNavigate } from "react-router-dom";
 
 import { CourseService } from "../../../../services/course/course.service";
 import { CategoryService } from "../../../../services/category/category.service";
@@ -12,7 +11,6 @@ import { upload } from "../../../../utils";
 import { GetCategoryParams } from "../../../../models/api/request/admin/category.request.model";
 import { store } from "../../../../app/store";
 import { toggleLoading } from "../../../../app/loadingSlice";
-import { ROUTER_URL } from "../../../../const/router.path";
 
 const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +26,6 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
   const [avatarPreview, setAvatarPreview] = useState<string>("");
   const [videoFileList, setVideoFileList] = useState<UploadFile<any>[]>([]);
   const [avatarFileList, setAvatarFileList] = useState<UploadFile<any>[]>([]);
-  const navigate = useNavigate();
 
   const getParentCategoryParams: GetCategoryParams = {
     searchCondition: {
