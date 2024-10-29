@@ -3,10 +3,14 @@ import logo1 from "../../assets/logo1.jpg";
 import { FaSearch, FaBell, FaUserCircle, FaBars } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../contexts/AuthContext";
+import { ROUTER_URL } from "../../const/router.path";
+import { UserRoles } from "../../app/enums";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { cartItems } = useCart();
+  const { userInfo, logout } = useAuth();
 
   useEffect(() => {
     const handleResize = () => {
@@ -24,6 +28,40 @@ const Navbar = () => {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const getDashboardLink = () => {
+    if (!userInfo) {
+      return ROUTER_URL.COMMON.HOME;
+    }
+    switch (userInfo.role) {
+      case UserRoles.ADMIN:
+        return ROUTER_URL.ADMIN.BASE;
+      case UserRoles.INSTRUCTOR:
+        return ROUTER_URL.INSTRUCTOR.BASE;
+      case UserRoles.STUDENT:
+        return ROUTER_URL.STUDENT.BASE;
+      case UserRoles.ALL:
+        return ROUTER_URL.COMMON.HOME;
+      default:
+        return ROUTER_URL.COMMON.HOME;
+    }
+  };
+
+  const getSettingsLink = () => {
+    if (!userInfo) {
+      return ROUTER_URL.COMMON.HOME;
+    }
+    switch (userInfo.role) {
+      case UserRoles.ADMIN:
+        return ROUTER_URL.ADMIN.INFO;
+      case UserRoles.INSTRUCTOR:
+        return ROUTER_URL.INSTRUCTOR.INFO;
+      case UserRoles.STUDENT:
+        return ROUTER_URL.STUDENT.SETTING;
+      default:
+        return ROUTER_URL.COMMON.HOME;
+    }
   };
 
   return (
@@ -76,20 +114,71 @@ const Navbar = () => {
               </svg>
               {cartItems.length > 0 && <span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">{cartItems.length}</span>}
             </Link>
-            <Link to="/login" className="hidden rounded-full bg-gradient-to-r from-[#8529ff] to-[#5e17eb] px-4 py-2 text-sm font-medium text-white shadow-md transition-all duration-200 ease-in-out hover:from-[#7020d9] hover:to-[#4c11c2] hover:shadow-lg lg:inline-block lg:px-6">
-              Login
-            </Link>
-            <Link to="/register" className="hidden rounded-full bg-gradient-to-r from-[#ffd700] to-[#ffa500] px-4 py-2 text-sm font-medium text-indigo-900 shadow-md transition-all duration-200 ease-in-out hover:from-[#ffcc00] hover:to-[#ff9500] hover:shadow-lg lg:inline-block lg:px-6">
-              Signup
-            </Link>
-            <button className="hidden text-gray-300 hover:text-white lg:block">
+            {userInfo ? (
+              <div className="group relative">
+                <div className="flex items-center space-x-4">
+                  <div className="relative">
+                    <img 
+                      src={userInfo.avatar_url} 
+                      alt="User Avatar" 
+                      className="h-10 w-10 rounded-full border-2 border-gold shadow-lg transition-all duration-300 hover:scale-105" 
+                    />
+                    <div className="absolute -inset-0.5 rounded-full bg-gradient-to-br from-gold to-amber-300 opacity-20"></div>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-medium tracking-wide text-white transition-colors duration-200 hover:text-gold">
+                      {userInfo.name}
+                    </span>
+                    <span className="text-sm text-gray-300 transition-colors duration-200 hover:text-amber-200">
+                      {userInfo.email}
+                    </span>
+                  </div>
+                </div>
+                <div className="invisible absolute right-0 mt-2 w-48 rounded-md bg-white opacity-0 shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-200 ease-in-out group-hover:visible group-hover:opacity-100">
+                  <div className="py-1" role="menu" aria-orientation="vertical">
+                    <Link to={getDashboardLink()} className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100 hover:text-indigo-900" role="menuitem">
+                      My Dashboard
+                    </Link>
+                    <Link to={getSettingsLink()} className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100 hover:text-indigo-900" role="menuitem">
+                      Settings
+                    </Link>
+                    <button
+                      onClick={logout}
+                      className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-indigo-100 hover:text-indigo-900"
+                      role="menuitem"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <>
+                <Link to="/login" className="hidden rounded-full bg-gradient-to-r from-[#8529ff] to-[#5e17eb] px-4 py-2 text-sm font-medium text-white shadow-md transition-all duration-200 ease-in-out hover:from-[#7020d9] hover:to-[#4c11c2] hover:shadow-lg lg:inline-block lg:px-6">
+                  Login
+                </Link>
+                <Link to="/register" className="hidden rounded-full bg-gradient-to-r from-[#ffd700] to-[#ffa500] px-4 py-2 text-sm font-medium text-indigo-900 shadow-md transition-all duration-200 ease-in-out hover:from-[#ffcc00] hover:to-[#ff9500] hover:shadow-lg lg:inline-block lg:px-6">
+                  Signup
+                </Link>
+              </>
+            )}
+            {/* <button className="hidden text-gray-300 hover:text-white lg:block">
               <FaUserCircle className="h-8 w-8" />
-            </button>
+            </button> */}
           </div>
           <div className="flex items-center lg:hidden">
-            <button onClick={toggleMenu} className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-indigo-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+            <button 
+              onClick={toggleMenu} 
+              className="inline-flex items-center justify-center rounded-full p-3 text-white 
+                bg-gradient-to-r from-gold to-amber-500
+                hover:from-gold-dark hover:to-amber-600
+                shadow-lg hover:shadow-xl
+                transform hover:scale-110
+                transition-all duration-500 ease-in-out
+                focus:outline-none focus:ring-4 focus:ring-amber-300 focus:ring-offset-2 focus:ring-offset-gray-800"
+            >
               <span className="sr-only">Open main menu</span>
-              <FaBars className="block h-6 w-6" aria-hidden="true" />
+              <FaBars className="block h-8 w-8" aria-hidden="true" />
             </button>
           </div>
         </div>
