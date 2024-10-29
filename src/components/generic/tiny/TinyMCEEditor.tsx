@@ -15,11 +15,11 @@ const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({ initialValue, onEditorCha
       menubar: true,
       plugins: ["advlist", "autolink", "lists", "link", "image", "charmap", "preview", "anchor", "searchreplace", "visualblocks", "code", "fullscreen", "insertdatetime", "media", "table", "help", "wordcount"],
       toolbar: "undo redo | formatselect | " + "bold italic backcolor | alignleft aligncenter " + "alignright alignjustify | bullist numlist outdent indent | " + "removeformat | help",
-      content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+      content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px; background-color:#1a237e; color:white; }",
       tracking: false,
       promotion: false,
-      skin: "oxide",
-      content_css: "default"
+      skin: "oxide-dark",
+      content_css: "dark"
     }),
     []
   );
