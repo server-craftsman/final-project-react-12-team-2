@@ -1,13 +1,13 @@
 import Table, { ColumnsType } from "antd/es/table";
-import { courseStatusColor } from "../../../../utils/courseStatus";
+// import { courseStatusColor } from "../../../../utils/courseStatus";
 import { formatDate, moneyFormat } from "../../../../utils/helper";
 import { CourseStatusBadge } from "../../../../utils/courseStatus";
 import { StatusType } from "../../../../app/enums";
 import { useEffect, useState } from "react";
-import { Button, message, Modal, Pagination, Select } from "antd";
+import { Button, message, Modal, Pagination } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
-import EditButton from "./EditButton";
-import DeleteButton from "./DeleteButton";
+// import EditButton from "./EditButton";
+// import DeleteButton from "./DeleteButton";
 import CreateCourseButton from "./CreateButton";
 import FilterStatus from "./FilterStatus";
 import useCourseCache from "../../../../hooks/useCourseCache";
@@ -28,9 +28,9 @@ const DisplayCourse: React.FC<{
   // Use the custom hook to fetch courses
   const { courses, totalItems } = useCourseCache(searchTerm, statusFilter as StatusType | "", pageNum, pageSize);
 
-  const getCourseStatusName = (status: StatusType): string => {
-    return courseStatusColor[status] || "Unknown status";
-  };
+  // const getCourseStatusName = (status: StatusType): string => {
+  //   return courseStatusColor[status] || "Unknown status";
+  // };
 
   useEffect(() => {
     setSelectedCourse(selectedRowKeys as unknown as any);

@@ -48,7 +48,7 @@ const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageN
           );
 
           setCourses(coursesTempData);
-          //   setTotalItems(response.data.data.pageInfo.totalItems);
+          setTotalItems(10);
         } else {
           throw new Error("Failed to fetch courses");
         }

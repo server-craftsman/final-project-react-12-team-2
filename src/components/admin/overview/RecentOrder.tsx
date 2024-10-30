@@ -1,8 +1,8 @@
 import { Table, Typography } from "antd";
-import { courseStatusColor, getCourseStatusName } from "../../../utils/courseStatus";
+import { CourseStatusBadge } from "../../../utils/courseStatus";
 import { courses } from "../../../data/courses.json";
-import { CourseStatusEnum } from "../../../models/prototype/Course";
 import { formatDate } from "../../../utils/helper";
+import { StatusType } from "../../../app/enums/course.status.enum";
 
 const recentOrderData = courses.map((course) => ({
   id: course.id,
@@ -54,7 +54,7 @@ const columns = [
     title: "Status",
     dataIndex: "status",
     key: "status",
-    render: (status: CourseStatusEnum) => <button className={courseStatusColor[status]}>{getCourseStatusName(status)}</button>
+    render: (status: StatusType) => <CourseStatusBadge status={status} />
   },
   {
     title: "Created At",

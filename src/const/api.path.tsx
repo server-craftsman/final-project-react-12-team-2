@@ -56,6 +56,7 @@ export const API = {
     CREATE_SESSION: "api/session"
   },
   LESSON: {
+    GET_LESSON: "api/lesson/search",
     CREATE_LESSON: "api/lesson"
   },
   SUBSCRIPTION: {
