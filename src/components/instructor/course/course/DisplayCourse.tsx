@@ -5,17 +5,13 @@ import { Course, CourseStatusEnum } from "../../../../models/prototype/Course";
 import { useEffect, useState } from "react";
 import { Button, message, Modal, Pagination, Select } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
-import { categories } from "../../../../data/categories.json";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
 import CreateCourseButton from "./CreateButton";
 import FilterStatus from "./FilterStatus";
 import { capitalizeWords, courseStatusName } from "../../../../const/constCommon";
+import useCourseCache from "../../../../hooks/useCourseCache";
 const { Option } = Select;
-
-//import service
-import { CourseService } from "../../../../services/course/course.service";
-import { GetCourseParams } from "../../../../models/api/request/course/course.request.model";
 
 const DisplayCourse: React.FC<{
   searchTerm: string;
@@ -23,57 +19,14 @@ const DisplayCourse: React.FC<{
   onSearch: (value: string) => void;
   onStatusChange: (status: CourseStatusEnum | "") => void;
 }> = ({ searchTerm, statusFilter, onSearch, onStatusChange }) => {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
-  const [totalItems, setTotalItems] = useState<number>(0);
   const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
   const [selectedCourse, setSelectedCourse] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const params: GetCourseParams = {
-          searchCondition: {
-            keyword: searchTerm,
-            category_id: statusFilter,
-            status: statusFilter,
-            is_delete: false
-          },
-          pageInfo: {
-            pageNum,
-            pageSize
-          }
-        };
-
-        const response = await CourseService.getCourse(params);
-
-        // Check if the response is successful
-        if (response.status === 200 && response.data) {
-          const pageData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [];
-          const coursesTempData = pageData.map((course: Course) => {
-            const category = categories.find((category) => category.id === course.category_id);
-            return {
-              ...course,
-              category_name: category?.name
-            };
-          });
-          setCourses(coursesTempData);
-          setTotalItems(response.data.data.pageInfo.totalItems); // Assuming totalItems is part of the response
-          setFilteredCourses(coursesTempData);
-        } else {
-          throw new Error("Failed to fetch courses");
-        }
-      } catch (error) {
-        console.error("Error fetching courses:", error);
-        message.error("Failed to fetch courses");
-      }
-    };
-
-    fetchCourses();
-  }, [searchTerm, statusFilter, pageNum, pageSize]);
+  
+  // Use the custom hook to fetch courses
+  const { courses, totalItems } = useCourseCache(searchTerm, statusFilter, pageNum, pageSize);
 
   const renderStatusChange = (record: Course) => {
     const isWaitingApprove = [CourseStatusEnum.new, CourseStatusEnum.waiting_approve].includes(record.status);
@@ -88,20 +41,23 @@ const DisplayCourse: React.FC<{
       </Button>
     ) : (
       <Select defaultValue={capitalizeWords(record.status)} style={{ width: 140 }}>
-        <Option value="active">Active</Option>
-        <Option value="inactive">Inactive</Option>
+        <Option key="active" value="active">Active</Option>
+        <Option key="inactive" value="inactive">Inactive</Option>
       </Select>
     );
   };
+
   const renderActions = (record: Course) => (
     <div className="flex space-x-2">
       <EditButton data={record} />
       <DeleteButton />
     </div>
   );
+
   const getCourseStatusName = (status: CourseStatusEnum): string => {
     return courseStatusName[status] || "Unknown status";
   };
+
   useEffect(() => {
     setSelectedCourse(selectedRowKeys as unknown as any);
   }, [selectedRowKeys, setSelectedCourse]);
@@ -113,18 +69,16 @@ const DisplayCourse: React.FC<{
     const endIndex = startIndex + pageSize;
     return filteredCoursesData.slice(startIndex, endIndex);
   };
+
   const handleSearch = (searchText: string) => {
-    if (searchText === "") {
-      setFilteredCourses(courses);
-    } else {
-      const filtered = courses.filter((course) =>
-        (course as any).name.toLowerCase().includes(searchText.toLowerCase())
-      );
-      setFilteredCourses(filtered as any);
-    }
     setPageNum(1);
-    setTotalItems(filteredCourses.length);
+    filteredCoursesData.length === 0
+      ? courses
+      : courses.filter((course) =>
+          course.name.toLowerCase().includes(searchText.toLowerCase())
+        );
   };
+
   const columns: ColumnsType<Course> = [
     {
       title: "Name",
@@ -172,6 +126,7 @@ const DisplayCourse: React.FC<{
       render: (_, record) => renderActions(record)
     }
   ];
+
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[]) => {
@@ -211,7 +166,13 @@ const DisplayCourse: React.FC<{
           </Button>
         </div>
       </div>
-      <Table rowSelection={rowSelection} columns={columns} dataSource={filteredCoursesData && paginatedCourses()} rowKey="id" pagination={false} />
+      <Table 
+        rowSelection={rowSelection} 
+        columns={columns} 
+        dataSource={filteredCoursesData && paginatedCourses()} 
+        rowKey="id"
+        pagination={false} 
+      />
       <div className="mt-5 flex justify-end">
         <Pagination
           current={pageNum}

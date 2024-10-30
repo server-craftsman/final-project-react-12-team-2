@@ -16,7 +16,13 @@ const CourseComponent = () => {
 
   return (
     <div>
-      <DisplayCourse searchTerm={searchTerm} statusFilter={statusFilter} onSearch={handleSearch} onStatusChange={handleStatusChange} />
+      <DisplayCourse 
+        searchTerm={searchTerm} 
+        statusFilter={statusFilter} 
+        onSearch={handleSearch} 
+        onStatusChange={handleStatusChange} 
+        // Ensure each child in a list within DisplayCourse has a unique key
+      />
     </div>
   );
 };

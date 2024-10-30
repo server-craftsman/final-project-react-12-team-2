@@ -1,42 +1,80 @@
 import { Button, Form, Input, message, Modal, Select } from "antd";
 const { Option } = Select;
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
 import { SessionService } from "../../../../services/session/session.service";
 import { CreateSessionRequestModel } from "../../../../models/api/request/session/session.request.model";
-import { CreateSessionResponse } from "../../../../models/api/responsive/session/session.response.model";
-
+import { CourseService } from "../../../../services/course/course.service";
+import { GetCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
+import { useCallbackSession } from "../../../../hooks/useCallbackSession";
 const CreateButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
   const [description, setDescription] = useState("");
+  const [courses, setCourses] = useState<GetCourseResponse["pageData"]>([]);
+
+  useEffect(() => {
+    const loadCourses = async () => {
+      try {
+        const courseData = await CourseService.getCourse({
+          searchCondition: {
+            keyword: "",
+            category_id: "",
+            status: "",
+            is_delete: false
+          },
+          pageInfo: { pageNum: 1, pageSize: 10 }
+        });
+        setCourses(courseData.data.data.pageData.map((course) => ({ ...course, id: course._id })) || []);
+      } catch (error) {
+        message.error("Failed to load courses");
+        console.error(error);
+      }
+    };
+    loadCourses();
+  }, []);
+
   const openCreateModal = () => {
     setIsOpen(true);
   };
+
+
   const handleOk = async () => {
-    await form.validateFields();
-    setIsOpen(false);
-    message.info("Created");
-    form.resetFields();
+    try {
+      const values = await form.validateFields();
+      const requestData: CreateSessionRequestModel = {
+        ...values,
+        description: description
+      };
+      await SessionService.createSession(requestData);
+      message.success("Session created successfully");
+      setIsOpen(false);
+      form.resetFields();
+      useCallbackSession();
+    } catch (error) {
+      console.error("Failed to create session:", error);
+      message.error("Failed to create session");
+    }
   };
 
   const handleCancel = () => {
     setIsOpen(false);
     form.resetFields();
+    setDescription("");
   };
 
   return (
     <>
-      <Button onClick={() => openCreateModal()} className="rounded-md bg-[#1a237e] text-white">
+      <Button onClick={openCreateModal} className="rounded-md bg-[#1a237e] text-white">
         Create Session
       </Button>
-      <Modal title="Create Session" open={isOpen} onOk={handleOk} onCancel={handleCancel} width={800} style={{ top: "20px" }}>
+      <Modal title="Create Session" open={isOpen} onOk={handleOk} onCancel={handleCancel} width={800} style={{ top: "20px" }} destroyOnClose={true}>
         <Form form={form} layout="vertical">
           <Form.Item name="name" label="Name" rules={[{ required: true, message: "Please input the lesson name!" }]}>
             <Input />
           </Form.Item>
-          <Form.Item name="course_id" label="Course" rules={[{ required: true, message: "Please select the session!" }]}>
-            <Select>
+          <Form.Item name="course_id" label="Course" rules={[{ required: true, message: "Please select a course!" }]}>
+            <Select placeholder="Select a course">
               {courses.map((course: any) => (
                 <Option key={course.id} value={course.id}>
                   {course.name}

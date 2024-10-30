@@ -37,7 +37,7 @@ const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange }) => {
       </Select.Option>
       {Object.values(CourseStatusEnum).map((status) => {
         return (
-          <Select.Option key={status} value={status}>
+          <Select.Option key={`status-${status}`} value={status}>
             {renameStatus(status)}
           </Select.Option>
         );

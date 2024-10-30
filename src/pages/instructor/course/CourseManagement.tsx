@@ -5,6 +5,7 @@ import { Content } from "antd/es/layout/layout";
 import CourseComponent from "../../../components/instructor/course/course/CourseComponent";
 import SessionComponent from "../../../components/instructor/course/session/SessionComponent";
 import LessionComponent from "../../../components/instructor/course/lesson/LessionComponent";
+
 const CourseManagement = () => {
   const statusLabelList = [
     {
@@ -60,15 +61,15 @@ const CourseManagement = () => {
   const renderTagMenu = () => {
     return (
       <Row className="mb-5 justify-center align-middle">
-        {statusLabelList.map((status, index) => (
-          <React.Fragment key={index}>
+        {statusLabelList.map((status) => (
+          <React.Fragment key={status.name}>
             <Col className="text-center">
               <Tag color={status.color} className="px-5 py-0 text-base">
                 {status.name}
               </Tag>
               <div className="text-sm">{status.title}</div>
             </Col>
-            {statusLabelList.length - 1 > index && (
+            {statusLabelList.length - 1 > statusLabelList.indexOf(status) && (
               <Col>
                 <ArrowRightOutlined className="mr-2 text-sm" />
               </Col>

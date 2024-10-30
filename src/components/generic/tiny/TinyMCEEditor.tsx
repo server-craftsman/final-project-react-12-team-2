@@ -8,23 +8,55 @@ interface TinyMCEEditorProps {
   editorConfig?: any;
 }
 
-const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({ initialValue, onEditorChange, editorConfig }) => {
+const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({
+  initialValue,
+  onEditorChange,
+  editorConfig,
+}) => {
   const defaultEditorConfig = useMemo(
     () => ({
       height: 300,
       menubar: true,
-      plugins: ["advlist", "autolink", "lists", "link", "image", "charmap", "preview", "anchor", "searchreplace", "visualblocks", "code", "fullscreen", "insertdatetime", "media", "table", "help", "wordcount"],
-      toolbar: "undo redo | formatselect | " + "bold italic backcolor | alignleft aligncenter " + "alignright alignjustify | bullist numlist outdent indent | " + "removeformat | help",
-      content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px; background-color:#1a237e; color:white; }",
-      tracking: false,
-      promotion: false,
+      plugins: [
+        "advlist",
+        "autolink",
+        "lists",
+        "link",
+        "image",
+        "charmap",
+        "preview",
+        "anchor",
+        "searchreplace",
+        "visualblocks",
+        "code",
+        "fullscreen",
+        "insertdatetime",
+        "media",
+        "table",
+        "help",
+        "wordcount",
+      ],
+      toolbar:
+        "undo redo | formatselect | " +
+        "bold italic backcolor | alignleft aligncenter " +
+        "alignright alignjustify | bullist numlist outdent indent | " +
+        "removeformat | help",
+      content_style:
+        "body { font-family:Helvetica,Arial,sans-serif; font-size:14px; background-color:#1a237e; color:white; }",
       skin: "oxide-dark",
-      content_css: "dark"
+      content_css: "dark",
     }),
     []
   );
 
-  return <Editor apiKey={TINY_API_KEY} initialValue={initialValue} init={editorConfig || defaultEditorConfig} onEditorChange={onEditorChange} />;
+  return (
+    <Editor
+      apiKey={TINY_API_KEY}
+      initialValue={initialValue}
+      init={editorConfig || defaultEditorConfig}
+      onEditorChange={onEditorChange}
+    />
+  );
 };
 
 export default TinyMCEEditor;

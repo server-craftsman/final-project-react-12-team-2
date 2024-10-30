@@ -238,13 +238,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
             </Col>
           </Row>
           <Form.Item name="description" label="Description" rules={[{ required: true, message: "Please input the description!" }]}>
-            <TinyMCEEditor
-              initialValue={description}
-              onEditorChange={(content) => {
-                setDescription(content);
-                form.setFieldsValue({ description: content });
-              }}
-            />
+            <Input.TextArea />
           </Form.Item>
           <Form.Item name="content" label="Content">
             <TinyMCEEditor
@@ -281,22 +275,12 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item label="Course Type" name="courseType" initialValue="free" rules={[{ required: true, message: "Please select the course type!" }]}>
-            <Radio.Group onChange={(e) => setIsFree(e.target.value === "free")}>
-              <Radio value="free">Free</Radio>
-              <Radio value="paid">Paid</Radio>
-            </Radio.Group>
+          <Form.Item name="price" label="Price" rules={[{ required: true, message: "Please input the price!" }]}>
+            <InputNumber min={0} style={{ width: "100%" }} formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} />
           </Form.Item>
-          {!isFree && (
-            <>
-              <Form.Item name="price" label="Price" rules={[{ required: true, message: "Please input the price!" }]}>
-                <InputNumber min={0} style={{ width: "100%" }} formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} />
-              </Form.Item>
-              <Form.Item name="discount" label="Discount" rules={[{ required: true, message: "Please input the discount!" }]}>
-                <InputNumber min={0} max={100} style={{ width: "100%" }} />
-              </Form.Item>
-            </>
-          )}
+          <Form.Item name="discount" label="Discount" rules={[{ required: true, message: "Please input the discount!" }]}>
+            <InputNumber min={0} max={100} style={{ width: "100%" }} />
+          </Form.Item>
         </Form>
       </Modal>
     </>
