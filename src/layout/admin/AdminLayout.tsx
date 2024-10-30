@@ -1,8 +1,8 @@
 import React, { lazy, useEffect } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { Layout } from "antd";
 import { Avatar, Dropdown } from "antd";
-import { UserOutlined, LogoutOutlined, DownOutlined } from "@ant-design/icons";
+import { UserOutlined, LogoutOutlined, DownOutlined, HomeOutlined } from "@ant-design/icons";
 const AdminNavbar = lazy(() => import("./AdminNavbar"));
 const StudentFooter = lazy(() => import("../main-layout/MainFooter"));
 const { Content } = Layout;
@@ -11,7 +11,7 @@ import { useAuth } from "../../contexts/AuthContext";
 
 const Admin: React.FC = () => {
   const { logout, token, userInfo, setUserInfo } = useAuth();
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchUserInfo = async () => {
       if (!token) {
@@ -78,6 +78,12 @@ const Admin: React.FC = () => {
                           <div className="mt-2 border-t pt-2" />
                         </div>
                       )
+                    },
+                    {
+                      key: "home", 
+                      icon: <HomeOutlined />,
+                      label: "Home",
+                      onClick: () => navigate('/')
                     },
                     {
                       key: "logout",

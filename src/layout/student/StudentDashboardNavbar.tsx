@@ -21,19 +21,19 @@ const StudentDashboardNavbar = () => {
       key: "2",
       icon: <BellOutlined />,
       label: "Orders",
-      path: "/student-orders"
+      path: "/dashboard-student/student-orders"
     },
     {
       key: "3",
       icon: <FileTextOutlined />,
       label: "Subscription",
-      path: "/student-subscription"
+      path: "/dashboard-student/student-subscription"
     },
     {
       key: "4",
       icon: <SettingOutlined />,
       label: "Setting",
-      path: "/student-setting"
+      path: "/dashboard-student/student-setting"
     }
   ];
 

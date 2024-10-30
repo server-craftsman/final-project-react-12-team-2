@@ -1,7 +1,7 @@
 import React, { lazy, useEffect } from "react";
 import { Avatar, Dropdown, Layout } from "antd";
-import { UserOutlined, LogoutOutlined, DownOutlined } from "@ant-design/icons";
-import { Outlet } from "react-router-dom";
+import { UserOutlined, LogoutOutlined, DownOutlined, HomeOutlined } from "@ant-design/icons";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 const InstructorNavbar = lazy(() => import("./InstructorNavbar"));
 const StudentFooter = lazy(() => import("../main-layout/MainFooter"));
 import { useAuth } from "../../contexts/AuthContext";
@@ -9,6 +9,7 @@ const { Content } = Layout;
 import { AuthService } from "../../services/authentication/auth.service";
 const Instructor: React.FC = () => {
   const { logout, token, userInfo, setUserInfo } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -45,6 +46,7 @@ const Instructor: React.FC = () => {
     }
   };
 
+
   return (
     <Layout style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Layout style={{ display: "flex", flexDirection: "row" }}>
@@ -76,6 +78,12 @@ const Instructor: React.FC = () => {
                           <div className="mt-2 border-t pt-2" />
                         </div>
                       )
+                    },
+                    {
+                      key: "home", 
+                      icon: <HomeOutlined />,
+                      label: "Home",
+                      onClick: () => navigate('/')
                     },
                     {
                       key: "logout",

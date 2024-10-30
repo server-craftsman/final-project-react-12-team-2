@@ -1,17 +1,17 @@
 import React, { lazy, useEffect } from "react";
 import { Layout } from "antd";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import StudentDashboardNavbar from "./StudentDashboardNavbar";
 import { Content } from "antd/es/layout/layout";
 const StudentFooter = lazy(() => import("../main-layout/MainFooter"));
 import { Avatar, Dropdown } from "antd";
-import { UserOutlined, LogoutOutlined, DownOutlined } from "@ant-design/icons";
+import { UserOutlined, LogoutOutlined, DownOutlined, HomeOutlined } from "@ant-design/icons";
 import { useAuth } from "../../contexts/AuthContext";
 import { AuthService } from "../../services/authentication/auth.service";
 
 const StudentDashboard: React.FC = () => {
   const { logout, token, userInfo, setUserInfo } = useAuth();
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchUserInfo = async () => {
       if (!token) {
@@ -78,6 +78,12 @@ const StudentDashboard: React.FC = () => {
                           <div className="mt-2 border-t pt-2" />
                         </div>
                       )
+                    },
+                    {
+                      key: "home", 
+                      icon: <HomeOutlined />,
+                      label: "Home",
+                      onClick: () => navigate('/')
                     },
                     {
                       key: "logout",
