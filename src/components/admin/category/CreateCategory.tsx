@@ -1,11 +1,10 @@
 import { Button, Form, Input, message, Modal, Select } from "antd";
 import { useForm } from "antd/es/form/Form";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { GetCategoryResponse } from "../../../models/api/responsive/admin/category.responsive.model";
 import { CategoryService } from "../../../services/category/category.service";
-import { Editor } from "@tinymce/tinymce-react";
-import { TINY_API_KEY } from "../../../services/config/apiClientTiny";
 import { getTinyMCEContent, updateTinyMCEContent } from "../../../utils/parse.tiny.editor";
+import TinyMCEEditor from "../../../components/generic/tiny/TinyMCEEditor";
 
 const CreateCategory: React.FC = () => {
   const [categories, setCategories] = useState<GetCategoryResponse | null>(null);
@@ -82,19 +81,6 @@ const CreateCategory: React.FC = () => {
     }
   };
 
-  const editorConfig = useMemo(
-    () => ({
-      height: 300,
-      menubar: false,
-      plugins: ["advlist autolink lists link image charmap preview anchor searchreplace", "visualblocks code fullscreen media table paste code help wordcount"].join(" "),
-      toolbar: ["undo redo | formatselect | bold italic", "alignleft aligncenter alignright alignjustify", "bullist numlist | link image | code"].join(" | "),
-      skin: "oxide-dark",
-      content_css: "dark",
-      resize: false,
-      statusbar: false
-    }),
-    []
-  );
 
   return (
     <div>
@@ -107,15 +93,11 @@ const CreateCategory: React.FC = () => {
             <Input />
           </Form.Item>
           <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input category description" }]}>
-            <Editor
-              apiKey={TINY_API_KEY}
-              init={editorConfig}
-              id="description-editor"
+            <TinyMCEEditor
+              initialValue=""
               onEditorChange={(content) => {
                 form.setFieldsValue({ description: content });
-                console.log("Content:", content);
               }}
-              onBlur={() => form.validateFields(["description"])}
             />
           </Form.Item>
           <Form.Item label="Parent Category" name="parent_category_id">
