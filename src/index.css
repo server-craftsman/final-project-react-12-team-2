@@ -3,8 +3,16 @@
 @tailwind utilities;
 
 /* Gradient background for tone color all website */
-.bg-gradient-tone {
+/* .bg-gradient-tone {
   @apply bg-gradient-to-r from-[#02005dc6] to-[#1a237e];
+} */
+
+/* .bg-gradient-tone {
+  @apply bg-[#1a237e];
+} */
+
+.bg-gradient-tone {
+  @apply bg-[#1a237e] bg-gradient-to-r from-[#02005dc6] to-[#1a237e];
 }
 
 /* Search input */

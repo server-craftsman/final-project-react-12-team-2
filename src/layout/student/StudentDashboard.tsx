@@ -48,9 +48,9 @@ const StudentDashboard: React.FC = () => {
   };
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <Layout style={{ display: "flex", flexDirection: "row" }}>
       <StudentDashboardNavbar />
-      <Layout>
         <Content className="bg-gray-100 p-6">
           <header className="mb-4 rounded-lg bg-gradient-tone p-6 shadow-lg">
             <div className="flex items-center justify-between">
@@ -90,8 +90,8 @@ const StudentDashboard: React.FC = () => {
                 placement="bottomRight"
                 arrow
               >
-                <button className="flex items-center space-x-2 rounded-lg bg-indigo-500 px-4 py-2 text-white transition-all hover:bg-indigo-400">
-                  <span>Account</span>
+                <button className="flex items-center space-x-2 rounded-lg bg-gradient-tone px-4 py-2 text-white transition-all hover:bg-[#413eff]">
+                <span>Account</span>
                   <DownOutlined />
                 </button>
               </Dropdown>
@@ -101,8 +101,8 @@ const StudentDashboard: React.FC = () => {
             <Outlet />
           </section>
         </Content>
-        <StudentFooter />
       </Layout>
+      <StudentFooter />
     </Layout>
   );
 };
