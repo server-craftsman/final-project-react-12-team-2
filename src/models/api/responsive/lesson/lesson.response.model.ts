@@ -1,6 +1,6 @@
 import { LessonType } from "../../../../app/enums";
 
-export interface LessonResponse {
+export interface CreateLessonResponse {
   pageData: {
     _id: string;
     name: string;

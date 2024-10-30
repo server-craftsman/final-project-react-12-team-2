@@ -1,23 +1,60 @@
-import { Editor } from "@tinymce/tinymce-react";
 import { Button, Form, Input, message, Modal, Select } from "antd";
+import { useState, useEffect } from "react";
+import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
+import { LessonService } from "../../../../services/lesson/lesson.service";
+import { CourseService } from "../../../../services/course/course.service";
+import { SessionService } from "../../../../services/session/session.service";
+import { GetCourseParams } from "../../../../models/api/request/course/course.request.model";
+import { SessionRequestModel } from "../../../../models/api/request/session/session.request.model";
+import { GetCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
+import { SessionResponse } from "../../../../models/api/responsive/session/session.response.model";
+
 const { Option } = Select;
-import { TINY_API_KEY } from "../../../../services/config/apiClientTiny";
-import { useState } from "react";
-import { courses } from "../../../../data/courses.json";
-import { sessions as sessionData } from "../../../../data/sessions.json";
+
 const CreateButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
-  const [sessions, setSessions] = useState([]);
+  const [sessions, setSessions] = useState<SessionResponse['pageData'][]>([]);
   const [description, setDescription] = useState("");
+  const [courses, setCourses] = useState<GetCourseResponse['pageData']>([]);
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const fetchCourses = async (): Promise<void> => {
+    try {
+      const params: GetCourseParams = {
+        pageInfo: {
+          pageNum: 1,
+          pageSize: 100
+        },
+        searchCondition: {
+          keyword: "",
+          category_id: "",
+          status: "",
+          is_delete: false
+        }
+      };
+      const response = await CourseService.getCourse(params);
+      setCourses(response.data.data.pageData || []);
+    } catch (error) {
+      message.error("Failed to fetch courses");
+    }
+  };
+
   const openCreateModal = () => {
     setIsOpen(true);
   };
-  const handleOk = async () => {
-    await form.validateFields();
-    setIsOpen(false);
-    message.info("Created");
-    form.resetFields();
+
+  const handleOk = async (): Promise<void> => {
+    try {
+      await createLesson();
+      setIsOpen(false);
+      message.success("Lesson created successfully");
+    } catch (error) {
+      message.error("Failed to create lesson");
+    }
   };
 
   const handleCancel = () => {
@@ -25,59 +62,97 @@ const CreateButton = () => {
     form.resetFields();
   };
 
-  function handleCourseChange(courseId: string): void {
-    setSessions(
-      sessionData.filter((session) => {
-        return session.course_id.toString() === courseId.toString();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      }) as any
-    );
-  }
+  const createLesson = async () => {
+    try {
+      const values = await form.validateFields();
+      await LessonService.createLesson(values);
+
+      message.success("Lesson created successfully");
+      setIsOpen(false);
+      form.resetFields();
+    } catch (error) {
+      message.error("Failed to create lesson");
+    }
+  };
+
+  const handleCourseChange = async (courseId: string) => {
+    try {
+      form.setFieldValue('session_id', undefined);
+      
+      if (courseId) {
+        const params: SessionRequestModel = {
+          searchCondition: {
+            course_id: courseId,
+            keyword: "",
+            is_position_order: false,
+            is_delete: false
+          },
+          pageInfo: {
+            pageNum: 1,
+            pageSize: 100
+          }
+        };
+      await SessionService.getSession(params);
+        // setSessions(response.data.data.pageData);
+      } 
+    } catch (error) {
+      message.error("Failed to fetch sessions");
+    }
+  };
 
   return (
     <>
       <Button onClick={() => openCreateModal()} className="rounded-md bg-[#1a237e] text-white">
         Create Lesson
       </Button>
-      <Modal title="Create Lesson" open={isOpen} onOk={handleOk} onCancel={handleCancel} width={800} style={{ top: "20px" }}>
+      <Modal title="Create Lesson" open={isOpen} onOk={createLesson} onCancel={handleCancel} width={800}>
         <Form form={form} layout="vertical">
           <Form.Item name="name" label="Name" rules={[{ required: true, message: "Please input the lesson name!" }]}>
             <Input />
           </Form.Item>
-          <Form.Item name="course_id" label="Course" rules={[{ required: true, message: "Please select the course!" }]}>
-            <Select onChange={handleCourseChange}>
-              {courses.map((course) => (
+          <Form.Item 
+            name="course_id" 
+            label="Course" 
+            rules={[{ required: true, message: "Please select a course!" }]}
+          >
+            <Select
+              placeholder="Select a course"
+              onChange={handleCourseChange}
+              loading={courses.length === 0}
+            >
+              {courses.map((course: any) => (
                 <Option key={course.id} value={course.id}>
                   {course.name}
                 </Option>
               ))}
             </Select>
           </Form.Item>
-          <Form.Item name="session_id" label="Session" rules={[{ required: true, message: "Please select the session!" }]}>
-            <Select>
-              {sessions.map((session: any) => (
-                <Option key={session.id} value={session.id}>
+          <Form.Item 
+            name="session_id" 
+            label="Session" 
+            rules={[{ required: true, message: "Please select a session!" }]}
+          >
+            <Select
+              placeholder="Select a session"
+              disabled={!form.getFieldValue('course_id')}
+              loading={form.getFieldValue('course_id' ) && sessions .length === 0}
+            >
+              {sessions.map((session: SessionResponse['pageData']) => (
+                <Option key={session._id} value={session._id}>
                   {session.name}
                 </Option>
               ))}
             </Select>
           </Form.Item>
-          <Form.Item name="Image Url" label="Image Url" rules={[{ required: true, message: "Please input the image url!" }]}>
+          <Form.Item name="image_url" label="Image URL" rules={[{ required: true, message: "Please input the image url!" }]}>
             <Input />
           </Form.Item>
-          <Form.Item name="Video Url" initialValue="" label="Video Url" rules={[{ required: true, message: "Please input the video url!" }]}>
+          <Form.Item name="video_url" label="Video URL" rules={[{ required: true, message: "Please input the video url!" }]}>
             <Input />
           </Form.Item>
           <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
-            <Editor
-              apiKey={TINY_API_KEY}
+            <TinyMCEEditor
               initialValue={description}
-              init={{
-                height: 300,
-                menubar: false,
-                plugins: ["advlist autolink lists link image charmap print preview anchor", "searchreplace visualblocks code fullscreen", "insertdatetime media table paste code help wordcount"],
-                toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code"
-              }}
               onEditorChange={(content) => {
                 setDescription(content);
                 form.setFieldValue("description", content);

@@ -55,6 +55,9 @@ export const API = {
     GET_SESSION: "api/session/search",
     CREATE_SESSION: "api/session"
   },
+  LESSON: {
+    CREATE_LESSON: "api/lesson"
+  },
   SUBSCRIPTION: {
     //instructor
     GET_SUBSCRIPTIONS: "api/subscription/search-for-subscribed"
