@@ -26,7 +26,8 @@ export const API = {
     CREATE_CATEGORY: "api/category",
     DELETE_CATEGORY: "api/category/:id",
     UPDATE_CATEGORY: "api/category/:id",
-    GET_CATEGORY_DETAILS: "api/category/:id"
+    GET_CATEGORY_DETAILS: "api/category/:id",
+    GET_BLOG_DETAILS: "api/blog/:id"
   },
   INSTRUCTOR: {
     GET_USER_DETAILS: "api/users/:id",
