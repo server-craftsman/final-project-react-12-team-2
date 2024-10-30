@@ -1,5 +1,4 @@
 import { lazy } from "react";
-import { CourseStatusEnum } from "../models/prototype/Course";
 
 //lazy import
 export const MainLayout = lazy(() => import("../layout/main-layout/MainLayout"));

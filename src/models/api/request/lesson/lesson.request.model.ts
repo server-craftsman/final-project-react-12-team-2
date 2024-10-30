@@ -1,6 +1,4 @@
 import { LessonType } from "../../../../app/enums/lesson.enum";
-import { PageInfo } from "../../responsive/admin/user.responsive.model";
-import { SearchCondition } from "../course/course.request.model";
 
 export interface CreateLessonRequest {
   name: string;

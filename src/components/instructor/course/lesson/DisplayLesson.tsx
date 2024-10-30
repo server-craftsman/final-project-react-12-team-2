@@ -9,7 +9,6 @@ import CreateButton from "./CreateButton";
 import { LessonService } from "../../../../services/lesson/lesson.service";
 import { CourseService } from "../../../../services/course/course.service";
 import { Lesson } from "../../../../models/api/responsive/lesson/lesson.response.model";
-import { GetCourseByIdResponse } from "../../../../models/api/responsive/course/course.response.model";
 
 const DisplayLesson = () => {
   const [lessons, setLessons] = useState<Lesson["pageData"]>([]);
@@ -71,6 +70,8 @@ const DisplayLesson = () => {
             controlsList="nodownload" 
             className="rounded-md"
             playsInline
+            autoPlay
+            muted
           >
             <source src={record.video_url} type="video/mp4" />
             <source src={record.video_url} type="video/webm" />
