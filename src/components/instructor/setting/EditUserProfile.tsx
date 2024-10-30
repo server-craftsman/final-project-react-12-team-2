@@ -83,7 +83,6 @@ const EditUserProfile = () => {
           }
         }));
 
-        const description = parseTinyEditor.getTinyMCEContent("description-editor") || "";
 
         form.setFieldsValue({
           name: userData.name,
@@ -91,7 +90,7 @@ const EditUserProfile = () => {
           phone_number: userData.phone_number,
           role: userData.role,
           status: userData.status ? "Active" : "Inactive",
-          description: description,
+          description: userData.description || "",
           dob: userData.dob ? moment(userData.dob) : null
         });
       } catch (error) {
@@ -121,12 +120,13 @@ const EditUserProfile = () => {
           }
         }
 
-        const description = parseTinyEditor.getTinyMCEContent("description-editor");
+        const description = parseTinyEditor.getTinyMCEContent("description-editor") || "";
+        
         const updatedValues = {
           name: values.name,
           email: values.email,
           phone_number: values.phone_number,
-          description,
+          description: description.toString(),
           dob: values.dob ? helpers.formatDate(new Date(values.dob)) : null,
           avatar_url: avatarUrl,
           video_url: "",

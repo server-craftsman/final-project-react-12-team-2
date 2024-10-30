@@ -19,14 +19,8 @@ const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange }) => {
         return "Approved";
       case CourseStatusEnum.reject:
         return "Rejected";
-      case CourseStatusEnum.active:
-        return "Active";
-      case CourseStatusEnum.inactive:
-        return "Inactive";
-      case CourseStatusEnum.new:
-        return "New";
       default:
-        return "Unknown Status";
+        return null;
     }
   };
 
@@ -35,13 +29,19 @@ const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange }) => {
       <Select.Option key="all" value="">
         All
       </Select.Option>
-      {Object.values(CourseStatusEnum).map((status) => {
-        return (
-          <Select.Option key={status} value={status}>
-            {renameStatus(status)}
-          </Select.Option>
-        );
-      })}
+      {Object.values(CourseStatusEnum)
+        .filter((status) => 
+          status === CourseStatusEnum.waiting_approve || 
+          status === CourseStatusEnum.approve || 
+          status === CourseStatusEnum.reject
+        )
+        .map((status) => {
+          return (
+            <Select.Option key={status} value={status}>
+              {renameStatus(status)}
+            </Select.Option>
+          );
+        })}
     </Select>
   );
 };

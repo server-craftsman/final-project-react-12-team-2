@@ -7,7 +7,7 @@ export enum CourseStatusEnum {
   new = "new"
 }
 export interface Course {
-  id: string;
+  _id: string;
   name: string;
   category_id: string;
   user_id: string;
