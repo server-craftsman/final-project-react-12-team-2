@@ -26,12 +26,14 @@ export const API = {
     CREATE_CATEGORY: "api/category",
     DELETE_CATEGORY: "api/category/:id",
     UPDATE_CATEGORY: "api/category/:id",
-    GET_CATEGORY_DETAILS: "api/category/:id"
+    GET_CATEGORY_DETAILS: "api/category/:id",
+    GET_BLOG_DETAILS: "api/blog/:id",
+    UPDATE_BLOG: "api/blog/:id"
   },
   INSTRUCTOR: {
     GET_USER_DETAILS: "api/users/:id",
     UPDATE_USER: "api/users/:id",
-    CHANGE_PASSWORD: "api/users/change-password",
+    CHANGE_PASSWORD: "api/users/change-password"
   },
   STUDENT: {
     GET_USER_DETAILS: "api/users/:id",
@@ -46,5 +48,10 @@ export const API = {
     //public
     GET_PUBLIC_COURSE: "api/client/course/search"
     //=========================================
+  }, 
+
+  SUBSCRIPTION: {
+    //instructor
+    GET_SUBSCRIPTIONS: "api/subscription/search-for-subscribed"
   }
 };
