@@ -33,46 +33,43 @@ const DisplaySession = () => {
           pageInfo: { pageNum: 1, pageSize: 10 }
         });
 
+        console.log("API Response:", response.data);
+
         if (!response.data || !response.data.data) {
           console.error("No data received from API");
           return;
         }
 
-        let sessionData: SessionResponse[] = [];
-        if (Array.isArray(response.data.data)) {
-          sessionData = response.data.data;
-        } else if (Array.isArray(response.data.data.pageData)) {
-          sessionData = response.data.data.pageData;
-        } else if (response.data.data.pageData) {
-          sessionData = [{
-            pageData: response.data.data.pageData,
-            pageInfo: response.data.data.pageInfo || {
-              pageNum: 1,
-              pageSize: 10
-            }
-          }];
-        }
+        const sessionData = Array.isArray(response.data.data) 
+          ? response.data.data as SessionResponse[] 
+          : [];
 
         const validSessions = sessionData.filter(session => session.pageData && session.pageData.course_id);
 
-        const courseIds = validSessions.map(session => session.pageData.course_id);
-        const courseResponses = await Promise.all(courseIds.map(courseId => 
-          CourseService.getCourseById(courseId)
+        const courseResponses = await Promise.all(validSessions.map(() => 
+          CourseService.getCourse({
+            searchCondition: {
+              keyword: "",
+              category_id: "",
+              status: "active",
+              is_delete: false
+            },
+            pageInfo: { pageNum: 1, pageSize: 10 }
+          })
         ));
 
         const courseMap: Record<string, string> = {};
         courseResponses.forEach(courseResponse => {
-          if (courseResponse.data && courseResponse.data.data) {
-            courseMap[courseResponse.data.data._id] = courseResponse.data.data.name;
+          if (courseResponse.data && Array.isArray(courseResponse.data.data.pageData)) {
+            courseResponse.data.data.pageData.forEach(course => {
+              courseMap[course._id] = course.name;
+            });
           }
         });
 
         const sessionsWithCourseNames = validSessions.map(session => ({
           ...session,
-          pageData: {
-            ...session.pageData,
-            course_name: courseMap[session.pageData.course_id] || ""
-          }
+          course_name: courseMap[session.pageData.course_id] || ""
         }));
 
         setSessions(sessionsWithCourseNames);
@@ -177,12 +174,12 @@ const DisplaySession = () => {
     {
       title: "Course Name", 
       key: "course_name",
-      dataIndex: ["pageData", "course_name"]
+      dataIndex: "course_name"
     },
     {
       title: "Created At",
       key: "created_at",
-      dataIndex: ["pageData", "created_at"],
+      dataIndex: "created_at",
       render: (text: Date) => formatDate(text)
     },
     {
