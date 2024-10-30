@@ -52,7 +52,7 @@ const Admin: React.FC = () => {
       <AdminNavbar />
       <Layout>
         <Content className="bg-gray-100 p-6">
-          <header className="mb-4 rounded-lg bg-gradient-tone p-6 shadow-lg">
+          <header className="mb-4 rounded-lg bg-gradient-tone p-6 shadow-lg border-b border-indigo-700">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <Avatar size={48} src={userInfo?.avatar_url} icon={!userInfo?.avatar_url && <UserOutlined />} />

@@ -26,6 +26,12 @@ export interface CreateCourseParams {
   discount: number;
 }
 
+export interface ChangeStatusCourseParams {
+  course_id: string;
+  new_status: string;
+  comment: string;
+}
+
 //==================CLIENT PUBLIC=======================
 
 export interface GetPublicCourseParams {

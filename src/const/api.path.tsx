@@ -44,6 +44,7 @@ export const API = {
     //instructor
     GET_COURSE: "api/course/search",
     CREATE_COURSE: "api/course",
+    CHANGE_STATUS_COURSE: "api/course/change-status",
     //=========================================
     //public
     GET_PUBLIC_COURSE: "api/client/course/search"
