@@ -46,5 +46,10 @@ export const API = {
     //public
     GET_PUBLIC_COURSE: "api/client/course/search"
     //=========================================
+  }, 
+
+  SUBSCRIPTION: {
+    //instructor
+    GET_SUBSCRIPTIONS: "api/subscription/search-for-subscribed"
   }
 };

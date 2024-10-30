@@ -8,6 +8,8 @@ import { UserRole } from "../../../models/prototype/User";
 import data from "../../../data/users.json";
 import { Subscriptions } from "../../../models/prototype/Subscriptions";
 import { User } from "../../../models/prototype/User";
+// import { GetSubscriptionsParams } from "../../../models/api/request/subscription/sub.request.model";
+// import { SubscriptionService } from "../../../services/subscription/sub.service";
 
 const SubscriptionPage: React.FC = () => {
   const [filteredSubscriptions, setFilteredSubscriptions] = useState<Subscriptions[]>([]);
@@ -42,6 +44,16 @@ const SubscriptionPage: React.FC = () => {
     };
   });
 
+  // const fetchSubscriptions = async (params: GetSubscriptionsParams) => {
+  //   try {
+  //     const response = await SubscriptionService.getSubscriptions(params);
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error("Failed to fetch subscriptions:", error);
+  //     throw error;
+  //   }
+  // };
+  
   const items = [
     {
       key: "1",
