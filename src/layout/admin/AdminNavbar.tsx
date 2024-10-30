@@ -63,7 +63,7 @@ const AdminNavbar: React.FC = () => {
       collapsible
       collapsed={collapsed}
       onCollapse={(value) => setCollapsed(value)}
-      className="min-h-screen bg-gradient-to-r from-[#02005dc6] to-[#1a237e]"
+      className="min-h-screen bg-gradient-tone"
       breakpoint="md"
       onBreakpoint={(broken) => {
         setCollapsed(broken);

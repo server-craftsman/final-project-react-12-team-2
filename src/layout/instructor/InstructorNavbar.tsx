@@ -59,7 +59,7 @@ const InstructorNavbar: React.FC = () => {
       collapsible
       collapsed={collapsed}
       onCollapse={(value) => setCollapsed(value)}
-      className="min-h-screen bg-gradient-to-r from-[#1565c0] to-[#0d47a1]"
+      className="min-h-screen bg-gradient-tone"
       breakpoint="md"
       onBreakpoint={(broken) => {
         setCollapsed(broken);

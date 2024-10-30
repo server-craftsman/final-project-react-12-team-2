@@ -83,13 +83,15 @@ const EditUserProfile = () => {
           }
         }));
 
+        const description = parseTinyEditor.getTinyMCEContent("description-editor") || "";
+
         form.setFieldsValue({
           name: userData.name,
           email: userData.email,
           phone_number: userData.phone_number,
           role: userData.role,
           status: userData.status ? "Active" : "Inactive",
-          description: userData.description || "",
+          description: description,
           dob: userData.dob ? moment(userData.dob) : null
         });
       } catch (error) {
