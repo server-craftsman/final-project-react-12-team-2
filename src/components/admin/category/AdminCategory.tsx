@@ -7,7 +7,6 @@ import { GetCategoryParams } from "../../../models/api/request/admin/category.re
 import { CategoryService } from "../../../services/category/category.service";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
 import parse from "html-react-parser";
-import { ROUTER_URL } from "../../../const/router.path";
 import { HttpException } from "../../../app/exceptions";
 
 interface SearchCategoryCondition {
@@ -72,7 +71,7 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
             const response = await CategoryService.deleteCategory(categoryId);
             if (response.data.success) {
               message.success("Category deleted successfully.");
-              navigate(ROUTER_URL.ADMIN.CATEGORIES);
+              window.location.reload();
             }
           } catch (error) {
             message.error(error instanceof HttpException ? error.message : "An error occurred while deleting the category");

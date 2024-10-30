@@ -56,7 +56,7 @@ const Navbar = () => {
       case UserRoles.ADMIN:
         return ROUTER_URL.ADMIN.INFO;
       case UserRoles.INSTRUCTOR:
-        return ROUTER_URL.INSTRUCTOR.INFO;
+        return ROUTER_URL.INSTRUCTOR.SETTING;
       case UserRoles.STUDENT:
         return ROUTER_URL.STUDENT.SETTING;
       default:

@@ -3,13 +3,13 @@ import { useForm } from "antd/es/form/Form";
 import { useEffect, useState } from "react";
 import { GetCategoryResponse } from "../../../models/api/responsive/admin/category.responsive.model";
 import { CategoryService } from "../../../services/category/category.service";
-import { getTinyMCEContent, updateTinyMCEContent } from "../../../utils/parse.tiny.editor";
 import TinyMCEEditor from "../../../components/generic/tiny/TinyMCEEditor";
 
 const CreateCategory: React.FC = () => {
   const [categories, setCategories] = useState<GetCategoryResponse | null>(null);
   const [isOpen, setOpen] = useState(false);
   const [form] = useForm();
+  const [editorContent, setEditorContent] = useState("");
 
   const fetchCategories = async () => {
     try {
@@ -31,15 +31,10 @@ const CreateCategory: React.FC = () => {
     try {
       // Extract only the necessary fields from the form
       const { name, parent_category_id } = form.getFieldsValue();
-      const description = getTinyMCEContent("description-editor") || "";
-
-      // Log the values to debug
-      console.log("Form Values:", { name, description, parent_category_id });
-
       // Create a new category object with only the necessary fields
       const newCategory = {
         name,
-        description,
+        description: editorContent,
         parent_category_id
       };
 
@@ -71,7 +66,7 @@ const CreateCategory: React.FC = () => {
       setCategories(resolvedCategory);
 
       form.resetFields();
-      updateTinyMCEContent("description-editor", ""); // Clear the editor content
+      setEditorContent("");
       setOpen(false);
       message.success("Category created successfully!");
       window.location.reload();
@@ -92,22 +87,24 @@ const CreateCategory: React.FC = () => {
           <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input category name" }]}>
             <Input />
           </Form.Item>
-          <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input category description" }]}>
+          <Form.Item label="Description" rules={[{ required: true, message: "Please input category description" }]}>
             <TinyMCEEditor
               initialValue=""
               onEditorChange={(content) => {
-                form.setFieldsValue({ description: content });
+                setEditorContent(content);
               }}
             />
           </Form.Item>
           <Form.Item label="Parent Category" name="parent_category_id">
             <Select>
               {categories && categories.pageData && categories.pageData.length > 0 ? (
-                categories.pageData.map((category) => (
-                  <Select.Option key={category._id} value={category._id}>
-                    {category.name}
-                  </Select.Option>
-                ))
+                categories.pageData
+                  .filter((category) => !category.parent_category_id)
+                  .map((category) => (
+                    <Select.Option key={category._id} value={category._id}>
+                      {category.name}
+                    </Select.Option>
+                  ))
               ) : (
                 <Select.Option value="" disabled>
                   No categories available
