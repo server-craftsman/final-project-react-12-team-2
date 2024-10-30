@@ -41,10 +41,10 @@ const ScrollToTopButton: React.FC = () => {
         bottom: "20px",
         right: "20px",
         zIndex: 1000,
-        backgroundColor: "#857aff",
         color: "white",
         border: "none"
       }}
+      className="bg-gradient-tone"
     />
   );
 };
