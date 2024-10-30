@@ -112,13 +112,13 @@ const EditUserProfile = () => {
           }
         }
 
-        const description = parseTinyEditor.getTinyMCEContent("description-editor");
+        const description = parseTinyEditor.getTinyMCEContent("description-editor") || "";
 
         const updatedValues = {
           name: values.name,
           email: values.email,
           phone_number: values.phone_number,
-          description,
+          description: description.toString(),
           dob: values.dob ? helpers.formatDate(new Date(values.dob)) : null,
           avatar_url: avatarUrl,
           video_url: "",
