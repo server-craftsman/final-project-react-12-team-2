@@ -1,7 +1,7 @@
 import React, { lazy, useEffect } from "react";
 import { Avatar, Dropdown, Layout } from "antd";
 import { UserOutlined, LogoutOutlined, DownOutlined, HomeOutlined } from "@ant-design/icons";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 const InstructorNavbar = lazy(() => import("./InstructorNavbar"));
 const StudentFooter = lazy(() => import("../main-layout/MainFooter"));
 import { useAuth } from "../../contexts/AuthContext";
