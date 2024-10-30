@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import logo1 from "../../assets/logo1.jpg";
-import { FaSearch, FaBell, FaUserCircle, FaBars } from "react-icons/fa";
+import { FaSearch, FaBars } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
