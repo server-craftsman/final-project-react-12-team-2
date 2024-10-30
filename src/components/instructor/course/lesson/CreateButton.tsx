@@ -14,9 +14,9 @@ const { Option } = Select;
 const CreateButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
-  const [sessions, setSessions] = useState<SessionResponse['pageData'][]>([]);
+  const [sessions, setSessions] = useState<SessionResponse['pageData']>();
   const [description, setDescription] = useState("");
-  const [courses, setCourses] = useState<GetCourseResponse['pageData']>([]);
+  const [courses, setCourses] = useState<GetCourseResponse['pageData']>();
 
   useEffect(() => {
     fetchCourses();
@@ -47,15 +47,15 @@ const CreateButton = () => {
     setIsOpen(true);
   };
 
-  const handleOk = async (): Promise<void> => {
-    try {
-      await createLesson();
-      setIsOpen(false);
-      message.success("Lesson created successfully");
-    } catch (error) {
-      message.error("Failed to create lesson");
-    }
-  };
+  // const handleOk = async (): Promise<void> => {
+  //   try {
+  //     await createLesson();
+  //     setIsOpen(false);
+  //     message.success("Lesson created successfully");
+  //   } catch (error) {
+  //     message.error("Failed to create lesson");
+  //   }
+  // };
 
   const handleCancel = () => {
     setIsOpen(false);
@@ -65,6 +65,8 @@ const CreateButton = () => {
   const createLesson = async () => {
     try {
       const values = await form.validateFields();
+      values.full_time = Number(values.full_time);
+      values.position_order = Number(values.position_order);
       await LessonService.createLesson(values);
 
       message.success("Lesson created successfully");
@@ -77,8 +79,8 @@ const CreateButton = () => {
 
   const handleCourseChange = async (courseId: string) => {
     try {
-      form.setFieldValue('session_id', undefined);
-      
+      form.setFieldValue('session_id', undefined); // Clear session selection on course change
+
       if (courseId) {
         const params: SessionRequestModel = {
           searchCondition: {
@@ -92,8 +94,8 @@ const CreateButton = () => {
             pageSize: 100
           }
         };
-      await SessionService.getSession(params);
-        // setSessions(response.data.data.pageData);
+        const response = await SessionService.getSession(params);
+        setSessions(response.data.data.pageData || []);
       } 
     } catch (error) {
       message.error("Failed to fetch sessions");
@@ -118,10 +120,10 @@ const CreateButton = () => {
             <Select
               placeholder="Select a course"
               onChange={handleCourseChange}
-              loading={courses.length === 0}
+              loading={courses && courses.length === 0}
             >
-              {courses.map((course: any) => (
-                <Option key={course.id} value={course.id}>
+              {courses && courses.map((course: GetCourseResponse['pageData'][0]) => (
+                <Option key={course._id} value={course._id}>
                   {course.name}
                 </Option>
               ))}
@@ -135,11 +137,11 @@ const CreateButton = () => {
             <Select
               placeholder="Select a session"
               disabled={!form.getFieldValue('course_id')}
-              loading={form.getFieldValue('course_id' ) && sessions .length === 0}
+              loading={form.getFieldValue('course_id' ) && sessions && sessions.length === 0}
             >
-              {sessions.map((session: SessionResponse['pageData']) => (
+              {sessions && sessions.map((session: SessionResponse['pageData'][0]) => (
                 <Option key={session._id} value={session._id}>
-                  {session.name}
+                  {session.description}
                 </Option>
               ))}
             </Select>

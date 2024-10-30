@@ -30,14 +30,6 @@ export const lessonDetailsRoute = {
 };
 export const cartRoute = { path: "cart", element: <CartPage /> };
 
-export const courseStatusName = {
-  [CourseStatusEnum.new]: "New",
-  [CourseStatusEnum.waiting_approve]: "Waiting for Approval",
-  [CourseStatusEnum.approve]: "Approved",
-  [CourseStatusEnum.reject]: "Rejected",
-  [CourseStatusEnum.active]: "Active",
-  [CourseStatusEnum.inactive]: "Inactive"
-};
 export function capitalizeWords(str: string): string {
   return str.replace(/\b\w/g, (char) => char.toUpperCase());
 }

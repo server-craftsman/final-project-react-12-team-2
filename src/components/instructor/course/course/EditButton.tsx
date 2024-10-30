@@ -9,8 +9,8 @@ import { categories } from "../../../../data/categories.json";
 const EditButton = ({ data }: any) => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
-  const [description, setDescription] = useState<string>("");
-  const [content, setContent] = useState<string>("");
+  const [description, setDescription] = useState<string>(data.pageData.description);
+  const [content, setContent] = useState<string>(data.pageData.content);
   form.setFieldsValue(data);
 
   const openCreateModal = () => {

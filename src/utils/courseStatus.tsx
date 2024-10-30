@@ -1,6 +1,6 @@
-import { CourseStatusEnum } from "../models/prototype/Course";
+// import { CourseStatusEnum } from "../models/prototype/Course";
 import React from "react";
-
+import { StatusType } from "../app/enums";
 // export const courseStatusColor = (status: CourseStatusEnum): string => {
 //   let classNames = "";
 
@@ -31,20 +31,20 @@ import React from "react";
 // };
 
 // Add a new component for rendering the status badge
-export const CourseStatusBadge: React.FC<{ status: CourseStatusEnum }> = ({ status }) => {
+export const CourseStatusBadge: React.FC<{ status: StatusType }> = ({ status }) => {
   const classNames = courseStatusColor[status];
   return <span className={`${classNames} rounded-md px-2 py-1 text-xs capitalize`}>{status}</span>;
 };
 
-export const courseStatusColor: Record<CourseStatusEnum, string> = {
-  [CourseStatusEnum.waiting_approve]: "p-1 rounded-md bg-amber-50 text-amber-800 border border-amber-400 shadow-sm",
-  [CourseStatusEnum.approve]: "p-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-400 shadow-sm",
-  [CourseStatusEnum.reject]: "p-1 rounded-md bg-rose-50 text-rose-800 border border-rose-400 shadow-sm",
-  [CourseStatusEnum.active]: "p-1 rounded-md bg-indigo-50 text-indigo-800 border border-indigo-400 shadow-sm",
-  [CourseStatusEnum.inactive]: "p-1 rounded-md bg-slate-50 text-slate-800 border border-slate-400 shadow-sm",
-  [CourseStatusEnum.new]: "p-1 rounded-md bg-violet-50 text-violet-800 border border-violet-400 shadow-sm"
+export const courseStatusColor: Record<StatusType, string> = {
+  [StatusType.WAITING_APPROVE]: "p-1 rounded-md bg-amber-50 text-amber-800 border border-amber-400 shadow-sm",
+  [StatusType.APPROVE]: "p-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-400 shadow-sm",
+  [StatusType.REJECT]: "p-1 rounded-md bg-rose-50 text-rose-800 border border-rose-400 shadow-sm",
+  [StatusType.ACTIVE]: "p-1 rounded-md bg-indigo-50 text-indigo-800 border border-indigo-400 shadow-sm",
+  [StatusType.INACTIVE]: "p-1 rounded-md bg-slate-50 text-slate-800 border border-slate-400 shadow-sm",
+  [StatusType.NEW]: "p-1 rounded-md bg-violet-50 text-violet-800 border border-violet-400 shadow-sm"
 };
 
-export const getCourseStatusName = (status: CourseStatusEnum): string => {
+export const getCourseStatusName = (status: StatusType): string => {
   return status;
 };

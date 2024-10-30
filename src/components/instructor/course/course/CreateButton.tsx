@@ -126,22 +126,17 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      const categoryId = form.getFieldValue("category_id");
-      if (!categoryId) {
-        throw new Error("Category ID is missing.");
-      }
-
-      const videoUrl = form.getFieldValue("video_url");
-
+      const values = await form.validateFields();
+      
       const params: CreateCourseParams = {
-        name: form.getFieldValue("name"),
-        description: description,
-        content: content,
-        category_id: categoryId,
-        video_url: videoUrl,
-        image_url: form.getFieldValue("image_url") || "",
-        price: form.getFieldValue("price") || 0,
-        discount: form.getFieldValue("discount") || 0,
+        name: values.name,
+        description: description || values.description,
+        content: content || values.content,
+        category_id: values.category_id,
+        video_url: values.video_url,
+        image_url: values.image_url,
+        price: values.price || 0,
+        discount: values.discount || 0,
       };
 
       await CourseService.createCourse(params);
@@ -150,45 +145,21 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
       if (onCourseCreated) {
         onCourseCreated();
       }
-      window.location.reload();
-      // store.dispatch(toggleLoading(true));
-      // setTimeout(() => {
-      //   store.dispatch(toggleLoading(false));
-      // }, 1000);
-      // return response.data;
+      
+      setIsOpen(false);
+      form.resetFields();
+      setDescription("");
+      setContent("");
+      setVideoPreview("");
+      setAvatarPreview("");
+      setVideoFileList([]);
+      setAvatarFileList([]);
+      
     } catch (error) {
       console.error("Error creating course:", error);
       message.error("Failed to create course. Please try again.");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleOk = async () => {
-    try {
-      await form.validateFields();
-
-      const imageUrl = form.getFieldValue("image_url");
-      const videoUrl = form.getFieldValue("video_url");
-
-      if (!imageUrl) {
-        message.error("Please upload an image before creating the course.");
-        return;
-      }
-
-      if (!videoUrl) {
-        message.error("Please upload a video before creating the course.");
-        return;
-      }
-
-      await handleSubmit();
-      setIsOpen(false);
-      form.resetFields();
-      setDescription("");
-      setContent("");
-      setIsFree(true);
-    } catch (error) {
-      message.error("Failed to create course. Please try again.");
     }
   };
 
@@ -208,7 +179,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
       <Modal
         title="Create Course"
         open={isOpen}
-        onOk={handleOk}
+        onOk={handleSubmit}
         onCancel={handleCancel}
         confirmLoading={loading}
         width={800}

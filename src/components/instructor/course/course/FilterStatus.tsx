@@ -1,29 +1,29 @@
 import React from "react";
-import { CourseStatusEnum } from "../../../../models/prototype/Course";
+import { StatusType } from "../../../../app/enums";
 import { Select } from "antd";
 
 interface FilterStatusProps {
-  onStatusChange: (status: CourseStatusEnum | "") => void;
+  onStatusChange: (status: StatusType | "") => void;
 }
 
 const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange }) => {
-  const handleChange = (value: CourseStatusEnum | "") => {
+  const handleChange = (value: StatusType | "") => {
     onStatusChange(value);
   };
 
-  const renameStatus = (status: CourseStatusEnum) => {
+  const renameStatus = (status: StatusType) => {
     switch (status) {
-      case CourseStatusEnum.waiting_approve:
+      case StatusType.WAITING_APPROVE:
         return "Waiting for Approval";
-      case CourseStatusEnum.approve:
+      case StatusType.APPROVE:
         return "Approved";
-      case CourseStatusEnum.reject:
+      case StatusType.REJECT:
         return "Rejected";
-      case CourseStatusEnum.active:
+      case StatusType.ACTIVE:
         return "Active";
-      case CourseStatusEnum.inactive:
+      case StatusType.INACTIVE:
         return "Inactive";
-      case CourseStatusEnum.new:
+      case StatusType.NEW:
         return "New";
       default:
         return "Unknown Status";
@@ -35,7 +35,7 @@ const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange }) => {
       <Select.Option key="all" value="">
         All
       </Select.Option>
-      {Object.values(CourseStatusEnum).map((status) => {
+      {Object.values(StatusType).map((status) => {
         return (
           <Select.Option key={`status-${status}`} value={status}>
             {renameStatus(status)}

@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { Course, CourseStatusEnum } from "../models/prototype/Course";
 import { CourseService } from "../services/course/course.service";
 import { GetCourseParams } from "../models/api/request/course/course.request.model";
 import { message } from "antd";
 import useCategoryCache from "./useCategoryCache";
-
-const useCourseCache = (searchTerm: string, statusFilter: CourseStatusEnum | "", pageNum: number, pageSize: number) => {
-  const [courses, setCourses] = useState<Course[]>([]);
+import { GetCourseResponse } from "../models/api/responsive/course/course.response.model";
+import { StatusType } from "../app/enums";
+const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageNum: number, pageSize: number) => {
+  const [courses, setCourses] = useState<GetCourseResponse["pageData"]>();
   const [totalItems, setTotalItems] = useState<number>(0);
   const getCategoryName = useCategoryCache();
 
@@ -48,7 +48,7 @@ const useCourseCache = (searchTerm: string, statusFilter: CourseStatusEnum | "",
           );
 
           setCourses(coursesTempData);
-          setTotalItems(response.data.data.pageInfo.totalItems);
+          //   setTotalItems(response.data.data.pageInfo.totalItems);
         } else {
           throw new Error("Failed to fetch courses");
         }

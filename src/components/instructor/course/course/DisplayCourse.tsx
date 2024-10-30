@@ -1,7 +1,8 @@
 import Table, { ColumnsType } from "antd/es/table";
 import { courseStatusColor } from "../../../../utils/courseStatus";
 import { formatDate, moneyFormat } from "../../../../utils/helper";
-import { Course, CourseStatusEnum } from "../../../../models/prototype/Course";
+import { StatusType } from "../../../../app/enums";
+import { DisplayCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
 import { useEffect, useState } from "react";
 import { Button, message, Modal, Pagination, Select } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
@@ -9,15 +10,15 @@ import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
 import CreateCourseButton from "./CreateButton";
 import FilterStatus from "./FilterStatus";
-import { capitalizeWords, courseStatusName } from "../../../../const/constCommon";
 import useCourseCache from "../../../../hooks/useCourseCache";
+import { GetCourseResponsePageData } from "../../../../models/api/responsive/course/course.response.model";
 const { Option } = Select;
 
 const DisplayCourse: React.FC<{
   searchTerm: string;
-  statusFilter: CourseStatusEnum | "";
+  statusFilter: StatusType | "";
   onSearch: (value: string) => void;
-  onStatusChange: (status: CourseStatusEnum | "") => void;
+  onStatusChange: (status: StatusType | "") => void
 }> = ({ searchTerm, statusFilter, onSearch, onStatusChange }) => {
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -26,60 +27,48 @@ const DisplayCourse: React.FC<{
   const [isModalVisible, setIsModalVisible] = useState(false);
   
   // Use the custom hook to fetch courses
-  const { courses, totalItems } = useCourseCache(searchTerm, statusFilter, pageNum, pageSize);
+  const { courses, totalItems } = useCourseCache(searchTerm, statusFilter as StatusType | "", pageNum, pageSize);
 
-  const renderStatusChange = (record: Course) => {
-    const isWaitingApprove = [CourseStatusEnum.new, CourseStatusEnum.waiting_approve].includes(record.status);
-    const isReject = [CourseStatusEnum.reject].includes(record.status);
-    return isWaitingApprove && !isReject ? (
-      <Button type="primary" onClick={() => message.info("Click here Send to admin to send to admin for approval")}>
-        Waiting approval
-      </Button>
-    ) : isReject ? (
-      <Button danger type="dashed" className="w-[140px]" onClick={() => message.error("This course is rejected")}>
-        Rejected
-      </Button>
-    ) : (
-      <Select defaultValue={capitalizeWords(record.status)} style={{ width: 140 }}>
-        <Option key="active" value="active">Active</Option>
-        <Option key="inactive" value="inactive">Inactive</Option>
-      </Select>
-    );
-  };
+  // const renderStatusChange = (record: DisplayCourseResponse) => {
+  //   const isWaitingApprove = [StatusType.NEW, StatusType.WAITING_APPROVE].includes(record.pageData.status);
+  //   const isReject = record.pageData.status === StatusType.REJECT;
+  //   return isWaitingApprove && !isReject ? (
+  //     <Button type="primary" onClick={() => message.info("Click here Send to admin to send to admin for approval")}>
+  //       Waiting approval
+  //     </Button>
+  //   ) : isReject ? (
+  //     <Button danger type="dashed" className="w-[140px]" onClick={() => message.error("This course is rejected")}>
+  //       Rejected
+  //     </Button>
+  //   ) : (
+  //     <Select defaultValue={record.pageData.status} style={{ width: 140 }}>
+  //       <Option key={StatusType.ACTIVE} value={StatusType.ACTIVE}>Active</Option>
+  //       <Option key={StatusType.INACTIVE} value={StatusType.INACTIVE}>Inactive</Option>
+  //     </Select>
+  //   );
+  // };
 
-  const renderActions = (record: Course) => (
-    <div className="flex space-x-2">
-      <EditButton data={record} />
-      <DeleteButton />
-    </div>
-  );
+  // const renderActions = (record: DisplayCourseResponse) => (
+  //   <div className="flex space-x-2">
+  //     <EditButton data={record} />
+  //     <DeleteButton />
+  //   </div>
+  // );
 
-  const getCourseStatusName = (status: CourseStatusEnum): string => {
-    return courseStatusName[status] || "Unknown status";
+  const getCourseStatusName = (status: StatusType): string => {
+    return courseStatusColor[status] || "Unknown status";
   };
 
   useEffect(() => {
     setSelectedCourse(selectedRowKeys as unknown as any);
   }, [selectedRowKeys, setSelectedCourse]);
 
-  const filteredCoursesData = courses.filter((course) => course.name.toLowerCase().includes(searchTerm.toLowerCase()) && (statusFilter === "" || course.status === statusFilter));
-
-  const paginatedCourses = () => {
-    const startIndex = (pageNum - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    return filteredCoursesData.slice(startIndex, endIndex);
-  };
-
   const handleSearch = (searchText: string) => {
     setPageNum(1);
-    filteredCoursesData.length === 0
-      ? courses
-      : courses.filter((course) =>
-          course.name.toLowerCase().includes(searchText.toLowerCase())
-        );
+    onSearch(searchText);
   };
 
-  const columns: ColumnsType<Course> = [
+  const columns: ColumnsType<GetCourseResponsePageData> = [
     {
       title: "Name",
       key: "name",
@@ -94,7 +83,11 @@ const DisplayCourse: React.FC<{
       title: "Status",
       key: "status",
       dataIndex: "status",
-      render: (status: CourseStatusEnum) => <button className={courseStatusColor[status]}>{getCourseStatusName(status)}</button>
+      render: (status: StatusType) => (
+        <span className={`px-2 py-1 rounded ${courseStatusColor[status]}`}>
+          {getCourseStatusName(status)}
+        </span>
+      )
     },
     {
       title: "Price",
@@ -117,13 +110,11 @@ const DisplayCourse: React.FC<{
       title: "Change Status",
       key: "change_status",
       dataIndex: "change_status",
-      render: (_, record) => renderStatusChange(record)
     },
     {
       title: "Actions",
       key: "actions",
       dataIndex: "actions",
-      render: (_, record) => renderActions(record)
     }
   ];
 
@@ -151,14 +142,11 @@ const DisplayCourse: React.FC<{
     <>
       <div className="mb-4 mt-4 flex justify-between">
         <CustomSearch
-          onSearch={(value) => {
-            handleSearch(value);
-            onSearch(value);
-          }}
+          onSearch={handleSearch}
           placeholder="Search by course name"
           className="w-1/5"
         />
-        <FilterStatus onStatusChange={onStatusChange} />
+        <FilterStatus onStatusChange={onStatusChange as any} />
         <div className="flex justify-end gap-2">
           <CreateCourseButton />
           <Button disabled={selectedCourse.length === 0} onClick={showModal}>
@@ -169,7 +157,7 @@ const DisplayCourse: React.FC<{
       <Table 
         rowSelection={rowSelection} 
         columns={columns} 
-        dataSource={filteredCoursesData && paginatedCourses()} 
+        dataSource={courses} 
         rowKey="id"
         pagination={false} 
       />

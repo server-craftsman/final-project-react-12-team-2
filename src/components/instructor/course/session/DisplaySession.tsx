@@ -8,10 +8,10 @@ import CreateButton from "./CreateButton";
 import { SessionService } from "../../../../services/session/session.service";
 import { CourseService } from "../../../../services/course/course.service";
 import { formatDate } from "../../../../utils/helper";
-import { SessionResponse } from "../../../../models/api/responsive/session/session.response.model";
+import { DisplaySessionResponse } from "../../../../models/api/responsive/session/session.response.model";
 
 const DisplaySession = () => {
-  const [sessions, setSessions] = useState<SessionResponse[]>([]);
+  const [sessions, setSessions] = useState<DisplaySessionResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [pageNum, setPageNum] = useState<number>(1);
@@ -71,7 +71,7 @@ const DisplaySession = () => {
     fetchSessions(pageNum, pageSize, searchKeyword);
   }, [pageNum, pageSize, searchKeyword]);
 
-  const renderActions = (record: SessionResponse) => (
+  const renderActions = (record: DisplaySessionResponse) => (
     <div className="flex space-x-2">
       <EditButton data={record} />
       <DeleteButton />
@@ -105,7 +105,7 @@ const DisplaySession = () => {
     {
       title: "Actions",
       key: "actions",
-      render: (_: any, record: SessionResponse) => renderActions(record)
+      render: (_: any, record: DisplaySessionResponse) => renderActions(record)
     }
   ];
   return (
