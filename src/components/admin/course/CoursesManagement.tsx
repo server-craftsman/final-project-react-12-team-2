@@ -3,7 +3,7 @@ import { moneyFormat, formatDate } from "../../../utils/helper";
 import { courseStatusColor } from "../../../utils/courseStatus";
 import { message, Popconfirm, Table } from "antd";
 import { CheckOutlined, StopOutlined } from "@ant-design/icons";
-import { Course, CourseStatusEnum } from "../../../models/prototype/Course"; // Import the Course model
+import { Courses, CourseStatusEnum } from "../../../models/prototype/Course"; // Import the Course model
 import { GetCourseParams } from "../../../models/api/request/course/course.request.model";
 import { CourseService } from "../../../services/course/course.service";
 
@@ -11,7 +11,7 @@ const CoursesManagement: React.FC<{
   searchTerm: string;
   statusFilter: CourseStatusEnum | "";
 }> = ({ searchTerm, statusFilter }) => {
-  const [coursesData, setCourses] = useState<Course[]>([]);
+  const [coursesData, setCourses] = useState<Courses[]>([]);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -29,7 +29,7 @@ const CoursesManagement: React.FC<{
           }
         };
         const response = await CourseService.getCourse(params);
-        setCourses(response.data.data.pageData as unknown as Course[]);
+        setCourses(response.data.data.pageData as unknown as Courses[]);
       } catch (error) {
         message.error("Failed to fetch courses");
       }
@@ -59,7 +59,7 @@ const CoursesManagement: React.FC<{
       title: "ID",
       dataIndex: "id",
       key: "id",
-      render: (_: string, __: Course, index: number) => index + 1
+      render: (_: string, __: Courses, index: number) => index + 1
     },
     {
       title: "Name Course",
@@ -97,7 +97,7 @@ const CoursesManagement: React.FC<{
     {
       title: "Action",
       key: "action",
-      render: (record: Course) => (
+      render: (record: Courses) => (
         record.status === CourseStatusEnum.waiting_approve ? (
           <div>
             <Popconfirm
@@ -142,7 +142,7 @@ const CoursesManagement: React.FC<{
 
   return (
     <>
-      <Table columns={columns} dataSource={filteredCourses} rowKey="course_id" />
+      <Table columns={columns} dataSource={filteredCourses} rowKey="_id" />
     </>
   );
 };
