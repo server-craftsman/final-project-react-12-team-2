@@ -1,9 +1,11 @@
-import { Editor } from "@tinymce/tinymce-react";
 import { Button, Form, Input, message, Modal, Select } from "antd";
 const { Option } = Select;
-import { TINY_API_KEY } from "../../../../services/config/apiClientTiny";
 import { useState } from "react";
-import { courses } from "../../../../data/courses.json";
+import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
+import { SessionService } from "../../../../services/session/session.service";
+import { CreateSessionRequestModel } from "../../../../models/api/request/session/session.request.model";
+import { CreateSessionResponse } from "../../../../models/api/responsive/session/session.response.model";
+
 const CreateButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
@@ -43,15 +45,8 @@ const CreateButton = () => {
             </Select>
           </Form.Item>
           <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
-            <Editor
-              apiKey={TINY_API_KEY}
+            <TinyMCEEditor
               initialValue={description}
-              init={{
-                height: 300,
-                menubar: false,
-                plugins: ["advlist autolink lists link image charmap print preview anchor", "searchreplace visualblocks code fullscreen", "insertdatetime media table paste code help wordcount"],
-                toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code"
-              }}
               onEditorChange={(content) => {
                 setDescription(content);
                 form.setFieldValue("description", content);
