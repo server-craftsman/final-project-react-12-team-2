@@ -113,7 +113,11 @@ const DisplayCourse: React.FC<{
         <FilterStatus onStatusChange={onStatusChange as any} />
         <div className="flex justify-end gap-2">
           <CreateCourseButton />
-          <Button disabled={selectedCourse.length === 0} onClick={showModal}>
+          <Button 
+            disabled={selectedCourse.length === 0} 
+            onClick={showModal}
+            className="bg-gradient-tone text-white hover:opacity-90"
+          >
             Send to Admin
           </Button>
         </div>
@@ -123,7 +127,7 @@ const DisplayCourse: React.FC<{
         columns={columns} 
         dataSource={courses} 
         rowKey="id"
-        pagination={false} 
+        pagination={false}
       />
       <div className="mt-5 flex justify-end">
         <Pagination
@@ -136,9 +140,18 @@ const DisplayCourse: React.FC<{
             setPageSize(pageSize);
           }}
           showSizeChanger
+          className="bg-pagination"
         />
       </div>
-      <Modal title="Confirm" open={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText="Yes" cancelText="No">
+      <Modal 
+        title="Confirm" 
+        open={isModalVisible} 
+        onOk={handleOk} 
+        onCancel={handleCancel} 
+        okText="Yes" 
+        cancelText="No"
+        okButtonProps={{ className: "bg-gradient-tone" }}
+      >
         <p>Are you sure you want to send the selected courses to admin?</p>
       </Modal>
     </>

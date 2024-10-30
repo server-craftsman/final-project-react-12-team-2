@@ -138,6 +138,7 @@ const DisplaySession = () => {
             setPageSize(pageSize);
           }}
           showSizeChanger
+          className="bg-pagination"
         />
       </div>
     </>

@@ -97,7 +97,6 @@ const CourseManagement = () => {
       <Content className="">
         <>
           <Tabs items={itemsTab} />
-          {/* {renderMainContent()} */}
         </>
       </Content>
     </Layout>

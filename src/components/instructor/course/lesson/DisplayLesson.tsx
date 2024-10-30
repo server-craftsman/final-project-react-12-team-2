@@ -164,6 +164,7 @@ const DisplayLesson = () => {
             setPageSize(pageSize);
           }}
           showSizeChanger
+          className="bg-pagination"
         />
       </div>
     </>
