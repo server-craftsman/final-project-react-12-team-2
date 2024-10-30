@@ -5,45 +5,53 @@ import { Content } from "antd/es/layout/layout";
 import CourseComponent from "../../../components/instructor/course/course/CourseComponent";
 import SessionComponent from "../../../components/instructor/course/session/SessionComponent";
 import LessionComponent from "../../../components/instructor/course/lesson/LessionComponent";
+import { courseStatusColor } from "../../../utils/courseStatus";
+import { StatusType } from "../../../app/enums";
 
 const CourseManagement = () => {
   const statusLabelList = [
     {
-      name: "New",
-      color: "blue",
-      title: "(This is a new course)"
+      name: StatusType.NEW,
+      color: `${courseStatusColor[StatusType.NEW]} hover:shadow-lg transition-all duration-300`,
+      title: "This is a new course",
+      description: "Your course has been created and is ready for editing"
     },
     {
-      name: "Waiting Approve",
-      color: "gold",
-      title: "(Awaiting approval from admin)"
+      name: StatusType.WAITING_APPROVE,
+      color: `${courseStatusColor[StatusType.WAITING_APPROVE]} hover:shadow-lg transition-all duration-300`,
+      title: "Awaiting Approval",
+      description: "Your course is being reviewed by our admin team"
     },
     {
-      name: "Approve",
-      color: "green",
-      title: "(Course has been approved)"
+      name: StatusType.APPROVE,
+      color: `${courseStatusColor[StatusType.APPROVE]} hover:shadow-lg transition-all duration-300`,
+      title: "Course Approved",
+      description: "Congratulations! Your course has been approved"
     },
     {
-      name: "Reject",
-      color: "volcano",
-      title: "(Course has been rejected)"
+      name: StatusType.REJECT,
+      color: `${courseStatusColor[StatusType.REJECT]} hover:shadow-lg transition-all duration-300`,
+      title: "Course Rejected",
+      description: "Please review admin feedback and make necessary changes"
     },
     {
-      name: "Active",
-      color: "geekblue",
-      title: "(Course is currently active)"
+      name: StatusType.ACTIVE,
+      color: `${courseStatusColor[StatusType.ACTIVE]} hover:shadow-lg transition-all duration-300`,
+      title: "Course Active",
+      description: "Your course is live and available to students"
     },
     {
-      name: "Inactive",
-      color: "gray",
-      title: "(Course is currently inactive)"
+      name: StatusType.INACTIVE,
+      color: `${courseStatusColor[StatusType.INACTIVE]} hover:shadow-lg transition-all duration-300`,
+      title: "Course Inactive",
+      description: "Your course is currently not visible to students"
     }
   ];
 
   const itemsTab = [
     {
       key: "course",
-      label: "Course",
+      label: "Course", 
       children: <CourseComponent />
     },
     {
@@ -60,18 +68,21 @@ const CourseManagement = () => {
 
   const renderTagMenu = () => {
     return (
-      <Row className="mb-5 justify-center align-middle">
-        {statusLabelList.map((status) => (
+      <Row className="mb-8 justify-center align-middle">
+        {statusLabelList.map((status, index) => (
           <React.Fragment key={status.name}>
-            <Col className="text-center">
-              <Tag color={status.color} className="px-5 py-0 text-base">
-                {status.name}
+            <Col className="text-center group cursor-pointer">
+              <Tag className={`${status.color} text-xs capitalize px-2 py-1`}>
+                {status.name.toLowerCase().replace('_', ' ')}
               </Tag>
-              <div className="text-sm">{status.title}</div>
+              <div className="mt-1">
+                <div className="font-medium text-slate-700 text-sm">{status.title}</div>
+                <div className="text-xs text-slate-500 max-w-[150px]">{status.description}</div>
+              </div>
             </Col>
-            {statusLabelList.length - 1 > statusLabelList.indexOf(status) && (
+            {index < statusLabelList.length - 1 && (
               <Col>
-                <ArrowRightOutlined className="mr-2 text-sm" />
+                <ArrowRightOutlined className="mx-2 text-slate-400 mt-3 text-sm" />
               </Col>
             )}
           </React.Fragment>
@@ -79,16 +90,7 @@ const CourseManagement = () => {
       </Row>
     );
   };
-  // const renderMainContent = () => {
-  //   switch (activeTab) {
-  //     case "course":
-  //       return <CourseComponent />;
-  //     case "session":
-  //       return <SessionComponent />;
-  //     case "lesson":
-  //       return <LessionComponent />;
-  //   }
-  // };
+
   return (
     <Layout className="layout">
       {renderTagMenu()}

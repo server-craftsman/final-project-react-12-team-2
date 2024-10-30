@@ -31,6 +31,7 @@ import { StatusType } from "../app/enums";
 // };
 
 // Add a new component for rendering the status badge
+
 export const CourseStatusBadge: React.FC<{ status: StatusType }> = ({ status }) => {
   const classNames = courseStatusColor[status];
   return <span className={`${classNames} rounded-md px-2 py-1 text-xs capitalize`}>{status}</span>;
