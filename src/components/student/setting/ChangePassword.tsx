@@ -102,9 +102,6 @@ const ChangePassword: React.FC<ChangePasswordProps> = () => {
           <Button type="primary" htmlType="submit" className="mr-2 h-10 border-none bg-[#1a237e] px-8 hover:bg-[#0d1453]">
             Change Password
           </Button>
-          <Button onClick={() => navigate(ROUTER_URL.STUDENT.BASE)} className="h-10 border-[#1a237e] px-8 text-[#1a237e] hover:border-[#0d1453] hover:text-[#0d1453]">
-            Cancel
-          </Button>
         </Form.Item>
       </Form>
     </div>
