@@ -10,80 +10,107 @@ import { SessionService } from "../../../../services/session/session.service";
 import { CourseService } from "../../../../services/course/course.service";
 import { formatDate } from "../../../../utils/helper";
 import { SessionResponse } from "../../../../models/api/responsive/session/session.response.model";
-import { LessonResponse } from "../../../../models/api/responsive/lesson/lesson.response.model";
-import { LessonType } from "../../../../app/enums";
 
+import { LessonType } from "../../../../app/enums";
 const DisplaySession = () => {
   const [sessions, setSessions] = useState<SessionResponse[]>([]);
-  const [filteredSession, setFilteredSession] = useState<SessionResponse[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState("");
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
 
-  useEffect(() => {
-    const fetchSessions = async () => {
-      try {
-        const response = await SessionService.getSession({
-          searchCondition: {
-            keyword: "",
-            course_id: "",
-            is_position_order: false,
-            is_delete: false
-          },
-          pageInfo: { pageNum: 1, pageSize: 10 }
-        });
+  const fetchSessions = async (page: number, size: number, keyword: string) => {
+    setLoading(true);
+    try {
+      const sessionResponse = await SessionService.getSession({
+        searchCondition: {
+          keyword: keyword,
+          course_id: "",
+          is_position_order: false,
+          is_delete: false
+        },
+        pageInfo: { pageNum: page, pageSize: size }
+      });
 
-        console.log("API Response:", response.data);
+      console.log('Session Response:', sessionResponse);
 
-        if (!response.data || !response.data.data) {
-          console.error("No data received from API");
-          return;
-        }
-
-        const sessionData = Array.isArray(response.data.data) 
-          ? response.data.data as SessionResponse[] 
-          : [];
-
-        const validSessions = sessionData.filter(session => session.pageData && session.pageData.course_id);
-
-        const courseResponses = await Promise.all(validSessions.map(() => 
-          CourseService.getCourse({
-            searchCondition: {
-              keyword: "",
-              category_id: "",
-              status: "active",
-              is_delete: false
-            },
-            pageInfo: { pageNum: 1, pageSize: 10 }
-          })
-        ));
-
-        const courseMap: Record<string, string> = {};
-        courseResponses.forEach(courseResponse => {
-          if (courseResponse.data && Array.isArray(courseResponse.data.data.pageData)) {
-            courseResponse.data.data.pageData.forEach(course => {
-              courseMap[course._id] = course.name;
-            });
-          }
-        });
-
-        const sessionsWithCourseNames = validSessions.map(session => ({
-          ...session,
-          course_name: courseMap[session.pageData.course_id] || ""
-        }));
-
-        setSessions(sessionsWithCourseNames);
-        setFilteredSession(sessionsWithCourseNames);
-        setTotalItems(response.data.data.pageInfo?.totalItems || sessionsWithCourseNames.length);
-      } catch (error) {
-        console.error("Error fetching sessions or course names:", error);
+      const sessionData = sessionResponse.data?.data?.pageData || [];
+      
+      if (!Array.isArray(sessionData)) {
+        console.error("Session data is not an array:", sessionData);
+        return;
       }
-    };
 
-    fetchSessions();
-  }, []);
+      const courseResponse = await CourseService.getCourse({
+        searchCondition: {
+          keyword: "",
+          category_id: "",
+          status: "active",
+          is_delete: false
+        },
+        pageInfo: { pageNum: 1, pageSize: 100 }
+      });
 
-  const renderActions = (record: LessonResponse) => (
+      console.log('Course IDs and Names:', 
+        courseResponse.data?.data?.pageData?.map((c: any) => ({id: c._id, name: c.name}))
+      );
+
+      const courseData = courseResponse.data?.data?.pageData || [];
+      
+      if (!courseData || courseData.length === 0) {
+        console.warn("No course data available");
+      }
+
+      const coursesMap = new Map(
+        courseData?.map((course: any) => {
+          console.log('Mapping course:', course._id, course.name);
+          return [course._id, course.name];
+        }) || []
+      );
+
+      const sessionsWithCourseNames = sessionData.map((session: any) => {
+        console.log('Looking up course for session:', session._id, session.course_id);
+        console.log('Found course name:', coursesMap.get(session.course_id));
+        
+        return {
+          pageData: {
+            _id: session._id,
+            name: session.name,
+            course_id: session.course_id,
+            course_name: coursesMap.get(session.course_id) || "Unassigned",
+            created_at: session.created_at,
+            user_id: session.user_id,
+            description: session.description || '',
+            position_order: session.position_order || 0,
+            updated_at: session.updated_at || new Date(),
+            is_deleted: session.is_deleted || false
+          },
+          pageInfo: {
+            pageNum: 1,
+            pageSize: 100,
+            totalItems: 0,
+            totalPages: 0 
+          }
+        };
+      });
+
+      console.log('Processed Sessions:', sessionsWithCourseNames);
+
+      setSessions(sessionsWithCourseNames as SessionResponse[]);
+      setTotalItems(sessionResponse.data?.data?.pageInfo?.totalItems || 0);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSessions(pageNum, pageSize, searchKeyword);
+  }, [pageNum, pageSize, searchKeyword]);
+
+  const renderActions = (record: SessionResponse) => (
     <div className="flex space-x-2">
       <EditButton data={record} />
       <DeleteButton />
@@ -91,118 +118,54 @@ const DisplaySession = () => {
   );
 
   const handleSearch = (searchText: string) => {
-    if (searchText === "") {
-      setFilteredSession(sessions);
-      setTotalItems(sessions.length);
-    } else {
-      const filtered = sessions.filter((session) =>
-        session.pageData?.name?.toLowerCase().includes(searchText.toLowerCase())
-      );
-      setFilteredSession(filtered);
-      setTotalItems(filtered.length);
-    }
+    setSearchKeyword(searchText);
     setPageNum(1);
-  };
-
-  const mapSessionToLesson = (session: SessionResponse): LessonResponse => {
-    if (!session?.pageData) {
-      console.error("Invalid session data:", session);
-      return {
-        pageData: {
-          _id: '',
-          name: '',
-          course_id: '',
-          session_id: '',
-          position_order: 0,
-          created_at: new Date(),
-          user_id: '',
-          description: '',
-          lesson_type: LessonType.TEXT,
-          video_url: '',
-          image_url: '',
-          full_time: 0,
-          updated_at: new Date(),
-          is_deleted: false,
-          course_name: '',
-          session_name: '',
-          user_name: ''
-        },
-        pageInfo: {
-          pageNum: 1,
-          pageSize: 10,
-          totalItems: 0,
-          totalPages: 0
-        }
-      };
-    }
-
-    return {
-      pageData: {
-        _id: session.pageData._id || '',
-        name: session.pageData.name || '',
-        course_id: session.pageData.course_id || '',
-        session_id: session.pageData._id || '',
-        position_order: session.pageData.position_order || 0,
-        created_at: new Date(session.pageData.created_at),
-        user_id: session.pageData.user_id || '',
-        description: session.pageData.description || '',
-        lesson_type: LessonType.TEXT,
-        video_url: "",
-        image_url: "",
-        full_time: 0,
-        updated_at: new Date(),
-        is_deleted: false,
-        course_name: session.pageData.course_id || "",
-        session_name: session.pageData.name || "",
-        user_name: session.pageData.user_id || ""
-      },
-      pageInfo: {
-        pageNum: 1,
-        pageSize: 10,
-        totalItems: 0,
-        totalPages: 0
-      }
-    };
   };
 
   const columns = [
     {
       title: "Name",
       key: "name",
-      dataIndex: ["pageData", "name"]
+      dataIndex: ["pageData", "name"],
+      render: (text: string) => text || 'N/A'
     },
     {
       title: "Course Name", 
       key: "course_name",
-      dataIndex: "course_name"
+      dataIndex: ["pageData", "course_name"],
+      render: (text: string) => text || 'N/A'
     },
     {
       title: "Created At",
       key: "created_at",
-      dataIndex: "created_at",
-      render: (text: Date) => formatDate(text)
+      dataIndex: ["pageData", "created_at"],
+      render: (text: Date) => text ? formatDate(text) : 'N/A'
     },
     {
       title: "Actions",
       key: "actions",
-      render: (_: any, record: LessonResponse) => renderActions(record)
+      render: (_: any, record: SessionResponse) => renderActions(record)
     }
   ];
-
+  // console.log(sessions);
   return (
     <>
       <div className="mb-4 mt-4 flex justify-between">
-        <CustomSearch onSearch={handleSearch} placeholder="Search by session name" className="w-1/5" />
+        <CustomSearch 
+          onSearch={handleSearch} 
+          placeholder="Search by session name" 
+          className="w-1/5" 
+        />
         <CreateButton />
       </div>
+     
       <Table 
+        loading={loading}
         columns={columns} 
-        dataSource={filteredSession
-          .filter(session => session?.pageData)
-          .map(mapSessionToLesson)
-        } 
+        dataSource={sessions}
         rowKey={(record) => record.pageData._id}
         pagination={false}
+        locale={{ emptyText: 'No data available' }}
       />
       <div className="mt-5 flex justify-end">
         <Pagination
