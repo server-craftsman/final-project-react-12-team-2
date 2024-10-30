@@ -9,15 +9,13 @@ import { CreateCourseParams } from "../../../../models/api/request/course/course
 import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
 import { upload } from "../../../../utils";
 import { GetCategoryParams } from "../../../../models/api/request/admin/category.request.model";
-// import { store } from "../../../../app/store";
-// import { toggleLoading } from "../../../../app/loadingSlice";
 
 const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
   const [description, setDescription] = useState<string>("");
   const [content, setContent] = useState<string>("");
-  const [isFree, setIsFree] = useState<boolean>(true);
+  // const [isFree, setIsFree] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const [categories, setCategories] = useState<{ _id: string; name: string; children?: { _id: string; name: string }[] }[]>([]);
   const [uploadingAvatar, setUploadingAvatar] = useState<boolean>(false);
@@ -133,8 +131,8 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
         description: description || values.description,
         content: content || values.content,
         category_id: values.category_id,
-        video_url: values.video_url,
-        image_url: values.image_url,
+        video_url: values.video_url || "", // Ensure video_url is a string
+        image_url: values.image_url || "", // Ensure image_url is a string
         price: values.price || 0,
         discount: values.discount || 0,
       };
@@ -168,7 +166,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
     form.resetFields();
     setDescription("");
     setContent("");
-    setIsFree(true);
+    // setIsFree(true);
   };
 
   return (
@@ -222,7 +220,10 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
           </Form.Item>
           <Row gutter={16}>
             <Col span={12}>
-            <Form.Item name="avatar_file" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
+            {/* <Form.Item name="image_url" hidden>
+              <Input />
+            </Form.Item> */}
+            <Form.Item name="image_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
               <div className="space-y-4">
                 <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
                   <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingAvatar}>
@@ -234,7 +235,10 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
               </Form.Item>
             </Col>
             <Col span={12}>
-            <Form.Item name="video_file" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
+            {/* <Form.Item name="video_url" hidden>
+              <Input />
+            </Form.Item> */}
+            <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
               <div className="space-y-4">
                 <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList)}>
                   <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingVideo}>

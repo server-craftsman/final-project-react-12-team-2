@@ -1,8 +1,8 @@
 import Table, { ColumnsType } from "antd/es/table";
 import { courseStatusColor } from "../../../../utils/courseStatus";
 import { formatDate, moneyFormat } from "../../../../utils/helper";
+import { CourseStatusBadge } from "../../../../utils/courseStatus";
 import { StatusType } from "../../../../app/enums";
-import { DisplayCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
 import { useEffect, useState } from "react";
 import { Button, message, Modal, Pagination, Select } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
@@ -12,7 +12,6 @@ import CreateCourseButton from "./CreateButton";
 import FilterStatus from "./FilterStatus";
 import useCourseCache from "../../../../hooks/useCourseCache";
 import { GetCourseResponsePageData } from "../../../../models/api/responsive/course/course.response.model";
-const { Option } = Select;
 
 const DisplayCourse: React.FC<{
   searchTerm: string;
@@ -28,32 +27,6 @@ const DisplayCourse: React.FC<{
   
   // Use the custom hook to fetch courses
   const { courses, totalItems } = useCourseCache(searchTerm, statusFilter as StatusType | "", pageNum, pageSize);
-
-  // const renderStatusChange = (record: DisplayCourseResponse) => {
-  //   const isWaitingApprove = [StatusType.NEW, StatusType.WAITING_APPROVE].includes(record.pageData.status);
-  //   const isReject = record.pageData.status === StatusType.REJECT;
-  //   return isWaitingApprove && !isReject ? (
-  //     <Button type="primary" onClick={() => message.info("Click here Send to admin to send to admin for approval")}>
-  //       Waiting approval
-  //     </Button>
-  //   ) : isReject ? (
-  //     <Button danger type="dashed" className="w-[140px]" onClick={() => message.error("This course is rejected")}>
-  //       Rejected
-  //     </Button>
-  //   ) : (
-  //     <Select defaultValue={record.pageData.status} style={{ width: 140 }}>
-  //       <Option key={StatusType.ACTIVE} value={StatusType.ACTIVE}>Active</Option>
-  //       <Option key={StatusType.INACTIVE} value={StatusType.INACTIVE}>Inactive</Option>
-  //     </Select>
-  //   );
-  // };
-
-  // const renderActions = (record: DisplayCourseResponse) => (
-  //   <div className="flex space-x-2">
-  //     <EditButton data={record} />
-  //     <DeleteButton />
-  //   </div>
-  // );
 
   const getCourseStatusName = (status: StatusType): string => {
     return courseStatusColor[status] || "Unknown status";
@@ -83,11 +56,7 @@ const DisplayCourse: React.FC<{
       title: "Status",
       key: "status",
       dataIndex: "status",
-      render: (status: StatusType) => (
-        <span className={`px-2 py-1 rounded ${courseStatusColor[status]}`}>
-          {getCourseStatusName(status)}
-        </span>
-      )
+      render: (status: StatusType) => <CourseStatusBadge status={status} />
     },
     {
       title: "Price",
@@ -105,11 +74,6 @@ const DisplayCourse: React.FC<{
       key: "created_at",
       dataIndex: "created_at",
       render: (text: Date) => formatDate(text)
-    },
-    {
-      title: "Change Status",
-      key: "change_status",
-      dataIndex: "change_status",
     },
     {
       title: "Actions",
