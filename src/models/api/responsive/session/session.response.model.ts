@@ -10,6 +10,7 @@ export interface DisplaySessionResponse {
 
 export type SessionResponsePageData = {
   _id: string;
+  name: string;
   user_id: string;
   course_id: string;
   description: string;
