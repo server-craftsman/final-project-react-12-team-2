@@ -145,6 +145,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
 
       // Call create course API first
       const courseResponse = await CourseService.createCourse(params);
+      window.location.reload();
 
       if (courseResponse) {
         message.success("Course created successfully!");
@@ -161,7 +162,6 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
 
         // Refresh courses
         await refreshCourses();
-        window.location.reload();
         // Call callback if provided
         if (onCourseCreated) {
           onCourseCreated();

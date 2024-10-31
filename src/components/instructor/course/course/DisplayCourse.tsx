@@ -15,7 +15,7 @@ import { GetCourseResponsePageData } from "../../../../models/api/responsive/cou
 import { useCourseStore } from "../../../../hooks/useCallback";
 import { CourseService } from "../../../../services/course/course.service";
 import _ from "lodash";
-
+import { StyleHTMLAttributes } from "react";
 const DisplayCourse: React.FC<{
   searchTerm: string;
   statusFilter: StatusType;
@@ -111,6 +111,7 @@ const DisplayCourse: React.FC<{
   ];
 
   const rowSelection = {
+    type: 'checkbox' as const,
     selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[]) => {
       setSelectedRowKeys(selectedRowKeys.map((key) => Number(key)));
@@ -127,7 +128,10 @@ const DisplayCourse: React.FC<{
 
   const handleOk = async () => {
     try {
-      const validCourses = courses?.filter((course) => selectedCourse.includes(Number(course._id)) && course.status === StatusType.NEW);
+      const validCourses = courses?.filter((course) => 
+        selectedCourse.includes(Number(course._id)) && 
+        course.status === StatusType.NEW
+      );
 
       if (!validCourses || validCourses.length === 0) {
         message.warning("No valid courses selected to send");
@@ -173,7 +177,7 @@ const DisplayCourse: React.FC<{
   };
 
   return (
-    <>
+    <>      
       <div className="mb-4 mt-4 flex justify-between">
         <CustomSearch onSearch={handleSearch} placeholder="Search by course name" className="w-1/5" />
         <FilterStatus
@@ -187,7 +191,14 @@ const DisplayCourse: React.FC<{
           </Button>
         </div>
       </div>
-      <Table rowSelection={rowSelection} columns={columns} dataSource={courses} rowKey={(record) => record._id} pagination={false} />
+      <Table 
+        rowSelection={rowSelection} 
+        columns={columns} 
+        dataSource={courses} 
+        rowKey={(record) => record._id} 
+        pagination={false}
+        className="custom-table-animation"
+      />
       <div className="mt-5 flex justify-end">
         <Pagination
           current={pageNum}
