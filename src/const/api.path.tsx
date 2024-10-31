@@ -28,7 +28,8 @@ export const API = {
     UPDATE_CATEGORY: "api/category/:id",
     GET_CATEGORY_DETAILS: "api/category/:id",
     GET_BLOG_DETAILS: "api/blog/:id",
-    UPDATE_BLOG: "api/blog/:id"
+    UPDATE_BLOG: "api/blog/:id",
+    GET_BLOG: "api/blog/search"
   },
   INSTRUCTOR: {
     GET_USER_DETAILS: "api/users/:id",
