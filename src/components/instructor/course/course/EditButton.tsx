@@ -132,6 +132,7 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
         setDescription("");
         setContent("");
         onEditSuccess?.();
+        window.location.reload();
       }
     } catch (error: any) {
       console.error('Update error:', error);
