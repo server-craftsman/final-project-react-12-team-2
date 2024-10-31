@@ -7,6 +7,7 @@ import { CourseService } from "../../../../services/course/course.service";
 import { CategoryService } from "../../../../services/category/category.service";
 import { CreateCourseParams } from "../../../../models/api/request/course/course.request.model";
 import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
+import { parseTinyEditor } from "../../../../utils";
 import { upload } from "../../../../utils";
 import { GetCategoryParams } from "../../../../models/api/request/admin/category.request.model";
 import { useCourseStore } from "../../../../hooks/useCallback";
@@ -133,8 +134,8 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
 
       const params: CreateCourseParams = {
         name: values.name,
-        description: description || values.description,
-        content: content || values.content,
+        description: description || values.description || "",
+        content: values.content,
         category_id: values.category_id,
         video_url: values.video_url || "",
         image_url: values.image_url || "",
@@ -180,6 +181,13 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
     // setIsFree(true);
   };
 
+  const editChange = (value: string, editor: any) => {
+    form.setFieldsValue({ content: value });
+    parseTinyEditor.updateTinyMCEContent("content-editor", value);
+    editor.selection.select(editor.getBody(), true);
+    editor.selection.collapse(false);
+  };
+
   return (
     <>
       <Button onClick={() => openCreateModal()} className="rounded-md bg-[#1a237e] text-white">
@@ -213,19 +221,10 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
             <Input.TextArea />
           </Form.Item>
           <Form.Item name="content" label="Content">
-            <TinyMCEEditor
-              initialValue={content}
-              onEditorChange={(newContent) => {
-                setContent(newContent);
-                form.setFieldsValue({ content: newContent });
-              }}
-            />
+            <TinyMCEEditor initialValue={content} onEditorChange={editChange} />
           </Form.Item>
           <Row gutter={16}>
             <Col span={12}>
-              {/* <Form.Item name="image_url" hidden>
-              <Input />
-            </Form.Item> */}
               <Form.Item name="image_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
                 <div className="space-y-4">
                   <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
@@ -238,9 +237,6 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
               </Form.Item>
             </Col>
             <Col span={12}>
-              {/* <Form.Item name="video_url" hidden>
-              <Input />
-            </Form.Item> */}
               <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
                 <div className="space-y-4">
                   <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList)}>

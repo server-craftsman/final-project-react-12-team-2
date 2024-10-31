@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
 import { LessonService } from "../../../../services/lesson/lesson.service";
 import { useLessonStore, useCallbackCourse, useCallbackSession } from "../../../../hooks/useCallback";
-import { upload } from "../../../../utils";
+import { parseTinyEditor, upload } from "../../../../utils";
 import { LessonType } from "../../../../app/enums";
 import { UploadOutlined } from "@ant-design/icons";
 const { Option } = Select;
@@ -58,6 +58,7 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
       if (onLessonCreated) {
         onLessonCreated();
       }
+      setDescription("");
     } catch (error) {
       message.error("Failed to create lesson");
     }
@@ -91,6 +92,13 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
       setVideoPreview(url);
     }
     form.setFieldValue(`${type}_url`, url);
+  };
+
+  const editChange = (value: string, editor: any) => {
+    form.setFieldsValue({ description: value });
+    parseTinyEditor.updateTinyMCEContent("description-editor", value);
+    editor.selection.select(editor.getBody(), true);
+    editor.selection.collapse(false);
   };
 
   return (
@@ -175,10 +183,7 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
           <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
             <TinyMCEEditor
               initialValue={description}
-              onEditorChange={(content) => {
-                setDescription(content);
-                form.setFieldValue("description", content);
-              }}
+              onEditorChange={editChange}
             />
           </Form.Item>
           <Form.Item

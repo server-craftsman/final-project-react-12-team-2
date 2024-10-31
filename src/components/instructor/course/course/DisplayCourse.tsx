@@ -6,7 +6,7 @@ import { StatusType } from "../../../../app/enums";
 import { useEffect, useState, useCallback } from "react";
 import { Button, message, Modal, Pagination } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
-// import EditButton from "./EditButton";
+import EditButton from "./EditButton";
 // import DeleteButton from "./DeleteButton";
 import CreateCourseButton from "./CreateButton";
 import FilterStatus from "./FilterStatus";
@@ -93,7 +93,20 @@ const DisplayCourse: React.FC<{
     {
       title: "Actions",
       key: "actions",
-      dataIndex: "actions"
+      dataIndex: "actions",
+      render: (_, record) => (
+        <EditButton 
+          data={{
+            ...record,
+            category_id: record.category_id,
+            description: record.description,
+            content: record.content,
+            image_url: record.image_url,
+            video_url: record.video_url
+          }} 
+          onEditSuccess={refreshCourses}
+        />
+      )
     }
   ];
 

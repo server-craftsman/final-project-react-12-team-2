@@ -1,8 +1,8 @@
 import { BaseService } from "../config/base.service";
 import { API } from "../../const/api.path";
 import { ResponseSuccess } from "../../app/interface";
-import { CreateCourseParams, GetCourseParams, GetPublicCourseParams, ChangeStatusCourseParams } from "../../models/api/request/course/course.request.model";
-import { CreateCourseResponse, GetCourseResponse, GetPublicCourseResponse, GetCourseByIdResponse } from "../../models/api/responsive/course/course.response.model";
+import { CreateCourseParams, GetCourseParams, GetPublicCourseParams, ChangeStatusCourseParams, UpdateCourseParams } from "../../models/api/request/course/course.request.model";
+import { CreateCourseResponse, GetCourseResponse, GetPublicCourseResponse, GetCourseByIdResponse, UpdateCourseResponse } from "../../models/api/responsive/course/course.response.model";
 
 export const CourseService = {
   //instructor & admin
@@ -28,6 +28,13 @@ export const CourseService = {
   changeStatusCourse(params: ChangeStatusCourseParams) {
     return BaseService.put<ResponseSuccess<CreateCourseResponse>>({
       url: API.COURSE.CHANGE_STATUS_COURSE,
+      payload: params
+    });
+  },
+  //instructor
+  updateCourse(courseId: string, params: UpdateCourseParams) {
+    return BaseService.put<ResponseSuccess<UpdateCourseResponse>>({
+      url: API.COURSE.UPDATE_COURSE.replace(":id", courseId),
       payload: params
     });
   },

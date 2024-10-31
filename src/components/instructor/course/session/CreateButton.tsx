@@ -7,6 +7,7 @@ import { CreateSessionRequestModel } from "../../../../models/api/request/sessio
 import { CourseService } from "../../../../services/course/course.service";
 import { GetCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
 import { useSessionStore } from "../../../../hooks/useCallback";
+import { parseTinyEditor } from "../../../../utils";
 
 const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,7 +46,7 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
       const values = await form.validateFields();
       const requestData: CreateSessionRequestModel = {
         ...values,
-        description: description
+        description: values.description || ""
       };
 
       const createSessionResponse = await SessionService.createSession(requestData);
@@ -76,6 +77,13 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
     setDescription("");
   };
 
+  const editChange = (value: string, editor: any) => {
+    form.setFieldsValue({ description: value });
+    parseTinyEditor.updateTinyMCEContent("description-editor", value);
+    editor.selection.select(editor.getBody(), true);
+    editor.selection.collapse(false);
+  };
+
   return (
     <>
       <Button onClick={openCreateModal} className="rounded-md bg-[#1a237e] text-white">
@@ -96,13 +104,7 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
             </Select>
           </Form.Item>
           <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
-            <TinyMCEEditor
-              initialValue={description}
-              onEditorChange={(content) => {
-                setDescription(content);
-                form.setFieldValue("description", content);
-              }}
-            />
+            <TinyMCEEditor initialValue={description || ""} onEditorChange={editChange} />
           </Form.Item>
         </Form>
       </Modal>

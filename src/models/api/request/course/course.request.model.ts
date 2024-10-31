@@ -32,6 +32,17 @@ export interface ChangeStatusCourseParams {
   comment: string;
 }
 
+export interface UpdateCourseParams {
+  name: string;
+  category_id: string;
+  description: string;
+  content: string;
+  video_url: string;
+  image_url: string;
+  price: number;
+  discount: number;
+}
+
 //==================CLIENT PUBLIC=======================
 
 export interface GetPublicCourseParams {

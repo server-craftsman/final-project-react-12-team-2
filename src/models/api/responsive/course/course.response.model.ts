@@ -68,6 +68,23 @@ export interface CreateCourseResponse {
   __v: number;
 }
 
+export interface UpdateCourseResponse {
+  _id: string;
+  name: string;
+  category_id: string;
+  user_id: string;
+  description: string;
+  content: string;
+  status: StatusType;
+  video_url: string;
+  image_url: string;
+  price: number;
+  discount: number;
+  created_at: Date;
+  updated_at: Date;
+  is_deleted: boolean;
+}
+
 //==================CLIENT PUBLIC=======================
 export interface GetPublicCourseResponse {
   pageData: GetCourseResponsePublic[];

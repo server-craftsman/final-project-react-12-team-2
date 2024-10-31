@@ -1,28 +1,142 @@
-import { Editor } from "@tinymce/tinymce-react";
-import { Button, Col, Form, Input, InputNumber, message, Modal, Row, Select } from "antd";
+import { Button, Col, Form, Input, InputNumber, message, Modal, Row, Select, Upload } from "antd";
 const { Option } = Select;
-import { TINY_API_KEY } from "../../../../services/config/apiClientTiny";
-import { useState } from "react";
-import { EditOutlined } from "@ant-design/icons";
-import { categories } from "../../../../data/categories.json";
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const EditButton = ({ data }: any) => {
+import { useState, useEffect, useCallback } from "react";
+import { EditOutlined, UploadOutlined } from "@ant-design/icons";
+import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
+import { parseTinyEditor, upload } from "../../../../utils";
+import { CourseService } from "../../../../services/course/course.service";
+import { UpdateCourseParams } from "../../../../models/api/request/course/course.request.model";
+import { CategoryService } from "../../../../services/category/category.service";
+import { GetCategoryParams } from "../../../../models/api/request/admin/category.request.model";
+interface EditButtonProps {
+  data: any;
+  onEditSuccess?: () => void;
+}
+
+
+const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
-  const [description, setDescription] = useState<string>(data.pageData.description);
-  const [content, setContent] = useState<string>(data.pageData.content);
-  form.setFieldsValue(data);
+  const [description, setDescription] = useState<string>(data.description || '');
+  const [content, setContent] = useState<string>(data.content || '');
+  const [categories, setCategories] = useState<any[]>([]);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+  const [videoPreview, setVideoPreview] = useState<string | null>(null);
+  const [avatarFileList, setAvatarFileList] = useState<any[]>([]);
+  const [videoFileList, setVideoFileList] = useState<any[]>([]);
+
+  // Initialize states with existing data
+  useEffect(() => {
+    if (data) {
+      form.setFieldsValue({
+        description: data.description || '',
+        content: data.content || ''
+      });
+      setDescription(data.description || '');
+      setContent(data.content || '');
+      setAvatarPreview(data.image_url);
+      setVideoPreview(data.video_url ? `<video controls src="${data.video_url}"></video>` : null);
+    }
+  }, [data, form]);
+
+  const getParentCategoryParams: GetCategoryParams = {
+    searchCondition: {
+      is_delete: false,
+      is_parent: true,
+      keyword: ""
+    },
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 100
+    }
+  };
+
+  const getChildCategoryParams: GetCategoryParams = {
+    searchCondition: {
+      keyword: "",
+      is_delete: false,
+      is_parent: false
+    },
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 100
+    }
+  };
+
+  // Modify category fetching
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+
+        const parentCategoriesData = await CategoryService.getCategory(getParentCategoryParams);
+        const parentCategories = parentCategoriesData.data.data.pageData;
+
+        const childCategoriesData = await CategoryService.getCategory(getChildCategoryParams);
+        const childCategories = childCategoriesData.data.data.pageData;
+
+        const categoriesWithChildren = parentCategories.map((parent) => ({
+          ...parent,
+          children: childCategories.filter((child) => child.parent_category_id === parent._id)
+        }));
+        setCategories(categoriesWithChildren);
+      } catch (error) {
+        message.error("Failed to load categories.");
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const openCreateModal = () => {
+    form.setFieldsValue({
+      name: data.name,
+      category_id: data.category_id,
+      description: data.description,
+      content: data.content,
+      image_url: data.image_url,
+      video_url: data.video_url,
+      price: data.price,
+      discount: data.discount
+    });
+    setDescription(data.description || '');
+    setContent(data.content || '');
     setIsOpen(true);
   };
+
   const handleOk = async () => {
-    await form.validateFields();
-    setIsOpen(false);
-    message.info("Edited");
-    form.resetFields();
-    setDescription("");
-    setContent("");
+    try {
+      await form.validateFields();
+      const formValues = form.getFieldsValue();
+      
+      const updateParams: UpdateCourseParams = {
+        name: formValues.name,
+        description: formValues.description || description,
+        content: formValues.content || content,
+        category_id: formValues.category_id,
+        image_url: formValues.image_url,
+        video_url: formValues.video_url,
+        price: Number(formValues.price),
+        discount: Number(formValues.discount)
+      };
+
+      // Make sure to add trailing slash after the ID
+      const courseId = `/${data._id}`;
+      const response = await CourseService.updateCourse(courseId, updateParams);
+      
+      if (response.data?.data) {
+        message.success("Course updated successfully");
+        setIsOpen(false);
+        form.resetFields();
+        setDescription("");
+        setContent("");
+        onEditSuccess?.();
+      }
+    } catch (error: any) {
+      console.error('Update error:', error);
+      message.error(error.message || "Failed to update course");
+    }
   };
 
   const handleCancel = () => {
@@ -32,11 +146,69 @@ const EditButton = ({ data }: any) => {
     setContent("");
   };
 
+  const editChange = (value: string, editor: any) => {
+    form.setFieldsValue({ content: value });
+    parseTinyEditor.updateTinyMCEContent("content-editor", value);
+    editor.selection.select(editor.getBody(), true);
+    editor.selection.collapse(false);
+  };
+
+  const handleFileUpload = useCallback(async (file: File, type: "image" | "video") => {
+    try {
+      const url = await upload.handleUploadFile(file, type);
+      if (!url) throw new Error(`Failed to upload ${type}`);
+      return url;
+    } catch (error: any) {
+      throw new Error(`${type} upload failed: ${error.message}`);
+    }
+  }, []);
+
+
+  const handleAvatarPreview = useCallback(
+    async (file: File) => {
+      setUploadingAvatar(true);
+      try {
+        const url = await handleFileUpload(file, "image");
+        form.setFieldsValue({ image_url: url });
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setAvatarPreview(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
+      } catch (error: any) {
+        message.error(error.message);
+      } finally {
+        setUploadingAvatar(false);
+      }
+      return false; // Prevent default upload behavior
+    },
+    [handleFileUpload, form]
+  );
+
+  const handleVideoPreview = useCallback(
+    async (file: File) => {
+      setUploadingVideo(true);
+      try {
+        const url = await handleFileUpload(file, "video");
+        form.setFieldsValue({ video_url: url });
+        const videoElement = document.createElement("video");
+        videoElement.controls = true;
+        videoElement.src = URL.createObjectURL(file);
+        setVideoPreview(videoElement.outerHTML);
+      } catch (error: any) {
+        message.error(error.message);
+      } finally {
+        setUploadingVideo(false);
+      }
+      return false; // Prevent default upload behavior
+    },
+    [handleFileUpload, form]
+  );
   return (
     <>
       <Button className="mr-2" icon={<EditOutlined />} onClick={() => openCreateModal()} />
       <Modal title="Edit Course" open={isOpen} onOk={handleOk} onCancel={handleCancel} width={800} style={{ top: "20px" }}>
-        <Form form={form} layout="vertical" initialValues={{ description, content }}>
+        <Form form={form} layout="vertical" initialValues={data}>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item name="name" label="Course Name" rules={[{ required: true, message: "Please input the course name!" }]}>
@@ -44,50 +216,68 @@ const EditButton = ({ data }: any) => {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="category_id" label="Category" rules={[{ required: true, message: "Please select a category!" }]}>
+              <Form.Item name="category_id" initialValue="" label="Category" rules={[{ required: true, message: "Please select a category!" }]}>
                 <Select placeholder="Select a category">
-                  {categories.map((category) => (
-                    <Option key={category.id} value={category.id.toString()}>
-                      {category.name}
-                    </Option>
+                  {categories.map((parent) => (
+                    <Select.OptGroup key={parent._id} label={parent.name}>
+                      {parent.children?.map((child: any) => (
+                        <Option key={child._id} value={child._id}>
+                          {child.name}
+                        </Option>
+                      ))}
+                    </Select.OptGroup>
                   ))}
                 </Select>
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item name="description" label="Description" rules={[{ required: true, message: "Please input the description!" }]}>
-            <Editor
-              apiKey={TINY_API_KEY}
-              initialValue="description"
-              init={{
-                height: 300,
-                menubar: false,
-                plugins: ["advlist autolink lists link image charmap print preview anchor", "searchreplace visualblocks code fullscreen", "insertdatetime media table paste code help wordcount"],
-                toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code"
-              }}
+          <Form.Item 
+            name="description" 
+            label="Description" 
+            rules={[{ required: true, message: "Please input the description!" }]}
+          >
+            <Input.TextArea 
+              defaultValue={data.description}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
             />
           </Form.Item>
-          <Form.Item name="content" label="Content" rules={[{ required: true, message: "Please input the content!" }]}>
-            <Editor
-              apiKey={TINY_API_KEY}
-              initialValue="content"
-              init={{
-                height: 300,
-                menubar: false,
-                plugins: ["advlist autolink lists link image charmap print preview anchor", "searchreplace visualblocks code fullscreen", "insertdatetime media table paste code help wordcount"],
-                toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code"
-              }}
+          <Form.Item 
+            name="content" 
+            label="Content" 
+            rules={[{ required: true, message: "Please input the content!" }]}
+          >
+            <TinyMCEEditor 
+              initialValue={data.content}
+              onEditorChange={(value, editor) => {
+                setContent(value);
+                editChange(value, editor);
+              }} 
             />
           </Form.Item>
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="image_url" label="Upload Image" rules={[{ required: true, message: "Please upload an image!" }]}>
-                <Input />
+            <Form.Item name="image_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
+                <div className="space-y-4">
+                  <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
+                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingAvatar}>
+                      Select Avatar
+                    </Button>
+                  </Upload>
+                  {avatarPreview && <img src={avatarPreview} alt="Avatar preview" className="h-32 w-32 rounded-lg object-cover" />}
+                </div>
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="video_url" label="Upload Video" rules={[{ required: true, message: "Please upload a video!" }]}>
-                <Input />
+            <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
+                <div className="space-y-4">
+                  <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList)}>
+                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingVideo}>
+                      Select Video
+                    </Button>
+                  </Upload>
+                  {videoPreview && <div dangerouslySetInnerHTML={{ __html: videoPreview }} />}
+                </div>
               </Form.Item>
             </Col>
           </Row>

@@ -3,7 +3,7 @@ export const getTinyMCEContent = (editorId: string): string | null => {
   if (editor) {
     return editor.getContent();
   }
-  return null;
+  return "";
 };
 
 export const updateTinyMCEContent = (editorId: string, content: string) => {
