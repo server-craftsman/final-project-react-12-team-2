@@ -6,7 +6,7 @@ import { SessionService } from "../../../../services/session/session.service";
 import { CreateSessionRequestModel } from "../../../../models/api/request/session/session.request.model";
 import { CourseService } from "../../../../services/course/course.service";
 import { GetCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
-import { useCallbackSession } from "../../../../hooks/useCallbackSession";
+import { useCallbackSession } from "../../../../hooks/useCallback";
 const CreateButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();

@@ -9,14 +9,13 @@ import { CreateCourseParams } from "../../../../models/api/request/course/course
 import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
 import { upload } from "../../../../utils";
 import { GetCategoryParams } from "../../../../models/api/request/admin/category.request.model";
+import { useCallbackCourse } from "../../../../hooks/useCallback";
 
 const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
   const [description, setDescription] = useState<string>("");
   const [content, setContent] = useState<string>("");
-  // const [isFree, setIsFree] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(false);
   const [categories, setCategories] = useState<{ _id: string; name: string; children?: { _id: string; name: string }[] }[]>([]);
   const [uploadingAvatar, setUploadingAvatar] = useState<boolean>(false);
   const [uploadingVideo, setUploadingVideo] = useState<boolean>(false);
@@ -24,7 +23,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
   const [avatarPreview, setAvatarPreview] = useState<string>("");
   const [videoFileList, setVideoFileList] = useState<UploadFile<any>[]>([]);
   const [avatarFileList, setAvatarFileList] = useState<UploadFile<any>[]>([]);
-
+  const { getCourse } = useCallbackCourse();
   const getParentCategoryParams: GetCategoryParams = {
     searchCondition: {
       keyword: "",
@@ -123,7 +122,6 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
 
   const handleSubmit = async () => {
     try {
-      setLoading(true);
       const values = await form.validateFields();
       
       const params: CreateCourseParams = {
@@ -131,8 +129,8 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
         description: description || values.description,
         content: content || values.content,
         category_id: values.category_id,
-        video_url: values.video_url || "", // Ensure video_url is a string
-        image_url: values.image_url || "", // Ensure image_url is a string
+        video_url: values.video_url || "",
+        image_url: values.image_url || "",
         price: values.price || 0,
         discount: values.discount || 0,
       };
@@ -140,10 +138,6 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
       await CourseService.createCourse(params);
       message.success("Course created successfully!");
 
-      if (onCourseCreated) {
-        onCourseCreated();
-      }
-      
       setIsOpen(false);
       form.resetFields();
       setDescription("");
@@ -152,12 +146,29 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
       setAvatarPreview("");
       setVideoFileList([]);
       setAvatarFileList([]);
-      
+
+      if (onCourseCreated) {
+        onCourseCreated();
+      }
+
+      await getCourse({
+        searchCondition: {
+          keyword: "",
+          category_id: values.category_id,
+          status: "active", 
+          is_delete: false,
+        },
+        pageInfo: {
+          pageNum: 1,
+          pageSize: 100
+        }
+      }).then(() => {
+        window.location.reload();
+      });
+
     } catch (error) {
       console.error("Error creating course:", error);
       message.error("Failed to create course. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -179,7 +190,6 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
         open={isOpen}
         onOk={handleSubmit}
         onCancel={handleCancel}
-        confirmLoading={loading}
         width={800}
         style={{ top: "20px" }}
       >

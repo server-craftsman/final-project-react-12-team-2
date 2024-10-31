@@ -3,7 +3,7 @@ import Table, { ColumnsType } from "antd/es/table";
 import { formatDate, moneyFormat } from "../../../../utils/helper";
 import { CourseStatusBadge } from "../../../../utils/courseStatus";
 import { StatusType } from "../../../../app/enums";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Button, message, Modal, Pagination } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
 // import EditButton from "./EditButton";
@@ -102,6 +102,12 @@ const DisplayCourse: React.FC<{
     setIsModalVisible(false);
   };
 
+  // Thêm callback để refresh data
+  const handleCourseCreated = useCallback(() => {
+    // Reset về trang 1 khi có course mới
+    setPageNum(1);
+  }, []);
+
   return (
     <>
       <div className="mb-4 mt-4 flex justify-between">
@@ -112,7 +118,7 @@ const DisplayCourse: React.FC<{
         />
         <FilterStatus onStatusChange={onStatusChange as any} />
         <div className="flex justify-end gap-2">
-          <CreateCourseButton />
+          <CreateCourseButton onCourseCreated={handleCourseCreated} />
           <Button 
             disabled={selectedCourse.length === 0} 
             onClick={showModal}
