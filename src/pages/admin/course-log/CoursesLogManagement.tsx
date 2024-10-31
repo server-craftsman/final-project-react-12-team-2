@@ -40,7 +40,7 @@ const CoursesLogManagement: React.FC = () => {
           <CustomSearch className="search-input" placeholder="Search by course name" onSearch={(value) => setSearchTerm(value)} />
           <FilterStatus status={statusFilter} setStatus={setStatusFilter} />
         </div>
-        <CoursesLog data={data} />
+        <CoursesLog data={data} searchQuery={searchTerm} />
       </Card>
     </Content>
   );
