@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Table from "antd/es/table";
 import { Pagination } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
@@ -9,6 +9,7 @@ import { SessionService } from "../../../../services/session/session.service";
 import { CourseService } from "../../../../services/course/course.service";
 import { formatDate } from "../../../../utils/helper";
 import { DisplaySessionResponse } from "../../../../models/api/responsive/session/session.response.model";
+import { useSessionStore } from "../../../../hooks/useCallback";
 
 const DisplaySession = () => {
   const [sessions, setSessions] = useState<DisplaySessionResponse[]>([]);
@@ -17,6 +18,7 @@ const DisplaySession = () => {
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
+  const refreshSessions = useSessionStore((state) => state.refreshSessions);
 
   const fetchSessions = async (page: number, size: number, keyword: string) => {
     setLoading(true);
@@ -67,9 +69,20 @@ const DisplaySession = () => {
     }
   };
 
+  
+  // Thêm callback để refresh data
+  const handleSessionCreated = useCallback(async () => {
+    setPageNum(1);
+    await refreshSessions();
+  }, [refreshSessions]);
+
   useEffect(() => {
     fetchSessions(pageNum, pageSize, searchKeyword);
   }, [pageNum, pageSize, searchKeyword]);
+
+  useEffect(() => {
+    refreshSessions();
+  }, [refreshSessions]);
 
   const renderActions = (record: DisplaySessionResponse) => (
     <div className="flex space-x-2">
@@ -116,7 +129,7 @@ const DisplaySession = () => {
           placeholder="Search by session name" 
           className="w-1/5" 
         />
-        <CreateButton />
+        <CreateButton onSessionCreated={handleSessionCreated} />
       </div>
      
       <Table 

@@ -1,66 +1,44 @@
-import { Button, Form, Input, message, Modal, Select } from "antd";
+import { Button, Form, Input, message, Modal, Select, Upload } from "antd";
 import { useState, useEffect } from "react";
 import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
 import { LessonService } from "../../../../services/lesson/lesson.service";
-import { CourseService } from "../../../../services/course/course.service";
-import { SessionService } from "../../../../services/session/session.service";
-import { GetCourseParams } from "../../../../models/api/request/course/course.request.model";
-import { SessionRequestModel } from "../../../../models/api/request/session/session.request.model";
-import { GetCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
-import { SessionResponse } from "../../../../models/api/responsive/session/session.response.model";
-
+import { useLessonStore, useCallbackCourse, useCallbackSession } from "../../../../hooks/useCallback";
+import { upload } from "../../../../utils";
+import { LessonType } from "../../../../app/enums";
+import { UploadOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
-const CreateButton = () => {
+const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
-  const [sessions, setSessions] = useState<SessionResponse['pageData']>();
   const [description, setDescription] = useState("");
-  const [courses, setCourses] = useState<GetCourseResponse['pageData']>();
+  const [lessonType, setLessonType] = useState<LessonType>(LessonType.VIDEO);
+  const [imageUrl, setImageUrl] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
+  const [imagePreview, setImagePreview] = useState("");
+  const [videoPreview, setVideoPreview] = useState("");
+  const [uploading, setUploading] = useState(false);
+  // const callbackLesson = useCallbackLesson();
+  const callbackCourse = useCallbackCourse();
+  const callbackSession = useCallbackSession();
+
+  const { courseData: courses, courseLoading } = callbackCourse;
+  const { sessionData: sessions, sessionLoading } = callbackSession;
 
   useEffect(() => {
-    fetchCourses();
+    callbackCourse.getCourse();
   }, []);
-
-  const fetchCourses = async (): Promise<void> => {
-    try {
-      const params: GetCourseParams = {
-        pageInfo: {
-          pageNum: 1,
-          pageSize: 100
-        },
-        searchCondition: {
-          keyword: "",
-          category_id: "",
-          status: "",
-          is_delete: false
-        }
-      };
-      const response = await CourseService.getCourse(params);
-      setCourses(response.data.data.pageData || []);
-    } catch (error) {
-      message.error("Failed to fetch courses");
-    }
-  };
 
   const openCreateModal = () => {
     setIsOpen(true);
   };
 
-  // const handleOk = async (): Promise<void> => {
-  //   try {
-  //     await createLesson();
-  //     setIsOpen(false);
-  //     message.success("Lesson created successfully");
-  //   } catch (error) {
-  //     message.error("Failed to create lesson");
-  //   }
-  // };
-
   const handleCancel = () => {
     setIsOpen(false);
     form.resetFields();
   };
+
+  const refreshLessons = useLessonStore((state) => state.refreshLessons);
 
   const createLesson = async () => {
     try {
@@ -71,7 +49,15 @@ const CreateButton = () => {
 
       message.success("Lesson created successfully");
       setIsOpen(false);
+
       form.resetFields();
+      await refreshLessons();
+      // window.location.reload();
+
+      // Call callback if provided
+      if (onLessonCreated) {
+        onLessonCreated();
+      }
     } catch (error) {
       message.error("Failed to create lesson");
     }
@@ -79,27 +65,33 @@ const CreateButton = () => {
 
   const handleCourseChange = async (courseId: string) => {
     try {
-      form.setFieldValue('session_id', undefined); // Clear session selection on course change
+      form.setFieldValue('session_id', undefined);
 
       if (courseId) {
-        const params: SessionRequestModel = {
+        await callbackSession.getSession({
           searchCondition: {
             course_id: courseId,
-            keyword: "",
+            is_delete: false,
             is_position_order: false,
-            is_delete: false
-          },
-          pageInfo: {
-            pageNum: 1,
-            pageSize: 100
+            keyword: ""
           }
-        };
-        const response = await SessionService.getSession(params);
-        setSessions(response.data.data.pageData || []);
-      } 
+        });
+      }
     } catch (error) {
       message.error("Failed to fetch sessions");
     }
+  };
+
+
+  const onUploadSuccess = (type: "video" | "image", url: string) => {
+    if (type === "image") {
+      setImageUrl(url);
+      setImagePreview(url);
+    } else {
+      setVideoUrl(url);
+      setVideoPreview(url);
+    }
+    form.setFieldValue(`${type}_url`, url);
   };
 
   return (
@@ -120,9 +112,9 @@ const CreateButton = () => {
             <Select
               placeholder="Select a course"
               onChange={handleCourseChange}
-              loading={courses && courses.length === 0}
+              loading={courseLoading}
             >
-              {courses && courses.map((course: GetCourseResponse['pageData'][0]) => (
+              {courses?.map((course: any) => (
                 <Option key={course._id} value={course._id}>
                   {course.name}
                 </Option>
@@ -137,21 +129,98 @@ const CreateButton = () => {
             <Select
               placeholder="Select a session"
               disabled={!form.getFieldValue('course_id')}
-              loading={form.getFieldValue('course_id' ) && sessions && sessions.length === 0}
+              loading={sessionLoading}
             >
-              {sessions && sessions.map((session: SessionResponse['pageData'][0]) => (
+              {sessions?.map((session: any) => (
                 <Option key={session._id} value={session._id}>
-                  {session.description}
+                  {session.name || session.title || `Session ${session.position_order}`}
                 </Option>
               ))}
             </Select>
           </Form.Item>
-          <Form.Item name="image_url" label="Image URL" rules={[{ required: true, message: "Please input the image url!" }]}>
-            <Input />
+          <Form.Item name="lesson_type" label="Lesson Type" rules={[{ required: true, message: "Please select a lesson type!" }]}>
+            <Select onChange={(value) => setLessonType(value)}>
+              {Object.values(LessonType).map((type) => (
+                <Option key={type} value={type}>{type}</Option>
+              ))}
+            </Select>
           </Form.Item>
-          <Form.Item name="video_url" label="Video URL" rules={[{ required: true, message: "Please input the video url!" }]}>
-            <Input />
-          </Form.Item>
+          {(lessonType === LessonType.TEXT || lessonType === LessonType.IMAGE) && (
+            <Form.Item 
+              name="image_url" 
+              label="Image" 
+              rules={[{ required: true, message: "Please upload an image!" }]}
+            >
+              <div>
+                <Upload
+                  accept="image/*"
+                  maxCount={1}
+                  showUploadList={false}
+                  customRequest={(options: any) => 
+                    upload.customUploadHandler(options, "image", setUploading, onUploadSuccess)
+                  }
+                >
+                  <Button icon={<UploadOutlined />} loading={uploading}>
+                    Upload Image
+                  </Button>
+                </Upload>
+                {imagePreview && (
+                  <img 
+                    src={imagePreview} 
+                    alt="Preview" 
+                    style={{ marginTop: 8, maxWidth: '200px' }} 
+                  />
+                )}
+                <Input 
+                  value={imageUrl} 
+                  onChange={(e) => {
+                    setImageUrl(e.target.value);
+                    form.setFieldValue("image_url", e.target.value);
+                  }}
+                  style={{ marginTop: 8 }}
+                />
+              </div>
+            </Form.Item>
+          )}
+
+          {(lessonType === LessonType.VIDEO) && (
+            <Form.Item 
+              name="video_url" 
+              label="Video" 
+              rules={[{ required: true, message: "Please upload a video!" }]}
+            >
+              <div>
+                <Upload
+                  accept="video/*"
+                  maxCount={1}
+                  showUploadList={false}
+                  customRequest={(options: any) => 
+                    upload.customUploadHandler(options, "video", setUploading, onUploadSuccess)
+                  }
+                >
+                  <Button icon={<UploadOutlined />} loading={uploading}>
+                    Upload Video
+                  </Button>
+                </Upload>
+                {videoPreview && (
+                  <video 
+                    src={videoPreview} 
+                    controls 
+                    style={{ marginTop: 8, maxWidth: '200px' }} 
+                  />
+                )}
+                <Input 
+                  value={videoUrl} 
+                  onChange={(e) => {
+                    setVideoUrl(e.target.value);
+                    form.setFieldValue("video_url", e.target.value);
+                  }}
+                  style={{ marginTop: 8 }}
+                />
+              </div>
+            </Form.Item>
+          )}
+
           <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
             <TinyMCEEditor
               initialValue={description}

@@ -6,12 +6,14 @@ import { SessionService } from "../../../../services/session/session.service";
 import { CreateSessionRequestModel } from "../../../../models/api/request/session/session.request.model";
 import { CourseService } from "../../../../services/course/course.service";
 import { GetCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
-import { useCallbackSession } from "../../../../hooks/useCallback";
-const CreateButton = () => {
+import { useSessionStore } from "../../../../hooks/useCallback";
+
+const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
   const [description, setDescription] = useState("");
   const [courses, setCourses] = useState<GetCourseResponse["pageData"]>([]);
+  const refreshSessions = useSessionStore((state) => state.refreshSessions);
 
   useEffect(() => {
     const loadCourses = async () => {
@@ -38,7 +40,6 @@ const CreateButton = () => {
     setIsOpen(true);
   };
 
-
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
@@ -46,11 +47,23 @@ const CreateButton = () => {
         ...values,
         description: description
       };
-      await SessionService.createSession(requestData);
-      message.success("Session created successfully");
-      setIsOpen(false);
-      form.resetFields();
-      useCallbackSession();
+
+      const createSessionResponse = await SessionService.createSession(requestData);
+      
+      if (createSessionResponse) {
+        message.success("Session created successfully");
+        setIsOpen(false);
+        form.resetFields();
+        setDescription("");
+        
+        await refreshSessions();
+        // window.location.reload();
+
+        // Call callback if provided
+        if (onSessionCreated) {
+          onSessionCreated();
+        }
+      }
     } catch (error) {
       console.error("Failed to create session:", error);
       message.error("Failed to create session");

@@ -9,7 +9,7 @@ import { CreateCourseParams } from "../../../../models/api/request/course/course
 import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
 import { upload } from "../../../../utils";
 import { GetCategoryParams } from "../../../../models/api/request/admin/category.request.model";
-import { useCallbackCourse } from "../../../../hooks/useCallback";
+import { useCourseStore } from "../../../../hooks/useCallback";
 
 const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +23,8 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
   const [avatarPreview, setAvatarPreview] = useState<string>("");
   const [videoFileList, setVideoFileList] = useState<UploadFile<any>[]>([]);
   const [avatarFileList, setAvatarFileList] = useState<UploadFile<any>[]>([]);
-  const { getCourse } = useCallbackCourse();
+  const refreshCourses = useCourseStore((state) => state.refreshCourses);
+
   const getParentCategoryParams: GetCategoryParams = {
     searchCondition: {
       keyword: "",
@@ -130,42 +131,35 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
         content: content || values.content,
         category_id: values.category_id,
         video_url: values.video_url || "",
-        image_url: values.image_url || "",
+        image_url: values.image_url || "", 
         price: values.price || 0,
         discount: values.discount || 0,
       };
 
-      await CourseService.createCourse(params);
-      message.success("Course created successfully!");
+      // Call create course API first
+      const courseResponse = await CourseService.createCourse(params);
 
-      setIsOpen(false);
-      form.resetFields();
-      setDescription("");
-      setContent("");
-      setVideoPreview("");
-      setAvatarPreview("");
-      setVideoFileList([]);
-      setAvatarFileList([]);
+      if (courseResponse) {
+        message.success("Course created successfully!");
 
-      if (onCourseCreated) {
-        onCourseCreated();
-      }
+        // Reset form and state after successful creation
+        setIsOpen(false);
+        form.resetFields();
+        setDescription("");
+        setContent("");
+        setVideoPreview("");
+        setAvatarPreview("");
+        setVideoFileList([]);
+        setAvatarFileList([]);
 
-      await getCourse({
-        searchCondition: {
-          keyword: "",
-          category_id: values.category_id,
-          status: "active", 
-          is_delete: false,
-        },
-        pageInfo: {
-          pageNum: 1,
-          pageSize: 100
-        }
-      }).then(() => {
+        // Refresh courses
+        await refreshCourses();
         window.location.reload();
-      });
-
+        // Call callback if provided
+        if (onCourseCreated) {
+          onCourseCreated();
+        }
+      }
     } catch (error) {
       console.error("Error creating course:", error);
       message.error("Failed to create course. Please try again.");

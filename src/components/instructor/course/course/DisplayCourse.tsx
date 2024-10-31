@@ -12,6 +12,7 @@ import CreateCourseButton from "./CreateButton";
 import FilterStatus from "./FilterStatus";
 import useCourseCache from "../../../../hooks/useCourseCache";
 import { GetCourseResponsePageData } from "../../../../models/api/responsive/course/course.response.model";
+import { useCourseStore } from "../../../../hooks/useCallback";
 
 const DisplayCourse: React.FC<{
   searchTerm: string;
@@ -27,6 +28,8 @@ const DisplayCourse: React.FC<{
   
   // Use the custom hook to fetch courses
   const { courses, totalItems } = useCourseCache(searchTerm, statusFilter as StatusType | "", pageNum, pageSize);
+
+  const refreshCourses = useCourseStore((state) => state.refreshCourses);
 
   // const getCourseStatusName = (status: StatusType): string => {
   //   return courseStatusColor[status] || "Unknown status";
@@ -103,10 +106,10 @@ const DisplayCourse: React.FC<{
   };
 
   // Thêm callback để refresh data
-  const handleCourseCreated = useCallback(() => {
-    // Reset về trang 1 khi có course mới
+  const handleCourseCreated = useCallback(async () => {
     setPageNum(1);
-  }, []);
+    await refreshCourses();
+  }, [refreshCourses]);
 
   return (
     <>
