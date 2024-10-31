@@ -49,13 +49,13 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
       };
 
       const createSessionResponse = await SessionService.createSession(requestData);
-      
+
       if (createSessionResponse) {
         message.success("Session created successfully");
         setIsOpen(false);
         form.resetFields();
         setDescription("");
-        
+
         await refreshSessions();
         // window.location.reload();
 

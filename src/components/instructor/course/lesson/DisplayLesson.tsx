@@ -32,9 +32,7 @@ const DisplayLesson = () => {
         pageInfo: { pageNum: 1, pageSize: 100 }
       });
       if (response.data) {
-        const lessonData = Array.isArray(response.data.data.pageData) 
-          ? response.data.data.pageData 
-          : [response.data.data.pageData];
+        const lessonData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [response.data.data.pageData];
         setLessons(lessonData);
         setFilteredLessons(lessonData);
         setTotalItems(lessonData.length);
@@ -59,15 +57,7 @@ const DisplayLesson = () => {
     if (record.video_url) {
       return (
         <div className="flex items-center justify-center">
-          <video 
-            width="200" 
-            controls
-            controlsList="nodownload" 
-            className="rounded-md"
-            playsInline
-            autoPlay
-            muted
-          >
+          <video width="200" controls controlsList="nodownload" className="rounded-md" playsInline autoPlay muted>
             <source src={record.video_url} type="video/mp4" />
             <source src={record.video_url} type="video/webm" />
             <track kind="captions" />
@@ -78,13 +68,7 @@ const DisplayLesson = () => {
     } else if (record.image_url) {
       return (
         <div className="flex items-center justify-center">
-          <img 
-            src={record.image_url} 
-            alt="lesson media" 
-            width="200" 
-            className="rounded-md"
-            loading="lazy"
-          />
+          <img src={record.image_url} alt="lesson media" width="200" className="rounded-md" loading="lazy" />
         </div>
       );
     }
@@ -141,7 +125,7 @@ const DisplayLesson = () => {
       render: (_: any, record: Lesson["pageData"][0]) => renderActions(record)
     }
   ];
-  
+
   const handleLessonCreated = useCallback(async () => {
     setPageNum(1);
     await refreshLessons();

@@ -4,11 +4,16 @@ import { Select } from "antd";
 
 interface FilterStatusProps {
   onStatusChange: (status: StatusType | "") => void;
+  currentStatus?: StatusType | "";
 }
 
-const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange }) => {
-  const handleChange = (value: StatusType | "") => {
-    onStatusChange(value);
+const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange, currentStatus }) => {
+  const handleChange = (value: string | undefined) => {
+    if (value === undefined || value === "") {
+      onStatusChange("");
+    } else {
+      onStatusChange(value as StatusType);
+    }
   };
 
   const renameStatus = (status: StatusType) => {
@@ -31,17 +36,15 @@ const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange }) => {
   };
 
   return (
-    <Select style={{ width: 200 }} placeholder="Filter by status" allowClear onChange={handleChange} defaultValue="">
+    <Select style={{ width: 200 }} placeholder="Filter by status" allowClear onChange={handleChange} value={currentStatus || undefined}>
       <Select.Option key="all" value="">
         All
       </Select.Option>
-      {Object.values(StatusType).map((status) => {
-        return (
-          <Select.Option key={`status-${status}`} value={status}>
-            {renameStatus(status)}
-          </Select.Option>
-        );
-      })}
+      {Object.values(StatusType).map((status) => (
+        <Select.Option key={status} value={status}>
+          {renameStatus(status)}
+        </Select.Option>
+      ))}
     </Select>
   );
 };

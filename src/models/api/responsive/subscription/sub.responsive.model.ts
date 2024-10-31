@@ -21,4 +21,3 @@ export interface GetSubscriptionsResponse {
   pageData: Subscriptions[];
   pageInfo: PageInfo;
 }
-

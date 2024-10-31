@@ -5,7 +5,7 @@ import { LessonService } from "../../../../services/lesson/lesson.service";
 import { useLessonStore, useCallbackCourse, useCallbackSession } from "../../../../hooks/useCallback";
 import { upload } from "../../../../utils";
 import { LessonType } from "../../../../app/enums";
-import { UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined } from "@ant-design/icons";
 const { Option } = Select;
 
 const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => {
@@ -65,7 +65,7 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
 
   const handleCourseChange = async (courseId: string) => {
     try {
-      form.setFieldValue('session_id', undefined);
+      form.setFieldValue("session_id", undefined);
 
       if (courseId) {
         await callbackSession.getSession({
@@ -81,7 +81,6 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
       message.error("Failed to fetch sessions");
     }
   };
-
 
   const onUploadSuccess = (type: "video" | "image", url: string) => {
     if (type === "image") {
@@ -104,16 +103,8 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
           <Form.Item name="name" label="Name" rules={[{ required: true, message: "Please input the lesson name!" }]}>
             <Input />
           </Form.Item>
-          <Form.Item 
-            name="course_id" 
-            label="Course" 
-            rules={[{ required: true, message: "Please select a course!" }]}
-          >
-            <Select
-              placeholder="Select a course"
-              onChange={handleCourseChange}
-              loading={courseLoading}
-            >
+          <Form.Item name="course_id" label="Course" rules={[{ required: true, message: "Please select a course!" }]}>
+            <Select placeholder="Select a course" onChange={handleCourseChange} loading={courseLoading}>
               {courses?.map((course: any) => (
                 <Option key={course._id} value={course._id}>
                   {course.name}
@@ -121,16 +112,8 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
               ))}
             </Select>
           </Form.Item>
-          <Form.Item 
-            name="session_id" 
-            label="Session" 
-            rules={[{ required: true, message: "Please select a session!" }]}
-          >
-            <Select
-              placeholder="Select a session"
-              disabled={!form.getFieldValue('course_id')}
-              loading={sessionLoading}
-            >
+          <Form.Item name="session_id" label="Session" rules={[{ required: true, message: "Please select a session!" }]}>
+            <Select placeholder="Select a session" disabled={!form.getFieldValue("course_id")} loading={sessionLoading}>
               {sessions?.map((session: any) => (
                 <Option key={session._id} value={session._id}>
                   {session.name || session.title || `Session ${session.position_order}`}
@@ -141,38 +124,23 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
           <Form.Item name="lesson_type" label="Lesson Type" rules={[{ required: true, message: "Please select a lesson type!" }]}>
             <Select onChange={(value) => setLessonType(value)}>
               {Object.values(LessonType).map((type) => (
-                <Option key={type} value={type}>{type}</Option>
+                <Option key={type} value={type}>
+                  {type}
+                </Option>
               ))}
             </Select>
           </Form.Item>
           {(lessonType === LessonType.TEXT || lessonType === LessonType.IMAGE) && (
-            <Form.Item 
-              name="image_url" 
-              label="Image" 
-              rules={[{ required: true, message: "Please upload an image!" }]}
-            >
+            <Form.Item name="image_url" label="Image" rules={[{ required: true, message: "Please upload an image!" }]}>
               <div>
-                <Upload
-                  accept="image/*"
-                  maxCount={1}
-                  showUploadList={false}
-                  customRequest={(options: any) => 
-                    upload.customUploadHandler(options, "image", setUploading, onUploadSuccess)
-                  }
-                >
+                <Upload accept="image/*" maxCount={1} showUploadList={false} customRequest={(options: any) => upload.customUploadHandler(options, "image", setUploading, onUploadSuccess)}>
                   <Button icon={<UploadOutlined />} loading={uploading}>
                     Upload Image
                   </Button>
                 </Upload>
-                {imagePreview && (
-                  <img 
-                    src={imagePreview} 
-                    alt="Preview" 
-                    style={{ marginTop: 8, maxWidth: '200px' }} 
-                  />
-                )}
-                <Input 
-                  value={imageUrl} 
+                {imagePreview && <img src={imagePreview} alt="Preview" style={{ marginTop: 8, maxWidth: "200px" }} />}
+                <Input
+                  value={imageUrl}
                   onChange={(e) => {
                     setImageUrl(e.target.value);
                     form.setFieldValue("image_url", e.target.value);
@@ -183,34 +151,17 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
             </Form.Item>
           )}
 
-          {(lessonType === LessonType.VIDEO) && (
-            <Form.Item 
-              name="video_url" 
-              label="Video" 
-              rules={[{ required: true, message: "Please upload a video!" }]}
-            >
+          {lessonType === LessonType.VIDEO && (
+            <Form.Item name="video_url" label="Video" rules={[{ required: true, message: "Please upload a video!" }]}>
               <div>
-                <Upload
-                  accept="video/*"
-                  maxCount={1}
-                  showUploadList={false}
-                  customRequest={(options: any) => 
-                    upload.customUploadHandler(options, "video", setUploading, onUploadSuccess)
-                  }
-                >
+                <Upload accept="video/*" maxCount={1} showUploadList={false} customRequest={(options: any) => upload.customUploadHandler(options, "video", setUploading, onUploadSuccess)}>
                   <Button icon={<UploadOutlined />} loading={uploading}>
                     Upload Video
                   </Button>
                 </Upload>
-                {videoPreview && (
-                  <video 
-                    src={videoPreview} 
-                    controls 
-                    style={{ marginTop: 8, maxWidth: '200px' }} 
-                  />
-                )}
-                <Input 
-                  value={videoUrl} 
+                {videoPreview && <video src={videoPreview} controls style={{ marginTop: 8, maxWidth: "200px" }} />}
+                <Input
+                  value={videoUrl}
                   onChange={(e) => {
                     setVideoUrl(e.target.value);
                     form.setFieldValue("video_url", e.target.value);

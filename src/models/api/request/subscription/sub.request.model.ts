@@ -1,4 +1,3 @@
-
 export interface GetSubscriptionsParams {
   searchCondition: {
     keyword?: string;
@@ -9,4 +8,3 @@ export interface GetSubscriptionsParams {
     pageSize?: number;
   };
 }
-

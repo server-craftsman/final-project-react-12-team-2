@@ -34,7 +34,7 @@ const DisplaySession = () => {
       });
 
       const sessionData = sessionResponse.data?.data?.pageData || [];
-      
+
       if (!Array.isArray(sessionData)) {
         console.error("Session data is not an array:", sessionData);
         return;
@@ -43,9 +43,7 @@ const DisplaySession = () => {
       const courseResponse = await CourseService.getCourseById(sessionData[0].course_id);
 
       const courseData = courseResponse.data?.data || [];
-      const coursesMap = new Map(
-        [courseData].map((course: any) => [course._id, course.name])
-      );
+      const coursesMap = new Map([courseData].map((course: any) => [course._id, course.name]));
 
       const sessionsWithCourseNames = sessionData.map((session: any) => ({
         pageData: {
@@ -69,7 +67,6 @@ const DisplaySession = () => {
     }
   };
 
-  
   // Thêm callback để refresh data
   const handleSessionCreated = useCallback(async () => {
     setPageNum(1);
@@ -101,19 +98,19 @@ const DisplaySession = () => {
       title: "Name",
       key: "name",
       dataIndex: ["pageData", "name"],
-      render: (text: string) => text || 'N/A'
+      render: (text: string) => text || "N/A"
     },
     {
-      title: "Course Name", 
+      title: "Course Name",
       key: "course_name",
       dataIndex: ["pageData", "course_name"],
-      render: (text: string) => text || 'N/A'
+      render: (text: string) => text || "N/A"
     },
     {
       title: "Created At",
       key: "created_at",
       dataIndex: ["pageData", "created_at"],
-      render: (text: Date) => text ? formatDate(text) : 'N/A'
+      render: (text: Date) => (text ? formatDate(text) : "N/A")
     },
     {
       title: "Actions",
@@ -124,22 +121,11 @@ const DisplaySession = () => {
   return (
     <>
       <div className="mb-4 mt-4 flex justify-between">
-        <CustomSearch 
-          onSearch={handleSearch} 
-          placeholder="Search by session name" 
-          className="w-1/5" 
-        />
+        <CustomSearch onSearch={handleSearch} placeholder="Search by session name" className="w-1/5" />
         <CreateButton onSessionCreated={handleSessionCreated} />
       </div>
-     
-      <Table 
-        loading={loading}
-        columns={columns} 
-        dataSource={sessions}
-        rowKey={(record) => record.pageData._id}
-        pagination={false}
-        locale={{ emptyText: 'No data available' }}
-      />
+
+      <Table loading={loading} columns={columns} dataSource={sessions} rowKey={(record) => record.pageData._id} pagination={false} locale={{ emptyText: "No data available" }} />
       <div className="mt-5 flex justify-end">
         <Pagination
           current={pageNum}

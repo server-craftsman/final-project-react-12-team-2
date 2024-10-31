@@ -39,4 +39,3 @@ export interface UpdateCategoryResponse {
   updated_at: Date;
   is_deleted: boolean;
 }
-

@@ -30,11 +30,7 @@ const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange }) => {
         All
       </Select.Option>
       {Object.values(CourseStatusEnum)
-        .filter((status) => 
-          status === CourseStatusEnum.waiting_approve || 
-          status === CourseStatusEnum.approve || 
-          status === CourseStatusEnum.reject
-        )
+        .filter((status) => status === CourseStatusEnum.waiting_approve || status === CourseStatusEnum.approve || status === CourseStatusEnum.reject)
         .map((status) => {
           return (
             <Select.Option key={status} value={status}>

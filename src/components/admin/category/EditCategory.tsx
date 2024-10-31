@@ -33,25 +33,28 @@ const EditCategory = () => {
     []
   );
 
-  const fetchCategoryDetails = useCallback(async (categoryId: string) => {
-    try {
-      const res = await CategoryService.getCategoryDetails(categoryId);
-      const categoryData = res.data?.data;
+  const fetchCategoryDetails = useCallback(
+    async (categoryId: string) => {
+      try {
+        const res = await CategoryService.getCategoryDetails(categoryId);
+        const categoryData = res.data?.data;
 
-      if (categoryData) {
-        setState((prev) => ({
-          ...prev,
-          category: res.data,
-          categoryData: categoryData
-        }));
-        form.setFieldsValue(categoryData);
-      } else {
-        message.error("No page data available for this category.");
+        if (categoryData) {
+          setState((prev) => ({
+            ...prev,
+            category: res.data,
+            categoryData: categoryData
+          }));
+          form.setFieldsValue(categoryData);
+        } else {
+          message.error("No page data available for this category.");
+        }
+      } catch (error) {
+        message.error("Failed to fetch category details. Please try again.");
       }
-    } catch (error) {
-      message.error("Failed to fetch category details. Please try again.");
-    }
-  }, [form]);
+    },
+    [form]
+  );
 
   useEffect(() => {
     if (id) {
@@ -59,18 +62,21 @@ const EditCategory = () => {
     }
   }, [id, fetchCategoryDetails]);
 
-  const handleFormSubmit = useCallback(async (values: UpdateCategoryParams) => {
-    setState((prev) => ({ ...prev, loading: true }));
-    try {
-      await CategoryService.updateCategory(id as string, values);
-      message.success("Category updated successfully");
-      navigate(ROUTER_URL.ADMIN.CATEGORIES);
-    } catch (error) {
-      message.error("Failed to update category. Please try again.");
-    } finally {
-      setState((prev) => ({ ...prev, loading: false }));
-    }
-  }, [id, navigate]);
+  const handleFormSubmit = useCallback(
+    async (values: UpdateCategoryParams) => {
+      setState((prev) => ({ ...prev, loading: true }));
+      try {
+        await CategoryService.updateCategory(id as string, values);
+        message.success("Category updated successfully");
+        navigate(ROUTER_URL.ADMIN.CATEGORIES);
+      } catch (error) {
+        message.error("Failed to update category. Please try again.");
+      } finally {
+        setState((prev) => ({ ...prev, loading: false }));
+      }
+    },
+    [id, navigate]
+  );
 
   const editChange = (value: string, editor: any) => {
     form.setFieldsValue({ description: value });
@@ -78,7 +84,7 @@ const EditCategory = () => {
     editor.selection.select(editor.getBody(), true);
     editor.selection.collapse(false);
   };
-  
+
   if (!state.category) {
     return <div>Category not found.</div>;
   }
@@ -91,9 +97,9 @@ const EditCategory = () => {
           </Form.Item>
         </Col>
         <Col span={24}>
-        <Form.Item label={<span className="font-medium text-[#1a237e]">Description</span>} name="description" rules={validationRules.description as Rule[]}>
+          <Form.Item label={<span className="font-medium text-[#1a237e]">Description</span>} name="description" rules={validationRules.description as Rule[]}>
             <TinyMCEEditor initialValue={state.categoryData?.description || ""} onEditorChange={editChange} />
-        </Form.Item>
+          </Form.Item>
         </Col>
       </Row>
       <Form.Item>

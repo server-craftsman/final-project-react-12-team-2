@@ -56,7 +56,7 @@ const InstructorNavbar: React.FC = () => {
   ];
 
   return (
-    <nav className={`transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'} min-h-screen bg-gradient-tone shadow-2xl`}>
+    <nav className={`transition-all duration-300 ${isCollapsed ? "w-20" : "w-64"} bg-gradient-tone min-h-screen shadow-2xl`}>
       <div className="flex items-center justify-between border-b border-indigo-400/30 p-4 backdrop-blur-sm">
         {!isCollapsed && (
           <Link to="/" className="group flex items-center space-x-4">
@@ -76,28 +76,18 @@ const InstructorNavbar: React.FC = () => {
           </Link>
         )}
       </div>
-      
+
       <div className="mt-6 flex flex-col space-y-2 px-4">
         {menuItems.map((item) => (
-          <Link
-            key={item.key}
-            to={item.path}
-            className="group flex items-center space-x-3 rounded-lg p-3 text-white/90 transition-all duration-300 hover:bg-white/10 hover:shadow-lg hover:text-white"
-            title={isCollapsed ? item.label : ""}
-          >
-            <span className="transition-transform duration-300 group-hover:scale-110">
-              {item.icon}
-            </span>
+          <Link key={item.key} to={item.path} className="group flex items-center space-x-3 rounded-lg p-3 text-white/90 transition-all duration-300 hover:bg-white/10 hover:text-white hover:shadow-lg" title={isCollapsed ? item.label : ""}>
+            <span className="transition-transform duration-300 group-hover:scale-110">{item.icon}</span>
             {!isCollapsed && <span className="font-medium">{item.label}</span>}
           </Link>
         ))}
       </div>
       <div className="mt-6 flex flex-col space-y-2 px-4">
         {!autoCollapsed && (
-          <button 
-            onClick={() => setCollapsed(!collapsed)}
-            className="rounded-full p-2 text-white/80 transition-all duration-300 hover:bg-white/10 hover:text-white hover:shadow-lg"
-          >
+          <button onClick={() => setCollapsed(!collapsed)} className="rounded-full p-2 text-white/80 transition-all duration-300 hover:bg-white/10 hover:text-white hover:shadow-lg">
             {isCollapsed ? (
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />

@@ -71,7 +71,7 @@ const EditUserProfile = () => {
               verification_token_expires: userData.verification_token_expires?.toString() || "-",
               created_at: userData.created_at ? helpers.formatDate(new Date(userData.created_at)) : "-",
               updated_at: userData.updated_at ? helpers.formatDate(new Date(userData.updated_at)) : "-",
-              dob: userData.dob || null,
+              dob: userData.dob || null
               // description: userData.description || ""
             }
           }

@@ -16,10 +16,10 @@ const CourseComponent = () => {
 
   return (
     <div className="">
-      <DisplayCourse 
-        searchTerm={searchTerm} 
-        statusFilter={statusFilter}
-        onSearch={handleSearch} 
+      <DisplayCourse
+        searchTerm={searchTerm}
+        statusFilter={statusFilter as StatusType}
+        onSearch={handleSearch}
         onStatusChange={handleStatusChange}
         // Ensure each child in a list within DisplayCourse has a unique key
       />

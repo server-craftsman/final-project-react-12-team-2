@@ -1,6 +1,6 @@
 import { BaseService } from "../config/base.service";
 import { API } from "../../const/api.path";
-import {GetSubscriptionsParams} from "../../models/api/request/subscription/sub.request.model";
+import { GetSubscriptionsParams } from "../../models/api/request/subscription/sub.request.model";
 import { ResponseSuccess } from "../../app/interface";
 import { GetSubscriptionsResponse } from "../../models/api/responsive/subscription/sub.responsive.model";
 

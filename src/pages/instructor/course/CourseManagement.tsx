@@ -51,7 +51,7 @@ const CourseManagement = () => {
   const itemsTab = [
     {
       key: "course",
-      label: "Course", 
+      label: "Course",
       children: <CourseComponent />
     },
     {
@@ -71,18 +71,16 @@ const CourseManagement = () => {
       <Row className="mb-8 justify-center align-middle">
         {statusLabelList.map((status, index) => (
           <React.Fragment key={status.name}>
-            <Col className="text-center group cursor-pointer">
-              <Tag className={`${status.color} text-xs capitalize px-2 py-1`}>
-                {status.name.toLowerCase().replace('_', ' ')}
-              </Tag>
+            <Col className="group cursor-pointer text-center">
+              <Tag className={`${status.color} px-2 py-1 text-xs capitalize`}>{status.name.toLowerCase().replace("_", " ")}</Tag>
               <div className="mt-1">
-                <div className="font-medium text-slate-700 text-sm">{status.title}</div>
-                <div className="text-xs text-slate-500 max-w-[150px]">{status.description}</div>
+                <div className="text-sm font-medium text-slate-700">{status.title}</div>
+                <div className="max-w-[150px] text-xs text-slate-500">{status.description}</div>
               </div>
             </Col>
             {index < statusLabelList.length - 1 && (
               <Col>
-                <ArrowRightOutlined className="mx-2 text-slate-400 mt-3 text-sm" />
+                <ArrowRightOutlined className="mx-2 mt-3 text-sm text-slate-400" />
               </Col>
             )}
           </React.Fragment>

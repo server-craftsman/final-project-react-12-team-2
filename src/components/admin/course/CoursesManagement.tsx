@@ -82,11 +82,7 @@ const CoursesManagement: React.FC<{
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: CourseStatusEnum) => (
-        <span className={`text-sm capitalize ${courseStatusColor[status]}`}>
-          {status}
-        </span>
-      )
+      render: (status: CourseStatusEnum) => <span className={`text-sm capitalize ${courseStatusColor[status]}`}>{status}</span>
     },
     {
       title: "Created At",
@@ -97,47 +93,24 @@ const CoursesManagement: React.FC<{
     {
       title: "Action",
       key: "action",
-      render: (record: Courses) => (
+      render: (record: Courses) =>
         record.status === CourseStatusEnum.waiting_approve ? (
           <div>
-            <Popconfirm
-              title="Confirm the course?"
-              description="Are you sure to confirm this course?"
-              onConfirm={() => handleChangeStatus(record._id, CourseStatusEnum.approve)}
-              okText="Yes"
-              cancelText="No"
-            >
-              <CheckOutlined
-                style={{ color: "green", marginRight: 8, cursor: "pointer" }}
-            />
+            <Popconfirm title="Confirm the course?" description="Are you sure to confirm this course?" onConfirm={() => handleChangeStatus(record._id, CourseStatusEnum.approve)} okText="Yes" cancelText="No">
+              <CheckOutlined style={{ color: "green", marginRight: 8, cursor: "pointer" }} />
             </Popconfirm>
 
-            <Popconfirm
-              title="Block the course?"
-              description="Are you sure to block this course?"
-              onConfirm={() => handleChangeStatus(record._id, CourseStatusEnum.reject)}
-              okText="Yes"
-              cancelText="No"
-            >
+            <Popconfirm title="Block the course?" description="Are you sure to block this course?" onConfirm={() => handleChangeStatus(record._id, CourseStatusEnum.reject)} okText="Yes" cancelText="No">
               <StopOutlined style={{ color: "red", cursor: "pointer" }} />
             </Popconfirm>
           </div>
         ) : null
-      )
     }
   ];
 
   const filteredCourses = coursesData.filter((course) => {
-    const validStatuses = [
-      CourseStatusEnum.waiting_approve,
-      CourseStatusEnum.approve,
-      CourseStatusEnum.reject
-    ];
-    return (
-      course.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (statusFilter === "" || course.status === statusFilter) &&
-      validStatuses.includes(course.status)
-    );
+    const validStatuses = [CourseStatusEnum.waiting_approve, CourseStatusEnum.approve, CourseStatusEnum.reject];
+    return course.name.toLowerCase().includes(searchTerm.toLowerCase()) && (statusFilter === "" || course.status === statusFilter) && validStatuses.includes(course.status);
   });
 
   return (

@@ -52,7 +52,7 @@ const LoginPage = () => {
         if (typeof defaultPath === "string") {
           // Show toast notification before navigation
           toast.success("Login Success", {
-            position: "top-right", 
+            position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: true,
@@ -67,7 +67,6 @@ const LoginPage = () => {
           setTimeout(() => {
             navigate(defaultPath);
           }, 2000);
-
         } else {
           console.error("Invalid path:", defaultPath);
         }
@@ -109,7 +108,6 @@ const LoginPage = () => {
           setTimeout(() => {
             navigate(defaultPath);
           }, 2000);
-
         } else {
           console.error("Invalid path:", defaultPath);
         }

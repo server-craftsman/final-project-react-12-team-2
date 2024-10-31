@@ -18,20 +18,30 @@ import _ from "lodash";
 
 const DisplayCourse: React.FC<{
   searchTerm: string;
-  statusFilter: StatusType | "";
+  statusFilter: StatusType;
   onSearch: (value: string) => void;
-  onStatusChange: (status: StatusType | "") => void
+  onStatusChange: (status: StatusType | "") => void;
 }> = ({ searchTerm, statusFilter, onSearch, onStatusChange }) => {
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<number[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  
-  // Use the custom hook to fetch courses
-  const { courses, totalItems } = useCourseCache(searchTerm, statusFilter as StatusType | "", pageNum, pageSize);
+
+  // Modify how we pass statusFilter to useCourseCache
+  const { courses, totalItems } = useCourseCache(
+    searchTerm,
+    statusFilter as StatusType | "", // Convert empty string to undefined
+    pageNum,
+    pageSize
+  );
 
   const refreshCourses = useCourseStore((state) => state.refreshCourses);
+
+  // Add effect to reset pagination when filter changes
+  useEffect(() => {
+    setPageNum(1);
+  }, [statusFilter]);
 
   // const getCourseStatusName = (status: StatusType): string => {
   //   return courseStatusColor[status] || "Unknown status";
@@ -83,20 +93,19 @@ const DisplayCourse: React.FC<{
     {
       title: "Actions",
       key: "actions",
-      dataIndex: "actions",
+      dataIndex: "actions"
     }
   ];
 
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[]) => {
-      setSelectedRowKeys(selectedRowKeys as number[]);
+      setSelectedRowKeys(selectedRowKeys.map((key) => Number(key)));
     },
     getCheckboxProps: (record: GetCourseResponsePageData) => ({
-      // Only allow selecting courses with NEW status
       disabled: record.status !== StatusType.NEW,
-      name: record.name,
-    }),
+      name: record.name
+    })
   };
 
   const showModal = () => {
@@ -105,22 +114,18 @@ const DisplayCourse: React.FC<{
 
   const handleOk = async () => {
     try {
-      const validCourses = courses?.filter(course => 
-        selectedCourse.includes(course._id as unknown as number) &&
-        course.status === StatusType.NEW
-      );
+      const validCourses = courses?.filter((course) => selectedCourse.includes(Number(course._id)) && course.status === StatusType.NEW);
 
       if (!validCourses || validCourses.length === 0) {
         message.warning("No valid courses selected to send");
         return;
       }
 
-      // Split requests into chunks of 5
       const chunks = _.chunk(validCourses, 5);
-      
+
       for (const chunk of chunks) {
         await Promise.all(
-          chunk.map(course =>
+          chunk.map((course) =>
             CourseService.changeStatusCourse({
               course_id: course._id,
               new_status: StatusType.WAITING_APPROVE,
@@ -129,7 +134,7 @@ const DisplayCourse: React.FC<{
           )
         );
       }
-      
+
       setIsModalVisible(false);
       setSelectedRowKeys([]);
       message.success("Successfully sent courses to admin");
@@ -149,33 +154,27 @@ const DisplayCourse: React.FC<{
     await refreshCourses();
   }, [refreshCourses]);
 
+  const handleStatusChange = (status: StatusType | "") => {
+    setPageNum(1); // Reset to first page when filter changes
+    onStatusChange(status);
+  };
+
   return (
     <>
       <div className="mb-4 mt-4 flex justify-between">
-        <CustomSearch
-          onSearch={handleSearch}
-          placeholder="Search by course name"
-          className="w-1/5"
+        <CustomSearch onSearch={handleSearch} placeholder="Search by course name" className="w-1/5" />
+        <FilterStatus
+          onStatusChange={handleStatusChange}
+          currentStatus={statusFilter} // Add current status prop
         />
-        <FilterStatus onStatusChange={onStatusChange as any} />
         <div className="flex justify-end gap-2">
           <CreateCourseButton onCourseCreated={handleCourseCreated} />
-          <Button 
-            disabled={selectedCourse.length === 0} 
-            onClick={showModal}
-            className="bg-gradient-tone text-white hover:opacity-90"
-          >
+          <Button disabled={selectedCourse.length === 0} onClick={showModal} className="bg-gradient-tone text-white hover:opacity-90">
             Send to Admin
           </Button>
         </div>
       </div>
-      <Table 
-        rowSelection={rowSelection} 
-        columns={columns} 
-        dataSource={courses} 
-        rowKey="_id"
-        pagination={false}
-      />
+      <Table rowSelection={rowSelection} columns={columns} dataSource={courses} rowKey={(record) => record._id} pagination={false} />
       <div className="mt-5 flex justify-end">
         <Pagination
           current={pageNum}
@@ -190,15 +189,7 @@ const DisplayCourse: React.FC<{
           className="bg-pagination"
         />
       </div>
-      <Modal 
-        title="Confirm" 
-        open={isModalVisible} 
-        onOk={handleOk} 
-        onCancel={handleCancel} 
-        okText="Yes" 
-        cancelText="No"
-        okButtonProps={{ className: "bg-gradient-tone" }}
-      >
+      <Modal title="Confirm" open={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText="Yes" cancelText="No" okButtonProps={{ className: "bg-gradient-tone" }}>
         <p>Are you sure you want to send the selected courses to admin?</p>
       </Modal>
     </>

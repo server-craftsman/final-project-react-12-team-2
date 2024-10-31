@@ -51,8 +51,8 @@ const Admin: React.FC = () => {
     <Layout style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Layout style={{ display: "flex", flexDirection: "row" }}>
         <AdminNavbar />
-        <Content className="bg-gray-100 p-6 flex-1">
-          <header className="mb-4 rounded-lg bg-gradient-tone p-6 shadow-lg border-b border-indigo-700">
+        <Content className="flex-1 bg-gray-100 p-6">
+          <header className="bg-gradient-tone mb-4 rounded-lg border-b border-indigo-700 p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <Avatar size={48} src={userInfo?.avatar_url} icon={!userInfo?.avatar_url && <UserOutlined />} />
@@ -65,7 +65,7 @@ const Admin: React.FC = () => {
                 menu={{
                   items: [
                     {
-                      key: "profile", 
+                      key: "profile",
                       label: (
                         <div className="p-2">
                           <div className="mb-2 flex items-center space-x-3">
@@ -80,15 +80,15 @@ const Admin: React.FC = () => {
                       )
                     },
                     {
-                      key: "home", 
+                      key: "home",
                       icon: <HomeOutlined />,
                       label: "Home",
-                      onClick: () => navigate('/')
+                      onClick: () => navigate("/")
                     },
                     {
                       key: "logout",
                       icon: <LogoutOutlined />,
-                      label: "Logout", 
+                      label: "Logout",
                       onClick: handleLogout
                     }
                   ]
@@ -96,7 +96,7 @@ const Admin: React.FC = () => {
                 placement="bottomRight"
                 arrow
               >
-                <button className="flex items-center space-x-2 rounded-lg bg-gradient-tone px-4 py-2 text-white transition-all hover:bg-[#413eff]">
+                <button className="bg-gradient-tone flex items-center space-x-2 rounded-lg px-4 py-2 text-white transition-all hover:bg-[#413eff]">
                   <span>Account</span>
                   <DownOutlined />
                 </button>

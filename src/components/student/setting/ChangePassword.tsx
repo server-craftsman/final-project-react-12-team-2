@@ -97,7 +97,7 @@ const ChangePassword: React.FC<ChangePasswordProps> = () => {
             Forgot Password?
           </Link>
         </div>
-        
+
         <Form.Item className="mt-6 flex justify-end gap-4">
           <Button type="primary" htmlType="submit" className="mr-2 h-10 border-none bg-[#1a237e] px-8 hover:bg-[#0d1453]">
             Change Password

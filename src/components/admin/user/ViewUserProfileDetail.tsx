@@ -137,7 +137,7 @@ const ViewUserProfileDetail = () => {
             </Col>
 
             <Col xs={24} lg={16}>
-              <div className={`bg-[#1a237e] text-white p-4 rounded-md mb-6`}>
+              <div className={`mb-6 rounded-md bg-[#1a237e] p-4 text-white`}>
                 <h3 className="text-lg font-semibold">Information</h3>
                 <p>Name: {user.name}</p>
                 <p>Email: {user.email}</p>
@@ -150,18 +150,14 @@ const ViewUserProfileDetail = () => {
                     <Form.Item label="Role" className="mb-4">
                       <div className="flex items-center gap-4">
                         <span className={`rounded-md px-4 py-2 text-[#000] ${userRoleColor(user.role as UserRoles)}`}>{user.role.toUpperCase()}</span>
-                        <Button onClick={() => handleChangeRole(user.role as UserRoles)} icon={<EditOutlined />} type="primary" size="small" className="bg-blue-500 hover:bg-blue-600 text-white rounded-md px-4 py-2" />
+                        <Button onClick={() => handleChangeRole(user.role as UserRoles)} icon={<EditOutlined />} type="primary" size="small" className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600" />
                       </div>
                     </Form.Item>
                   </Col>
                   <Col xs={24} sm={12}>
                     <Form.Item label="Status" className="mb-4">
                       <div className="flex items-center gap-4">
-                        <Input
-                          value={user.status ? "Active" : "Inactive"}
-                          readOnly
-                          className={`${userStatusColor(user.status)}`}
-                        />
+                        <Input value={user.status ? "Active" : "Inactive"} readOnly className={`${userStatusColor(user.status)}`} />
                         <Button onClick={() => handleChangeStatus(!user.status)} className={`ml-2 rounded-md px-4 py-2 font-medium transition-all duration-200 ${user.status ? "bg-green-500 text-white hover:bg-green-600" : "bg-red-500 text-white hover:bg-red-600"}`}>
                           {user.status ? <LockOutlined /> : <UnlockOutlined />}
                         </Button>
@@ -173,19 +169,19 @@ const ViewUserProfileDetail = () => {
                 <Row gutter={24}>
                   <Col xs={24} sm={12}>
                     <Form.Item label="Date of Birth" className="mb-4">
-                      <Input value={helpers.formatDate(user.dob)} readOnly className="bg-gray-50 border border-gray-300 rounded-md p-2" />
+                      <Input value={helpers.formatDate(user.dob)} readOnly className="rounded-md border border-gray-300 bg-gray-50 p-2" />
                     </Form.Item>
                   </Col>
                   <Col xs={24} sm={12}>
                     <Form.Item label="Balance" className="mb-4">
-                      <Input value={user.balance} readOnly className="bg-gray-50 border border-gray-300 rounded-md p-2" />
+                      <Input value={user.balance} readOnly className="rounded-md border border-gray-300 bg-gray-50 p-2" />
                     </Form.Item>
                   </Col>
                 </Row>
               </Form>
             </Col>
           </Row>
-          <div className="flex justify-end mt-4">
+          <div className="mt-4 flex justify-end">
             <Button onClick={handleDeleteUser} type="primary" danger className="mr-2">
               <DeleteOutlined />
             </Button>

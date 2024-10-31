@@ -76,7 +76,6 @@ const CreateCategory: React.FC = () => {
     }
   };
 
-
   return (
     <div>
       <Button className="bg-gradient-tone mb-4 text-white" onClick={() => setOpen(true)}>

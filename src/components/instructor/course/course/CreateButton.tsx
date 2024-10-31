@@ -86,54 +86,60 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
     }
   }, []);
 
-  const handleAvatarPreview = useCallback(async (file: File) => {
-    setUploadingAvatar(true);
-    try {
-      const url = await handleFileUpload(file, "image");
-      form.setFieldsValue({ image_url: url });
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setAvatarPreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    } catch (error: any) {
-      message.error(error.message);
-    } finally {
-      setUploadingAvatar(false);
-    }
-    return false; // Prevent default upload behavior
-  }, [handleFileUpload, form]);
+  const handleAvatarPreview = useCallback(
+    async (file: File) => {
+      setUploadingAvatar(true);
+      try {
+        const url = await handleFileUpload(file, "image");
+        form.setFieldsValue({ image_url: url });
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setAvatarPreview(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
+      } catch (error: any) {
+        message.error(error.message);
+      } finally {
+        setUploadingAvatar(false);
+      }
+      return false; // Prevent default upload behavior
+    },
+    [handleFileUpload, form]
+  );
 
-  const handleVideoPreview = useCallback(async (file: File) => {
-    setUploadingVideo(true);
-    try {
-      const url = await handleFileUpload(file, "video");
-      form.setFieldsValue({ video_url: url });
-      const videoElement = document.createElement("video");
-      videoElement.controls = true;
-      videoElement.src = URL.createObjectURL(file);
-      setVideoPreview(videoElement.outerHTML);
-    } catch (error: any) {
-      message.error(error.message);
-    } finally {
-      setUploadingVideo(false);
-    }
-    return false; // Prevent default upload behavior
-  }, [handleFileUpload, form]);
+  const handleVideoPreview = useCallback(
+    async (file: File) => {
+      setUploadingVideo(true);
+      try {
+        const url = await handleFileUpload(file, "video");
+        form.setFieldsValue({ video_url: url });
+        const videoElement = document.createElement("video");
+        videoElement.controls = true;
+        videoElement.src = URL.createObjectURL(file);
+        setVideoPreview(videoElement.outerHTML);
+      } catch (error: any) {
+        message.error(error.message);
+      } finally {
+        setUploadingVideo(false);
+      }
+      return false; // Prevent default upload behavior
+    },
+    [handleFileUpload, form]
+  );
 
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      
+
       const params: CreateCourseParams = {
         name: values.name,
         description: description || values.description,
         content: content || values.content,
         category_id: values.category_id,
         video_url: values.video_url || "",
-        image_url: values.image_url || "", 
+        image_url: values.image_url || "",
         price: values.price || 0,
-        discount: values.discount || 0,
+        discount: values.discount || 0
       };
 
       // Call create course API first
@@ -179,14 +185,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
       <Button onClick={() => openCreateModal()} className="rounded-md bg-[#1a237e] text-white">
         Create Course
       </Button>
-      <Modal
-        title="Create Course"
-        open={isOpen}
-        onOk={handleSubmit}
-        onCancel={handleCancel}
-        width={800}
-        style={{ top: "20px" }}
-      >
+      <Modal title="Create Course" open={isOpen} onOk={handleSubmit} onCancel={handleCancel} width={800} style={{ top: "20px" }}>
         <Form form={form} layout="vertical">
           <Row gutter={16}>
             <Col span={12}>
@@ -224,32 +223,32 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
           </Form.Item>
           <Row gutter={16}>
             <Col span={12}>
-            {/* <Form.Item name="image_url" hidden>
+              {/* <Form.Item name="image_url" hidden>
               <Input />
             </Form.Item> */}
-            <Form.Item name="image_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
-              <div className="space-y-4">
-                <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
-                  <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingAvatar}>
-                    Select Avatar
-                  </Button>
-                </Upload>
-                {avatarPreview && <img src={avatarPreview} alt="Avatar preview" className="h-32 w-32 rounded-lg object-cover" />}
+              <Form.Item name="image_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
+                <div className="space-y-4">
+                  <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
+                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingAvatar}>
+                      Select Avatar
+                    </Button>
+                  </Upload>
+                  {avatarPreview && <img src={avatarPreview} alt="Avatar preview" className="h-32 w-32 rounded-lg object-cover" />}
                 </div>
               </Form.Item>
             </Col>
             <Col span={12}>
-            {/* <Form.Item name="video_url" hidden>
+              {/* <Form.Item name="video_url" hidden>
               <Input />
             </Form.Item> */}
-            <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
-              <div className="space-y-4">
-                <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList)}>
-                  <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingVideo}>
-                    Select Video
-                  </Button>
-                </Upload>
-                {videoPreview && <div dangerouslySetInnerHTML={{ __html: videoPreview }} />}
+              <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
+                <div className="space-y-4">
+                  <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList)}>
+                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingVideo}>
+                      Select Video
+                    </Button>
+                  </Upload>
+                  {videoPreview && <div dangerouslySetInnerHTML={{ __html: videoPreview }} />}
                 </div>
               </Form.Item>
             </Col>

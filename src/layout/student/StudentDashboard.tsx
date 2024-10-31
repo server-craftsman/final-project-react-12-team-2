@@ -50,9 +50,9 @@ const StudentDashboard: React.FC = () => {
   return (
     <Layout style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Layout style={{ display: "flex", flexDirection: "row" }}>
-      <StudentDashboardNavbar />
+        <StudentDashboardNavbar />
         <Content className="bg-gray-100 p-6">
-          <header className="mb-4 rounded-lg bg-gradient-tone p-6 shadow-lg">
+          <header className="bg-gradient-tone mb-4 rounded-lg p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <Avatar size={48} src={userInfo?.avatar_url} icon={!userInfo?.avatar_url && <UserOutlined />} className="bg-indigo-400" />
@@ -80,10 +80,10 @@ const StudentDashboard: React.FC = () => {
                       )
                     },
                     {
-                      key: "home", 
+                      key: "home",
                       icon: <HomeOutlined />,
                       label: "Home",
-                      onClick: () => navigate('/')
+                      onClick: () => navigate("/")
                     },
                     {
                       key: "logout",
@@ -96,8 +96,8 @@ const StudentDashboard: React.FC = () => {
                 placement="bottomRight"
                 arrow
               >
-                <button className="flex items-center space-x-2 rounded-lg bg-gradient-tone px-4 py-2 text-white transition-all hover:bg-[#413eff]">
-                <span>Account</span>
+                <button className="bg-gradient-tone flex items-center space-x-2 rounded-lg px-4 py-2 text-white transition-all hover:bg-[#413eff]">
+                  <span>Account</span>
                   <DownOutlined />
                 </button>
               </Dropdown>
