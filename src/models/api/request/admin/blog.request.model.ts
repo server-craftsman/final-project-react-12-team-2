@@ -1,6 +1,6 @@
 export interface GetBlogParams {
   searchCondition: {
-    category_id: string;
+    name: string;
     is_delete: boolean;
   };
   pageInfo: {

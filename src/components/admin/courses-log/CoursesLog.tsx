@@ -5,7 +5,7 @@ import { BlogService } from "../../../services/blog/blog.service";
 import { GetBlogParams } from "../../../models/api/request/admin/blog.request.model";
 
 interface SearchBlogCondition {
-  category_id: string; 
+  name: string;
   is_delete: boolean;
 }
 
@@ -22,14 +22,14 @@ const AdminBlog: React.FC<AdminBlogProps> = ({ searchQuery }) => {
       pageSize: 10,
     },
     searchCondition: {
-      category_id: "",
+      name: "",
       is_delete: false,
     },
   };
 
   const getSearchCondition = useCallback(
     (searchQuery: string): SearchBlogCondition => ({
-      category_id: searchQuery || defaultParams.searchCondition.category_id,
+      name: searchQuery || defaultParams.searchCondition.name,
       is_delete: false,
     }),
     []
@@ -42,15 +42,16 @@ const AdminBlog: React.FC<AdminBlogProps> = ({ searchQuery }) => {
         pageInfo: defaultParams.pageInfo,
         searchCondition,
       };
-      
+
       // Thêm console.log để kiểm tra tham số gửi đi và phản hồi
       console.log("Fetching blogs with params:", params);
-      
+
       const response = await BlogService.getBlog(params);
-      
+      setBlogData(response.data.data);
+
       // Kiểm tra phản hồi từ API
       console.log("Response from BlogService.getBlog:", response);
-      
+
       // if (response?.data) {
       //   setBlogData(response.data); 
       // } else {
