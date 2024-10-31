@@ -72,7 +72,7 @@ const EditUserProfile = () => {
               created_at: userData.created_at ? helpers.formatDate(new Date(userData.created_at)) : "-",
               updated_at: userData.updated_at ? helpers.formatDate(new Date(userData.updated_at)) : "-",
               dob: userData.dob || null,
-              description: userData.description || ""
+              // description: userData.description || ""
             }
           }
         }));
@@ -112,13 +112,13 @@ const EditUserProfile = () => {
           }
         }
 
-        const description = parseTinyEditor.getTinyMCEContent("description-editor") || "";
+        // const description = parseTinyEditor.getTinyMCEContent("description-editor") || "";
 
         const updatedValues = {
           name: values.name,
           email: values.email,
           phone_number: values.phone_number,
-          description: description.toString(),
+          description: values.description || "",
           dob: values.dob ? helpers.formatDate(new Date(values.dob)) : null,
           avatar_url: avatarUrl,
           video_url: "",

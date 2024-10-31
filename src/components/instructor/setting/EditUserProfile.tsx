@@ -78,11 +78,10 @@ const EditUserProfile = () => {
               verification_token_expires: userData.verification_token_expires?.toString() || "-",
               created_at: userData.created_at ? helpers.formatDate(new Date(userData.created_at)) : "-",
               updated_at: userData.updated_at ? helpers.formatDate(new Date(userData.updated_at)) : "-",
-              dob: userData.dob || null
+              dob: userData.dob || null,
             }
           }
         }));
-
 
         form.setFieldsValue({
           name: userData.name,
@@ -112,7 +111,6 @@ const EditUserProfile = () => {
       try {
         let avatarUrl = state.user?.data.avatar_url || "";
 
-        
         if (state.selectedFile) {
           const uploadedUrl = await handleUploadFile(state.selectedFile, "image");
           if (uploadedUrl) {
@@ -120,13 +118,13 @@ const EditUserProfile = () => {
           }
         }
 
-        const description = parseTinyEditor.getTinyMCEContent("description-editor") || "";
-        
+        // const description = parseTinyEditor.getTinyMCEContent("description-editor") || "";
+
         const updatedValues = {
           name: values.name,
           email: values.email,
           phone_number: values.phone_number,
-          description: description.toString(),
+          description: values.description || "",
           dob: values.dob ? helpers.formatDate(new Date(values.dob)) : null,
           avatar_url: avatarUrl,
           video_url: "",
@@ -144,7 +142,7 @@ const EditUserProfile = () => {
         setState((prev) => ({ ...prev, uploading: false }));
       }
     },
-    [id, navigate, state.user?.data.avatar_url]
+    [id, navigate, state.user?.data.avatar_url, state.selectedFile, form]
   );
 
   const handleImageUpload = useCallback((file: File) => {
@@ -172,12 +170,10 @@ const EditUserProfile = () => {
             }
           }
         : null
-      }));
+    }));
 
-      return false;
-    },
-    []
-  );
+    return false;
+  }, []);
 
   const editChange = (value: string, editor: any) => {
     form.setFieldsValue({ description: value });
@@ -216,12 +212,8 @@ const EditUserProfile = () => {
           <Form.Item label={<span className="font-medium text-[#1a237e]">Phone Number</span>} name="phone_number" rules={validationRules.phone_number as Rule[]}>
             <Input className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
           </Form.Item>
-
           <Form.Item label={<span className="font-medium text-[#1a237e]">Description</span>} name="description" rules={validationRules.description as Rule[]}>
-            <TinyMCEEditor
-              initialValue={state.user?.data.description || ""}
-              onEditorChange={editChange}
-            />
+            <TinyMCEEditor initialValue={state.user?.data.description || ""} onEditorChange={editChange} />
           </Form.Item>
           <Form.Item label={<span className="font-medium text-[#1a237e]">Date of Birth</span>} name="dob" rules={validationRules.dob as Rule[]}>
             <DatePicker
