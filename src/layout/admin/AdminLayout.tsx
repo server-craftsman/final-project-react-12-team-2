@@ -80,7 +80,7 @@ const Admin: React.FC = () => {
                       )
                     },
                     {
-                      key: "home",
+                      key: "home", 
                       icon: <HomeOutlined />,
                       label: "Home",
                       onClick: () => navigate("/")
@@ -88,7 +88,7 @@ const Admin: React.FC = () => {
                     {
                       key: "logout",
                       icon: <LogoutOutlined />,
-                      label: "Logout",
+                      label: "Logout", 
                       onClick: handleLogout
                     }
                   ]
@@ -96,7 +96,7 @@ const Admin: React.FC = () => {
                 placement="bottomRight"
                 arrow
               >
-                <button className="bg-gradient-tone flex items-center space-x-2 rounded-lg px-4 py-2 text-white transition-all hover:bg-[#413eff]">
+                <button className="flex items-center space-x-2 rounded-lg px-4 py-2 text-white transition-all bg-gradient-tone hover:bg-[#413eff]">
                   <span>Account</span>
                   <DownOutlined />
                 </button>

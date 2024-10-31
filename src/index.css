@@ -31,6 +31,10 @@
   @apply text-[#161d66] transition-colors duration-300 hover:text-[#161d66]/80;
 }
 
+/* .btn-edit {
+  @apply group flex h-auto items-center gap-2 border-none bg-[#1a237e] px-8 py-4 text-lg transition-colors duration-300 hover:bg-[#0d1453] hover:text-white;
+} */
+
 /* Search input */
 .search-input {
   @apply mb-4 w-1/4 text-2xl;
