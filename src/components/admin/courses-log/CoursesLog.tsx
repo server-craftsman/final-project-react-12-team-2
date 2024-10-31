@@ -43,23 +43,17 @@ const AdminBlog: React.FC<AdminBlogProps> = ({ searchQuery }) => {
         searchCondition,
       };
 
-      // Thêm console.log để kiểm tra tham số gửi đi và phản hồi
       console.log("Fetching blogs with params:", params);
 
       const response = await BlogService.getBlog(params);
       setBlogData(response.data.data);
 
-      // Kiểm tra phản hồi từ API
       console.log("Response from BlogService.getBlog:", response);
 
-      // if (response?.data) {
-      //   setBlogData(response.data); 
-      // } else {
-      //   throw new Error("No data found in response");
-      // }
+   
     } catch (error) {
       message.error("An unexpected error occurred while fetching blogs");
-      console.error("Error fetching blogs:", error); // In chi tiết lỗi vào console
+      console.error("Error fetching blogs:", error);
     }
   }, [searchQuery, getSearchCondition]);
 
@@ -67,7 +61,6 @@ const AdminBlog: React.FC<AdminBlogProps> = ({ searchQuery }) => {
     fetchBlogs();
   }, [fetchBlogs]);
 
-  // Filter blogs based on the search term
   const filteredData = blogData?.pageData?.filter((blog: Blog) =>
     (blog.name && blog.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (blog.description && blog.description.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -106,7 +99,7 @@ const AdminBlog: React.FC<AdminBlogProps> = ({ searchQuery }) => {
     <Table
       columns={columns}
       dataSource={filteredData || []}
-      rowKey="_id" // Ensure a unique key for each row
+      rowKey="_id" 
     />
   );
 };
