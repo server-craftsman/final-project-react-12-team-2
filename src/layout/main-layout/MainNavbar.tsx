@@ -80,20 +80,20 @@ const Navbar = () => {
           <div className="hidden items-center space-x-4 lg:flex">
             <div className="hidden lg:block">
               <div className="flex items-baseline space-x-4 lg:space-x-6">
-                <Link to="/" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 transition-all duration-200 ease-in-out hover:bg-indigo-700 hover:text-white">
+                <Link to="/" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 transition-all duration-200 ease-in-out hover:bg-[#161d66] hover:text-[#161d66]">
                   Home
                 </Link>
                 <div className="group relative">
                   <button className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 transition-all duration-200 ease-in-out hover:bg-indigo-700 hover:text-white">Courses</button>
                   <div className="invisible absolute left-0 mt-2 w-48 rounded-md bg-white opacity-0 shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-200 ease-in-out group-hover:visible group-hover:opacity-100">
                     <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                      <Link to="/courses/all" className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100 hover:text-indigo-900" role="menuitem">
+                      <Link to="/courses/all" className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#161d66] hover:text-[#161d66]" role="menuitem">
                         All Courses
                       </Link>
-                      <Link to="/courses/my-courses" className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100 hover:text-indigo-900" role="menuitem">
+                      <Link to="/courses/my-courses" className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#161d66] hover:text-[#161d66]" role="menuitem">
                         My Courses
                       </Link>
-                      <Link to="/courses/popular" className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100 hover:text-indigo-900" role="menuitem">
+                      <Link to="/courses/popular" className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#161d66] hover:text-[#161d66]" role="menuitem">
                         Popular Courses
                       </Link>
                     </div>
@@ -105,7 +105,7 @@ const Navbar = () => {
               </div>
             </div>
             <div className="relative hidden lg:block">
-              <input type="text" placeholder="Search..." className="w-40 rounded-full bg-indigo-800 px-4 py-2 pl-10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 lg:w-64" />
+              <input type="text" placeholder="Search..." className="w-40 rounded-full bg-[#161d66] px-4 py-2 pl-10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#161d66] lg:w-64" />
               <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400" />
             </div>
             <Link to="/cart" className="relative hidden text-gray-300 hover:text-white lg:block">
@@ -182,10 +182,10 @@ const Navbar = () => {
               About
             </Link>
             <div className="mt-4 flex flex-col space-y-2 px-3">
-              <Link to="/login" className="rounded-full bg-gradient-to-r from-[#8529ff] to-[#5e17eb] px-4 py-2 text-center text-base font-medium text-white shadow-md transition-all duration-200 ease-in-out hover:from-[#7020d9] hover:to-[#4c11c2] hover:shadow-lg">
+              <Link to="/login" className="bg-btn-submit">
                 Login
               </Link>
-              <Link to="/register" className="rounded-full bg-gradient-to-r from-[#ffd700] to-[#ffa500] px-4 py-2 text-center text-base font-medium text-indigo-900 shadow-md transition-all duration-200 ease-in-out hover:from-[#ffcc00] hover:to-[#ff9500] hover:shadow-lg">
+              <Link to="/register" className="bg-btn-submit">
                 Signup
               </Link>
             </div>

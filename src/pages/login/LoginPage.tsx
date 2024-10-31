@@ -207,10 +207,10 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-[#1a237e]/20 to-[#1a237e]/40 backdrop-blur-md">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-tone/90 backdrop-blur-md">
       <ToastContainer />
       <div className="relative flex w-full max-w-7xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl md:flex-row">
-        <div className="flex w-full flex-col items-center justify-center bg-gradient-to-br from-[#1a237e] to-[#1a237e]/80 p-12 md:w-1/2">
+        <div className="flex w-full flex-col items-center justify-center bg-gradient-tone p-12 md:w-1/2">
           <Link to="/">
             <Lottie animationData={loginAnimation} loop={true} />
           </Link>
@@ -218,7 +218,7 @@ const LoginPage = () => {
           <p className="mt-4 text-center text-lg text-white">Elevate Your Learning Experience</p>
         </div>
         <div className="w-full bg-gradient-to-br from-white to-gray-100 p-12 md:w-1/2">
-          <Link to="/" className="mb-8 flex items-center text-lg text-[#1a237e] transition-colors duration-300 hover:text-[#1a237e]/80">
+          <Link to="/" className="mb-8 flex items-center text-lg btn-text">
             <HomeOutlined className="mr-2" />
             Back to Home
           </Link>
@@ -239,11 +239,11 @@ const LoginPage = () => {
               </Link>
             </Form.Item>
 
-            <Form.Item>
-              <Button type="primary" htmlType="submit" className="login-form-button w-full rounded-lg bg-gradient-to-r from-[#1a237e] to-[#1a237e]/80 py-3 text-lg font-semibold text-white shadow-md transition-all duration-300 hover:from-[#1a237e]/90 hover:to-[#1a237e]/70">
+            <div className="mb-4">
+              <button type="submit" className="bg-btn-submit">
                 Sign In
-              </Button>
-            </Form.Item>
+              </button>
+            </div>
 
             <Divider plain className="text-gray-400">
               or continue with
