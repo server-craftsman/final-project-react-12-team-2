@@ -6,12 +6,12 @@ import CustomSearch from "../../../generic/search/CustomSearch";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
 import CreateButton from "./CreateButton";
-// import { LessonService } from "../../../../services/lesson/lesson.service";
+import { LessonService } from "../../../../services/lesson/lesson.service";
 // import { CourseService } from "../../../../services/course/course.service";
 import { Lesson } from "../../../../models/api/responsive/lesson/lesson.response.model";
 import { useLessonStore } from "../../../../hooks/useCallback";
 
-const DisplayLesson = ({ onLessonCreated }: { onLessonCreated?: () => void }) => {
+const DisplayLesson = () => {
   const [lessons, setLessons] = useState<Lesson["pageData"]>([]);
   const [filteredLessons, setFilteredLessons] = useState<Lesson["pageData"]>([]);
   const [pageNum, setPageNum] = useState<number>(1);
@@ -21,6 +21,26 @@ const DisplayLesson = ({ onLessonCreated }: { onLessonCreated?: () => void }) =>
 
   useEffect(() => {
     refreshLessons();
+    const fetchLessons = async () => {
+      const response = await LessonService.getLesson({
+        searchCondition: {
+          keyword: "",
+          course_id: "",
+          is_delete: false,
+          is_position_order: false
+        },
+        pageInfo: { pageNum: 1, pageSize: 100 }
+      });
+      if (response.data) {
+        const lessonData = Array.isArray(response.data.data.pageData) 
+          ? response.data.data.pageData 
+          : [response.data.data.pageData];
+        setLessons(lessonData);
+        setFilteredLessons(lessonData);
+        setTotalItems(lessonData.length);
+      }
+    };
+    fetchLessons();
   }, [refreshLessons]);
 
   const renderActions = (record: Lesson["pageData"][0]) => (
