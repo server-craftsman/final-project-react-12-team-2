@@ -13,6 +13,8 @@ import FilterStatus from "./FilterStatus";
 import useCourseCache from "../../../../hooks/useCourseCache";
 import { GetCourseResponsePageData } from "../../../../models/api/responsive/course/course.response.model";
 import { useCourseStore } from "../../../../hooks/useCallback";
+import { CourseService } from "../../../../services/course/course.service";
+import _ from "lodash";
 
 const DisplayCourse: React.FC<{
   searchTerm: string;
@@ -23,7 +25,7 @@ const DisplayCourse: React.FC<{
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
-  const [selectedCourse, setSelectedCourse] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState<number[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   
   // Use the custom hook to fetch courses
@@ -89,16 +91,52 @@ const DisplayCourse: React.FC<{
     selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[]) => {
       setSelectedRowKeys(selectedRowKeys as number[]);
-    }
+    },
+    getCheckboxProps: (record: GetCourseResponsePageData) => ({
+      // Only allow selecting courses with NEW status
+      disabled: record.status !== StatusType.NEW,
+      name: record.name,
+    }),
   };
 
   const showModal = () => {
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
-    message.info("Sending to admin");
+  const handleOk = async () => {
+    try {
+      const validCourses = courses?.filter(course => 
+        selectedCourse.includes(course._id as unknown as number) &&
+        course.status === StatusType.NEW
+      );
+
+      if (!validCourses || validCourses.length === 0) {
+        message.warning("No valid courses selected to send");
+        return;
+      }
+
+      // Split requests into chunks of 5
+      const chunks = _.chunk(validCourses, 5);
+      
+      for (const chunk of chunks) {
+        await Promise.all(
+          chunk.map(course =>
+            CourseService.changeStatusCourse({
+              course_id: course._id,
+              new_status: StatusType.WAITING_APPROVE,
+              comment: ""
+            })
+          )
+        );
+      }
+      
+      setIsModalVisible(false);
+      setSelectedRowKeys([]);
+      message.success("Successfully sent courses to admin");
+      refreshCourses();
+    } catch (error) {
+      message.error("Failed to send courses to admin");
+    }
   };
 
   const handleCancel = () => {
@@ -135,7 +173,7 @@ const DisplayCourse: React.FC<{
         rowSelection={rowSelection} 
         columns={columns} 
         dataSource={courses} 
-        rowKey="id"
+        rowKey="_id"
         pagination={false}
       />
       <div className="mt-5 flex justify-end">
