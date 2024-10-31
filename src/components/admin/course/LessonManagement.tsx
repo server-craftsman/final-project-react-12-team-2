@@ -2,13 +2,16 @@ import Table from "antd/es/table";
 import { formatDate } from "../../../utils/helper";
 import { useEffect, useState } from "react";
 import { Pagination } from "antd";
-import CustomSearch from "../../generic/search/CustomSearch";
+// import CustomSearch from "../../generic/search/CustomSearch";
 import { LessonService } from "../../../services/lesson/lesson.service";
 import { Lesson } from "../../../models/api/responsive/lesson/lesson.response.model";
 import { useLessonStore } from "../../../hooks/useCallback";
 
-const LessonManagement = () => {
-  const [lessons, setLessons] = useState<Lesson["pageData"]>([]);
+interface LessonManagementProps {
+  searchTerm: string;
+}
+
+const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm }) => {
   const [filteredLessons, setFilteredLessons] = useState<Lesson["pageData"]>([]);
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -20,7 +23,7 @@ const LessonManagement = () => {
     const fetchLessons = async () => {
       const response = await LessonService.getLesson({
         searchCondition: {
-          keyword: "",
+          keyword: searchTerm,
           course_id: "",
           is_delete: false,
           is_position_order: false
@@ -29,13 +32,12 @@ const LessonManagement = () => {
       });
       if (response.data) {
         const lessonData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [response.data.data.pageData];
-        setLessons(lessonData);
         setFilteredLessons(lessonData);
         setTotalItems(lessonData.length);
       }
     };
     fetchLessons();
-  }, [refreshLessons]);
+  }, [refreshLessons, searchTerm]);
 
   const paginatedCourses = () => {
     const startIndex = (pageNum - 1) * pageSize;
@@ -65,18 +67,18 @@ const LessonManagement = () => {
     return null;
   };
 
-  const handleSearch = (searchText: string) => {
-    if (searchText === "") {
-      setFilteredLessons(lessons);
-    } else {
-      const filtered = lessons.filter((lesson) =>
-        lesson.name.toLowerCase().includes(searchText.toLowerCase())
-      );
-      setFilteredLessons(filtered);
-    }
-    setPageNum(1);
-    setTotalItems(filteredLessons.length);
-  };
+  // const handleSearch = (searchText: string) => {
+  //   if (searchText === "") {
+  //     setFilteredLessons(lessons);
+  //   } else {
+  //     const filtered = lessons.filter((lesson) =>
+  //       lesson.name.toLowerCase().includes(searchText.toLowerCase())
+  //     );
+  //     setFilteredLessons(filtered);
+  //   }
+  //   setPageNum(1);
+  //   setTotalItems(filteredLessons.length);
+  // };
 
   const columns = [
     {
@@ -110,9 +112,9 @@ const LessonManagement = () => {
 
   return (
     <>
-      <div className="mb-4 mt-4 flex justify-between">
+      {/* <div className="mb-4 mt-4 flex justify-between">
         <CustomSearch onSearch={handleSearch} placeholder="Search by lesson name" className="w-1/5" />
-      </div>
+      </div> */}
       <Table columns={columns} dataSource={paginatedCourses()} rowKey="id" pagination={false} />
       <div className="mt-5 flex justify-end">
         <Pagination
