@@ -2,11 +2,9 @@ import { Button, Col, Form, Input, InputNumber, message, Modal, Row, Select, Upl
 const { Option } = Select;
 import { useState, useEffect, useCallback } from "react";
 import { EditOutlined, UploadOutlined } from "@ant-design/icons";
-import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
-// import ProseMirrorEditor from "../../../generic/tiny/ProseMirrorEditor";
-import {parseTinyEditor, upload } from "../../../../utils";
+import {upload } from "../../../../utils";
 import {useCallbackCourse} from "../../../../hooks/useCallback";
-import DraftEditor from "../../../generic/tiny/EDitor";
+import DraftEditor from "../../../generic/tiny/Editor";
 import { CourseService } from "../../../../services/course/course.service";
 import { UpdateCourseParams } from "../../../../models/api/request/course/course.request.model";
 import { CategoryService } from "../../../../services/category/category.service";
