@@ -29,5 +29,10 @@ export const BlogService = {
       url: API.ADMIN.UPDATE_BLOG.replace(":id", id),
       payload: params
     });
+  },
+  deleteBlog(id: string) {
+    return BaseService.remove<ResponseSuccess<GetBlogResponse>>({
+      url: API.ADMIN.DELETE_BLOG.replace(":id", id)
+    });
   }
 };
