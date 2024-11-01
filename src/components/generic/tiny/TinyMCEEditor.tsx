@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+import { TINY_API_KEY } from "../../../services/config/apiClientTiny";
 
 interface TinyMCEEditorProps {
   initialValue: string;
@@ -10,6 +11,7 @@ interface TinyMCEEditorProps {
 const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({ initialValue, onEditorChange, editorConfig }) => {
   const defaultEditorConfig = useMemo(
     () => ({
+      apiKey: TINY_API_KEY,
       height: 300,
       menubar: true,
       plugins: ["advlist", "autolink", "lists", "link", "image", "charmap", "preview", "anchor", "searchreplace", "visualblocks", "code", "fullscreen", "insertdatetime", "media", "table", "help", "wordcount"],
