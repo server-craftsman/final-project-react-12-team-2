@@ -11,6 +11,7 @@ const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange, currentStat
   const handleChange = (value: string | undefined) => {
     if (value === undefined || value === "") {
       onStatusChange("");
+      return;
     } else {
       onStatusChange(value as StatusType);
     }

@@ -7,16 +7,12 @@ import { SessionService } from "../../../../services/session/session.service";
 import { CreateSessionRequestModel } from "../../../../models/api/request/session/session.request.model";
 import { CourseService } from "../../../../services/course/course.service";
 import { GetCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
-import { useSessionStore } from "../../../../hooks/useCallback";
-// import { parseTinyEditor } from "../../../../utils";
 
 const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
   const [description, setDescription] = useState("");
   const [courses, setCourses] = useState<GetCourseResponse["pageData"]>([]);
-  const refreshSessions = useSessionStore((state) => state.refreshSessions);
-
   useEffect(() => {
     const loadCourses = async () => {
       try {
@@ -57,11 +53,6 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
         setIsOpen(false);
         form.resetFields();
         setDescription("");
-
-        await refreshSessions();
-        // window.location.reload();
-
-        // Call callback if provided
         if (onSessionCreated) {
           onSessionCreated();
         }

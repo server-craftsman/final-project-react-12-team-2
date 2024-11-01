@@ -1,14 +1,12 @@
 import { Button, message, Modal } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CourseService } from "../../../../services/course/course.service";
-import { useCallbackCourse } from "../../../../hooks/useCallback";
 interface DeleteButtonProps {
   courseId: string;
   onDeleteSuccess?: () => void;
 }
 
 const DeleteButton = ({ courseId, onDeleteSuccess }: DeleteButtonProps) => {
-    const { getCourse } = useCallbackCourse();
   const handleClick = () => {
     Modal.confirm({
       title: "Delete Course",
@@ -43,7 +41,6 @@ const DeleteButton = ({ courseId, onDeleteSuccess }: DeleteButtonProps) => {
           if (onDeleteSuccess) {
             onDeleteSuccess();
           }
-          getCourse();
         } catch (error) {
           message.error({
             content: "Failed to delete course",

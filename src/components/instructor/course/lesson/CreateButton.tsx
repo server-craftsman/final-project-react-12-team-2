@@ -2,7 +2,7 @@ import { Button, Form, Input, message, Modal, Select, Upload } from "antd";
 import { useState, useEffect } from "react";
 // import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
 import { LessonService } from "../../../../services/lesson/lesson.service";
-import { useLessonStore, useCallbackCourse, useCallbackSession } from "../../../../hooks/useCallback";
+import { useCallbackCourse, useCallbackSession } from "../../../../hooks/useCallback";
 import { upload } from "../../../../utils";
 import Editor from "../../../generic/tiny/Editor";
 import { LessonType } from "../../../../app/enums";
@@ -39,8 +39,6 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
     form.resetFields();
   };
 
-  const refreshLessons = useLessonStore((state) => state.refreshLessons);
-
   const createLesson = async () => {
     try {
       const values = await form.validateFields();
@@ -52,9 +50,6 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
       setIsOpen(false);
 
       form.resetFields();
-      await refreshLessons();
-      // window.location.reload();
-
       // Call callback if provided
       if (onLessonCreated) {
         onLessonCreated();

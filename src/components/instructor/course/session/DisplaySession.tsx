@@ -9,7 +9,6 @@ import { SessionService } from "../../../../services/session/session.service";
 import { CourseService } from "../../../../services/course/course.service";
 import { formatDate } from "../../../../utils/helper";
 import { DisplaySessionResponse } from "../../../../models/api/responsive/session/session.response.model";
-import { useSessionStore } from "../../../../hooks/useCallback";
 
 const DisplaySession = () => {
   const [sessions, setSessions] = useState<DisplaySessionResponse[]>([]);
@@ -18,9 +17,8 @@ const DisplaySession = () => {
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
-  const refreshSessions = useSessionStore((state) => state.refreshSessions);
 
-  const fetchSessions = async (page: number, size: number, keyword: string) => {
+  const fetchSessions = useCallback(async (page: number, size: number, keyword: string) => {
     setLoading(true);
     try {
       const sessionResponse = await SessionService.getSession({
@@ -40,18 +38,13 @@ const DisplaySession = () => {
         return;
       }
 
-      // Extract all unique course IDs from sessionData
       const courseIds = Array.from(new Set(sessionData.map((session: any) => session.course_id)));
-
-      // Fetch course data for all course IDs
       const courseDataArray = await Promise.all(courseIds.map(async (id) => {
         const response = await CourseService.getCourseById(id);
         return response.data?.data;
       }));
 
-      // Flatten the array if necessary
       const flattenedCourseDataArray = courseDataArray.flat();
-
       const coursesMap = new Map(flattenedCourseDataArray.map((course: any) => [course._id, course.name]));
 
       const sessionsWithCourseNames = sessionData.map((session: any) => ({
@@ -75,7 +68,7 @@ const DisplaySession = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const fetchSessionDetails = async (sessionId: string) => {
     try {
@@ -87,27 +80,18 @@ const DisplaySession = () => {
     }
   };
 
-  const handleSessionCreated = useCallback(async () => {
-    setPageNum(1);
-    await refreshSessions();
-  }, [refreshSessions]);
-
   useEffect(() => {
     fetchSessions(pageNum, pageSize, searchKeyword);
-  }, [pageNum, pageSize, searchKeyword]);
-
-  useEffect(() => {
-    refreshSessions();
-  }, [refreshSessions]);
+  }, [pageNum, pageSize, searchKeyword, fetchSessions]);
 
   const renderActions = (record: DisplaySessionResponse) => (
     <div className="flex space-x-2">
       <EditButton 
         data={record.pageData}
-        onSessionEdited={refreshSessions}
+        onSessionEdited={() => fetchSessions(pageNum, pageSize, searchKeyword)}
         fetchSessionDetails={fetchSessionDetails}
       />
-      <DeleteButton />
+      <DeleteButton data={record.pageData} onSessionDeleted={() => fetchSessions(pageNum, pageSize, searchKeyword)} />
     </div>
   );
 
@@ -145,7 +129,7 @@ const DisplaySession = () => {
     <>
       <div className="mb-4 mt-4 flex justify-between">
         <CustomSearch onSearch={handleSearch} placeholder="Search by session name" className="w-1/5" />
-        <CreateButton onSessionCreated={handleSessionCreated} />
+        <CreateButton onSessionCreated={() => fetchSessions(pageNum, pageSize, searchKeyword)} />
       </div>
 
       <Table loading={loading} columns={columns} dataSource={sessions} rowKey={(record) => record.pageData._id} pagination={false} locale={{ emptyText: "No data available" }} />

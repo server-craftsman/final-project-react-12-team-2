@@ -6,7 +6,7 @@ import useCategoryCache from "./useCategoryCache";
 import { GetCourseResponse, GetCourseByIdResponse } from "../models/api/responsive/course/course.response.model";
 import { StatusType } from "../app/enums";
 
-const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageNum: number, pageSize: number) => {
+const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageNum: number, pageSize: number, refreshKey: number) => {
   const [courses, setCourses] = useState<GetCourseResponse["pageData"]>();
   const [totalItems, setTotalItems] = useState<number>(0);
   const [courseById, setCourseById] = useState<GetCourseByIdResponse>();
@@ -75,7 +75,7 @@ const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageN
 
   useEffect(() => {
     fetchCourses();
-  }, [searchTerm, statusFilter, pageNum, pageSize]);
+  }, [searchTerm, statusFilter, pageNum, pageSize, refreshKey]);
 
   return { courses, totalItems, courseById, fetchCourseById };
 };

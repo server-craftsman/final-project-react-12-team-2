@@ -7,9 +7,7 @@ import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
 import CreateButton from "./CreateButton";
 import { LessonService } from "../../../../services/lesson/lesson.service";
-// import { CourseService } from "../../../../services/course/course.service";
 import { Lesson } from "../../../../models/api/responsive/lesson/lesson.response.model";
-import { useLessonStore } from "../../../../hooks/useCallback";
 
 const DisplayLesson = () => {
   const [lessons, setLessons] = useState<Lesson["pageData"]>([]);
@@ -17,10 +15,8 @@ const DisplayLesson = () => {
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
-  const refreshLessons = useLessonStore((state) => state.refreshLessons);
 
   useEffect(() => {
-    refreshLessons();
     const fetchLessons = async () => {
       const response = await LessonService.getLesson({
         searchCondition: {
@@ -39,7 +35,7 @@ const DisplayLesson = () => {
       }
     };
     fetchLessons();
-  }, [refreshLessons]);
+  }, []);
 
   const renderActions = (record: Lesson["pageData"][0]) => (
     <div className="flex space-x-2">
@@ -128,8 +124,8 @@ const DisplayLesson = () => {
 
   const handleLessonCreated = useCallback(async () => {
     setPageNum(1);
-    await refreshLessons();
-  }, [refreshLessons]);
+  }, []);
+  
   return (
     <>
       <div className="mb-4 mt-4 flex justify-between">

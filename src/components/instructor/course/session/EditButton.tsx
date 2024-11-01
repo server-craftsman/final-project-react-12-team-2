@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { EditOutlined } from "@ant-design/icons";
 import Editor from "../../../generic/tiny/Editor";
 import { SessionService } from "../../../../services/session/session.service";
-import { useCallbackCourse, useCallbackSession } from "../../../../hooks/useCallback";
+import { useCallbackCourse } from "../../../../hooks/useCallback";
 import { GetCourseResponsePageData } from "../../../../models/api/responsive/course/course.response.model";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -14,7 +14,6 @@ const EditButton = ({ data, onSessionEdited, fetchSessionDetails }: any) => {
   const [courses, setCourses] = useState<GetCourseResponsePageData[] | null>(null);
 
   const { getCourse } = useCallbackCourse();
-  const { getSession } = useCallbackSession();
   const fetchCourses = useCallback(async () => {
     const result = await getCourse();
     setCourses(result.data);
@@ -65,8 +64,9 @@ const EditButton = ({ data, onSessionEdited, fetchSessionDetails }: any) => {
       message.success("Session edited successfully");
       setIsOpen(false);
       form.resetFields();
-      onSessionEdited();
-      getSession();
+      if (onSessionEdited) {
+        onSessionEdited();
+      }
     } catch (error) {
       console.error("Error updating session:", error);
       message.error("Failed to edit session");

@@ -2,15 +2,11 @@ import { useState, useEffect, useCallback } from "react";
 import { Button, Col, Form, Input, InputNumber, message, Modal, Row, Select, Upload, UploadFile } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 const { Option } = Select;
-
 import { CourseService } from "../../../../services/course/course.service";
 import { CategoryService } from "../../../../services/category/category.service";
 import { CreateCourseParams } from "../../../../models/api/request/course/course.request.model";
-// import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
-// import { parseTinyEditor } from "../../../../utils";
 import { upload } from "../../../../utils";
 import { GetCategoryParams } from "../../../../models/api/request/admin/category.request.model";
-import { useCourseStore } from "../../../../hooks/useCallback";
 import Editor from "../../../generic/tiny/Editor";
 
 const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void }) => {
@@ -25,7 +21,6 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
   const [avatarPreview, setAvatarPreview] = useState<string>("");
   const [videoFileList, setVideoFileList] = useState<UploadFile<any>[]>([]);
   const [avatarFileList, setAvatarFileList] = useState<UploadFile<any>[]>([]);
-  const refreshCourses = useCourseStore((state) => state.refreshCourses);
 
   const getParentCategoryParams: GetCategoryParams = {
     searchCondition: {
@@ -146,7 +141,6 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
 
       // Call create course API first
       const courseResponse = await CourseService.createCourse(params);
-      window.location.reload();
 
       if (courseResponse) {
         message.success("Course created successfully!");
@@ -162,8 +156,6 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
         setAvatarFileList([]);
 
         // Refresh courses
-        await refreshCourses();
-        // Call callback if provided
         if (onCourseCreated) {
           onCourseCreated();
         }

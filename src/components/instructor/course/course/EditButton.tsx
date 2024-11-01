@@ -3,19 +3,18 @@ const { Option } = Select;
 import { useState, useEffect, useCallback } from "react";
 import { EditOutlined, UploadOutlined } from "@ant-design/icons";
 import {upload } from "../../../../utils";
-import {useCallbackCourse} from "../../../../hooks/useCallback";
 import DraftEditor from "../../../generic/tiny/Editor";
 import { CourseService } from "../../../../services/course/course.service";
 import { UpdateCourseParams } from "../../../../models/api/request/course/course.request.model";
 import { CategoryService } from "../../../../services/category/category.service";
 import { GetCategoryParams } from "../../../../models/api/request/admin/category.request.model";
+
 interface EditButtonProps {
   data: any;
   onEditSuccess?: () => void;
 }
 
-
-const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
+const EditButton = ({ data, onEditSuccess }: EditButtonProps) => { // Added onEditSuccess prop
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
   const [description, setDescription] = useState<string>(data.description || '');
@@ -27,7 +26,6 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [avatarFileList, setAvatarFileList] = useState<any[]>([]);
   const [videoFileList, setVideoFileList] = useState<any[]>([]);
-  const useCourseCallback = useCallbackCourse();
   // Initialize states with existing data
   useEffect(() => {
     if (data) {
@@ -134,8 +132,9 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
         form.resetFields();
         setDescription("");
         setContent("");
-        onEditSuccess?.();
-        useCourseCallback.getCourse();
+        if (onEditSuccess) {
+          onEditSuccess();
+        }
       }
     } catch (error: any) {
       console.error('Update error:', error);

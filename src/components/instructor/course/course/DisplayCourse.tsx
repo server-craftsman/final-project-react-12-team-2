@@ -13,7 +13,6 @@ import CreateCourseButton from "./CreateButton";
 import FilterStatus from "./FilterStatus";
 import useCourseCache from "../../../../hooks/useCourseCache";
 import { GetCourseResponsePageData } from "../../../../models/api/responsive/course/course.response.model";
-import { useCourseStore } from "../../../../hooks/useCallback";
 import { CourseService } from "../../../../services/course/course.service";
 import _ from "lodash";
 
@@ -29,25 +28,27 @@ const DisplayCourse: React.FC<{
   const [selectedCourse, setSelectedCourse] = useState<number[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [courseDetails, setCourseDetails] = useState<any>(null);
+  const [refreshKey, setRefreshKey] = useState<number>(0);
 
-  // Modify how we pass statusFilter to useCourseCache
-  const { courses, totalItems } = useCourseCache(
-    searchTerm,
-    statusFilter as StatusType | "", // Convert empty string to undefined
-    pageNum,
-    pageSize
-  );
+  const getCourseData = useCallback(() => {
+    return useCourseCache(
+      searchTerm,
+      statusFilter as StatusType | "",
+      pageNum,
+      pageSize,
+      refreshKey
+    );
+  }, [searchTerm, statusFilter, pageNum, pageSize, refreshKey]);
 
-  const refreshCourses = useCourseStore((state) => state.refreshCourses);
+  const { courses, totalItems } = getCourseData();
 
-  // Add effect to reset pagination when filter changes
+  const handleCourseCreated = () => {
+    setRefreshKey((prevKey) => prevKey + 1);
+  };
+
   useEffect(() => {
     setPageNum(1);
   }, [statusFilter]);
-
-  // const getCourseStatusName = (status: StatusType): string => {
-  //   return courseStatusColor[status] || "Unknown status";
-  // };
 
   useEffect(() => {
     setSelectedCourse(selectedRowKeys as unknown as any);
@@ -111,7 +112,7 @@ const DisplayCourse: React.FC<{
             icon={<EditOutlined />}
             onClick={() => fetchCourseDetails(record._id)}
           />
-          <DeleteButton courseId={record._id} onDeleteSuccess={refreshCourses} />
+          <DeleteButton courseId={record._id} onDeleteSuccess={handleCourseCreated} />
         </>
       )
     }
@@ -162,7 +163,6 @@ const DisplayCourse: React.FC<{
       setIsModalVisible(false);
       setSelectedRowKeys([]);
       message.success("Successfully sent courses to admin");
-      refreshCourses();
     } catch (error) {
       message.error("Failed to send courses to admin");
     }
@@ -172,16 +172,12 @@ const DisplayCourse: React.FC<{
     setIsModalVisible(false);
   };
 
-  // Thêm callback để refresh data
-  const handleCourseCreated = useCallback(async () => {
-    setPageNum(1);
-    await refreshCourses();
-  }, [refreshCourses]);
-
   const handleStatusChange = (status: StatusType | "") => {
-    setPageNum(1); // Reset to first page when filter changes
+    setPageNum(1);
     onStatusChange(status);
   };
+
+ 
 
   return (
     <>      
@@ -189,7 +185,7 @@ const DisplayCourse: React.FC<{
         <CustomSearch onSearch={handleSearch} placeholder="Search by course name" className="w-1/5" />
         <FilterStatus
           onStatusChange={handleStatusChange}
-          currentStatus={statusFilter} // Add current status prop
+          currentStatus={statusFilter}
         />
         <div className="flex justify-end gap-2">
           <CreateCourseButton onCourseCreated={handleCourseCreated} />
@@ -226,7 +222,7 @@ const DisplayCourse: React.FC<{
       {courseDetails && (
         <EditButton
           data={courseDetails}
-          onEditSuccess={refreshCourses}
+          onEditSuccess={handleCourseCreated}
         />
       )}
     </>
