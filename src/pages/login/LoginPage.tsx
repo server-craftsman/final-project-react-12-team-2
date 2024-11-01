@@ -66,7 +66,7 @@ const LoginPage = () => {
           // Add small delay to ensure toast is visible
           setTimeout(() => {
             navigate(defaultPath);
-          }, 2000);
+          }, 1000);
         } else {
           console.error("Invalid path:", defaultPath);
         }

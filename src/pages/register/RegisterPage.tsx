@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Form, Input, Button, Typography, Divider, Modal } from "antd";
+import { Form, Input, Typography, Divider, Modal } from "antd";
 import { UserOutlined, MailOutlined, LockOutlined, HomeOutlined } from "@ant-design/icons";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { CLIENT_ID } from "../../const/authentication";
@@ -217,8 +217,9 @@ const RegisterPage = () => {
               <button 
                 type="submit"
                 className="bg-btn-submit"
+                disabled={isLoading}
               >
-                Register
+                {isLoading ? "Registering..." : "Register"}
               </button>
             </div>
             <Divider plain className="text-gray-400">
