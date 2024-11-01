@@ -6,12 +6,11 @@ import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
 // import ProseMirrorEditor from "../../../generic/tiny/ProseMirrorEditor";
 import {parseTinyEditor, upload } from "../../../../utils";
 import {useCallbackCourse} from "../../../../hooks/useCallback";
-
+import DraftEditor from "../../../generic/tiny/EDitor";
 import { CourseService } from "../../../../services/course/course.service";
 import { UpdateCourseParams } from "../../../../models/api/request/course/course.request.model";
 import { CategoryService } from "../../../../services/category/category.service";
 import { GetCategoryParams } from "../../../../models/api/request/admin/category.request.model";
-// import ProseMirrorEditor from "../../../generic/tiny/ProseMirrorEditor";
 interface EditButtonProps {
   data: any;
   onEditSuccess?: () => void;
@@ -204,11 +203,9 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
     [handleFileUpload, form]
   );
 
-  const editChange = (value: string, editor: any) => {
+  const editChange = (value: string) => {
+    setContent(value);
     form.setFieldsValue({ content: value });
-    parseTinyEditor.updateTinyMCEContent("content-editor", value);
-    editor.selection.select(editor.getBody(), true);
-    editor.selection.collapse(false);
   }
   return (
     <>
@@ -253,7 +250,7 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
             label="Content" 
             rules={[{ required: true, message: "Please input the content!" }]}
           >
-            <TinyMCEEditor 
+            <DraftEditor 
               initialValue={content || ''}
               onEditorChange={editChange}
             />
