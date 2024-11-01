@@ -3,11 +3,15 @@ const { Option } = Select;
 import { useState, useEffect, useCallback } from "react";
 import { EditOutlined, UploadOutlined } from "@ant-design/icons";
 import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
-import { parseTinyEditor, upload } from "../../../../utils";
+// import ProseMirrorEditor from "../../../generic/tiny/ProseMirrorEditor";
+import {parseTinyEditor, upload } from "../../../../utils";
+import {useCallbackCourse} from "../../../../hooks/useCallback";
+
 import { CourseService } from "../../../../services/course/course.service";
 import { UpdateCourseParams } from "../../../../models/api/request/course/course.request.model";
 import { CategoryService } from "../../../../services/category/category.service";
 import { GetCategoryParams } from "../../../../models/api/request/admin/category.request.model";
+// import ProseMirrorEditor from "../../../generic/tiny/ProseMirrorEditor";
 interface EditButtonProps {
   data: any;
   onEditSuccess?: () => void;
@@ -26,7 +30,7 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [avatarFileList, setAvatarFileList] = useState<any[]>([]);
   const [videoFileList, setVideoFileList] = useState<any[]>([]);
-
+  const useCourseCallback = useCallbackCourse();
   // Initialize states with existing data
   useEffect(() => {
     if (data) {
@@ -113,7 +117,7 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
       const updateParams: UpdateCourseParams = {
         name: formValues.name,
         description: formValues.description || description,
-        content: formValues.content || content,
+        content: content,
         category_id: formValues.category_id,
         image_url: formValues.image_url,
         video_url: formValues.video_url,
@@ -132,7 +136,8 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
         setDescription("");
         setContent("");
         onEditSuccess?.();
-        window.location.reload();
+        useCourseCallback.getCourse();
+        // window.location.reload();
       }
     } catch (error: any) {
       console.error('Update error:', error);
@@ -145,13 +150,6 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
     form.resetFields();
     setDescription("");
     setContent("");
-  };
-
-  const editChange = (value: string, editor: any) => {
-    form.setFieldsValue({ content: value });
-    parseTinyEditor.updateTinyMCEContent("content-editor", value);
-    editor.selection.select(editor.getBody(), true);
-    editor.selection.collapse(false);
   };
 
   const handleFileUpload = useCallback(async (file: File, type: "image" | "video") => {
@@ -205,6 +203,13 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
     },
     [handleFileUpload, form]
   );
+
+  const editChange = (value: string, editor: any) => {
+    form.setFieldsValue({ content: value });
+    parseTinyEditor.updateTinyMCEContent("content-editor", value);
+    editor.selection.select(editor.getBody(), true);
+    editor.selection.collapse(false);
+  }
   return (
     <>
       <Button className="mr-2" icon={<EditOutlined />} onClick={() => openCreateModal()} />
@@ -249,11 +254,8 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
             rules={[{ required: true, message: "Please input the content!" }]}
           >
             <TinyMCEEditor 
-              initialValue={data.content}
-              onEditorChange={(value, editor) => {
-                setContent(value);
-                editChange(value, editor);
-              }} 
+              initialValue={content || ''}
+              onEditorChange={editChange}
             />
           </Form.Item>
           <Row gutter={16}>

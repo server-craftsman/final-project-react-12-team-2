@@ -1,7 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
-import notifier from "node-notifier";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -12,22 +11,10 @@ export default defineConfig({
       buildStart() {
         const startTime = new Date().toLocaleTimeString();
         console.log(`🚀 Build starting at ${startTime}...`);
-        notifier.notify({
-          title: "Vite Build",
-          message: `🚀 Build starting at ${startTime}...`,
-          sound: true,
-          wait: true // Wait for user action before continuing
-        });
       },
       buildEnd() {
         const endTime = new Date().toLocaleTimeString();
         console.log(`🎉 Build finished at ${endTime}!`);
-        notifier.notify({
-          title: "Vite Build",
-          message: `🎉 Build finished at ${endTime}!`,
-          sound: true,
-          wait: true // Wait for user action before continuing
-        });
       }
     }
   ],
@@ -46,11 +33,15 @@ export default defineConfig({
       "@pages": path.resolve(__dirname, "./src/pages"),
       "@layout": path.resolve(__dirname, "./src/layout"),
       "@models": path.resolve(__dirname, "./src/models"),
-      "@services": path.resolve(__dirname, "./src/services")
+      "@services": path.resolve(__dirname, "./src/services"),
+      "/tinymce": path.resolve(__dirname, "node_modules/tinymce")
     }
   },
   build: {
     rollupOptions: {
+      // input: {
+      //   main: path.resolve(__dirname, "./src/index.html")
+      // },
       output: {
         manualChunks(id) {
           if (id.includes("node_modules")) {
@@ -93,5 +84,9 @@ export default defineConfig({
       }
     },
     chunkSizeWarningLimit: 10000
+  },
+  publicDir: "./public",
+  optimizeDeps: {
+    include: ["prosemirror-state", "prosemirror-view", "prosemirror-model", "prosemirror-schema-basic", "prosemirror-schema-list", "prosemirror-example-setup"]
   }
 });
