@@ -39,9 +39,6 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      // input: {
-      //   main: path.resolve(__dirname, "./src/index.html")
-      // },
       output: {
         manualChunks(id) {
           if (id.includes("node_modules")) {
@@ -84,9 +81,5 @@ export default defineConfig({
       }
     },
     chunkSizeWarningLimit: 10000
-  },
-  publicDir: "./public",
-  optimizeDeps: {
-    include: ["prosemirror-state", "prosemirror-view", "prosemirror-model", "prosemirror-schema-basic", "prosemirror-schema-list", "prosemirror-example-setup"]
   }
 });
