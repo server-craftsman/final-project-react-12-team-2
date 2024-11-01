@@ -16,5 +16,16 @@ export const SessionService = {
       url: API.SESSION.CREATE_SESSION,
       payload: params
     });
+  },
+  updateSession: (params: CreateSessionRequestModel, sessionId: string) => {
+    return BaseService.put<ResponseSuccess<CreateSessionResponse>>({
+      url: API.SESSION.UPDATE_SESSION.replace(":id", sessionId),
+      payload: params
+    });
+  },
+  deleteSession: (sessionId: string) => {
+    return BaseService.remove<ResponseSuccess<string>>({
+      url: API.SESSION.DELETE_SESSION.replace(":id", sessionId)
+    });
   }
 };

@@ -16,5 +16,16 @@ export const LessonService = {
       url: API.LESSON.CREATE_LESSON,
       payload: params
     });
+  },
+  updateLesson: (params: CreateLessonRequest, lessonId: string) => {
+    return BaseService.put<ResponseSuccess<CreateLessonResponse>>({
+      url: API.LESSON.UPDATE_LESSON.replace(":id", lessonId),
+      payload: params
+    });
+  },
+  deleteLesson: (lessonId: string) => {
+    return BaseService.remove<ResponseSuccess<string>>({
+      url: API.LESSON.DELETE_LESSON.replace(":id", lessonId)
+    });
   }
 };

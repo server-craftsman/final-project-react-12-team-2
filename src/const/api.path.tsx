@@ -57,11 +57,15 @@ export const API = {
   },
   SESSION: {
     GET_SESSION: "api/session/search",
-    CREATE_SESSION: "api/session"
+    CREATE_SESSION: "api/session",
+    UPDATE_SESSION: "api/session/:id",
+    DELETE_SESSION: "api/session/:id"
   },
   LESSON: {
     GET_LESSON: "api/lesson/search",
-    CREATE_LESSON: "api/lesson"
+    CREATE_LESSON: "api/lesson",
+    UPDATE_LESSON: "api/lesson/:id",
+    DELETE_LESSON: "api/lesson/:id"
   },
   SUBSCRIPTION: {
     //instructor
