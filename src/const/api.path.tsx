@@ -63,6 +63,7 @@ export const API = {
   },
   SUBSCRIPTION: {
     //instructor
-    GET_SUBSCRIPTIONS: "api/subscription/search-for-subscribed"
+    GET_SUBSCRIPTIONS: "api/subscription/search-for-subscribed",
+    GET_SUBSCRIBERS: "api/subscription/search-for-instructor"
   }
 };
