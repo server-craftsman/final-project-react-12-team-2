@@ -38,6 +38,12 @@ export const CourseService = {
       payload: params
     });
   },
+  //instructor
+  deleteCourse(courseId: string) {
+    return BaseService.remove<ResponseSuccess<string>>({
+      url: API.COURSE.DELETE_COURSE.replace(":id", courseId)
+    });
+  },
   //=========================================
 
   //public

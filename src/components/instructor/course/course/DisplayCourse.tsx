@@ -8,7 +8,7 @@ import { useEffect, useState, useCallback } from "react";
 import { Button, message, Modal, Pagination } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
 import EditButton from "./EditButton";
-// import DeleteButton from "./DeleteButton";
+import DeleteButton from "./DeleteButton";
 import CreateCourseButton from "./CreateButton";
 import FilterStatus from "./FilterStatus";
 import useCourseCache from "../../../../hooks/useCourseCache";
@@ -106,10 +106,13 @@ const DisplayCourse: React.FC<{
       key: "actions",
       dataIndex: "actions",
       render: (_, record) => (
-        <Button
-          icon={<EditOutlined />}
-          onClick={() => fetchCourseDetails(record._id)}
-        />
+        <>
+          <Button
+            icon={<EditOutlined />}
+            onClick={() => fetchCourseDetails(record._id)}
+          />
+          <DeleteButton courseId={record._id} onDeleteSuccess={refreshCourses} />
+        </>
       )
     }
   ];
