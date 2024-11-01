@@ -95,6 +95,7 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => { // Added onEd
 
   const openCreateModal = () => {
     form.setFieldsValue({
+      id: data._id,
       name: data.name,
       category_id: data.category_id,
       description: data.description,
@@ -123,8 +124,7 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => { // Added onEd
         discount: Number(formValues.discount)
       };
 
-      const courseId = `/${data._id}`;
-      const response = await CourseService.updateCourse(courseId, updateParams);
+      const response = await CourseService.updateCourse(data._id, updateParams);
       
       if (response.data?.data) {
         message.success("Course updated successfully");
