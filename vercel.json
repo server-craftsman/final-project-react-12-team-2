@@ -3,6 +3,10 @@
     {
       "source": "/tinymce/:path*",
       "destination": "/tinymce/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [
