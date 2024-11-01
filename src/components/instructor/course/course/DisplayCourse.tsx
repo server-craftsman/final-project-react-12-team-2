@@ -1,4 +1,5 @@
 import Table, { ColumnsType } from "antd/es/table";
+import { EditOutlined } from "@ant-design/icons";
 // import { courseStatusColor } from "../../../../utils/courseStatus";
 import { formatDate, moneyFormat } from "../../../../utils/helper";
 import { CourseStatusBadge } from "../../../../utils/courseStatus";
@@ -27,6 +28,7 @@ const DisplayCourse: React.FC<{
   const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<number[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [courseDetails, setCourseDetails] = useState<any>(null);
 
   // Modify how we pass statusFilter to useCourseCache
   const { courses, totalItems } = useCourseCache(
@@ -54,6 +56,15 @@ const DisplayCourse: React.FC<{
   const handleSearch = (searchText: string) => {
     setPageNum(1);
     onSearch(searchText);
+  };
+
+  const fetchCourseDetails = async (courseId: string) => {
+    try {
+      const details = await CourseService.getCourseById(courseId);
+      setCourseDetails(details.data.data);
+    } catch (error) {
+      message.error("Failed to fetch course details");
+    }
   };
 
   const columns: ColumnsType<GetCourseResponsePageData> = [
@@ -95,16 +106,9 @@ const DisplayCourse: React.FC<{
       key: "actions",
       dataIndex: "actions",
       render: (_, record) => (
-        <EditButton 
-          data={{
-            ...record,
-            category_id: record.category_id,
-            description: record.description,
-            content: record.content,
-            image_url: record.image_url,
-            video_url: record.video_url
-          }} 
-          onEditSuccess={refreshCourses}
+        <Button
+          icon={<EditOutlined />}
+          onClick={() => fetchCourseDetails(record._id)}
         />
       )
     }
@@ -123,7 +127,7 @@ const DisplayCourse: React.FC<{
   };
 
   const showModal = () => {
-    setIsModalVisible(true);
+    setIsModalVisible(false);
   };
 
   const handleOk = async () => {
@@ -216,6 +220,12 @@ const DisplayCourse: React.FC<{
       <Modal title="Confirm" open={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText="Yes" cancelText="No" okButtonProps={{ className: "bg-gradient-tone" }}>
         <p>Are you sure you want to send the selected courses to admin?</p>
       </Modal>
+      {courseDetails && (
+        <EditButton
+          data={courseDetails}
+          onEditSuccess={refreshCourses}
+        />
+      )}
     </>
   );
 };

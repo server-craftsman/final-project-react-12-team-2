@@ -3,12 +3,13 @@ import { CourseService } from "../services/course/course.service";
 import { GetCourseParams } from "../models/api/request/course/course.request.model";
 import { message } from "antd";
 import useCategoryCache from "./useCategoryCache";
-import { GetCourseResponse } from "../models/api/responsive/course/course.response.model";
+import { GetCourseResponse, GetCourseByIdResponse } from "../models/api/responsive/course/course.response.model";
 import { StatusType } from "../app/enums";
 
 const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageNum: number, pageSize: number) => {
   const [courses, setCourses] = useState<GetCourseResponse["pageData"]>();
   const [totalItems, setTotalItems] = useState<number>(0);
+  const [courseById, setCourseById] = useState<GetCourseByIdResponse>();
   const getCategoryName = useCategoryCache();
 
   const params: GetCourseParams = {
@@ -57,11 +58,26 @@ const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageN
     }
   };
 
+  const fetchCourseById = async (id: string) => {
+    try {
+      const response = await CourseService.getCourseById(id);
+      if (response.status === 200 && response.data) {
+        setCourseById(response.data.data);
+        return response.data.data;
+      } else {
+        throw new Error("Failed to fetch course by ID");
+      }
+    } catch (error) {
+      message.error("Failed to fetch course by ID");
+      return null;
+    }
+  };
+
   useEffect(() => {
     fetchCourses();
   }, [searchTerm, statusFilter, pageNum, pageSize]);
 
-  return { courses, totalItems };
+  return { courses, totalItems, courseById, fetchCourseById };
 };
 
 export default useCourseCache;

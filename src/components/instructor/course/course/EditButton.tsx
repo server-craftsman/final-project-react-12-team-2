@@ -31,16 +31,21 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
   // Initialize states with existing data
   useEffect(() => {
     if (data) {
-      // form.setFieldsValue({
-      //   description: data.description || '',
-      //   content: data.content || ''
-      // });
-      // setDescription(data.description || '');
-      // setContent(data.content || '');
+      form.setFieldsValue({
+        name: data.name,
+        category_id: data.category_id,
+        description: data.description,
+        content: data.content,
+        image_url: data.image_url,
+        video_url: data.video_url,
+        price: data.price,
+        discount: data.discount
+      });
       setAvatarPreview(data.image_url);
       setVideoPreview(data.video_url ? `<video controls src="${data.video_url}"></video>` : null);
+      setIsOpen(true);
     }
-  }, [data, form]);
+  }, [data]);
 
   const getParentCategoryParams: GetCategoryParams = {
     searchCondition: {
@@ -101,8 +106,6 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
       price: data.price,
       discount: data.discount
     });
-    setDescription(data.description || '');
-    setContent(data.content || '');
     setIsOpen(true);
   };
 
@@ -122,7 +125,6 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
         discount: Number(formValues.discount)
       };
 
-      // Make sure to add trailing slash after the ID
       const courseId = `/${data._id}`;
       const response = await CourseService.updateCourse(courseId, updateParams);
       
@@ -134,7 +136,6 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
         setContent("");
         onEditSuccess?.();
         useCourseCallback.getCourse();
-        // window.location.reload();
       }
     } catch (error: any) {
       console.error('Update error:', error);
@@ -207,8 +208,15 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
   }
   return (
     <>
-      <Button className="mr-2" icon={<EditOutlined />} onClick={() => openCreateModal()} />
-      <Modal title="Edit Course" open={isOpen} onOk={handleOk} onCancel={handleCancel} width={800} style={{ top: "20px" }}>
+      <Button className="mr-2" icon={<EditOutlined />} onClick={openCreateModal} />
+      <Modal
+        title="Edit Course"
+        open={isOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        width={800}
+        style={{ top: "20px" }}
+      >
         <Form form={form} layout="vertical" initialValues={data}>
           <Row gutter={16}>
             <Col span={12}>
