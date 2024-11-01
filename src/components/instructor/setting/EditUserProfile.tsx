@@ -6,18 +6,18 @@ import moment from "moment";
 import dayjs from "dayjs";
 import { UserService } from "../../../services/admin/user.service";
 import { GetCurrentUserResponse } from "../../../models/api/responsive/authentication/auth.responsive.model";
-import { helpers, parseTinyEditor } from "../../../utils";
+import { helpers } from "../../../utils";
 import { UpdateUserParams } from "../../../models/api/request/users/user.request.model";
 import { UploadOutlined } from "@ant-design/icons";
 import { ROUTER_URL } from "../../../const/router.path";
-import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
+// import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
 import { handleUploadFile } from "../../../utils/upload";
+import Editor from "../../generic/tiny/Editor";
 
 const EditUserProfile = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [form] = Form.useForm();
-
   const [state, setState] = useState({
     user: null as GetCurrentUserResponse | null,
     uploading: false,
@@ -175,11 +175,8 @@ const EditUserProfile = () => {
     return false;
   }, []);
 
-  const editChange = (value: string, editor: any) => {
+  const editChange = (value: string) => {
     form.setFieldsValue({ description: value });
-    parseTinyEditor.updateTinyMCEContent("description-editor", value);
-    editor.selection.select(editor.getBody(), true);
-    editor.selection.collapse(false);
   };
 
   if (!state.user) {
@@ -213,7 +210,7 @@ const EditUserProfile = () => {
             <Input className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
           </Form.Item>
           <Form.Item label={<span className="font-medium text-[#1a237e]">Description</span>} name="description" rules={validationRules.description as Rule[]}>
-            <TinyMCEEditor initialValue={state.user?.data.description || ""} onEditorChange={editChange} />
+            <Editor initialValue={state.user?.data.description || ""} onEditorChange={editChange} />
           </Form.Item>
           <Form.Item label={<span className="font-medium text-[#1a237e]">Date of Birth</span>} name="dob" rules={validationRules.dob as Rule[]}>
             <DatePicker
