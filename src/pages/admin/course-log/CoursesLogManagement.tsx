@@ -7,6 +7,7 @@ import coursesData from "../../../data/courses.json";
 import reviewsData from "../../../data/reviews.json";
 import { Content } from "antd/es/layout/layout";
 import { Card } from "antd";
+import CreateBlog from "../../../components/admin/courses-log/CreateBlog";
 
 const CoursesLogManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -39,6 +40,7 @@ const CoursesLogManagement: React.FC = () => {
         <div className="mb-4 flex justify-between">
           <CustomSearch className="search-input" placeholder="Search by course name" onSearch={(value) => setSearchTerm(value)} />
           <FilterStatus status={statusFilter} setStatus={setStatusFilter} />
+          <CreateBlog />
         </div>
         <CoursesLog data={data} searchQuery={searchTerm} />
       </Card>
