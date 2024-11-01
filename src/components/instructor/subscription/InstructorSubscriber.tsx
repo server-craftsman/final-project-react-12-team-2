@@ -1,20 +1,67 @@
-import React from "react";
-import { Card, Avatar, Row, Col } from "antd";
-import { User } from "../../../models/prototype/User";
-import { Subscriptions } from "../../../models/prototype/Subscriptions";
+import React, { useState } from "react";
+import { Card, Avatar, Row, Col, message } from "antd";
+import { GetSubscriptionsResponse } from "../../../models/api/responsive/subscription/sub.responsive.model";
+import { User } from "../../../models/api/responsive/users/users.model";
 import { formatDate } from "../../../utils/helper"; // Add this import at the top of the file
+import { SubscriberService } from "../../../services/subscription/sub.service";
+import { GetSubscribersParams } from "../../../models/api/request/subscription/sub.request.model";
+import { useEffect } from "react";
 
-const InstructorSubscriber: React.FC<{
-  subscriptions: Subscriptions[];
-  users: User[];
-}> = ({ subscriptions, users }) => {
+interface SearchSubscriberCondition {
+  keyword: string;
+  is_delete: boolean;
+}
+
+interface InstructorSubscriberProps {
+  searchQuery: string;
+}
+
+const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchQuery }) => {
+  const [subscriptions, setSubscriptions] = useState<GetSubscriptionsResponse | null>(null);
+  const [users,] = useState<User[]>([]);
+
+  const defaultParams = {
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10
+    },
+    searchCondition: {
+      keyword: "",
+      is_delete: false
+    }
+  } as const;
+
+  const getSearchCondition = React.useCallback((searchQuery: string): SearchSubscriberCondition => {
+    return {
+      keyword: searchQuery || defaultParams.searchCondition.keyword,
+      is_delete: false
+    };
+  }, []);
+  const fetchSubscriptions = React.useCallback(async () => {
+    try {
+      const searchCondition = getSearchCondition(searchQuery);
+      const params = {
+        pageInfo: defaultParams.pageInfo,
+        searchCondition
+      };
+      const response = await SubscriberService.getSubscribers(params as GetSubscribersParams);
+      setSubscriptions(response.data?.data ? response.data.data : null);
+    } catch (error) {
+      message.error("An unexpected error occurred while fetching subscriptions");
+    }
+  }, [searchQuery, getSearchCondition]);
+
+  useEffect(() => {
+    fetchSubscriptions();
+  }, [fetchSubscriptions]);
+
   return (
     <div style={{ backgroundColor: "#f0f2f5" }}>
       <Row gutter={[12, 12]}>
-        {subscriptions.map((subscription) => {
-          const user = users.find((user) => user.id === subscription.instructor_id);
+        {subscriptions?.pageData.map((subscription) => {
+          const user = users.find((user) => user._id === subscription.instructor_id);
           return (
-            <Col span={8} key={subscription.id}>
+            <Col span={8} key={subscription._id}>
               <Card
                 title={
                   <div style={{ display: "flex", alignItems: "center" }}>
@@ -30,7 +77,7 @@ const InstructorSubscriber: React.FC<{
                 }}
               >
                 <p style={{ fontSize: "18px", marginBottom: "8px" }}>
-                  <strong>Subscription ID:</strong> {subscription.id}
+                  <strong>Subscription ID:</strong> {subscription._id}
                 </p>
                 <p style={{ fontSize: "18px", marginBottom: "8px" }}>
                   <strong>Email:</strong> {user?.email}

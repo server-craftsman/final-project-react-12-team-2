@@ -3,6 +3,7 @@ import { Table, message } from "antd";
 import { Blog, GetBlogResponse } from "../../../models/api/responsive/admin/blog.responsive.model";
 import { BlogService } from "../../../services/blog/blog.service";
 import { GetBlogParams } from "../../../models/api/request/admin/blog.request.model";
+import { Course } from "../../../models/prototype/Course";
 
 interface SearchBlogCondition {
   name: string;
@@ -11,6 +12,7 @@ interface SearchBlogCondition {
 
 interface AdminBlogProps {
   searchQuery: string;
+  data?: Course[];
 }
 
 const AdminBlog: React.FC<AdminBlogProps> = ({ searchQuery }) => {

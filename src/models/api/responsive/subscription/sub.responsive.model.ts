@@ -2,9 +2,9 @@ export interface Subscriptions {
   _id: string;
   instructor_id: string;
   instructor_name: string;
-  subcriber_id: string;
-  subcriber_name: string;
-  is_subcribe?: boolean;
+  subscriber_id: string;
+  subscriber_name: string;
+  is_subscribed?: boolean;
   created_at: Date;
   updated_at: Date;
   is_deleted: boolean;
@@ -18,6 +18,11 @@ export interface PageInfo {
 }
 
 export interface GetSubscriptionsResponse {
+  pageData: Subscriptions[];
+  pageInfo: PageInfo;
+}
+
+export interface GetSubscribersResponse {
   pageData: Subscriptions[];
   pageInfo: PageInfo;
 }

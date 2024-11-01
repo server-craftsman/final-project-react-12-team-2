@@ -63,7 +63,7 @@ const SubscriptionPage: React.FC = () => {
     {
       key: "2",
       label: "Subscriber",
-      children: <InstructorSubscriber subscriptions={subscriptionsWithUserData} users={data.users as unknown as User[]} />
+      children: <InstructorSubscriber searchQuery={""} />
     }
   ];
 

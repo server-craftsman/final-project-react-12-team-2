@@ -15,7 +15,10 @@ import { GetCourseResponsePageData } from "../../../../models/api/responsive/cou
 import { useCourseStore } from "../../../../hooks/useCallback";
 import { CourseService } from "../../../../services/course/course.service";
 import _ from "lodash";
+<<<<<<< HEAD
 
+=======
+>>>>>>> 48e5604c870748818b59f65ed659fcd97365cb33
 const DisplayCourse: React.FC<{
   searchTerm: string;
   statusFilter: StatusType;
