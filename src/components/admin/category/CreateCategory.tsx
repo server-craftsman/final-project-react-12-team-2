@@ -3,7 +3,8 @@ import { useForm } from "antd/es/form/Form";
 import { useEffect, useState } from "react";
 import { GetCategoryResponse } from "../../../models/api/responsive/admin/category.responsive.model";
 import { CategoryService } from "../../../services/category/category.service";
-import TinyMCEEditor from "../../../components/generic/tiny/TinyMCEEditor";
+// import TinyMCEEditor from "../../../components/generic/tiny/TinyMCEEditor";
+import Editor from "../../generic/tiny/Editor";
 
 const CreateCategory: React.FC = () => {
   const [categories, setCategories] = useState<GetCategoryResponse | null>(null);
@@ -87,9 +88,9 @@ const CreateCategory: React.FC = () => {
             <Input />
           </Form.Item>
           <Form.Item label="Description" rules={[{ required: true, message: "Please input category description" }]}>
-            <TinyMCEEditor
+            <Editor
               initialValue=""
-              onEditorChange={(content) => {
+              onEditorChange={(content: string) => {
                 setEditorContent(content);
               }}
             />

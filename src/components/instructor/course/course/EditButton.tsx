@@ -31,12 +31,12 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
   // Initialize states with existing data
   useEffect(() => {
     if (data) {
-      form.setFieldsValue({
-        description: data.description || '',
-        content: data.content || ''
-      });
-      setDescription(data.description || '');
-      setContent(data.content || '');
+      // form.setFieldsValue({
+      //   description: data.description || '',
+      //   content: data.content || ''
+      // });
+      // setDescription(data.description || '');
+      // setContent(data.content || '');
       setAvatarPreview(data.image_url);
       setVideoPreview(data.video_url ? `<video controls src="${data.video_url}"></video>` : null);
     }
@@ -238,8 +238,7 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
             rules={[{ required: true, message: "Please input the description!" }]}
           >
             <Input.TextArea 
-              defaultValue={data.description}
-              value={description}
+              // value={data.description}
               onChange={(e) => setDescription(e.target.value)}
             />
           </Form.Item>
@@ -249,7 +248,7 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => {
             rules={[{ required: true, message: "Please input the content!" }]}
           >
             <DraftEditor 
-              initialValue={content || ''}
+              initialValue={data.content}
               onEditorChange={editChange}
             />
           </Form.Item>

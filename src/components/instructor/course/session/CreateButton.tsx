@@ -1,13 +1,14 @@
 import { Button, Form, Input, message, Modal, Select } from "antd";
 const { Option } = Select;
 import { useState, useEffect } from "react";
-import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
+// import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
+import Editor from "../../../generic/tiny/Editor";
 import { SessionService } from "../../../../services/session/session.service";
 import { CreateSessionRequestModel } from "../../../../models/api/request/session/session.request.model";
 import { CourseService } from "../../../../services/course/course.service";
 import { GetCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
 import { useSessionStore } from "../../../../hooks/useCallback";
-import { parseTinyEditor } from "../../../../utils";
+// import { parseTinyEditor } from "../../../../utils";
 
 const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -77,11 +78,8 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
     setDescription("");
   };
 
-  const editChange = (value: string, editor: any) => {
+  const editChange = (value: string) => {
     form.setFieldsValue({ description: value });
-    parseTinyEditor.updateTinyMCEContent("description-editor", value);
-    editor.selection.select(editor.getBody(), true);
-    editor.selection.collapse(false);
   };
 
   return (
@@ -104,7 +102,7 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
             </Select>
           </Form.Item>
           <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
-            <TinyMCEEditor initialValue={description || ""} onEditorChange={editChange} />
+            <Editor initialValue={description || ""} onEditorChange={editChange} />
           </Form.Item>
         </Form>
       </Modal>

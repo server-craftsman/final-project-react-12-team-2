@@ -6,11 +6,12 @@ const { Option } = Select;
 import { CourseService } from "../../../../services/course/course.service";
 import { CategoryService } from "../../../../services/category/category.service";
 import { CreateCourseParams } from "../../../../models/api/request/course/course.request.model";
-import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
-import { parseTinyEditor } from "../../../../utils";
+// import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
+// import { parseTinyEditor } from "../../../../utils";
 import { upload } from "../../../../utils";
 import { GetCategoryParams } from "../../../../models/api/request/admin/category.request.model";
 import { useCourseStore } from "../../../../hooks/useCallback";
+import Editor from "../../../generic/tiny/Editor";
 
 const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -181,11 +182,11 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
     // setIsFree(true);
   };
 
-  const editChange = (value: string, editor: any) => {
+  const editChange = (value: string) => {
     form.setFieldsValue({ content: value });
-    parseTinyEditor.updateTinyMCEContent("content-editor", value);
-    editor.selection.select(editor.getBody(), true);
-    editor.selection.collapse(false);
+    // parseTinyEditor.updateTinyMCEContent("content-editor", value);
+    // editor.selection.select(editor.getBody(), true);
+    // editor.selection.collapse(false);
   };
 
   return (
@@ -221,7 +222,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
             <Input.TextArea />
           </Form.Item>
           <Form.Item name="content" label="Content">
-            <TinyMCEEditor initialValue={content} onEditorChange={editChange} />
+            <Editor initialValue={content} onEditorChange={editChange} />
           </Form.Item>
           <Row gutter={16}>
             <Col span={12}>

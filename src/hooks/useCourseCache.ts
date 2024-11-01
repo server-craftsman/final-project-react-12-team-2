@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { CourseService } from "../services/course/course.service";
 import { GetCourseParams } from "../models/api/request/course/course.request.model";
 import { message } from "antd";
@@ -11,43 +11,34 @@ const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageN
   const [totalItems, setTotalItems] = useState<number>(0);
   const getCategoryName = useCategoryCache();
 
-  // Memoize params object to prevent unnecessary re-renders
-  const params = useMemo<GetCourseParams>(
-    () => ({
-      searchCondition: {
-        keyword: searchTerm,
-        category_id: statusFilter,
-        status: statusFilter,
-        is_delete: false
-      },
-      pageInfo: {
-        pageNum,
-        pageSize
-      }
-    }),
-    [searchTerm, statusFilter, pageNum, pageSize]
-  );
-
-  // Extract course mapping logic into memoized callback
-  const mapCourseData = useCallback(
-    async (course: any) => {
-      let categoryName = "Unknown Category";
-      if (course.category_name) {
-        categoryName = await getCategoryName(course.category_name);
-      } else {
-        console.warn(`Course ID: ${course.id} does not have a category_id`);
-      }
-      return {
-        ...course,
-        category_name: categoryName,
-        course_id: course.id ? String(course.id) : ""
-      };
+  const params: GetCourseParams = {
+    searchCondition: {
+      keyword: searchTerm,
+      category_id: statusFilter,
+      status: statusFilter,
+      is_delete: false
     },
-    [getCategoryName]
-  );
+    pageInfo: {
+      pageNum,
+      pageSize
+    }
+  };
 
-  // Memoize fetch function to prevent recreation on every render
-  const fetchCourses = useCallback(async () => {
+  const mapCourseData = async (course: any) => {
+    let categoryName = "Unknown Category";
+    if (course.category_name) {
+      categoryName = await getCategoryName(course.category_name);
+    } else {
+      console.warn(`Course ID: ${course.id} does not have a category_id`);
+    }
+    return {
+      ...course,
+      category_name: categoryName,
+      course_id: course.id ? String(course.id) : ""
+    };
+  };
+
+  const fetchCourses = async () => {
     try {
       const response = await CourseService.getCourse(params);
 
@@ -64,11 +55,11 @@ const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageN
     } catch (error) {
       message.error("Failed to fetch courses");
     }
-  }, [params, mapCourseData]);
+  };
 
   useEffect(() => {
     fetchCourses();
-  }, [fetchCourses]);
+  }, [searchTerm, statusFilter, pageNum, pageSize]);
 
   return { courses, totalItems };
 };

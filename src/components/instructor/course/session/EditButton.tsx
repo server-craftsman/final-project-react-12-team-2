@@ -1,17 +1,16 @@
-import { Editor } from "@tinymce/tinymce-react";
 import { Button, Form, Input, message, Modal, Select } from "antd";
 const { Option } = Select;
-import { TINY_API_KEY } from "../../../../services/config/apiClientTiny";
 import { useState } from "react";
 import { EditOutlined } from "@ant-design/icons";
 import { courses } from "../../../../data/courses.json";
+import Editor from "../../../generic/tiny/Editor";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const EditButton = ({ data }: any) => {
   // console.log("🚀 ~ EditButton ~ data:", data);
+  const { description } = data;
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
   form.setFieldsValue(data);
-  const [, setDescription] = useState<string>("");
   const openCreateModal = () => {
     setIsOpen(true);
   };
@@ -27,6 +26,9 @@ const EditButton = ({ data }: any) => {
     form.resetFields();
   };
 
+  const editChange = (value: string) => {
+    form.setFieldsValue({ description: value });
+  };
   return (
     <>
       <Button className="mr-2" icon={<EditOutlined />} onClick={() => openCreateModal()} />
@@ -45,20 +47,7 @@ const EditButton = ({ data }: any) => {
             </Select>
           </Form.Item>
           <Form.Item name="description" label="Description" rules={[{ required: true, message: "Please input the description!" }]}>
-            <Editor
-              apiKey={TINY_API_KEY}
-              initialValue="Description"
-              init={{
-                height: 300,
-                menubar: false,
-                plugins: ["advlist autolink lists link image charmap print preview anchor", "searchreplace visualblocks code fullscreen", "insertdatetime media table paste code help wordcount"],
-                toolbar: "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code"
-              }}
-              onEditorChange={(content) => {
-                setDescription(content);
-                form.setFieldsValue({ description: content });
-              }}
-            />
+            <Editor initialValue={description} onEditorChange={editChange} />
           </Form.Item>
         </Form>
       </Modal>

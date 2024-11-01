@@ -1,9 +1,10 @@
 import { Button, Form, Input, message, Modal, Select, Upload } from "antd";
 import { useState, useEffect } from "react";
-import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
+// import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
 import { LessonService } from "../../../../services/lesson/lesson.service";
 import { useLessonStore, useCallbackCourse, useCallbackSession } from "../../../../hooks/useCallback";
-import { parseTinyEditor, upload } from "../../../../utils";
+import { upload } from "../../../../utils";
+import Editor from "../../../generic/tiny/Editor";
 import { LessonType } from "../../../../app/enums";
 import { UploadOutlined } from "@ant-design/icons";
 const { Option } = Select;
@@ -94,11 +95,8 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
     form.setFieldValue(`${type}_url`, url);
   };
 
-  const editChange = (value: string, editor: any) => {
+  const editChange = (value: string) => {
     form.setFieldsValue({ description: value });
-    parseTinyEditor.updateTinyMCEContent("description-editor", value);
-    editor.selection.select(editor.getBody(), true);
-    editor.selection.collapse(false);
   };
 
   return (
@@ -181,10 +179,7 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
           )}
 
           <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
-            <TinyMCEEditor
-              initialValue={description}
-              onEditorChange={editChange}
-            />
+            <Editor initialValue={description} onEditorChange={editChange} />
           </Form.Item>
           <Form.Item
             name="full_time"

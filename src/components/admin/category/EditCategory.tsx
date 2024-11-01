@@ -5,8 +5,9 @@ import { message } from "antd";
 import { CategoryService } from "../../../services/category/category.service";
 import { UpdateCategoryParams } from "../../../models/api/request/admin/category.request.model";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
-import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
-import { parseTinyEditor } from "../../../utils";
+// import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
+import Editor from "../../generic/tiny/Editor";
+// import { parseTinyEditor } from "../../../utils";
 import { Rule } from "antd/es/form";
 import { ROUTER_URL } from "../../../const/router.path";
 import { ResponseSuccess } from "../../../app/interface";
@@ -78,11 +79,8 @@ const EditCategory = () => {
     [id, navigate]
   );
 
-  const editChange = (value: string, editor: any) => {
+  const editChange = (value: string) => {
     form.setFieldsValue({ description: value });
-    parseTinyEditor.updateTinyMCEContent("description-editor", value);
-    editor.selection.select(editor.getBody(), true);
-    editor.selection.collapse(false);
   };
 
   if (!state.category) {
@@ -98,7 +96,7 @@ const EditCategory = () => {
         </Col>
         <Col span={24}>
           <Form.Item label={<span className="font-medium text-[#1a237e]">Description</span>} name="description" rules={validationRules.description as Rule[]}>
-            <TinyMCEEditor initialValue={state.categoryData?.description || ""} onEditorChange={editChange} />
+            <Editor initialValue={state.categoryData?.description || ""} onEditorChange={editChange} />
           </Form.Item>
         </Col>
       </Row>
