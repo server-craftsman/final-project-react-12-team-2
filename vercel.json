@@ -1,8 +1,23 @@
 {
   "rewrites": [
     {
+      "source": "/tinymce/:path*",
+      "destination": "/tinymce/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/tinymce/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
+      ]
     }
   ]
 }

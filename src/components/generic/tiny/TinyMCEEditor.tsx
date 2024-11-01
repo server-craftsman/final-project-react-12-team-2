@@ -17,6 +17,10 @@ const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({ initialValue, onEditorCha
       content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px; background-color:#1a237e; color:white; }",
       skin: "oxide-dark",
       content_css: "dark",
+      relative_urls: false,
+      remove_script_host: true,
+      convert_urls: true,
+      document_base_url: process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/` : "http://localhost:3000/",
     }),
     []
   );
