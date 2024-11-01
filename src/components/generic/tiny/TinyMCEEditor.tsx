@@ -27,7 +27,7 @@ const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({ initialValue, onEditorCha
     []
   );
 
-  return <Editor initialValue={initialValue} init={editorConfig || defaultEditorConfig} onEditorChange={onEditorChange} />;
+  return <Editor apiKey={TINY_API_KEY} initialValue={initialValue} init={editorConfig || defaultEditorConfig} onEditorChange={onEditorChange} />;
 };
 
 export default TinyMCEEditor;
