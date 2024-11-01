@@ -57,6 +57,7 @@ export const API = {
   },
   SESSION: {
     GET_SESSION: "api/session/search",
+    GET_SESSION_DETAIL: "api/session/:id",
     CREATE_SESSION: "api/session",
     UPDATE_SESSION: "api/session/:id",
     DELETE_SESSION: "api/session/:id"

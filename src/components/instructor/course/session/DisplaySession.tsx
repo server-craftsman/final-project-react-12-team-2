@@ -40,15 +40,25 @@ const DisplaySession = () => {
         return;
       }
 
-      const courseResponse = await CourseService.getCourseById(sessionData[0].course_id);
+      // Extract all unique course IDs from sessionData
+      const courseIds = Array.from(new Set(sessionData.map((session: any) => session.course_id)));
 
-      const courseData = courseResponse.data?.data || [];
-      const coursesMap = new Map([courseData].map((course: any) => [course._id, course.name]));
+      // Fetch course data for all course IDs
+      const courseDataArray = await Promise.all(courseIds.map(async (id) => {
+        const response = await CourseService.getCourseById(id);
+        return response.data?.data;
+      }));
+
+      // Flatten the array if necessary
+      const flattenedCourseDataArray = courseDataArray.flat();
+
+      const coursesMap = new Map(flattenedCourseDataArray.map((course: any) => [course._id, course.name]));
 
       const sessionsWithCourseNames = sessionData.map((session: any) => ({
         pageData: {
           ...session,
-          course_name: coursesMap.get(session.course_id) || "Unassigned"
+          course_name: coursesMap.get(session.course_id) || "Unassigned",
+          _id: session._id
         },
         pageInfo: {
           pageNum: 1,
@@ -67,7 +77,16 @@ const DisplaySession = () => {
     }
   };
 
-  // Thêm callback để refresh data
+  const fetchSessionDetails = async (sessionId: string) => {
+    try {
+      const sessionDetails = await SessionService.getSessionDetail(sessionId);
+      return sessionDetails.data;
+    } catch (error) {
+      console.error("Failed to fetch session details:", error);
+      return null;
+    }
+  };
+
   const handleSessionCreated = useCallback(async () => {
     setPageNum(1);
     await refreshSessions();
@@ -83,7 +102,11 @@ const DisplaySession = () => {
 
   const renderActions = (record: DisplaySessionResponse) => (
     <div className="flex space-x-2">
-      <EditButton data={record} />
+      <EditButton 
+        data={record.pageData}
+        onSessionEdited={refreshSessions}
+        fetchSessionDetails={fetchSessionDetails}
+      />
       <DeleteButton />
     </div>
   );
