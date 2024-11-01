@@ -44,11 +44,17 @@ const Editor: React.FC<EditorProps> = ({ initialValue, onEditorChange, editorCon
         onChange={handleChange}
         modules={editorConfig?.modules || defaultEditorConfig.modules}
         theme={editorConfig?.theme || defaultEditorConfig.theme}
-        style={{ height: '300px', marginTop: '20px', marginBottom: '20px' }}
+        style={{ 
+          height: '300px', 
+          marginTop: '20px', 
+          marginBottom: '20px',
+          '--ql-primary': '#1a237e',
+          '--ql-active': '#1a237e',
+          '--ql-border': '#1a237e',
+        } as React.CSSProperties}
       />
     </div>
   );
 };
 
 export default Editor;
-        
