@@ -7,7 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { ROUTER_URL } from "../../const/router.path";
 import { handleUploadFile } from "../../utils/upload";
 import { AuthService } from "../../services/authentication/auth.service";
-import TinyMCEEditor from "../../components/generic/tiny/TinyMCEEditor";
+// import TinyMCEEditor from "../../components/generic/tiny/TinyMCEEditor";
+import Editor from "../../components/generic/tiny/Editor";
 interface RegisterViaGoogleProps extends React.HTMLAttributes<HTMLFormElement> {
   googleId: string;
 }
@@ -262,7 +263,7 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
           </div>
 
           <Form.Item name="description" label="Professional Description" rules={[{ required: true, message: "Please input a description!" }]}>
-            <TinyMCEEditor initialValue={description} onEditorChange={handleEditorChange} />
+            <Editor initialValue={description} onEditorChange={handleEditorChange} />
           </Form.Item>
 
           {renderBankingFields}

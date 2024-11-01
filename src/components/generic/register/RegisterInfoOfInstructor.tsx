@@ -3,7 +3,8 @@ import { Form, Input, Upload, Button, UploadFile, Select } from "antd";
 import { UploadOutlined, PhoneOutlined, BankOutlined, NumberOutlined, UserOutlined } from "@ant-design/icons";
 import { message } from "antd";
 import { AuthService } from "../../../services/authentication/auth.service";
-import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
+// import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
+import Editor from "../../generic/tiny/Editor";
 interface RegisterInfoOfInstructorProps {
   form: any;
   uploadingVideo: boolean;
@@ -153,7 +154,7 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({ for
       </div>
 
       <Form.Item name="description" label={<span className="font-medium text-gray-700">Professional Description</span>} rules={[{ required: true, message: "Please input a description!" }]} className="mb-6">
-        <TinyMCEEditor key={form.getFieldValue("description")} initialValue={form.getFieldValue("description")} onEditorChange={handleEditorChange} />
+        <Editor key={form.getFieldValue("description")} initialValue={form.getFieldValue("description")} onEditorChange={handleEditorChange} />
       </Form.Item>
 
       <div className="space-y-6 rounded-xl bg-gray-50 p-8">

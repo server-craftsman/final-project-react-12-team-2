@@ -45,9 +45,9 @@ const Editor: React.FC<EditorProps> = ({ initialValue, onEditorChange, editorCon
         modules={editorConfig?.modules || defaultEditorConfig.modules}
         theme={editorConfig?.theme || defaultEditorConfig.theme}
         style={{ 
-          height: '300px', 
+          height: '250px', 
           marginTop: '20px', 
-          marginBottom: '20px',
+          marginBottom: '50px',
           '--ql-primary': '#1a237e',
           '--ql-active': '#1a237e',
           '--ql-border': '#1a237e',

@@ -1,9 +1,10 @@
 import { useCallback, useMemo, useState, useEffect } from "react";
 import { Form, Input, Button, Modal, message, Select, Upload } from "antd";
-import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
+// import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
 import { UserService } from "../../../services/admin/user.service";
 import { AuthService } from "../../../services/authentication/auth.service";
 import { customUploadHandler } from "../../../utils/upload";
+import Editor from "../../generic/tiny/Editor";
 import { BankOutlined, UserOutlined, PhoneOutlined, MailOutlined, LockOutlined, UploadOutlined } from "@ant-design/icons";
 import { useForm } from "antd/lib/form/Form";
 import { Rule } from "antd/lib/form";
@@ -72,6 +73,52 @@ const CreateUserProfile = () => {
     }
   }, []);
 
+  // Upload image
+  const uploadImage = useCallback(async () => {
+    if (!avatarFile) return '';
+    let avatarUrl = '';
+    await customUploadHandler(
+      {
+        file: avatarFile,
+        onSuccess: (url) => {
+          avatarUrl = url;
+        },
+        onError: () => {
+          message.error("Failed to upload avatar");
+        }
+      },
+      "image",
+      setUploading,
+      (type, url) => {
+        console.log(`${type} uploaded to ${url}`);
+      }
+    );
+    return avatarUrl;
+  }, [avatarFile]);
+
+  // Upload video
+  const uploadVideo = useCallback(async () => {
+    if (!videoFile) return '';
+    let videoUrl = '';
+    await customUploadHandler(
+      {
+        file: videoFile,
+        onSuccess: (url) => {
+          videoUrl = url;
+        },
+        onError: () => {
+          message.error("Failed to upload video");
+        }
+      },
+      "video",
+      setUploading,
+      (type, url) => {
+        console.log(`${type} uploaded to ${url}`);
+      }
+    );
+    return videoUrl;
+  }, [videoFile]);
+
   // Form submission
   const onFinish = useCallback(
     async (values: any) => {
@@ -79,46 +126,15 @@ const CreateUserProfile = () => {
         setUploading(true);
         const { avatar_url, video_url, ...restValues } = values;
 
-        // Upload avatar and video files
-        if (avatarFile) {
-          await customUploadHandler(
-            {
-              file: avatarFile,
-              onSuccess: (url) => {
-                form.setFieldsValue({ avatar_url: url }); // Ensure URL is set correctly
-              },
-              onError: () => {
-                message.error("Failed to upload avatar");
-              }
-            },
-            "image", // Ensure this parameter is correct
-            setUploading,
-            (type, url) => {
-              console.log(`${type} uploaded to ${url}`);
-            } // Add this callback function
-          );
-        }
+        // Upload avatar and video files separately
+        const [avatarUrl, videoUrl] = await Promise.all([uploadImage(), uploadVideo()]);
 
-        if (videoFile) {
-          await customUploadHandler(
-            {
-              file: videoFile,
-              onSuccess: (url) => {
-                form.setFieldsValue({ video_url: url }); // Ensure URL is set correctly
-              },
-              onError: () => {
-                message.error("Failed to upload video");
-              }
-            },
-            "video", // Ensure this parameter is correct
-            setUploading,
-            (type, url) => {
-              console.log(`${type} uploaded to ${url}`);
-            } // Add this callback function
-          );
-        }
+        await UserService.createUser({ 
+          ...restValues, 
+          avatar_url: avatarUrl,
+          video_url: videoUrl
+        });
 
-        await UserService.createUser({ ...restValues, avatar_url: form.getFieldValue("avatar_url"), video_url: form.getFieldValue("video_url") });
         message.success({
           content: "User created successfully!",
           className: "custom-success-message",
@@ -128,14 +144,14 @@ const CreateUserProfile = () => {
       } catch (error: any) {
         message.error({
           content: error.message || "Failed to create user",
-          className: "custom-error-message",
+          className: "custom-error-message", 
           duration: 5
         });
       } finally {
         setUploading(false);
       }
     },
-    [handleModalToggle, avatarFile, videoFile, form]
+    [handleModalToggle, uploadImage, uploadVideo]
   );
 
   // Form validation rules
@@ -273,7 +289,7 @@ const CreateUserProfile = () => {
               getFieldValue("role") === "instructor" && (
                 <div className="space-y-6 rounded-xl bg-gray-50 p-6 shadow-sm">
                   <Form.Item name="description" label="Description" rules={[{ required: true, message: "Please input description!" }]}>
-                    <TinyMCEEditor
+                    <Editor
                       initialValue={typeof form.getFieldValue("description") === "string" ? form.getFieldValue("description") : ""}
                       onEditorChange={(content) => {
                         form.setFieldsValue({ description: content });

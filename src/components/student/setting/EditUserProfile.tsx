@@ -13,8 +13,9 @@ import cloudinaryConfig from "../../../services/config/cloudinaryConfig";
 import { ROUTER_URL } from "../../../const/router.path";
 import { HTTP_STATUS } from "../../../app/enums";
 import { HttpException } from "../../../app/exceptions";
-import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
-import { parseTinyEditor } from "../../../utils";
+// import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
+import Editor from "../../generic/tiny/Editor";
+// import { parseTinyEditor } from "../../../utils";
 
 const EditUserProfile = () => {
   const { id } = useParams<{ id: string }>();
@@ -203,11 +204,8 @@ const EditUserProfile = () => {
     return false;
   }, []);
 
-  const editChange = (value: string, editor: any) => {
+  const editChange = (value: string) => {
     form.setFieldsValue({ description: value });
-    parseTinyEditor.updateTinyMCEContent("description-editor", value);
-    editor.selection.select(editor.getBody(), true);
-    editor.selection.collapse(false);
   };
 
   if (!state.user) {
@@ -241,7 +239,7 @@ const EditUserProfile = () => {
             <Input className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
           </Form.Item>
           <Form.Item label={<span className="font-medium text-[#1a237e]">Description</span>} name="description" rules={validationRules.description as Rule[]}>
-            <TinyMCEEditor initialValue={state.user?.data.description || ""} onEditorChange={editChange} />
+            <Editor initialValue={state.user?.data.description || ""} onEditorChange={editChange} />
           </Form.Item>
           <Form.Item label={<span className="font-medium text-[#1a237e]">Date of Birth</span>} name="dob" rules={validationRules.dob as Rule[]}>
             <DatePicker
