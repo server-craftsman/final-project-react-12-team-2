@@ -17,3 +17,10 @@ export interface UpdateBlogParams {
   description: string;
   content: string;
 }
+export interface CreateBlogBody {
+  name: string;
+  category_id: string;
+  image_url: string;
+  description: string;
+  content: string;
+}

@@ -1,15 +1,21 @@
 import { ResponseSuccess } from "../../app/interface";
 import { API } from "../../const/api.path";
-import { GetBlogParams } from "../../models/api/request/admin/blog.request.model";
+import { CreateBlogBody, GetBlogParams } from "../../models/api/request/admin/blog.request.model";
 import { GetBlogResponse, UpdateBlogParams } from "../../models/api/responsive/admin/blog.responsive.model";
 import { BaseService } from "../config/base.service";
 
 export const BlogService = {
-  getBlog(params: GetBlogParams){
+  createBlog(body: CreateBlogBody) {
+    return BaseService.post<ResponseSuccess<GetBlogResponse>>({
+      url: API.ADMIN.CREATE_BLOG,
+      payload: body
+    });
+  },
+  getBlog(params: GetBlogParams) {
     return BaseService.post<ResponseSuccess<GetBlogResponse>>({
       url: API.ADMIN.GET_BLOG,
       payload: params
-    })
+    });
   },
 
   getBlogs(id: string) {
