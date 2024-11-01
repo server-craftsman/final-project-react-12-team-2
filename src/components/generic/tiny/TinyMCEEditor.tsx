@@ -20,7 +20,7 @@ const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({ initialValue, onEditorCha
       relative_urls: false,
       remove_script_host: true,
       convert_urls: true,
-      document_base_url: process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/` : "http://localhost:3000/",
+      document_base_url: process.env.VERCEL_URL === "final-project-react-12-team-2.vercel.app" ? "https://final-project-react-12-team-2.vercel.app/" : "http://localhost:3000/",
     }),
     []
   );
