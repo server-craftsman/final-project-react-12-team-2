@@ -46,7 +46,11 @@
         const response = await LessonService.getLessonDetails(lessonId);
         if (response?.data) {
           const lessonDetails = response.data.data;
-          const lesson = lessonDetails as any;
+          const lesson = {
+            ...lessonDetails,
+            // course_id: lessonDetails.course_id || "",
+            // session_id: lessonDetails.session_id || ""
+          } as any;
           if (lesson) {
             console.log("Selected Lesson:", lesson);
             setSelectedLesson(lesson);

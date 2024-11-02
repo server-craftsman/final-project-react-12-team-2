@@ -5,17 +5,15 @@ import Editor from "../../../generic/tiny/Editor";
 import { LessonService } from "../../../../services/lesson/lesson.service";
 import { upload } from "../../../../utils";
 import { LessonType } from "../../../../app/enums";
-import { useCallbackCourse, useCallbackSession } from "../../../../hooks/useCallback";
 import { UpdateLessonRequest } from "../../../../models/api/request/lesson/lesson.request.model";
-import { GetCourseResponsePageData } from "../../../../models/api/responsive/course/course.response.model";
-import { SessionResponsePageData } from "../../../../models/api/responsive/session/session.response.model";
-
+// import { CourseService } from "../../../../services/course/course.service";
+// import { SessionService } from "../../../../services/session/session.service";
 const { Option } = Select;
 
 const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
   const [form] = Form.useForm();
-  const [sessions, setSessions] = useState<SessionResponsePageData[]>([]);
-  const [courses, setCourses] = useState<GetCourseResponsePageData[]>([]);
+  // const [courses, setCourses] = useState<any[]>([]);
+  // const [sessions, setSessions] = useState<any[]>([]);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
   const [lessonType, setLessonType] = useState<LessonType | null>(null);
@@ -24,49 +22,52 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
   const [avatarFileList, setAvatarFileList] = useState<any[]>([]);
   const [videoFileList, setVideoFileList] = useState<any[]>([]);
 
-  const { getCourse } = useCallbackCourse();
-  const { getSession } = useCallbackSession();
-
+  
   useEffect(() => {
     if (data) {
       form.setFieldsValue({
         name: data.name,
-        course_id: data.course_id,
-        session_id: data.session_id,
-        image_url: data.image_url,
-        video_url: data.video_url,
-        description: data.description, 
+        image_url: data.image_url || "",
+        video_url: data.video_url || "",
+        description: data.description,
         full_time: data.full_time,
         position_order: data.position_order,
-        lesson_type: data.lesson_type
+        lesson_type: data.lesson_type,
+        course_id: data.course_id,
+        session_id: data.session_id,
+        user_id: data.user_id,
       });
       setLessonType(data.lesson_type);
       setImagePreview(data.image_url);
       setVideoPreview(data.video_url);
-      if (data.course_id) {
-        getCourse().then((response) => {
-          setCourses(response.data || []);
-          const validCourse = response.data?.find((course: any) => course._id === data.course_id);
-          if (validCourse) {
-            form.setFieldsValue({ course_id: data.course_id });
-            getSession({ searchCondition: { course_id: data.course_id, is_position_order: true, is_delete: false, keyword: "" }, pageInfo: { pageNum: 1, pageSize: 100 } }).then((fetchedSessions) => {
-              setSessions(fetchedSessions.data || []);
-              const validSession = fetchedSessions.data?.find((session: any) => session._id === data.session_id);
-              if (validSession) {
-                form.setFieldsValue({ session_id: data.session_id });
-              } else {
-                form.setFieldsValue({ session_id: null });
-                message.error("The selected session cannot be used! Please select a valid session.");
-              }
-            });
-          } else {
-            form.setFieldsValue({ course_id: null });
-            message.error("The selected course cannot be used! Please select a valid course.");
-          }
-        });
-      }
     }
-  }, [data, form, getCourse, getSession]);
+  }, [data, form]);
+
+  // useEffect(() => {
+  //   const fetchCoursesAndSessions = async () => {
+  //     try {
+  //       const coursesResponse = await CourseService.getCourse({
+  //         searchCondition: { keyword: "", is_delete: false, category_id: "",  status: "" },
+  //         pageInfo: { pageNum: 1, pageSize: 10 }
+  //       });
+  //       const sessionsResponse = await SessionService.getSession({
+  //         searchCondition: 
+  //           { course_id: data.course_id, 
+  //             is_delete: false, 
+  //             is_position_order: false,
+  //             keyword: ""
+  //           },
+  //          pageInfo: { pageNum: 1, pageSize: 10 } 
+  //       });
+  //       setCourses(coursesResponse.data.data.pageData);
+  //       setSessions(sessionsResponse.data.data.pageData);
+  //     } catch (error) {
+  //       console.error("Failed to fetch courses or sessions", error);
+  //     }
+  //   };
+
+  //   fetchCoursesAndSessions();
+  // }, []);
 
   const handleOk = async () => {
     try {
@@ -77,16 +78,24 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
         throw new Error("Lesson ID is missing");
       }
 
+      // Ensure course_id and session_id are set from data
+      const courseId = data.course_id;
+      const sessionId = data.session_id;
+
+      // Debugging: Log selected course and session IDs
+      console.log("Selected Course ID:", courseId);
+      console.log("Selected Session ID:", sessionId);
+
       const params: UpdateLessonRequest = {
         name: formValues.name,
-        course_id: formValues.course_id,
-        session_id: formValues.session_id,
         lesson_type: formValues.lesson_type as LessonType,
         description: formValues.description || null,
         video_url: formValues.video_url || "",
         image_url: formValues.image_url || "",
         full_time: Number(formValues.full_time),
         position_order: formValues.position_order ? Number(formValues.position_order) : null,
+        course_id: courseId,
+        session_id: sessionId,
       };
 
       console.log("Update parameters:", params);
@@ -171,23 +180,6 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
     [handleFileUpload, form]
   );
 
-  const handleCourseChange = async (courseId: string) => {
-    form.setFieldsValue({ course_id: courseId, session_id: null });
-    const sessionResponse = await getSession({ 
-      searchCondition: { 
-        course_id: courseId, 
-        is_position_order: true, 
-        is_delete: false, 
-        keyword: "" 
-      }, 
-      pageInfo: { 
-        pageNum: 1, 
-        pageSize: 100 
-      } 
-    });
-    setSessions(sessionResponse.data || []);
-  };
-
   return (
     <Modal
       title="Edit Lesson"
@@ -210,30 +202,6 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
           { type: 'string', message: "Name must be a string" }
         ]}>
           <Input />
-        </Form.Item>
-        <Form.Item name="course_id" label="Course" rules={[
-          { required: true, message: "Please select the course!" },
-          { type: 'string', message: "Course ID must be a string" }
-        ]}>
-          <Select onChange={handleCourseChange}>
-            {courses.map((course: any) => (
-              <Option key={course._id} value={course._id}>
-                {course.name}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-        <Form.Item name="session_id" label="Session" rules={[
-          { required: true, message: "Please select the session!" },
-          { type: 'string', message: "Session ID must be a string" }
-        ]}>
-          <Select>
-            {sessions.map((session: any) => (
-              <Option key={session._id} value={session._id}>
-                {session.name}
-              </Option>
-            ))}
-          </Select>
         </Form.Item>
         <Form.Item name="lesson_type" label="Lesson Type" rules={[
           { required: true, message: "Please select the lesson type!" },

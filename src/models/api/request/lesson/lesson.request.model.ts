@@ -17,11 +17,11 @@ export interface UpdateLessonRequest {
   course_id: string;
   session_id: string;
   lesson_type: LessonType;
-  description?: string | null;
-  video_url?: string | null;
-  image_url?: string | null;
+  description: string | null;
+  video_url: string | null;
+  image_url: string | null;
   full_time: number;
-  position_order?: number | null;
+  position_order: number | null;
 }
 
 export interface GetLessonParams {
