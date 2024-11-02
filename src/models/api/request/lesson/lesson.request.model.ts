@@ -12,6 +12,18 @@ export interface CreateLessonRequest {
   position_order: number;
 }
 
+export interface UpdateLessonRequest {
+  name: string;
+  course_id: string;
+  session_id: string;
+  lesson_type: LessonType;
+  description?: string | null;
+  video_url?: string | null;
+  image_url?: string | null;
+  full_time: number;
+  position_order?: number | null;
+}
+
 export interface GetLessonParams {
   searchCondition: SearchLessonCondition;
   pageInfo: LessonPageInfo;

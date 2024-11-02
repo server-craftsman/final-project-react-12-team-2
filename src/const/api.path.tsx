@@ -65,6 +65,7 @@ export const API = {
   },
   LESSON: {
     GET_LESSON: "api/lesson/search",
+    GET_LESSON_DETAILS: "api/lesson/:id",
     CREATE_LESSON: "api/lesson",
     UPDATE_LESSON: "api/lesson/:id",
     DELETE_LESSON: "api/lesson/:id"

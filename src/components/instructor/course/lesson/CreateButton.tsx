@@ -14,8 +14,8 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
   const [form] = Form.useForm();
   const [description, setDescription] = useState("");
   const [lessonType, setLessonType] = useState<LessonType>(LessonType.VIDEO);
-  const [imageUrl, setImageUrl] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
+  // const [imageUrl, setImageUrl] = useState("");
+  // const [videoUrl, setVideoUrl] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [videoPreview, setVideoPreview] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -50,11 +50,12 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
       setIsOpen(false);
 
       form.resetFields();
+      setDescription("");
+
       // Call callback if provided
       if (onLessonCreated) {
         onLessonCreated();
       }
-      setDescription("");
     } catch (error) {
       message.error("Failed to create lesson");
     }
@@ -81,10 +82,8 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
 
   const onUploadSuccess = (type: "video" | "image", url: string) => {
     if (type === "image") {
-      setImageUrl(url);
       setImagePreview(url);
     } else {
-      setVideoUrl(url);
       setVideoPreview(url);
     }
     form.setFieldValue(`${type}_url`, url);
@@ -140,14 +139,6 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
                   </Button>
                 </Upload>
                 {imagePreview && <img src={imagePreview} alt="Preview" style={{ marginTop: 8, maxWidth: "200px" }} />}
-                <Input
-                  value={imageUrl}
-                  onChange={(e) => {
-                    setImageUrl(e.target.value);
-                    form.setFieldValue("image_url", e.target.value);
-                  }}
-                  style={{ marginTop: 8 }}
-                />
               </div>
             </Form.Item>
           )}
@@ -161,14 +152,6 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
                   </Button>
                 </Upload>
                 {videoPreview && <video src={videoPreview} controls style={{ marginTop: 8, maxWidth: "200px" }} />}
-                <Input
-                  value={videoUrl}
-                  onChange={(e) => {
-                    setVideoUrl(e.target.value);
-                    form.setFieldValue("video_url", e.target.value);
-                  }}
-                  style={{ marginTop: 8 }}
-                />
               </div>
             </Form.Item>
           )}
