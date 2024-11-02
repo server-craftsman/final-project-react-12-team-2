@@ -48,8 +48,9 @@
           const lessonDetails = response.data.data;
           const lesson = {
             ...lessonDetails,
-            // course_id: lessonDetails.course_id || "",
-            // session_id: lessonDetails.session_id || ""
+            //debug
+            course_id: lessonDetails.course_id || "",
+            session_id: lessonDetails.session_id || ""
           } as any;
           if (lesson) {
             console.log("Selected Lesson:", lesson);

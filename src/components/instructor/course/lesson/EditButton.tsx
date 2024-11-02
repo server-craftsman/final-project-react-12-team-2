@@ -86,6 +86,11 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
       console.log("Selected Course ID:", courseId);
       console.log("Selected Session ID:", sessionId);
 
+      // Validate course_id and session_id
+      if (!courseId || !sessionId) {
+        throw new Error("Course ID or Session ID is missing or invalid");
+      }
+
       const params: UpdateLessonRequest = {
         name: formValues.name,
         lesson_type: formValues.lesson_type as LessonType,
@@ -203,6 +208,12 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
         ]}>
           <Input />
         </Form.Item>
+        {/* <Form.Item name="course_id" label="Course ID">
+          <Input value={data.course_id} disabled />
+        </Form.Item>
+        <Form.Item name="session_id" label="Session ID">
+          <Input value={data.session_id} disabled />
+        </Form.Item> */}
         <Form.Item name="lesson_type" label="Lesson Type" rules={[
           { required: true, message: "Please select the lesson type!" },
           { type: 'string', message: "Lesson type must be a string" }
