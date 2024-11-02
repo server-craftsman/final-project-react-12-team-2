@@ -70,6 +70,12 @@ const DisplayCourse: React.FC<{
 
   const columns: ColumnsType<GetCourseResponsePageData> = [
     {
+      title: "No",
+      key: "_id", 
+      dataIndex: "_id",
+      render: (_, __, index: number) => <span className="text-gray-500">{index + 1}</span>
+    },
+    {
       title: "Name",
       key: "name",
       dataIndex: "name"
@@ -118,39 +124,78 @@ const DisplayCourse: React.FC<{
     }
   ];
 
+  // const toggleSelectAll = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const allCourseIds = courses?.map(course => Number(course._id)) || [];
+  //   const selectedKeys = e.target.checked ? allCourseIds : [];
+  //   setSelectedRowKeys(selectedKeys);
+
+  //   if (e.target.checked) {
+  //     const validCourses = courses?.filter(course =>
+  //       _.includes(selectedKeys, Number(course._id)) &&
+  //       course.status === StatusType.NEW
+  //     );
+
+  //     if (!validCourses?.length) {
+  //       message.warning("No valid courses selected to send");
+  //       return;
+  //     }
+
+  //     const updateStatus = async (courseChunk: typeof validCourses) => {
+  //       return Promise.all(
+  //         courseChunk.map(course =>
+  //           CourseService.changeStatusCourse({
+  //             course_id: course._id,
+  //             new_status: StatusType.WAITING_APPROVE,
+  //             comment: ""
+  //           })
+  //         )
+  //       );
+  //     };
+
+  //     const chunkSize = 5; // Customize as needed for API rate limits
+  //     for (let i = 0; i < validCourses.length; i += chunkSize) {
+  //       const chunk = validCourses.slice(i, i + chunkSize);
+  //       await updateStatus(chunk); // Await each batch completion
+  //     }
+
+  //     message.success("Successfully sent courses to admin");
+  //   }
+  // };
+  
   const rowSelection = {
     type: 'checkbox' as const,
     selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[]) => {
-      setSelectedRowKeys(selectedRowKeys.map((key) => Number(key)));
-    },
-    getCheckboxProps: (record: GetCourseResponsePageData) => ({
-      disabled: record.status !== StatusType.NEW,
-      name: record.name
-    })
+      const numericKeys = selectedRowKeys.map(key => Number(key));
+      setSelectedRowKeys(numericKeys);
+
+      // message.info({
+      //   content: `${numericKeys.length} course(s) selected`,
+      //   icon: <CheckOutlined style={{ color: '#52c41a' }} />,
+      //   className: 'animate-bounce'
+      // });
+    }
   };
 
-  const showModal = () => {
-    setIsModalVisible(false);
+  const rowClassName = (record: GetCourseResponsePageData) => {
+    return selectedRowKeys.includes(Number(record._id)) ? 'bg-white' : 'bg-gray-50';
   };
 
-  const handleOk = async () => {
+  const handleOk = useCallback(async () => {
     try {
-      const validCourses = courses?.filter((course) => 
-        selectedCourse.includes(Number(course._id)) && 
+      const validCourses = courses?.filter(course =>
+        selectedCourse.includes(Number(course._id)) &&
         course.status === StatusType.NEW
       );
-
-      if (!validCourses || validCourses.length === 0) {
+  
+      if (!validCourses?.length) {
         message.warning("No valid courses selected to send");
         return;
       }
-
-      const chunks = _.chunk(validCourses, 5);
-
-      for (const chunk of chunks) {
-        await Promise.all(
-          chunk.map((course) =>
+  
+      const updateStatus = async (courseChunk: typeof validCourses) => {
+        return Promise.all(
+          courseChunk.map(course =>
             CourseService.changeStatusCourse({
               course_id: course._id,
               new_status: StatusType.WAITING_APPROVE,
@@ -158,15 +203,21 @@ const DisplayCourse: React.FC<{
             })
           )
         );
+      };
+  
+      const chunkSize = 5; // Customize as needed for API rate limits
+      for (let i = 0; i < validCourses.length; i += chunkSize) {
+        const chunk = validCourses.slice(i, i + chunkSize);
+        await updateStatus(chunk); // Await each batch completion
       }
-
+  
       setIsModalVisible(false);
       setSelectedRowKeys([]);
       message.success("Successfully sent courses to admin");
     } catch (error) {
       message.error("Failed to send courses to admin");
     }
-  };
+  }, [courses, selectedCourse, setIsModalVisible, setSelectedRowKeys, setRefreshKey]);
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -177,7 +228,53 @@ const DisplayCourse: React.FC<{
     onStatusChange(status);
   };
 
- 
+  const sendToAdmin = useCallback(async () => {
+    try {
+      const validCourses = courses?.filter(course =>
+        selectedRowKeys.includes(Number(course._id)) &&
+        course.status === StatusType.NEW
+      );
+
+      if (!validCourses?.length) {
+        message.warning("No valid courses selected to send");
+        return;
+      }
+
+      const updateStatus = async (courseChunk: typeof validCourses) => {
+        return Promise.all(
+          courseChunk.map(course =>
+            CourseService.changeStatusCourse({
+              course_id: course._id,
+              new_status: StatusType.WAITING_APPROVE,
+              comment: ""
+            })
+          )
+        );
+      };
+
+      const chunkSize = 5; // Customize as needed for API rate limits
+      for (let i = 0; i < validCourses.length; i += chunkSize) {
+        const chunk = validCourses.slice(i, i + chunkSize);
+        await updateStatus(chunk); // Await each batch completion
+      }
+
+      handleCourseCreated();
+      message.success("Successfully sent courses to admin");
+    } catch (error) {
+      message.error("Failed to send courses to admin");
+    }
+  }, [courses, selectedRowKeys, handleCourseCreated]);
+
+  const confirmSendToAdmin = () => {
+    Modal.confirm({
+      title: 'Confirm Send',
+      content: 'Are you sure you want to send the selected courses to the admin?',
+      onOk: sendToAdmin, // Call sendToAdmin if the user confirms
+      onCancel() {
+        message.info('Send to admin cancelled');
+      },
+    });
+  };
 
   return (
     <>      
@@ -189,18 +286,32 @@ const DisplayCourse: React.FC<{
         />
         <div className="flex justify-end gap-2">
           <CreateCourseButton onCourseCreated={handleCourseCreated} />
-          <Button disabled={selectedCourse.length === 0} onClick={showModal} className="bg-gradient-tone text-white hover:opacity-90">
-            Send to Admin
+          <Button onClick={confirmSendToAdmin} className="bg-gradient-tone text-white hover:opacity-90">
+            Send To Admin
           </Button>
         </div>
       </div>
+      <div className="mb-2">
+        <span>{selectedRowKeys.length} course(s) selected</span>
+      </div>
       <Table 
-        rowSelection={rowSelection} 
+        rowSelection={{
+          ...rowSelection,
+          selectedRowKeys,
+          columnTitle: (
+            <div className="animate-pulse">
+              <input
+                type="checkbox"
+                className="transition-all duration-300 ease-in-out transform hover:scale-110"
+              />
+            </div>
+          )
+        }}
         columns={columns} 
         dataSource={courses} 
         rowKey={(record) => record._id} 
         pagination={false}
-        className="custom-table-animation"
+        rowClassName={rowClassName}
       />
       <div className="mt-5 flex justify-end">
         <Pagination
@@ -217,7 +328,7 @@ const DisplayCourse: React.FC<{
         />
       </div>
       <Modal title="Confirm" open={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText="Yes" cancelText="No" okButtonProps={{ className: "bg-gradient-tone" }}>
-        <p>Are you sure you want to send the selected courses to admin?</p>
+        <p>Are you sure you want to send the selected courses to admin? This action cannot be undone.</p>
       </Modal>
       {courseDetails && (
         <EditButton
