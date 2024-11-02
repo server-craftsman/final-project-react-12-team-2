@@ -5,15 +5,10 @@ import Editor from "../../../generic/tiny/Editor";
 import { LessonService } from "../../../../services/lesson/lesson.service";
 import { upload } from "../../../../utils";
 import { LessonType } from "../../../../app/enums";
-import { UpdateLessonRequest } from "../../../../models/api/request/lesson/lesson.request.model";
-// import { CourseService } from "../../../../services/course/course.service";
-// import { SessionService } from "../../../../services/session/session.service";
 const { Option } = Select;
 
 const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
   const [form] = Form.useForm();
-  // const [courses, setCourses] = useState<any[]>([]);
-  // const [sessions, setSessions] = useState<any[]>([]);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
   const [lessonType, setLessonType] = useState<LessonType | null>(null);
@@ -22,7 +17,6 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
   const [avatarFileList, setAvatarFileList] = useState<any[]>([]);
   const [videoFileList, setVideoFileList] = useState<any[]>([]);
 
-  
   useEffect(() => {
     if (data) {
       form.setFieldsValue({
@@ -43,31 +37,6 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
     }
   }, [data, form]);
 
-  // useEffect(() => {
-  //   const fetchCoursesAndSessions = async () => {
-  //     try {
-  //       const coursesResponse = await CourseService.getCourse({
-  //         searchCondition: { keyword: "", is_delete: false, category_id: "",  status: "" },
-  //         pageInfo: { pageNum: 1, pageSize: 10 }
-  //       });
-  //       const sessionsResponse = await SessionService.getSession({
-  //         searchCondition: 
-  //           { course_id: data.course_id, 
-  //             is_delete: false, 
-  //             is_position_order: false,
-  //             keyword: ""
-  //           },
-  //          pageInfo: { pageNum: 1, pageSize: 10 } 
-  //       });
-  //       setCourses(coursesResponse.data.data.pageData);
-  //       setSessions(sessionsResponse.data.data.pageData);
-  //     } catch (error) {
-  //       console.error("Failed to fetch courses or sessions", error);
-  //     }
-  //   };
-
-  //   fetchCoursesAndSessions();
-  // }, []);
 
   const handleOk = async () => {
     try {
@@ -78,29 +47,28 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
         throw new Error("Lesson ID is missing");
       }
 
-      // Ensure course_id and session_id are set from data
       const courseId = data.course_id;
       const sessionId = data.session_id;
 
-      // Debugging: Log selected course and session IDs
-      console.log("Selected Course ID:", courseId);
-      console.log("Selected Session ID:", sessionId);
-
-      // Validate course_id and session_id
-      if (!courseId || !sessionId) {
-        throw new Error("Course ID or Session ID is missing or invalid");
+      if (!courseId) {
+        throw new Error("Course ID is missing or invalid");
       }
 
-      const params: UpdateLessonRequest = {
+      if (!sessionId) {
+        throw new Error("Session ID is missing or invalid");
+      }
+
+      const params = {
         name: formValues.name,
+        course_id: data.course_id,
+        session_id: data.session_id,
+        user_id: data.user_id,
         lesson_type: formValues.lesson_type as LessonType,
         description: formValues.description || null,
         video_url: formValues.video_url || "",
         image_url: formValues.image_url || "",
         full_time: Number(formValues.full_time),
         position_order: formValues.position_order ? Number(formValues.position_order) : null,
-        course_id: courseId,
-        session_id: sessionId,
       };
 
       console.log("Update parameters:", params);
