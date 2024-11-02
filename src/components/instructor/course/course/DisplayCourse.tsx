@@ -1,11 +1,11 @@
 import Table, { ColumnsType } from "antd/es/table";
-import { EditOutlined } from "@ant-design/icons";
+import { CheckOutlined, HistoryOutlined, FormOutlined, SendOutlined, EditOutlined } from "@ant-design/icons";
 // import { courseStatusColor } from "../../../../utils/courseStatus";
 import { formatDate, moneyFormat } from "../../../../utils/helper";
 import { CourseStatusBadge } from "../../../../utils/courseStatus";
 import { StatusType } from "../../../../app/enums";
 import { useEffect, useState, useCallback } from "react";
-import { Button, message, Modal, Pagination, Checkbox } from "antd";
+import { Button, message, Modal, Pagination, Form, Input } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
@@ -29,6 +29,7 @@ const DisplayCourse: React.FC<{
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [courseDetails, setCourseDetails] = useState<any>(null);
   const [refreshKey, setRefreshKey] = useState<number>(0);
+  // const [comment, setComment] = useState<string>("");
 
   const getCourseData = useCallback(() => {
     return useCourseCache(
@@ -67,6 +68,86 @@ const DisplayCourse: React.FC<{
       message.error("Failed to fetch course details");
     }
   };
+
+  const handleApprove = async (courseId: string) => {
+    try {
+      await CourseService.changeStatusCourse({
+        course_id: courseId,
+        new_status: StatusType.ACTIVE,
+        comment: ""
+      });
+      message.success("Course approved and activated");
+      handleCourseCreated();
+    } catch (error) {
+      message.error("Failed to approve course");
+    }
+  };
+
+  const requestReview = async (courseId: string, comment: string) => {
+    try {
+      await CourseService.changeStatusCourse({
+        course_id: courseId,
+        new_status: StatusType.WAITING_APPROVE,
+        comment: comment
+      });
+      message.success("Review requested");
+      handleCourseCreated();
+    } catch (error) {
+      message.error("Failed to request review");
+    }
+  };
+
+  const showRequestReviewModal = (courseId: string) => {
+    let tempComment = ''; // Create temporary comment state
+
+    Modal.confirm({
+      title: 'Request Course Review',
+      width: 600,
+      icon: <FormOutlined />,
+      content: (
+        <div className="p-6">
+          <h3 className="text-lg font-medium mb-4">Please provide details for your review request</h3>
+          <Form layout="vertical">
+            <Form.Item
+              label="Comments"
+              required
+              tooltip="Please explain why you are requesting a review"
+            >
+              <Input.TextArea
+                onChange={(e) => tempComment = e.target.value}
+                placeholder="Enter your comments here..."
+                rows={4}
+                className="w-full"
+                showCount
+                maxLength={500}
+              />
+            </Form.Item>
+          </Form>
+        </div>
+      ),
+      okText: 'Submit Request', 
+      cancelText: 'Cancel',
+      okButtonProps: {
+        type: 'primary',
+        icon: <SendOutlined />
+      },
+      onOk: () => {
+        if (!tempComment.trim()) {
+          message.error('Please enter comments before submitting');
+          return Promise.reject();
+        }
+        return requestReview(courseId, tempComment);
+      },
+      onCancel: () => {
+        tempComment = '';
+      },
+    });
+  };
+
+  // const handleCourseSelect = (courseId: string) => {
+  //   fetchCourseDetails(courseId);
+  //   setIsModalVisible(true);
+  // };
 
   const columns: ColumnsType<GetCourseResponsePageData> = [
     {
@@ -112,39 +193,34 @@ const DisplayCourse: React.FC<{
       title: "Actions",
       key: "actions",
       dataIndex: "actions",
-      render: (_, record) => (
-        <>
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => fetchCourseDetails(record._id)}
-          />
-          <DeleteButton courseId={record._id} onDeleteSuccess={handleCourseCreated} />
-        </>
-      )
+      render: (_, record) => {
+        const { status, _id } = record;
+        return (
+          <>
+            {status === StatusType.APPROVE && (
+              <Button
+                icon={<CheckOutlined />}
+                onClick={() => handleApprove(_id)}
+                className="bg-gradient-tone text-white mr-2 hover:opacity-90"
+              />
+            )}
+            {status === StatusType.REJECT && (
+              <Button
+                icon={<HistoryOutlined />}
+                onClick={() => showRequestReviewModal(_id)}
+                className="bg-gradient-tone text-white mr-2 hover:opacity-90"
+              />
+            )}
+            <Button
+              icon={<EditOutlined />}
+              onClick={() => fetchCourseDetails(record._id)}
+            />
+            <DeleteButton courseId={record._id} onDeleteSuccess={handleCourseCreated} />
+          </>
+        );
+      }
     }
   ];
-
-  const rowSelection = {
-    type: 'checkbox' as const,
-    selectedRowKeys,
-    onChange: (selectedRowKeys: React.Key[]) => {
-      const numericKeys = selectedRowKeys.map(key => Number(key));
-      setSelectedRowKeys(numericKeys);
-    },
-    columnTitle: (
-      <Checkbox
-        indeterminate={selectedRowKeys.length > 0 && selectedRowKeys.length < (courses?.length ?? 0)}
-        checked={selectedRowKeys.length === (courses?.length ?? 0)}
-        onChange={(e) => {
-          if (e.target.checked) {
-            setSelectedRowKeys(courses?.map(course => Number(course._id)) || []);
-          } else {
-            setSelectedRowKeys([]);
-          }
-        }}
-      />
-    )
-  };
 
   const rowClassName = (record: GetCourseResponsePageData) => {
     return selectedRowKeys.includes(Number(record._id)) ? 'bg-white' : 'bg-gray-50';
@@ -197,12 +273,24 @@ const DisplayCourse: React.FC<{
     onStatusChange(status);
   };
 
+  const handleRowSelectionChange = (selectedKeys: React.Key[]) => {
+    // Ensure unique selection using lodash
+    const uniqueKeys = _.uniq(selectedKeys as number[]);
+    setSelectedRowKeys(uniqueKeys);
+  };
+
   const sendToAdmin = useCallback(async () => {
     try {
+      // console.log("Selected Row Keys:", selectedRowKeys); // Debugging log
+
+      // Filter courses based on selected row keys
       const validCourses = courses?.filter(course =>
-        selectedRowKeys.includes(Number(course._id)) &&
+        selectedRowKeys.includes(course._id as unknown as number) && // Ensure course._id is a string
         course.status === StatusType.NEW
       );
+
+      //test debug
+      // console.log("Valid Courses:", validCourses); // Debugging log
 
       if (!validCourses?.length) {
         message.warning("No valid courses selected to send");
@@ -261,7 +349,11 @@ const DisplayCourse: React.FC<{
         />
         <div className="flex justify-end gap-2">
           <CreateCourseButton onCourseCreated={handleCourseCreated} />
-          <Button onClick={confirmSendToAdmin} className="bg-gradient-tone text-white hover:opacity-90">
+          <Button 
+            onClick={confirmSendToAdmin} 
+            className="bg-gradient-tone text-white hover:opacity-90"
+            disabled={selectedRowKeys.length === 0} // Disable button if no checkboxes are selected
+          >
             Send To Admin
           </Button>
         </div>
@@ -270,8 +362,20 @@ const DisplayCourse: React.FC<{
         <span>{selectedRowKeys.length} course(s) selected</span>
       </div>
       <Table 
-        rowSelection={rowSelection}
-        columns={columns} 
+        rowSelection={{
+          type: 'checkbox',
+          selectedRowKeys,
+          onChange: handleRowSelectionChange,
+          selections: [
+            Table.SELECTION_ALL,
+            Table.SELECTION_INVERT,
+            Table.SELECTION_NONE
+          ],
+          getCheckboxProps: (record) => ({
+            name: record._id,
+          }),
+        }}
+        columns={columns}
         dataSource={courses} 
         rowKey={(record) => record._id} 
         pagination={false}
@@ -295,10 +399,7 @@ const DisplayCourse: React.FC<{
         <p>Are you sure you want to send the selected courses to admin? This action cannot be undone.</p>
       </Modal>
       {courseDetails && (
-        <EditButton
-          data={courseDetails}
-          onEditSuccess={handleCourseCreated}
-        />
+       <EditButton data={courseDetails} onEditSuccess={handleCourseCreated} />
       )}
     </>
   );
