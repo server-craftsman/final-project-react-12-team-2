@@ -11,7 +11,6 @@ const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange, currentStat
   const handleChange = (value: string | undefined) => {
     if (value === undefined || value === "") {
       onStatusChange("");
-      return;
     } else {
       onStatusChange(value as StatusType);
     }
@@ -37,7 +36,13 @@ const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange, currentStat
   };
 
   return (
-    <Select style={{ width: 200 }} placeholder="Filter by status" allowClear onChange={handleChange} value={currentStatus || undefined}>
+    <Select
+      style={{ width: 200 }}
+      placeholder="Filter by status"
+      allowClear
+      onChange={handleChange}
+      value={currentStatus || undefined}
+    >
       <Select.Option key="all" value="">
         All
       </Select.Option>

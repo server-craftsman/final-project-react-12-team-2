@@ -1,7 +1,7 @@
 export interface SearchCondition {
   keyword: string;
   category_id: string;
-  status: string;
+  status: string | undefined;
   is_delete: boolean;
 }
 

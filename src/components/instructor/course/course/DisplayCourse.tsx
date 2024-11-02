@@ -43,6 +43,11 @@ const DisplayCourse: React.FC<{
 
   const { courses, totalItems } = getCourseData();
 
+  // Filter courses based on the statusFilter
+  const filteredCourses = courses?.filter(course => 
+    !statusFilter || course.status === statusFilter
+  );
+
   const handleCourseCreated = () => {
     setRefreshKey((prevKey) => prevKey + 1);
   };
@@ -376,7 +381,7 @@ const DisplayCourse: React.FC<{
           }),
         }}
         columns={columns}
-        dataSource={courses} 
+        dataSource={filteredCourses} // Use filtered courses
         rowKey={(record) => record._id} 
         pagination={false}
         rowClassName={rowClassName}

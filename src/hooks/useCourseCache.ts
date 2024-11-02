@@ -15,8 +15,8 @@ const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageN
   const params: GetCourseParams = {
     searchCondition: {
       keyword: searchTerm,
-      category_id: statusFilter,
-      status: statusFilter,
+      category_id: statusFilter || "",
+      status: statusFilter || "",
       is_delete: false
     },
     pageInfo: {
@@ -49,12 +49,10 @@ const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageN
         const coursesTempData = await Promise.all(pageData.map(mapCourseData));
 
         setCourses(coursesTempData);
-        setTotalItems(response.data.data.pageData.length); // Use actual total from response
-      } else {
-        throw new Error("Failed to fetch courses");
+        setTotalItems(response.data.data.pageInfo.pageNum);
       }
     } catch (error) {
-      message.error("Failed to fetch courses");
+      return null;
     }
   };
 
@@ -64,11 +62,8 @@ const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageN
       if (response.status === 200 && response.data) {
         setCourseById(response.data.data);
         return response.data.data;
-      } else {
-        throw new Error("Failed to fetch course by ID");
       }
     } catch (error) {
-      message.error("Failed to fetch course by ID");
       return null;
     }
   };
