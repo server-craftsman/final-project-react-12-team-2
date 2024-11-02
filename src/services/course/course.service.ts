@@ -2,7 +2,7 @@ import { BaseService } from "../config/base.service";
 import { API } from "../../const/api.path";
 import { ResponseSuccess } from "../../app/interface";
 import { CreateCourseParams, GetCourseParams, GetPublicCourseParams, ChangeStatusCourseParams, UpdateCourseParams } from "../../models/api/request/course/course.request.model";
-import { CreateCourseResponse, GetCourseResponse, GetPublicCourseResponse, GetCourseByIdResponse, UpdateCourseResponse } from "../../models/api/responsive/course/course.response.model";
+import { CreateCourseResponse, GetCourseResponse, GetPublicCourseResponse, GetCourseByIdResponse, UpdateCourseResponse, GetCourseResponsePageData } from "../../models/api/responsive/course/course.response.model";
 
 export const CourseService = {
   //instructor & admin

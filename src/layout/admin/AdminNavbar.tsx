@@ -64,6 +64,12 @@ const AdminNavbar: React.FC = () => {
       icon: <SettingOutlined className="text-white" />,
       label: "Setting",
       path: "/admin/admin-info"
+    },
+    {
+      key: "10",
+      icon: <BookOutlined className="text-white" />,
+      label: "Courses Logs",
+      path: "/admin/courses-logs"
     }
   ];
 

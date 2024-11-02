@@ -24,7 +24,8 @@ export const ROUTER_URL = {
     CATEGORIES_DETAILS_ID: "/admin/categories/categories-details/:id",
     COURSES_LOG: "/admin/courses-log",
     SUBSCRIPTION: "/admin/subscription",
-    REQUEST_ACCOUNT: "/admin/request-account"
+    REQUEST_ACCOUNT: "/admin/request-account",
+    COURSES_LOGS: "/admin/courses-logs"
   },
   INSTRUCTOR: {
     BASE: "/instructor",

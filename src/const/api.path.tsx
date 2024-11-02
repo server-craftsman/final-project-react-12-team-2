@@ -51,6 +51,8 @@ export const API = {
     UPDATE_COURSE: "api/course/:id",
     GET_COURSE_BY_ID: "api/course/:id",
     DELETE_COURSE: "api/course/:id",
+    //admin
+    GET_COURSES_LOGS: "/api/course/log/search",
     //=========================================
     //public
     GET_PUBLIC_COURSE: "api/client/course/search"
