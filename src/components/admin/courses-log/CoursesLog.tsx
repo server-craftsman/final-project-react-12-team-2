@@ -120,7 +120,7 @@ const AdminBlog: React.FC<AdminBlogProps> = ({ searchQuery }) => {
       key: "action",
       render: (record: Blog) => (
         <Space size="middle">
-          <Link to={`/admin//${record._id}`}>
+          <Link to={`/admin/${record._id}`}>
             <EditOutlined />
           </Link>
           <DeleteOutlined onClick={() => handleDeleteBlog(record._id)} />
