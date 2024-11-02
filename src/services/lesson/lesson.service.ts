@@ -12,7 +12,7 @@ export const LessonService = {
     });
   },
   getLessonDetails(lessonId: string) {
-    return BaseService.getById<ResponseSuccess<LessonDetailsResponse>>({
+    return BaseService.get<ResponseSuccess<LessonDetailsResponse>>({
       url: API.LESSON.GET_LESSON_DETAILS.replace(":id", lessonId)
     });
   },

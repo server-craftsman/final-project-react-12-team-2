@@ -19,8 +19,6 @@ const EditButton = ({ data, onSessionEdited, fetchSessionDetails }: any) => {
     setCourses(result.data);
   }, [getCourse]);
 
-  
-
   useEffect(() => {
     fetchCourses();
   }, [fetchCourses]);
