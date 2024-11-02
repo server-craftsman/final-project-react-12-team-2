@@ -138,7 +138,7 @@
         render: (_: any, record: Lesson["pageData"][0]) => (
           <div className="flex space-x-2">
             <Button icon={<EditOutlined />} onClick={() => handleEditClick(record._id)} />
-            <DeleteButton />
+            <DeleteButton lessonId={record._id} onDeleteSuccess={handleLessonCreated} />
           </div>
         )
       }
