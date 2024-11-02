@@ -48,16 +48,12 @@
           const lessonDetails = response.data.data;
           const lesson = lessonDetails as any;
           if (lesson) {
+            console.log("Selected Lesson:", lesson);
             setSelectedLesson(lesson);
             setIsEditModalOpen(true);
           }
         }
       } catch (error) {
-        // Check if error is due to disconnected port
-        if (error instanceof Error && error.message.includes('disconnected port')) {
-          console.log('Component unmounted, ignoring state updates');
-          return;
-        }
         console.error("Failed to fetch lesson details", error);
       }
     };

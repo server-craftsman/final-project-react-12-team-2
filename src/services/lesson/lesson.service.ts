@@ -22,7 +22,7 @@ export const LessonService = {
       payload: params
     });
   },
-  updateLesson: (params: UpdateLessonRequest, lessonId: string) => {
+  updateLesson: (lessonId: string, params: UpdateLessonRequest) => {
     return BaseService.put<ResponseSuccess<LessonDetailsResponse>>({
       url: API.LESSON.UPDATE_LESSON.replace(":id", lessonId),
       payload: params

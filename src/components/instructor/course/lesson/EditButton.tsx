@@ -5,16 +5,17 @@ import Editor from "../../../generic/tiny/Editor";
 import { LessonService } from "../../../../services/lesson/lesson.service";
 import { upload } from "../../../../utils";
 import { LessonType } from "../../../../app/enums";
-import { SessionService } from "../../../../services/session/session.service";
-import { CourseService } from "../../../../services/course/course.service";
+import { useCallbackCourse, useCallbackSession } from "../../../../hooks/useCallback";
 import { UpdateLessonRequest } from "../../../../models/api/request/lesson/lesson.request.model";
+import { GetCourseResponsePageData } from "../../../../models/api/responsive/course/course.response.model";
+import { SessionResponsePageData } from "../../../../models/api/responsive/session/session.response.model";
 
 const { Option } = Select;
 
 const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
   const [form] = Form.useForm();
-  const [sessions, setSessions] = useState([]);
-  const [courses, setCourses] = useState([]);
+  const [sessions, setSessions] = useState<SessionResponsePageData[]>([]);
+  const [courses, setCourses] = useState<GetCourseResponsePageData[]>([]);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
   const [lessonType, setLessonType] = useState<LessonType | null>(null);
@@ -23,70 +24,49 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
   const [avatarFileList, setAvatarFileList] = useState<any[]>([]);
   const [videoFileList, setVideoFileList] = useState<any[]>([]);
 
+  const { getCourse } = useCallbackCourse();
+  const { getSession } = useCallbackSession();
+
   useEffect(() => {
     if (data) {
       form.setFieldsValue({
         name: data.name,
         course_id: data.course_id,
         session_id: data.session_id,
-        image_url: data.image_url ? data.image_url : undefined,
-        video_url: data.video_url ? data.video_url : undefined,
-        description: data.description ? data.description : undefined, 
+        image_url: data.image_url,
+        video_url: data.video_url,
+        description: data.description, 
         full_time: data.full_time,
-        position_order: data.position_order ? data.position_order : undefined,
+        position_order: data.position_order,
         lesson_type: data.lesson_type
       });
       setLessonType(data.lesson_type);
       setImagePreview(data.image_url);
       setVideoPreview(data.video_url);
       if (data.course_id) {
-        fetchSessions(data.course_id);
-      }
-    }
-  }, [data, form]);
-
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const courseResponse = await CourseService.getCourse({
-          searchCondition: {
-            keyword: "",
-            category_id: "",
-            status: "",
-            is_delete: false
-          },
-          pageInfo: {
-            pageNum: 1,
-            pageSize: 10
+        getCourse().then((response) => {
+          setCourses(response.data || []);
+          const validCourse = response.data?.find((course: any) => course._id === data.course_id);
+          if (validCourse) {
+            form.setFieldsValue({ course_id: data.course_id });
+            getSession({ searchCondition: { course_id: data.course_id, is_position_order: true, is_delete: false, keyword: "" }, pageInfo: { pageNum: 1, pageSize: 100 } }).then((fetchedSessions) => {
+              setSessions(fetchedSessions.data || []);
+              const validSession = fetchedSessions.data?.find((session: any) => session._id === data.session_id);
+              if (validSession) {
+                form.setFieldsValue({ session_id: data.session_id });
+              } else {
+                form.setFieldsValue({ session_id: null });
+                message.error("The selected session cannot be used! Please select a valid session.");
+              }
+            });
+          } else {
+            form.setFieldsValue({ course_id: null });
+            message.error("The selected course cannot be used! Please select a valid course.");
           }
         });
-        setCourses(courseResponse.data?.data.pageData as any);
-      } catch (error) {
-        message.error("Failed to fetch courses");
       }
-    };
-    fetchCourses();
-  }, []);
-
-  const fetchSessions = async (courseId: string) => {
-    try {
-      const sessionResponse = await SessionService.getSession({
-        searchCondition: {
-          course_id: courseId,
-          is_delete: false,
-          is_position_order: true,
-          keyword: ""
-        },
-        pageInfo: {
-          pageNum: 1,
-          pageSize: 10
-        }
-      });
-      setSessions(sessionResponse.data?.data.pageData as any);
-    } catch (error) {
-      message.error("Failed to fetch sessions");
     }
-  };
+  }, [data, form, getCourse, getSession]);
 
   const handleOk = async () => {
     try {
@@ -97,34 +77,35 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
         throw new Error("Lesson ID is missing");
       }
 
-      if (formValues.lesson_type === LessonType.IMAGE && !formValues.image_url) {
-        throw new Error("Please upload an image for the lesson.");
-      }
-      if (formValues.lesson_type === LessonType.VIDEO && !formValues.video_url) {
-        throw new Error("Please upload a video for the lesson.");
-      }
-
       const params: UpdateLessonRequest = {
         name: formValues.name,
         course_id: formValues.course_id,
         session_id: formValues.session_id,
         lesson_type: formValues.lesson_type as LessonType,
         description: formValues.description || null,
-        video_url: formValues.video_url || null,
-        image_url: formValues.image_url || null,
+        video_url: formValues.video_url || "",
+        image_url: formValues.image_url || "",
         full_time: Number(formValues.full_time),
         position_order: formValues.position_order ? Number(formValues.position_order) : null,
       };
 
-      await LessonService.updateLesson(params, lessonId);
+      console.log("Update parameters:", params);
 
-      message.success("Lesson updated successfully");
-      onClose();
-      form.resetFields();
-      onLessonCreated(); // Refresh the lesson list
-    } catch (error) {
-      console.error("Error updating lesson:", error);
-      message.error("Failed to update lesson");
+      const response = await LessonService.updateLesson(lessonId, params);
+      console.log("API Response:", response);
+
+      if (response.data?.success) {
+        message.success("Lesson updated successfully");
+        onClose();
+        form.resetFields();
+        onLessonCreated();
+      } else {
+        console.error("API Error:", response.data);
+        throw new Error("Failed to update lesson");
+      }
+    } catch (error: any) {
+      console.error("Error updating lesson:", error.response?.data || error.message);
+      message.error(error.response?.data?.message || error.message || "Failed to update lesson");
     }
   };
 
@@ -142,12 +123,22 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
     form.setFieldsValue({ lesson_type: value });
   };
 
+  const handleFileUpload = useCallback(async (file: File, type: "image" | "video") => {
+    try {
+      const url = await upload.handleUploadFile(file, type);
+      if (!url) throw new Error(`Failed to upload ${type}`);
+      return url;
+    } catch (error: any) {
+      throw new Error(`${type} upload failed: ${error.message}`);
+    }
+  }, []);
+
   const handleImagePreview = useCallback(
     async (file: File) => {
       setUploadingAvatar(true);
       try {
-        const url = await upload.handleUploadFile(file, "image");
-        form.setFieldsValue({ image_url: url });
+        const url = await handleFileUpload(file, "image");
+        form.setFieldsValue({ image_url: String(url) });
         const reader = new FileReader();
         reader.onload = (e) => {
           setImagePreview(e.target?.result as string);
@@ -160,15 +151,15 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
       }
       return false; // Prevent default upload behavior
     },
-    [upload.handleUploadFile, form]
+    [handleFileUpload, form]
   );
 
   const handleVideoPreview = useCallback(
     async (file: File) => {
       setUploadingVideo(true);
       try {
-        const url = await upload.handleUploadFile(file, "video");
-        form.setFieldsValue({ video_url: url });
+        const url = await handleFileUpload(file, "video");
+        form.setFieldsValue({ video_url: String(url) });
         setVideoPreview(url);
       } catch (error: any) {
         message.error(error.message);
@@ -177,12 +168,24 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
       }
       return false; // Prevent default upload behavior
     },
-    [upload.handleUploadFile, form]
+    [handleFileUpload, form]
   );
 
-  const handleCourseChange = (courseId: string) => {
-    form.setFieldsValue({ course_id: courseId });
-    fetchSessions(courseId);
+  const handleCourseChange = async (courseId: string) => {
+    form.setFieldsValue({ course_id: courseId, session_id: null });
+    const sessionResponse = await getSession({ 
+      searchCondition: { 
+        course_id: courseId, 
+        is_position_order: true, 
+        is_delete: false, 
+        keyword: "" 
+      }, 
+      pageInfo: { 
+        pageNum: 1, 
+        pageSize: 100 
+      } 
+    });
+    setSessions(sessionResponse.data || []);
   };
 
   return (

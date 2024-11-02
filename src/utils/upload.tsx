@@ -72,7 +72,6 @@ export const customUploadHandler = async (
     setUploading(false);
   }
 };
-
 // export const handleImageUpload = useCallback(
 //   (file: File, setState: (value: React.SetStateAction<any>) => void) => {
 //     const maxSize = 10 * 1024 * 1024;
@@ -105,3 +104,4 @@ export const customUploadHandler = async (
 //   },
 //   []
 // );
+

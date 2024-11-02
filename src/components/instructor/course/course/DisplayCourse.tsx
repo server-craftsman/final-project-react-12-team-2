@@ -5,7 +5,7 @@ import { formatDate, moneyFormat } from "../../../../utils/helper";
 import { CourseStatusBadge } from "../../../../utils/courseStatus";
 import { StatusType } from "../../../../app/enums";
 import { useEffect, useState, useCallback } from "react";
-import { Button, message, Modal, Pagination } from "antd";
+import { Button, message, Modal, Pagination, Checkbox } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
@@ -124,57 +124,26 @@ const DisplayCourse: React.FC<{
     }
   ];
 
-  // const toggleSelectAll = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const allCourseIds = courses?.map(course => Number(course._id)) || [];
-  //   const selectedKeys = e.target.checked ? allCourseIds : [];
-  //   setSelectedRowKeys(selectedKeys);
-
-  //   if (e.target.checked) {
-  //     const validCourses = courses?.filter(course =>
-  //       _.includes(selectedKeys, Number(course._id)) &&
-  //       course.status === StatusType.NEW
-  //     );
-
-  //     if (!validCourses?.length) {
-  //       message.warning("No valid courses selected to send");
-  //       return;
-  //     }
-
-  //     const updateStatus = async (courseChunk: typeof validCourses) => {
-  //       return Promise.all(
-  //         courseChunk.map(course =>
-  //           CourseService.changeStatusCourse({
-  //             course_id: course._id,
-  //             new_status: StatusType.WAITING_APPROVE,
-  //             comment: ""
-  //           })
-  //         )
-  //       );
-  //     };
-
-  //     const chunkSize = 5; // Customize as needed for API rate limits
-  //     for (let i = 0; i < validCourses.length; i += chunkSize) {
-  //       const chunk = validCourses.slice(i, i + chunkSize);
-  //       await updateStatus(chunk); // Await each batch completion
-  //     }
-
-  //     message.success("Successfully sent courses to admin");
-  //   }
-  // };
-  
   const rowSelection = {
     type: 'checkbox' as const,
     selectedRowKeys,
     onChange: (selectedRowKeys: React.Key[]) => {
       const numericKeys = selectedRowKeys.map(key => Number(key));
       setSelectedRowKeys(numericKeys);
-
-      // message.info({
-      //   content: `${numericKeys.length} course(s) selected`,
-      //   icon: <CheckOutlined style={{ color: '#52c41a' }} />,
-      //   className: 'animate-bounce'
-      // });
-    }
+    },
+    columnTitle: (
+      <Checkbox
+        indeterminate={selectedRowKeys.length > 0 && selectedRowKeys.length < (courses?.length ?? 0)}
+        checked={selectedRowKeys.length === (courses?.length ?? 0)}
+        onChange={(e) => {
+          if (e.target.checked) {
+            setSelectedRowKeys(courses?.map(course => Number(course._id)) || []);
+          } else {
+            setSelectedRowKeys([]);
+          }
+        }}
+      />
+    )
   };
 
   const rowClassName = (record: GetCourseResponsePageData) => {
@@ -266,15 +235,21 @@ const DisplayCourse: React.FC<{
   }, [courses, selectedRowKeys, handleCourseCreated]);
 
   const confirmSendToAdmin = () => {
+    if (selectedRowKeys.length === 0) {
+      message.warning("Please select at least one course to send to admin.");
+      return;
+    }
+  
     Modal.confirm({
       title: 'Confirm Send',
       content: 'Are you sure you want to send the selected courses to the admin?',
-      onOk: sendToAdmin, // Call sendToAdmin if the user confirms
+      onOk: sendToAdmin, // Chỉ gọi hàm sendToAdmin khi người dùng xác nhận
       onCancel() {
         message.info('Send to admin cancelled');
       },
     });
   };
+  
 
   return (
     <>      
@@ -295,18 +270,7 @@ const DisplayCourse: React.FC<{
         <span>{selectedRowKeys.length} course(s) selected</span>
       </div>
       <Table 
-        rowSelection={{
-          ...rowSelection,
-          selectedRowKeys,
-          columnTitle: (
-            <div className="animate-pulse">
-              <input
-                type="checkbox"
-                className="transition-all duration-300 ease-in-out transform hover:scale-110"
-              />
-            </div>
-          )
-        }}
+        rowSelection={rowSelection}
         columns={columns} 
         dataSource={courses} 
         rowKey={(record) => record._id} 
