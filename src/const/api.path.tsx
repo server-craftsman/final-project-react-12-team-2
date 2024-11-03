@@ -43,6 +43,9 @@ export const API = {
     UPDATE_USER: "api/users/:id",
     CHANGE_PASSWORD: "api/users/change-password"
   },
+  CATEGORY: {
+    GET_PUBLIC_CATEGORY: "api/client/category/search"
+  },
   COURSE: {
     //instructor
     GET_COURSE: "api/course/search",

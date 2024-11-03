@@ -1,10 +1,11 @@
 import { BaseService } from "../config/base.service";
 import { API } from "../../const/api.path";
-import { CreateCategoryParams, GetCategoryParams, UpdateCategoryParams } from "../../models/api/request/admin/category.request.model";
+import { CreateCategoryParams, GetCategoryParams, UpdateCategoryParams, GetPublicCategoryParams } from "../../models/api/request/admin/category.request.model";
 import { ResponseSuccess } from "../../app/interface";
-import { CreateCategoryResponse, GetCategoryResponse, UpdateCategoryResponse, Category } from "../../models/api/responsive/admin/category.responsive.model";
+import { CreateCategoryResponse, GetCategoryResponse, GetCategoryResponsePublic, UpdateCategoryResponse, Category } from "../../models/api/responsive/admin/category.responsive.model";
 
 export const CategoryService = {
+  // admin or instructor
   getCategory(params: GetCategoryParams) {
     return BaseService.post<ResponseSuccess<GetCategoryResponse>>({
       url: API.ADMIN.GET_CATEGORY,
@@ -32,5 +33,15 @@ export const CategoryService = {
     return BaseService.get<ResponseSuccess<Category>>({
       url: API.ADMIN.GET_CATEGORY_DETAILS.replace(":id", id)
     });
+  },
+
+  //==============================================
+  // PUBLIC
+  getPublicCategory(params: GetPublicCategoryParams) {
+    return BaseService.post<ResponseSuccess<GetCategoryResponsePublic>>({
+      url: API.CATEGORY.GET_PUBLIC_CATEGORY,
+      payload: params
+    });
   }
+  //==============================================
 };

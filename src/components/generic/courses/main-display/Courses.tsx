@@ -5,16 +5,17 @@ import { BookOutlined, PercentageOutlined, VideoCameraOutlined } from "@ant-desi
 import { motion } from "framer-motion";
 import { GetPublicCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
 import { User } from "../../../../models/api/responsive/users/users.model";
-import { GetCategoryResponse } from "../../../../models/api/responsive/admin/category.responsive.model";
+// import { GetCategoryResponse } from "../../../../models/api/responsive/admin/category.responsive.model";
 import { CourseService } from "../../../../services/course/course.service";
 import { UserService } from "../../../../services/admin/user.service";
 import { helpers } from "../../../../utils";
-import { parseEditor } from "../../../../utils/parseEditor";
 const { Title, Paragraph } = Typography;
 const { Meta } = Card;
+import parse from "html-react-parser";
+
 interface CoursesProps {
-  usersData: User[];
-  categoriesData: GetCategoryResponse;
+  // usersData: User[];
+  // categoriesData: GetCategoryResponse;
 }
 
 const fetchCoursePublic = async (searchCondition = {}, pageInfo = { pageNum: 1, pageSize: 10 }) => {
@@ -122,7 +123,7 @@ const Courses: React.FC<CoursesProps> = () => {
                   <Title level={4} className="mb-2 line-clamp-2 h-14 text-xl font-bold text-gray-800">
                     {course.name}
                   </Title>
-                  <Paragraph className="h-18 mb-4 line-clamp-3 flex-grow text-gray-600">{parseEditor(course.description)}</Paragraph>
+                  <Paragraph className="h-18 mb-4 line-clamp-3 flex-grow text-gray-600">{parse(course.description)}</Paragraph>
                   <div className="mt-auto">
                     <div className="mb-4 flex items-center justify-between">
                       <span className="text-2xl font-bold text-indigo-800">${helpers.moneyFormat(course.price)}</span>

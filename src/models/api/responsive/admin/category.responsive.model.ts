@@ -20,6 +20,11 @@ export interface GetCategoryResponse {
   pageInfo: PageInfo;
 }
 
+export interface GetCategoryResponsePublic {
+  pageData: Category;
+  pageInfo: PageInfo;
+}
+
 export interface CreateCategoryResponse {
   _id: string;
   name: string;

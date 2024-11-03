@@ -21,3 +21,15 @@ export interface UpdateCategoryParams {
   parent_category_id: string | null;
   description: string;
 }
+
+export interface GetPublicCategoryParams {
+  searchCondition: {
+    keyword: string;
+    is_parent: boolean;
+    is_delete: boolean;
+  };
+  pageInfo: {
+    pageNum: number;
+    pageSize: number;
+  };
+}

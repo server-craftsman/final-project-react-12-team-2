@@ -1,23 +1,32 @@
 import { Card } from "antd";
-import { Category } from "../../../models/prototype/Category";
+import { GetCategoryResponsePublic } from "../../../models/api/responsive/admin/category.responsive.model";    
+import { useEffect, useState } from "react";
 
-const Categories = ({ categories }: { categories: Category[] }) => {
+const Categories = ({ categoryList }: { categoryList: GetCategoryResponsePublic[] }) => {
+  const [categoryListState, setCategoryListState] = useState<GetCategoryResponsePublic[]>([]);
+
+  useEffect(() => {
+    if (categoryList.length > 0) {
+      setCategoryListState(categoryList);
+    }
+  }, [categoryList]);
+
   return (
-    <div className="container mx-auto px-4">
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {categories.map((category) => (
-          <Card key={category.id} className="rounded-lg shadow-md">
-            <div className="mb-4 flex items-center">
-              {/* Replace with actual icon component or image */}
-              <div className="mr-4 h-12 w-12 rounded-full bg-blue-100"></div>
-              <div>
-                <h3 className="text-lg font-semibold">{category.name}</h3>
-                <p className="text-gray-500">{category.description}</p>
-              </div>
-            </div>
-          </Card>
-        ))}
-      </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+      {categoryListState.map((category, index) => (
+        <Card 
+          key={category.pageData?._id || index}
+          title={category.pageData?.name}
+          className="hover:shadow-lg transition-shadow duration-300"
+          style={{ 
+            backgroundColor: '#f0f2f5',
+            borderBottom: '1px solid #e8e8e8',
+            color: '#000000'
+          }}
+        >
+          <div dangerouslySetInnerHTML={{ __html: category.pageData?.description || '' }} />
+        </Card>
+      ))}
     </div>
   );
 };

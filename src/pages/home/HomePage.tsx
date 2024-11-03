@@ -6,28 +6,31 @@ import Introduction from "../../components/generic/home/Introduction";
 import Courses from "../../components/generic/courses/main-display/Courses";
 import Categories from "../../components/generic/category/Categories";
 import PageNumber from "../../components/generic/home/PageNumber";
-import CategoryFilter from "../../components/generic/category/CategoryFilter";
+// import CategoryFilter from "../../components/generic/category/CategoryFilter";
 // import { AuthProvider, useAuth } from "../../context/AuthContext";
-import coursesData from "../../data/courses.json";
-import usersData from "../../data/users.json";
-import categoriesData from "../../data/categories.json";
-import { Category } from "../../models/prototype/Category";
+// import coursesData from "../../data/courses.json";
+// import usersData from "../../data/users.json";
+// import categoriesData from "../../data/categories.json";
+// import { Category } from "../../models/prototype/Category";
 import InstructorSlider from "../../components/generic/home/InstructorSlider";
 import UtilityProgram from "../../components/generic/home/UtilityProgram";
 import UtilityRegisterInformation from "../../components/generic/home/UtilityRegisterInformation";
-import { UserRole } from "../../models/prototype/User";
-import { Course } from "../../models/prototype/Course";
+// import { User, UserRole } from "../../models/prototype/User";
+// import { Course } from "../../models/prototype/Course";
+import { Category, GetCategoryResponsePublic } from "../../models/api/responsive/admin/category.responsive.model";
+import { CategoryService } from "../../services/category/category.service";
 const { Title } = Typography;
 
 const HomePage: React.FC = () => {
   // const { role } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 6;
-  const totalCourses = coursesData.courses.length;
+  const totalCourses = 0;
   const [isVisible, setIsVisible] = useState(false);
-  const [activeCategory, setActiveCategory] = useState("All Courses");
-  const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
-  const [sliderCategories, setSliderCategories] = useState<Category[][]>([]);
+  const [categoryList, setCategoryList] = useState<GetCategoryResponsePublic[]>([]);
+  // const [activeCategory, setActiveCategory] = useState<string>("All Courses");
+  // const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+  // const [sliderCategories, setSliderCategories] = useState<GetCategoryResponsePublic[]>([]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -36,32 +39,32 @@ const HomePage: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentCategoryIndex((prevIndex) => (prevIndex + 1) % sliderCategories.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [sliderCategories]);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCurrentCategoryIndex((prevIndex) => (prevIndex + 1) % sliderCategories.length);
+  //   }, 5000);
+  //   return () => clearInterval(interval);
+  // }, [sliderCategories]);
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const fetchedCategories: Category[] = categoriesData.categories.map((cat) => ({
-        id: cat.id,
-        user_id: cat.user_id,
-        name: cat.name,
-        description: cat.description,
-        parent_category_id: cat.parent_category_id,
-        created_at: cat.created_at,
-        updated_at: cat.updated_at,
-        is_deleted: cat.is_deleted
-      }));
-
-      // Divide categories into groups of 4
-      const groupedCategories = [];
-      for (let i = 0; i < fetchedCategories.length; i += 4) {
-        groupedCategories.push(fetchedCategories.slice(i, i + 4));
+      try {
+        const response = await CategoryService.getPublicCategory({
+          searchCondition: {
+            keyword: "",
+            is_parent: false,
+            is_delete: false
+          },
+          pageInfo: {
+            pageNum: 1,
+            pageSize: 10
+          }
+        });
+        const pageData = response.data.data.pageData;
+        setCategoryList(pageData as unknown as GetCategoryResponsePublic[]);
+      } catch (error) {
+        console.error("Failed to fetch categories", error);
       }
-      setSliderCategories(groupedCategories);
     };
 
     fetchCategories();
@@ -73,13 +76,17 @@ const HomePage: React.FC = () => {
     setTimeout(() => setIsVisible(true), 300);
   };
 
-  const handleCategoryChange = (category: string) => {
-    setActiveCategory(category);
-  };
+  // const handleCategoryChange = (category: string) => {
+  //   setActiveCategory(category);
+  // };
 
-  const filteredCourses = activeCategory === "All Courses" ? coursesData.courses : coursesData.courses.filter((course) => course.category_id === activeCategory.toLowerCase().replace(" & ", "_"));
+  // const filteredCourses = activeCategory === "All Courses" 
+  //   ? coursesData.courses 
+  //   : coursesData.courses.filter((course) => 
+  //       course.category_id === activeCategory.toLowerCase().replace(" & ", "_").replace(" ", "_")
+  //     );
 
-  const paginatedCourses = filteredCourses.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+  // const paginatedCourses = filteredCourses.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -99,26 +106,12 @@ const HomePage: React.FC = () => {
             Exquisite Learning Experiences
           </motion.span>
         </Title>
-        <CategoryFilter activeCategory={activeCategory} onCategoryChange={handleCategoryChange} />
+        {/* <CategoryFilter activeCategory={activeCategory} onCategoryChange={handleCategoryChange} /> */}
 
         <AnimatePresence>
           {isVisible && (
             <motion.div variants={containerVariants} initial="hidden" animate="visible" exit="hidden">
-              <Courses
-                courses={paginatedCourses as unknown as Course[]}
-                usersData={{
-                  users: (usersData?.users || []).map((user) => ({
-                    ...user,
-                    role: user.role as UserRole,
-                    dob: new Date(user.dob)
-                  }))
-                }}
-                categoriesData={{
-                  categories: categoriesData.categories.map((cat) => ({
-                    ...cat
-                  }))
-                }}
-              />
+              <Courses />
             </motion.div>
           )}
         </AnimatePresence>
@@ -146,18 +139,14 @@ const HomePage: React.FC = () => {
         <h1 className="mb-12 text-center text-4xl font-bold">
           Most demanding <span className="text-indigo-900">Categories</span>.
         </h1>
-        <div className="mb-12 flex transition-transform duration-500 ease-in-out" style={{ transform: `translateX(-${currentCategoryIndex * 100}%)` }}>
-          {sliderCategories.map((categoryGroup, groupIndex) => (
-            <div key={groupIndex} className="w-full flex-shrink-0">
-              <Categories categories={categoryGroup} />
-            </div>
-          ))}
-        </div>
-        <div className="absolute bottom-0 left-1/2 mt-4 flex -translate-x-1/2 transform space-x-2">
+        
+        <Categories categoryList={categoryList} />
+        
+        {/* <div className="absolute bottom-0 left-1/2 mt-4 flex -translate-x-1/2 transform space-x-2">
           {sliderCategories.map((_, index) => (
             <button key={index} className={`h-2 w-2 rounded-full transition-all duration-300 ${index === currentCategoryIndex ? "w-4 bg-indigo-600" : "bg-indigo-200"}`} onClick={() => setCurrentCategoryIndex(index)}></button>
           ))}
-        </div>
+        </div> */}
       </motion.div>
       <motion.section className="mt-24 bg-white py-16 text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
         <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2, duration: 0.5 }}>
