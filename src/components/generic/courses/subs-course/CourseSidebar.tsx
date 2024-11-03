@@ -36,12 +36,16 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course, discountedPrice }
         <Text className="text-3xl font-bold text-[#02005dc6]">${discountedPrice}</Text>
         {course.discount > 0 && <Text className="ml-2 text-lg text-gray-500 line-through">${course.price}</Text>}
       </div>
-      <Button type="primary" size="large" block className="mb-4 h-12 bg-[#1a237e] text-lg text-white hover:bg-[#1a237e] hover:text-white" icon={<ShoppingCartOutlined />} onClick={handleAddToCart}>
-        Add to cart
-      </Button>
-      <Button size="large" block className="mb-6 h-12 text-lg">
+      <button 
+        className="mb-4 h-12 w-full rounded-lg bg-gradient-to-r from-[#1a237e] to-[#3949ab] text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:from-[#3949ab] hover:to-[#1a237e] hover:shadow-xl active:scale-95"
+        onClick={handleAddToCart}
+      >
+        <ShoppingCartOutlined className="mr-2 text-xl" />
+        Add to Cart
+      </button>
+      <button className="mb-6 h-12 w-full rounded-lg bg-[#1a237e] text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:bg-[#3949ab] hover:shadow-xl active:scale-95">
         Buy Course
-      </Button>
+      </button>
       <Divider />
       <Title level={4} className="mb-4">
         This course includes:

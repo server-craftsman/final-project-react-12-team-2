@@ -12,14 +12,14 @@ const CourseContent: React.FC<CourseContentProps> = ({ sessions, lessons, course
       {sessions.map((session) => (
         <Collapse
           key={session.id}
-          className="mb-8 overflow-hidden rounded-lg border-2 border-[#8529ff] bg-gradient-to-r from-[#f3e7ff] to-[#e7f0ff] text-left shadow-xl"
+          className="mb-8 overflow-hidden rounded-lg border-2 border-[#1a237e] bg-gradient-to-r from-[#eae7ff] to-[#e7f0ff] text-left shadow-xl"
           activeKey={activeSessionId === session.id ? [session.id] : []}
           onChange={(key) => setActiveSessionId(Array.isArray(key) ? key[0] : key)}
           items={[
             {
               key: session.id,
               label: (
-                <Title level={4} className="mb-0 border-l-4 border-[#8529ff] pl-4 text-2xl font-bold text-[#1a237e]">
+                <Title level={4} className="mb-0 border-l-4 border-[#1a237e] pl-4 text-2xl font-bold text-[#1a237e]">
                   {session.name}
                 </Title>
               ),
@@ -31,8 +31,8 @@ const CourseContent: React.FC<CourseContentProps> = ({ sessions, lessons, course
                     renderItem={(lesson) => (
                       <List.Item className="flex flex-row items-start justify-start text-left">
                         <Link to={`/course/${courseId}/lesson/${lesson.id}`} className="w-full text-left">
-                          <Button type="link" block className="flex items-center text-left text-xl text-[#1a237e] hover:text-[#8529ff]">
-                            <PlayCircleOutlined className="mr-2 text-[#8529ff]" />
+                          <Button type="link" block className="flex items-center text-left text-xl text-[#1a237e] hover:text-[#1a237e]">
+                            <PlayCircleOutlined className="mr-2 text-[#1a237e]" />
                             <span className="flex-grow">{lesson.name}</span>
                             <span className="text-gray-500">({lesson.full_time} min)</span>
                           </Button>

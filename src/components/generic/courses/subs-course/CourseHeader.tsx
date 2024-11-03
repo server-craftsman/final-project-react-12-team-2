@@ -14,7 +14,7 @@ const CourseHeader: React.FC<CourseHeaderProps> = ({ course, category, instructo
         </div>
       </div>
       <div className="p-6">
-        <Tag color="blue" className="mb-4">
+        <Tag color="#1a237e" className="mb-4">
           {category?.name}
         </Tag>
         <Title level={2} className="mb-4">

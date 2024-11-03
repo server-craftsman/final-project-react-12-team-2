@@ -63,7 +63,7 @@ const CourseDetails: React.FC = () => {
     {
       key: "1",
       label: (
-        <span className="tab-title rounded-full bg-gradient-to-r from-[#8529ff] to-[#1a237e] px-4 py-2 text-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
+        <span className="tab-title rounded-full bg-gradient-tone px-4 py-2 text-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
           <InfoCircleOutlined className="text-gold mr-2 animate-pulse" />
           <span className="font-semibold tracking-wide">Course Insights</span>
         </span>
@@ -73,7 +73,7 @@ const CourseDetails: React.FC = () => {
     {
       key: "2",
       label: (
-        <span className="tab-title rounded-full bg-gradient-to-r from-[#8529ff] to-[#1a237e] px-4 py-2 text-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
+        <span className="tab-title rounded-full bg-gradient-tone px-4 py-2 text-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
           <BookOutlined className="text-gold mr-2 animate-pulse" />
           <span className="font-semibold tracking-wide">Course Content</span>
         </span>
@@ -83,7 +83,7 @@ const CourseDetails: React.FC = () => {
     {
       key: "3",
       label: (
-        <span className="tab-title rounded-full bg-gradient-to-r from-[#8529ff] to-[#1a237e] px-4 py-2 text-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
+        <span className="tab-title rounded-full bg-gradient-tone px-4 py-2 text-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
           <StarOutlined className="text-gold mr-2 animate-pulse" />
           <span className="font-semibold tracking-wide">Reviews</span>
         </span>
@@ -95,7 +95,7 @@ const CourseDetails: React.FC = () => {
   return (
     <div className="min-h-screen w-full bg-white py-12">
       <div className="container mx-auto">
-        <Link to="/" className="mb-6 flex items-center text-blue-600 hover:text-blue-800">
+        <Link to="/" className="mb-6 flex items-center text-[#1a237e] hover:text-[#1a237e]">
           <HomeOutlined className="mr-2" />
           <span>Back to Home</span>
         </Link>

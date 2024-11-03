@@ -14,7 +14,7 @@ const CourseInsights: React.FC<CourseInsightsProps> = ({ instructor }) => {
       <Row gutter={[16, 16]}>
         <Col xs={12} sm={6}>
           <Card className="text-center transition-shadow duration-300 hover:shadow-lg">
-            <PlayCircleOutlined className="mb-2 text-4xl text-blue-500" />
+            <PlayCircleOutlined className="mb-2 text-4xl text-[#1a237e]" />
             <Text className="block text-gray-500">Video Length</Text>
             <Text strong className="text-lg">
               2h 30m
@@ -23,7 +23,7 @@ const CourseInsights: React.FC<CourseInsightsProps> = ({ instructor }) => {
         </Col>
         <Col xs={12} sm={6}>
           <Card className="text-center transition-shadow duration-300 hover:shadow-lg">
-            <ClockCircleOutlined className="mb-2 text-4xl text-blue-500" />
+            <ClockCircleOutlined className="mb-2 text-4xl text-[#1a237e]" />
             <Text className="block text-gray-500">Total Duration</Text>
             <Text strong className="text-lg">
               4 weeks
@@ -32,14 +32,14 @@ const CourseInsights: React.FC<CourseInsightsProps> = ({ instructor }) => {
         </Col>
         <Col xs={12} sm={6}>
           <Card className="text-center transition-shadow duration-300 hover:shadow-lg">
-            <FileTextOutlined className="mb-2 text-4xl text-blue-500" />
+            <FileTextOutlined className="mb-2 text-4xl text-[#1a237e]" />
             <Text className="block text-gray-500">Resources</Text>
             <Text strong className="text-lg">
               15 files
             </Text>
           </Card>
         </Col>
-        <Col xs={12} sm={6}>
+        {/* <Col xs={12} sm={6}>
           <Card className="text-center transition-shadow duration-300 hover:shadow-lg">
             <TrophyOutlined className="mb-2 text-4xl text-blue-500" />
             <Text className="block text-gray-500">Certificate</Text>
@@ -47,7 +47,7 @@ const CourseInsights: React.FC<CourseInsightsProps> = ({ instructor }) => {
               Yes
             </Text>
           </Card>
-        </Col>
+        </Col> */}
       </Row>
 
       <Title level={4} className="mb-4 mt-8">
