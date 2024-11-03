@@ -5,7 +5,7 @@ import { ResponseSuccess } from "../../app/interface";
 import { GetSubscribersResponse, GetSubscriptionsResponse } from "../../models/api/responsive/subscription/sub.responsive.model";
 
 export const SubscriptionService = {
-  getSubscriptions(params: GetSubscriptionsParams) {
+  getSubscriptions(params: GetSubscriptionsParams){
     return BaseService.post<ResponseSuccess<GetSubscriptionsResponse>>({
       url: API.SUBSCRIPTION.GET_SUBSCRIPTIONS,
       payload: params
