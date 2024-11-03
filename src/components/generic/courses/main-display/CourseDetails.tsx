@@ -1,13 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import coursesData from "../../../../data/courses.json";
-import usersData from "../../../../data/users.json";
-import categoriesData from "../../../../data/categories.json";
-import reviewsData from "../../../../data/reviews.json";
-import sessionsData from "../../../../data/sessions.json";
-import lessonsData from "../../../../data/lessons.json";
-
-import { HomeOutlined, InfoCircleOutlined, StarOutlined, BookOutlined } from "@ant-design/icons";
+import { CourseService } from "../../../../services/course/course.service";import { HomeOutlined, InfoCircleOutlined, StarOutlined, BookOutlined } from "@ant-design/icons";
 import { Card, Row, Col, Divider, Tabs } from "antd";
 
 //==========connect components==========
@@ -20,45 +13,92 @@ import CourseReviews from "../tabs-course/CourseReviews";
 import CourseHeader from "../subs-course/CourseHeader";
 import CourseSidebar from "../subs-course/CourseSidebar";
 import CourseVideoModal from "../subs-course/CourseVideoModal";
+import { GetPublicCourseDetailResponse } from "../../../../models/api/responsive/course/course.response.model";
 //=====================================
+
+// Add this utility function to validate ObjectId
+const isValidObjectId = (id: string) => /^[a-f\d]{24}$/i.test(id);
 
 const CourseDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const course = coursesData.courses.find((course) => course.id === id);
-  const instructor = usersData.users.find((user) => user.id === course?.user_id);
-  const discountedPrice = ((course?.price ?? 0) - ((course?.price ?? 0) * (course?.discount ?? 0)) / 100).toFixed(2);
-  const category = categoriesData.categories.find((category) => category.id === course?.category_id);
 
+  // Validate the id
+  if (!id || !isValidObjectId(id)) {
+    return <div className="mt-8 text-center text-2xl">Invalid course ID</div>;
+  }
+
+  const [course, setCourse] = useState<any>(null);
+  const [instructor, setInstructor] = useState<any>(null);
+  const [category, setCategory] = useState<any>(null);
+  const [discountedPrice, setDiscountedPrice] = useState<string>("0.00");
   const [isModalVisible, setIsModalVisible] = useState(false);
-
-  // Add this new state
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [sessions, setSessions] = useState<any[]>([]);
+  const [lessons, setLessons] = useState<any[]>([]);
+  const [videoId, setVideoId] = useState<string | null>(null);
 
-  const reviews = reviewsData.reviews.filter((review) => review.course_id === id);
-  const sessions = sessionsData.sessions.filter((session) => session.course_id === id);
-  const lessons = lessonsData.lessons.filter((lesson) => lesson.course_id === id);
+  useEffect(() => {
+    const fetchCourseDetails = async () => {
+      if (!id) {
+        console.error("Course ID is undefined");
+        return;
+      }
+      try {
+        const response = await CourseService.getPublicCourseDetail(id);
+        const courseData = response.data.data as GetPublicCourseDetailResponse;
+        
+        console.log("Course Data:", courseData); // Debug the entire course data
+
+        setCourse(courseData);
+        setInstructor(courseData.instructor_id);
+        setCategory(courseData.category_name);
+        setDiscountedPrice(((courseData.price ?? 0) - ((courseData.discount ?? 0) * (courseData.price ?? 0)) / 100).toFixed(2));
+        
+        const sessionList = courseData.session_list.map((session, index) => ({
+          ...session,
+          _id: `session-${index}` // Generate a unique key for each session
+        }));
+        console.log("Session List:", sessionList); // Debug session list
+        setSessions(sessionList);
+        
+        const lessonList = sessionList.flatMap((session, sessionIndex) => 
+          session.lesson_list.map((lesson, lessonIndex) => ({
+            ...lesson,
+            _id: `lesson-${sessionIndex}-${lessonIndex}`, // Generate a unique key for each lesson
+            session_id: session._id
+          }))
+        );
+        console.log("Lesson List:", lessonList); // Debug lesson list
+        setLessons(lessonList);
+
+        setVideoId(courseData.video_url);
+        setReviews(courseData.session_list); //debug, but it's not used
+      } catch (error) {
+        console.error("Failed to fetch course details:", error);
+      }
+    };
+
+    fetchCourseDetails();
+  }, [id]);
 
   if (!course) {
     return <div className="mt-8 text-center text-2xl">Course not found</div>;
   }
 
   const showVideoModal = () => {
-    setIsModalVisible(true);
+    if (videoId) {
+      setIsModalVisible(true);
+    } else {
+      console.error("Video URL is not available");
+    }
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    setVideoId(null);
   };
-
-  // Function to extract YouTube video ID from URL
-  const getYouTubeVideoId = (url: string) => {
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-    const match = url.match(regExp);
-    return match && match[2].length === 11 ? match[2] : null;
-  };
-
-  const videoId = getYouTubeVideoId(course.video_url);
-
+  
   const tabItems = [
     {
       key: "1",
@@ -78,7 +118,15 @@ const CourseDetails: React.FC = () => {
           <span className="font-semibold tracking-wide">Course Content</span>
         </span>
       ),
-      children: <CourseContent sessions={sessions} lessons={lessons} courseId={course.id} activeSessionId={activeSessionId} setActiveSessionId={setActiveSessionId} />
+      children: (
+        <CourseContent
+          sessions={sessions}
+          lessons={lessons}
+          courseId={course._id}
+          activeSessionId={activeSessionId}
+          setActiveSessionId={setActiveSessionId}
+        />
+      )
     },
     {
       key: "3",
@@ -88,7 +136,7 @@ const CourseDetails: React.FC = () => {
           <span className="font-semibold tracking-wide">Reviews</span>
         </span>
       ),
-      children: <CourseReviews reviews={reviews} users={usersData.users} />
+      children: <CourseReviews reviews={reviews} users={course.users} />
     }
   ];
 
@@ -102,8 +150,13 @@ const CourseDetails: React.FC = () => {
         <Row gutter={[32, 32]}>
           <Col xs={24} lg={16}>
             <Card className="overflow-hidden rounded-lg text-left shadow-lg">
-              <CourseHeader course={course} category={category} instructor={instructor} showVideoModal={showVideoModal} />
-              <div className="p-6 text-left">
+              <CourseHeader 
+                course={course} 
+                category={category} 
+                instructor={instructor} 
+                showVideoModal={() => showVideoModal()}
+              />
+              <div className="p-4 text-left">
                 <Divider />
                 <Tabs
                   defaultActiveKey="1"

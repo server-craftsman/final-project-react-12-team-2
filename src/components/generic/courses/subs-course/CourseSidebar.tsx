@@ -1,14 +1,14 @@
 import React from "react";
 import { Button, Card, Typography, Divider } from "antd";
-import { ShoppingCartOutlined, ShareAltOutlined, PlayCircleOutlined, ClockCircleOutlined, BarChartOutlined, GlobalOutlined, CalendarOutlined, TrophyOutlined } from "@ant-design/icons";
+import { ShoppingCartOutlined, ShareAltOutlined, PlayCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { CourseSidebarProps } from "../../../../models/objects/course/CourseSidebarProps";
 import { useCart } from "../../../../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { Carts, CartStatusEnum } from "../../../../models/prototype/Carts";
-
+import { helpers } from "../../../../utils";
 const { Title, Text } = Typography;
 
-const CourseSidebar: React.FC<CourseSidebarProps> = ({ course, discountedPrice }) => {
+const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
 
@@ -33,8 +33,8 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course, discountedPrice }
   return (
     <Card className="sticky top-8 rounded-lg shadow-lg">
       <div className="mb-6 text-center">
-        <Text className="text-3xl font-bold text-[#02005dc6]">${discountedPrice}</Text>
-        {course.discount > 0 && <Text className="ml-2 text-lg text-gray-500 line-through">${course.price}</Text>}
+        <Text className="text-3xl font-bold text-[#02005dc6]">${helpers.moneyFormat(course.price * (1 - course.discount / 100))}</Text>
+        {course.discount > 0 && <Text className="ml-2 text-lg text-gray-500 line-through">${helpers.moneyFormat(course.price)}</Text>}
       </div>
       <button 
         className="mb-4 h-12 w-full rounded-lg bg-gradient-to-r from-[#1a237e] to-[#3949ab] text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:from-[#3949ab] hover:to-[#1a237e] hover:shadow-xl active:scale-95"
@@ -54,43 +54,15 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course, discountedPrice }
         <div className="flex items-center">
           <PlayCircleOutlined className="mr-3 text-xl text-gray-600" />
           <div>
-            <Text strong>Lectures</Text>
-            <Text className="block text-gray-500">12</Text>
+            <Text strong>Lectures by</Text>
+            <Text className="block text-gray-500">{course.instructor_name}</Text>
           </div>
         </div>
         <div className="flex items-center">
           <ClockCircleOutlined className="mr-3 text-xl text-gray-600" />
           <div>
             <Text strong>Duration</Text>
-            <Text className="block text-gray-500">20h 50m</Text>
-          </div>
-        </div>
-        <div className="flex items-center">
-          <BarChartOutlined className="mr-3 text-xl text-gray-600" />
-          <div>
-            <Text strong>Skill Level</Text>
-            <Text className="block text-gray-500">Beginner</Text>
-          </div>
-        </div>
-        <div className="flex items-center">
-          <GlobalOutlined className="mr-3 text-xl text-gray-600" />
-          <div>
-            <Text strong>Language</Text>
-            <Text className="block text-gray-500">English</Text>
-          </div>
-        </div>
-        <div className="flex items-center">
-          <CalendarOutlined className="mr-3 text-xl text-gray-600" />
-          <div>
-            <Text strong>Deadline</Text>
-            <Text className="block text-gray-500">February 20, 2025</Text>
-          </div>
-        </div>
-        <div className="flex items-center">
-          <TrophyOutlined className="mr-3 text-xl text-gray-600" />
-          <div>
-            <Text strong>Certificate</Text>
-            <Text className="block text-gray-500">Yes</Text>
+            <Text className="block text-gray-500">{course.full_time} minutes</Text>
           </div>
         </div>
       </div>
