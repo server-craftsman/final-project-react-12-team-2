@@ -1,27 +1,60 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Typography, Card, Row, Col, Button, Tag, Avatar, Rate } from "antd";
-import { CrownOutlined, BookOutlined, PercentageOutlined } from "@ant-design/icons";
-import { Course, CourseStatusEnum } from "../../../../models/prototype/Course";
-import { User } from "../../../../models/prototype/User";
-import categoriesData from "../../../../data/categories.json";
+import { BookOutlined, PercentageOutlined, VideoCameraOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
-import { Category } from "../../../../models/prototype/Category";
+import { GetPublicCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
+import { User } from "../../../../models/api/responsive/users/users.model";
+import { GetCategoryResponse } from "../../../../models/api/responsive/admin/category.responsive.model";
+import { CourseService } from "../../../../services/course/course.service";
+import { UserService } from "../../../../services/admin/user.service";
+import { helpers } from "../../../../utils";
+import { parseEditor } from "../../../../utils/parseEditor";
 const { Title, Paragraph } = Typography;
 const { Meta } = Card;
 interface CoursesProps {
-  courses: Course[];
-  usersData: { users: User[] };
-  categoriesData: { categories: Category[] };
+  usersData: User[];
+  categoriesData: GetCategoryResponse;
 }
 
-const Courses: React.FC<CoursesProps> = ({ courses, usersData }) => {
-  if (courses.length === 0) {
-    return <div>No courses available.</div>;
-  }
+const fetchCoursePublic = async (searchCondition = {}, pageInfo = { pageNum: 1, pageSize: 10 }) => {
+  const response = await CourseService.getPublicCourse({
+    searchCondition: {
+      keyword: "",
+      category_id: "",
+      is_delete: false,
+      status: "active",
+      ...searchCondition
+    },
+    pageInfo: {
+      ...pageInfo
+    }
+  });
+  return response.data;
+};
 
-  const instructor = usersData.users.find((user) => user.id === courses[0].user_id) as User;
-  const discountedPrice = (courses[0].price - (courses[0].price * courses[0].discount) / 100).toFixed(2);
+const Courses: React.FC<CoursesProps> = () => {
+
+  const [courses, setCourses] = useState<GetPublicCourseResponse | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const coursesData = await fetchCoursePublic();
+        setCourses(coursesData.data);
+        const user_id = coursesData.data.pageData[0].instructor_id;
+        fetchUser(user_id);
+      } catch (error) {
+        console.error("Failed to fetch courses:", error);
+      }
+    };
+    const fetchUser = async (userId: string) => {
+      const userData = await UserService.getUserDetails(userId);
+      setUser(userData.data.data);
+    };
+    fetchCourses();
+  }, []);
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
@@ -37,9 +70,9 @@ const Courses: React.FC<CoursesProps> = ({ courses, usersData }) => {
 
   return (
     <Row gutter={[32, 32]}>
-      {courses.map((course: Course) => {
+      {courses?.pageData.map((course) => {
         return (
-          <Col xs={24} sm={12} md={8} key={course.id} className="mx-auto h-full">
+          <Col xs={24} sm={12} md={8} key={course._id} className="mx-auto h-full">
             <motion.div variants={itemVariants} className="h-full">
               <Card
                 hoverable
@@ -51,26 +84,36 @@ const Courses: React.FC<CoursesProps> = ({ courses, usersData }) => {
                   flexDirection: "column"
                 }}
               >
-                <motion.div className="absolute right-0 top-0 rounded-bl-lg bg-[#8529ff] px-3 py-1 text-white" whileHover={{ scale: 1.05 }}>
+                {/* <motion.div className="absolute right-0 top-0 rounded-bl-lg bg-[#8529ff] px-3 py-1 text-white" whileHover={{ scale: 1.05 }}>
                   <CrownOutlined className="mr-1" />
-                  {course.status === CourseStatusEnum.active ? "Premium" : "Draft"}
-                </motion.div>
+                  {course.status === StatusType.ACTIVE}
+                </motion.div> */}
                 {course.discount > 0 && (
-                  <motion.div className="absolute left-0 top-0 rounded-br-lg bg-[#8529ff] px-3 py-1 text-white" whileHover={{ scale: 1.05 }}>
+                  <motion.div className="absolute left-0 top-0 rounded-br-lg bg-gradient-tone px-3 py-1 text-white" whileHover={{ scale: 1.05 }}>
                     <PercentageOutlined className="mr-1" />
                     {course.discount}% OFF
                   </motion.div>
                 )}
                 <div className="flex h-full flex-col">
                   <Meta
-                    avatar={<Avatar src={instructor.avatar_url} />}
-                    title={<span className="line-clamp-1 text-lg font-semibold text-gray-800">{instructor.name}</span>}
+                    avatar={<Avatar src={user?.avatar_url} />}
+                    title={<span className="line-clamp-1 text-lg font-semibold text-gray-800">{user?.name}</span>}
                     description={
                       <div className="mb-4 flex items-center text-sm">
-                        <Tag className="mr-2 rounded bg-[#8529ff] px-2 py-1 text-xs font-semibold uppercase text-white">{categoriesData.categories.find((category) => category.id === course.category_id)?.name}</Tag>
-                        <div className="flex items-center">
-                          <BookOutlined className="mr-1 text-gray-600" />
-                          <span className="text-sm text-gray-600">{course.content.split(" ").length} lessons</span>
+                        <Tag className="mr-2 rounded bg-gradient-tone px-2 py-1 text-xs font-semibold uppercase text-white">{course.category_name}</Tag>
+                        <div className="flex items-center space-x-4">
+                          <span className="flex items-center text-gray-600 font-medium">
+                            <BookOutlined className="mr-2 text-indigo-500" />
+                            <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
+                              {course.session_count} Sessions
+                            </span>
+                          </span>
+                          <span className="flex items-center text-gray-600 font-medium">
+                            <VideoCameraOutlined className="mr-2 text-indigo-500" />
+                            <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
+                              {course.lesson_count} Lessons
+                            </span>
+                          </span>
                         </div>
                       </div>
                     }
@@ -79,18 +122,18 @@ const Courses: React.FC<CoursesProps> = ({ courses, usersData }) => {
                   <Title level={4} className="mb-2 line-clamp-2 h-14 text-xl font-bold text-gray-800">
                     {course.name}
                   </Title>
-                  <Paragraph className="h-18 mb-4 line-clamp-3 flex-grow text-gray-600">{course.description}</Paragraph>
+                  <Paragraph className="h-18 mb-4 line-clamp-3 flex-grow text-gray-600">{parseEditor(course.description)}</Paragraph>
                   <div className="mt-auto">
                     <div className="mb-4 flex items-center justify-between">
-                      <span className="text-2xl font-bold text-purple-700">${discountedPrice}</span>
-                      {course.discount > 0 && <span className="text-lg text-gray-500 line-through">${course.price}</span>}
-                      <Rate disabled defaultValue={4.5} className="text-yellow-400" />
+                      <span className="text-2xl font-bold text-indigo-800">${helpers.moneyFormat(course.price)}</span>
+                      {course.discount > 0 && <span className="text-lg text-gray-500 line-through">${helpers.moneyFormat(course.price * (1 - course.discount / 100))}</span>}
+                      <Rate disabled defaultValue={4.5} className="text-yellow-400" count={5} />
                     </div>
                   </div>
                 </div>
                 <motion.div className="absolute inset-x-0 bottom-0 translate-y-full transform transition-all duration-300 group-hover:translate-y-0" whileHover={{ scale: 1.05 }}>
-                  <Link to={`/course/${course.id}`}>
-                    <Button type="primary" block size="large" className="border-none bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700">
+                  <Link to={`/course/${course._id}`}>
+                    <Button type="primary" block size="large" className="border-none bg-gradient-tone hover:bg-gradient-tone-hover">
                       Preview This Course
                     </Button>
                   </Link>
