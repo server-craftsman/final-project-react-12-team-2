@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { moneyFormat, formatDate } from "../../../utils/helper";
 import { courseStatusColor } from "../../../utils/courseStatus";
 import { message, Popconfirm, Table, Modal, Input, Button } from "antd";
-import { CheckOutlined, StopOutlined } from "@ant-design/icons";
+import { CheckOutlined, StopOutlined, CarryOutOutlined, ContainerOutlined } from "@ant-design/icons";
 import { Courses, CourseStatusEnum } from "../../../models/prototype/Course"; // Import the Course model
 import { GetCourseParams } from "../../../models/api/request/course/course.request.model";
 import { CourseService } from "../../../services/course/course.service";
@@ -190,27 +190,27 @@ const CoursesManagement: React.FC<{
               onClick={() => showRejectModal(record._id)}
             />
             <Button 
-            icon ={<CheckOutlined />}
+            icon ={<CarryOutOutlined />}
             onClick={() => showLessonModal(record._id)}
-            className="bg-gradient-tone text-white mr-2 hover:opacity-80"
+            className="bg-white text-orange-500 mr-2 hover:opacity-80"
             />
             <Button
-              icon={<CheckOutlined />}
+              icon={<ContainerOutlined />}
               onClick={() => showSessionModal(record._id)}
-              className="bg-gradient-tone text-white mr-2 hover:opacity-80"
+              className="bg-white text-yellow-500 mr-2 hover:opacity-80"
             />
           </div>
         ) : (
           <div>
              <Button 
-            icon ={<CheckOutlined />}
+            icon ={<CarryOutOutlined />}
             onClick={() => showLessonModal(record._id)}
-            className="bg-gradient-tone text-white mr-2 hover:opacity-80"
+            className="bg-white text-orange-500 mr-2 hover:opacity-80"
             />
             <Button
-              icon={<CheckOutlined />}
+              icon={<ContainerOutlined />}
               onClick={() => showSessionModal(record._id)}
-              className="bg-gradient-tone text-white mr-2 hover:opacity-80"
+              className="bg-white text-yellow-500 mr-2 hover:opacity-80"
             />
           </div>
         )
