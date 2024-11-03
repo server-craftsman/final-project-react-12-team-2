@@ -126,8 +126,8 @@ const Courses: React.FC<CoursesProps> = () => {
                   <Paragraph className="h-18 mb-4 line-clamp-3 flex-grow text-gray-600">{parse(course.description)}</Paragraph>
                   <div className="mt-auto">
                     <div className="mb-4 flex items-center justify-between">
-                      <span className="text-2xl font-bold text-indigo-800">${helpers.moneyFormat(course.price)}</span>
-                      {course.discount > 0 && <span className="text-lg text-gray-500 line-through">${helpers.moneyFormat(course.price * (1 - course.discount / 100))}</span>}
+                      <span className="text-2xl font-bold text-indigo-800">${helpers.moneyFormat(course.price * (1 - course.discount / 100))}</span>
+                      {course.discount > 0 && <span className="text-lg text-gray-500 line-through">${helpers.moneyFormat(course.price)}</span>}
                       <Rate disabled defaultValue={4.5} className="text-yellow-400" count={5} />
                     </div>
                   </div>
