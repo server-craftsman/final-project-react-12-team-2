@@ -17,7 +17,7 @@ import UtilityProgram from "../../components/generic/home/UtilityProgram";
 import UtilityRegisterInformation from "../../components/generic/home/UtilityRegisterInformation";
 // import { User, UserRole } from "../../models/prototype/User";
 // import { Course } from "../../models/prototype/Course";
-import { Category, GetCategoryResponsePublic } from "../../models/api/responsive/admin/category.responsive.model";
+import { GetCategoryResponsePublic } from "../../models/api/responsive/admin/category.responsive.model";
 import { CategoryService } from "../../services/category/category.service";
 const { Title } = Typography;
 
@@ -139,7 +139,7 @@ const HomePage: React.FC = () => {
         <h1 className="mb-12 text-center text-4xl font-bold">
           Most demanding <span className="text-indigo-900">Categories</span>.
         </h1>
-        
+
         <Categories categoryList={categoryList} />
         
         {/* <div className="absolute bottom-0 left-1/2 mt-4 flex -translate-x-1/2 transform space-x-2">
