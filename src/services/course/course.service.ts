@@ -2,7 +2,7 @@ import { BaseService } from "../config/base.service";
 import { API } from "../../const/api.path";
 import { ResponseSuccess } from "../../app/interface";
 import { CreateCourseParams, GetCourseParams, GetPublicCourseParams, ChangeStatusCourseParams, UpdateCourseParams } from "../../models/api/request/course/course.request.model";
-import { CreateCourseResponse, GetCourseResponse, GetPublicCourseResponse, GetCourseByIdResponse, UpdateCourseResponse } from "../../models/api/responsive/course/course.response.model";
+import { CreateCourseResponse, GetCourseResponse, GetPublicCourseResponse, GetCourseByIdResponse, UpdateCourseResponse, GetPublicCourseDetailResponse } from "../../models/api/responsive/course/course.response.model";
 
 export const CourseService = {
   //instructor & admin
@@ -51,6 +51,11 @@ export const CourseService = {
     return BaseService.post<ResponseSuccess<GetPublicCourseResponse>>({
       url: API.COURSE.GET_PUBLIC_COURSE,
       payload: params
+    });
+  },
+  getCourseDetail(courseId: string) {
+    return BaseService.get<ResponseSuccess<GetPublicCourseDetailResponse>>({
+      url: API.COURSE.GET_PUBLIC_COURSE_DETAIL.replace(":id", courseId)
     });
   }
   //=========================================

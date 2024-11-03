@@ -56,7 +56,8 @@ export const API = {
     DELETE_COURSE: "api/course/:id",
     //=========================================
     //public
-    GET_PUBLIC_COURSE: "api/client/course/search"
+    GET_PUBLIC_COURSE: "api/client/course/search",
+    GET_PUBLIC_COURSE_DETAIL: "api/client/course/:id",
     //=========================================
   },
   SESSION: {

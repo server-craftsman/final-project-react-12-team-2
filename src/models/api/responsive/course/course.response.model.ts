@@ -50,6 +50,44 @@ export interface GetCourseByIdResponse {
   is_deleted: boolean;
 }
 
+export interface GetPublicCourseDetailResponse {
+  _id: string;
+  name: string;
+  category_id: string;
+  description: string;
+  status: string;
+  video_url: string;
+  price: number;
+  discount: number;
+  created_at: Date;
+  updated_at: Date;
+  image_url: string;
+  instructor_id: string;
+  instructor_name: string;
+  category_name: string;
+  price_paid: number;
+  full_time: number;
+  session_list: [
+    {
+      _id: string;
+      name: string;
+      position_order: number;
+      lesson_list: [
+        {
+          _id: string;
+          name: string;
+          lesson_type: string;
+          full_time: number;
+          position_order: number;
+        }
+      ];
+      full_time: number;
+    }
+  ];
+  is_in_cart: boolean;
+  is_purchased: boolean;
+}
+
 export interface CreateCourseResponse {
   name: string;
   category_id: string;
