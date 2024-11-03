@@ -53,8 +53,8 @@ export const CourseService = {
       payload: params
     });
   },
-  getCourseDetail(courseId: string) {
-    return BaseService.get<ResponseSuccess<GetPublicCourseDetailResponse>>({
+  getPublicCourseDetail(courseId: string) {
+    return BaseService.getById<ResponseSuccess<GetPublicCourseDetailResponse>>({
       url: API.COURSE.GET_PUBLIC_COURSE_DETAIL.replace(":id", courseId)
     });
   }

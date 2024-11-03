@@ -1,15 +1,15 @@
 import React from "react";
 import { Card, Row, Col, Typography } from "antd";
-import { PlayCircleOutlined, ClockCircleOutlined, FileTextOutlined, TrophyOutlined } from "@ant-design/icons";
+import { PlayCircleOutlined, ClockCircleOutlined, FileTextOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { CourseInsightsProps } from "../../../../models/objects/course/CourseInsightsProps";
-const { Title, Paragraph, Text } = Typography;
+const { Title, Text } = Typography;
 
-const CourseInsights: React.FC<CourseInsightsProps> = ({ instructor }) => {
+const CourseInsights: React.FC<CourseInsightsProps> = () => {
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
       <Title level={4} className="mb-4">
-        Course Content
+        Course Insights
       </Title>
       <Row gutter={[16, 16]}>
         <Col xs={12} sm={6}>
@@ -39,18 +39,9 @@ const CourseInsights: React.FC<CourseInsightsProps> = ({ instructor }) => {
             </Text>
           </Card>
         </Col>
-        {/* <Col xs={12} sm={6}>
-          <Card className="text-center transition-shadow duration-300 hover:shadow-lg">
-            <TrophyOutlined className="mb-2 text-4xl text-blue-500" />
-            <Text className="block text-gray-500">Certificate</Text>
-            <Text strong className="text-lg">
-              Yes
-            </Text>
-          </Card>
-        </Col> */}
       </Row>
 
-      <Title level={4} className="mb-4 mt-8">
+      {/* <Title level={4} className="mb-4 mt-8">
         Your Instructor
       </Title>
       <Card className="transition-shadow duration-300 hover:shadow-lg">
@@ -64,7 +55,7 @@ const CourseInsights: React.FC<CourseInsightsProps> = ({ instructor }) => {
             <Paragraph ellipsis={{ rows: 3, expandable: true, symbol: "more" }}>{instructor?.description}</Paragraph>
           </Col>
         </Row>
-      </Card>
+      </Card> */}
     </motion.div>
   );
 };
