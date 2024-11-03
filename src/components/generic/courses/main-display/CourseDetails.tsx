@@ -85,7 +85,6 @@ const CourseDetails: React.FC = () => {
   if (!course) {
     return <div className="mt-8 text-center text-2xl">Course not found</div>;
   }
-
   const showVideoModal = () => {
     if (videoId) {
       setIsModalVisible(true);
@@ -95,10 +94,14 @@ const CourseDetails: React.FC = () => {
   };
 
   const handleCancel = () => {
+    // Reset video playback by forcing video element to pause and reset time
+    const videoElement = document.querySelector('video');
+    if (videoElement) {
+      videoElement.pause();
+      videoElement.currentTime = 0;
+    }
     setIsModalVisible(false);
-    setVideoId(null);
   };
-  
   const tabItems = [
     {
       key: "1",
