@@ -7,12 +7,11 @@ import CustomSearch from "../../../components/generic/search/CustomSearch";
 import { UserRole } from "../../../models/prototype/User";
 import data from "../../../data/users.json";
 import { Subscriptions } from "../../../models/prototype/Subscriptions";
-import { User } from "../../../models/prototype/User";
-// import { GetSubscriptionsParams } from "../../../models/api/request/subscription/sub.request.model";
-// import { SubscriptionService } from "../../../services/subscription/sub.service";
+//import { User } from "../../../models/api/responsive/users/users.model";
+
 
 const SubscriptionPage: React.FC = () => {
-  const [filteredSubscriptions, setFilteredSubscriptions] = useState<Subscriptions[]>([]);
+  const [,setFilteredSubscriptions] = useState<Subscriptions[]>([]);
 
   useEffect(() => {
     const instructorSubscriptions = subscriptionData.filter((subscription: Subscriptions) => {
@@ -31,34 +30,24 @@ const SubscriptionPage: React.FC = () => {
     setFilteredSubscriptions(filtered);
   };
 
-  const subscriptionsWithUserData = filteredSubscriptions.map((subscription) => {
-    const user = data.users.find((user: any) => user.id === subscription.instructor_id);
-    return {
-      ...subscription,
-      user: {
-        name: user?.name,
-        email: user?.email,
-        phone_number: user?.phone_number,
-        avatar_url: user?.avatar_url
-      }
-    };
-  });
-
-  // const fetchSubscriptions = async (params: GetSubscriptionsParams) => {
-  //   try {
-  //     const response = await SubscriptionService.getSubscriptions(params);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error("Failed to fetch subscriptions:", error);
-  //     throw error;
-  //   }
-  // };
+  //  const subscriptionsWithUserData = filteredSubscriptions.map((subscription) => {
+  //   const user = data.users.find((user: any) => user.id === subscription.instructor_id);
+  //   return {
+  //     ...subscription,
+  //     user: {
+  //       name: user?.name,
+  //       email: user?.email,
+  //       phone_number: user?.phone_number,
+  //       avatar_url: user?.avatar_url
+  //     }
+  //   };
+  // });
 
   const items = [
     {
       key: "1",
       label: "Subscribed",
-      children: <InstructorSubscribed subscriptions={subscriptionsWithUserData} users={data.users as unknown as User[]} />
+      children: <InstructorSubscribed searchQuery={""} /*subscriptions={filteredSubscriptions}*/ />
     },
     {
       key: "2",

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, Avatar, Row, Col, message } from "antd";
 import { GetSubscriptionsResponse } from "../../../models/api/responsive/subscription/sub.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model";
-import { formatDate } from "../../../utils/helper"; // Add this import at the top of the file
+import { formatDate } from "../../../utils/helper"; 
 import { SubscriberService } from "../../../services/subscription/sub.service";
 import { GetSubscribersParams } from "../../../models/api/request/subscription/sub.request.model";
 import { useEffect } from "react";

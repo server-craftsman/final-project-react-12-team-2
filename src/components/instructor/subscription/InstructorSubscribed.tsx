@@ -47,7 +47,7 @@ const InstructorSubscribed: React.FC<InstructorSubscriptionProps> = ({ searchQue
       const response = await SubscriptionService.getSubscriptions(params);
       setSubscriptions(response.data?.data ? response.data.data : null);
     } catch (error) {
-      message.error("An unexpected error occurred while fetching subscriptions");
+      message.error("No subscriptions found");
     }
   }, [searchQuery, getSearchCondition]);
 
