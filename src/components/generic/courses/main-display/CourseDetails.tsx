@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { CourseService } from "../../../../services/course/course.service";import { HomeOutlined, InfoCircleOutlined, StarOutlined, BookOutlined } from "@ant-design/icons";
+import { CourseService } from "../../../../services/course/course.service";
+import { HomeOutlined, InfoCircleOutlined, StarOutlined, BookOutlined } from "@ant-design/icons";
 import { Card, Row, Col, Divider, Tabs } from "antd";
+// import { CartStatusEnum } from "../../../../app/enums";
 
 //==========connect components==========
 //tabs
@@ -14,6 +16,7 @@ import CourseHeader from "../subs-course/CourseHeader";
 import CourseSidebar from "../subs-course/CourseSidebar";
 import CourseVideoModal from "../subs-course/CourseVideoModal";
 import { GetPublicCourseDetailResponse } from "../../../../models/api/responsive/course/course.response.model";
+// import { CartService } from "../../../../services/cart/cart.service";
 //=====================================
 
 // Add this utility function to validate ObjectId
@@ -37,6 +40,7 @@ const CourseDetails: React.FC = () => {
   const [sessions, setSessions] = useState<any[]>([]);
   const [lessons, setLessons] = useState<any[]>([]);
   const [videoId, setVideoId] = useState<string | null>(null);
+  const [courseStatus, setCourseStatus] = useState({ is_in_cart: false, is_purchased: false });
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
@@ -45,35 +49,41 @@ const CourseDetails: React.FC = () => {
         return;
       }
       try {
+        // Fetch course details
         const response = await CourseService.getPublicCourseDetail(id);
         const courseData = response.data.data as GetPublicCourseDetailResponse;
-        
-        console.log("Course Data:", courseData); // Debug the entire course data
 
+        // Set course status directly from course data
+        setCourseStatus({ 
+          is_in_cart: courseData.is_in_cart,
+          is_purchased: courseData.is_purchased
+        });
+
+        // Set course data
         setCourse(courseData);
         setInstructor(courseData.instructor_id);
         setCategory(courseData.category_name);
         setDiscountedPrice(((courseData.price ?? 0) - ((courseData.discount ?? 0) * (courseData.price ?? 0)) / 100).toFixed(2));
         
+        // Process sessions
         const sessionList = courseData.session_list.map((session, index) => ({
           ...session,
-          _id: `session-${index}` // Generate a unique key for each session
+          _id: `session-${index}`
         }));
-        console.log("Session List:", sessionList); // Debug session list
         setSessions(sessionList);
         
+        // Process lessons
         const lessonList = sessionList.flatMap((session, sessionIndex) => 
           session.lesson_list.map((lesson, lessonIndex) => ({
             ...lesson,
-            _id: `lesson-${sessionIndex}-${lessonIndex}`, // Generate a unique key for each lesson
+            _id: `lesson-${sessionIndex}-${lessonIndex}`,
             session_id: session._id
           }))
         );
-        console.log("Lesson List:", lessonList); // Debug lesson list
         setLessons(lessonList);
 
         setVideoId(courseData.video_url);
-        setReviews(courseData.session_list); //debug, but it's not used
+        setReviews(courseData.session_list);
       } catch (error) {
         console.error("Failed to fetch course details:", error);
       }
@@ -176,7 +186,11 @@ const CourseDetails: React.FC = () => {
             </Card>
           </Col>
           <Col xs={24} lg={8}>
-            <CourseSidebar course={course} discountedPrice={discountedPrice} />
+            <CourseSidebar 
+              course={course} 
+              discountedPrice={discountedPrice} 
+              courseStatus={courseStatus} 
+            />
           </Col>
         </Row>
       </div>

@@ -2,32 +2,27 @@ import React from "react";
 import { Button, Card, Typography, Divider } from "antd";
 import { ShoppingCartOutlined, ShareAltOutlined, PlayCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { CourseSidebarProps } from "../../../../models/objects/course/CourseSidebarProps";
-import { useCart } from "../../../../context/CartContext";
 import { useNavigate } from "react-router-dom";
-import { Carts, CartStatusEnum } from "../../../../models/prototype/Carts";
 import { helpers } from "../../../../utils";
+import { CartService } from "../../../../services/cart/cart.service"; // Import CartService
 const { Title, Text } = Typography;
 
 const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
   const navigate = useNavigate();
-  const { addToCart } = useCart();
-
-  const handleAddToCart = () => {
-    const cartItem: Carts = {
-      id: course.id,
-      cart_no: course.title,
-      price_paid: course.price,
-      status: CartStatusEnum.new,
-      price: course.price,
-      discount: 0,
-      course_id: course.id,
-      student_id: course.id,
-      created_at: new Date(),
-      updated_at: new Date(),
-      is_deleted: false
-    };
-    addToCart(cartItem);
-    navigate("/cart?tab=new"); // Ensure this line is present
+  const handleAddToCart = async () => {
+    try {
+      if (!course.is_in_cart) {
+        // Add course to cart
+        const response = await CartService.createCart(course._id);
+        if (response.data.data && response.data.data._id) {
+          navigate(`/cart`);
+        } else {
+          console.error("Failed to add to cart");
+        }
+      }
+    } catch (error) {
+      console.error("Error handling cart operation:", error);
+    }
   };
 
   return (

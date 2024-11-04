@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { ApiRequestModel } from "../../models/api/interceptor/ApiRequestModel";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
+import { message } from "antd";
 import { clearLocalStorage, getItemInLocalStorage } from "../../utils/storage";
 import { DOMAIN_ADMIN, LOCAL_STORAGE } from "../../const/domain";
 import { ROUTER_URL } from "../../const/router.path";
@@ -152,19 +153,19 @@ axiosInstance.interceptors.response.use(
           }, 10000);
           break;
         case HTTP_STATUS.FORBIDDEN:
-          toast.error("Access denied. You do not have permission to perform this action.");
+          message.error("Access denied. You do not have permission to perform this action.");
           break;
         case HTTP_STATUS.NOT_FOUND:
-          toast.error("Requested resource not found.");
+          message.error("Requested resource not found.");
           break;
         case HTTP_STATUS.INTERNAL_SERVER_ERROR:
-          toast.error("Internal server error. Please try again later.");
+          message.error("Internal server error. Please try again later.");
           break;
         default:
-          toast.error(response.data?.message || "An error occurred. Please try again.");
+          message.error(response.data?.message || "An error occurred. Please try again.");
       }
     } else {
-      toast.error(err.message || "An error occurred. Please try again.");
+      message.error(err.message || "An error occurred. Please try again.");
     }
     return Promise.reject(new HttpException(err.message, response?.status || HTTP_STATUS.INTERNAL_SERVER_ERROR));
   }
@@ -172,6 +173,6 @@ axiosInstance.interceptors.response.use(
 
 const handleErrorByToast = (error: any) => {
   const message = error.response?.data?.message || error.message;
-  toast.error(message);
+  message.error(message);
   return Promise.reject(error);
 };

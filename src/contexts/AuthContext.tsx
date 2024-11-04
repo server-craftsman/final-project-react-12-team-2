@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode, useState } from "react";
+import { createContext, useContext, ReactNode, useState, useEffect } from "react";
 import { UserRole } from "../models/prototype/User";
 import { AuthService } from "../services/authentication/auth.service";
 import { UserService } from "../services/admin/user.service";
@@ -42,9 +42,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return storedToken as string | null;
   });
 
-  const [userInfo, setUserInfo] = useState<ResponseSuccess<User>["data"] | null>(null);
+  // const [userInfo, setUserInfo] = useState<ResponseSuccess<User>["data"] | null>(() => {
+  //   const storedUserInfo = localStorage.getItem("userInfo");
+  //   return storedUserInfo ? JSON.parse(storedUserInfo) : null;
+  // });
+
+  const [userInfo, setUserInfo] = useState<ResponseSuccess<User>["data"] | null>(() => {
+    const storedUserInfo = localStorage.getItem("userInfo");
+    return storedUserInfo ? JSON.parse(storedUserInfo) : null;
+  });
+   
   const [isLoading, setIsLoading] = useState(false);
 
+
+  useEffect(() => {
+    // Store userInfo in localStorage whenever it changes
+    if (userInfo) {
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
+    } else {
+      localStorage.removeItem("userInfo");
+    }
+  }, [userInfo]);
   //get current user
   const getCurrentUser = async () => {
     try {
@@ -82,12 +100,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   //logout
+  // const logout = () => {
+  //   setRole(null);
+  //   setToken(null);
+  //   setUserInfo(null);
+  //   localStorage.removeItem("token");
+  //   localStorage.removeItem("role");
+  //   window.location.href = "/login";
+  // };
+
   const logout = () => {
+    // setUserInfoNavbar(null);
+    setUserInfo(null);
     setRole(null);
     setToken(null);
-    setUserInfo(null);
     localStorage.removeItem("token");
     localStorage.removeItem("role");
+    localStorage.removeItem("userInfo");
     window.location.href = "/login";
   };
 
@@ -240,7 +269,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         verifyToken,
         resendToken,
         forgotPassword,
-        getCurrentUser
+        getCurrentUser,
       }}
     >
       {children}
