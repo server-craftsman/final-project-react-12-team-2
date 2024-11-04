@@ -41,10 +41,10 @@ const CustomSearch: React.FC<SearchProps> = ({ onSearch, placeholder = "Search..
         className="rounded-r-lg border-2 border-[#1a237e] bg-[#1a237e] px-6 font-medium text-white transition-colors hover:bg-blue-700"
         style={{
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          marginLeft: "-2px",
+          marginLeft: "5px",
           height: "40px",
           display: "flex",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         <SearchOutlined className="text-xl" />

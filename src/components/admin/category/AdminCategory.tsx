@@ -1,7 +1,7 @@
-import { Table, Space, message, Modal } from "antd";
+import { Table, Space, message, Modal, Button } from "antd";
 import React, { useEffect, useState, useCallback } from "react";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { GetCategoryResponse } from "../../../models/api/responsive/admin/category.responsive.model";
 import { GetCategoryParams } from "../../../models/api/request/admin/category.request.model";
 import { CategoryService } from "../../../services/category/category.service";
@@ -70,8 +70,8 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
           try {
             const response = await CategoryService.deleteCategory(categoryId);
             if (response.data.success) {
-              message.success("Category deleted successfully.");
               window.location.reload();
+              message.success("Category deleted successfully.");
             }
           } catch (error) {
             message.error(error instanceof HttpException ? error.message : "An error occurred while deleting the category");
@@ -114,10 +114,16 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
       key: "action",
       render: (record: Category) => (
         <Space size="middle">
-          <Link to={`/admin/edit-category/${record._id}`}>
-            <EditOutlined />
-          </Link>
-          <DeleteOutlined onClick={() => handleDeleteCategory(record._id)} />
+          	<Button
+              icon={<EditOutlined />}
+              onClick={() => navigate(`/admin/edit-category/${record._id}`)}
+              className="bg-white text-blue-500 mr-2 hover:opacity-80"
+            />
+            <Button
+              icon={<DeleteOutlined />}
+              onClick={() => handleDeleteCategory(record._id)}
+              className="bg-white text-red-500 mr-2 hover:opacity-80"
+            />
         </Space>
       )
     }

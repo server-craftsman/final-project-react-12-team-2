@@ -68,8 +68,8 @@ const EditCategory = () => {
       setState((prev) => ({ ...prev, loading: true }));
       try {
         await CategoryService.updateCategory(id as string, values);
-        message.success("Category updated successfully");
         navigate(ROUTER_URL.ADMIN.CATEGORIES);
+        message.success("Category updated successfully");
       } catch (error) {
         message.error("Failed to update category. Please try again.");
       } finally {

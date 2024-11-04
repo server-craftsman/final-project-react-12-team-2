@@ -69,17 +69,23 @@ const CreateCategory: React.FC = () => {
       form.resetFields();
       setEditorContent("");
       setOpen(false);
-      message.success("Category created successfully!");
       window.location.reload();
+      message.success("Category created successfully!");
     } catch (error) {
       console.error("Error creating category:", error);
       message.error("Failed to create category. Please try again.");
     }
   };
 
+  const handleOpenModal = () => {
+    form.resetFields();
+    setEditorContent("");
+    setOpen(true);
+  };
+
   return (
     <div>
-      <Button className="bg-gradient-tone mb-4 text-white" onClick={() => setOpen(true)}>
+      <Button className="bg-gradient-tone mb-4 text-white" onClick={handleOpenModal}>
         Create New Category
       </Button>
       <Modal open={isOpen} onCancel={() => setOpen(false)} onOk={() => form.submit()}>
