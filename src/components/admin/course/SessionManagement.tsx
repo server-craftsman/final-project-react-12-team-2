@@ -7,9 +7,10 @@ import { SessionRequestModel } from "../../../models/api/request/session/session
 
 interface SessionManagementProps {
   searchTerm: string;
+  activeKey: string;
 }
 
-const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm }) => {
+const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm, activeKey }) => {
   const [sessionData, setSessionData] = useState<SessionResponsePageData[]>([]);
 
   useEffect(() => {
@@ -35,7 +36,7 @@ const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm }) => 
     };
 
     fetchSessions();
-  }, [searchTerm]);
+  }, [searchTerm, activeKey]);
 
   const columns = [
     {
