@@ -14,7 +14,8 @@ const { confirm } = Modal;
 const CoursesManagement: React.FC<{
   searchTerm: string;
   statusFilter: CourseStatusEnum | "";
-}> = ({ searchTerm, statusFilter }) => {
+  activeKey: string;
+}> = ({ searchTerm, statusFilter, activeKey }) => {
   const [coursesData, setCourses] = useState<Courses[]>([]);
   const [isRejectModalVisible, setIsRejectModalVisible] = useState(false);
   const [rejectComment, setRejectComment] = useState("");
@@ -47,7 +48,7 @@ const CoursesManagement: React.FC<{
     };
 
     fetchCourses();
-  }, [searchTerm, statusFilter]);
+  }, [searchTerm, statusFilter, activeKey]);
 
   const handleChangeStatus = async (id: string, newStatus: CourseStatusEnum, comment: string = "") => {
     try {
