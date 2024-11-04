@@ -46,6 +46,7 @@ export const API = {
   CATEGORY: {
     GET_PUBLIC_CATEGORY: "api/client/category/search"
   },
+  CART: "api/cart",
   COURSE: {
     //instructor
     GET_COURSE: "api/course/search",

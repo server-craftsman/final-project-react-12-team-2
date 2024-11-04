@@ -9,9 +9,10 @@ import { useLessonStore } from "../../../hooks/useCallback";
 
 interface LessonManagementProps {
   searchTerm: string;
+  activeKey: string;
 }
 
-const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm }) => {
+const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm, activeKey }) => {
   const [filteredLessons, setFilteredLessons] = useState<Lesson["pageData"]>([]);
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -37,7 +38,7 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm }) => {
       }
     };
     fetchLessons();
-  }, [refreshLessons, searchTerm]);
+  }, [refreshLessons, searchTerm, activeKey]);
 
   const paginatedCourses = () => {
     const startIndex = (pageNum - 1) * pageSize;
