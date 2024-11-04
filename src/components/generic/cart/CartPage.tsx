@@ -91,7 +91,7 @@ const CartPage: React.FC = () => {
             <List
               dataSource={cartItems}
               renderItem={(item) => (
-                <List.Item className="border-b border-gray-50 py-6 last:border-0">
+                <List.Item key={item._id} className="border-b border-gray-50 py-6 last:border-0">
                   <Card className="w-full border-0 bg-transparent shadow-none">
                     <Row gutter={24} className="flex items-center">
                       <Col span={1}>
