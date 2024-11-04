@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { CartStatusEnum } from "../../../models/prototype/Carts";
 import { useCart } from "../../../contexts/CartContext"; // Import useCart
+import { helpers } from "../../../utils";
 const { Title, Text } = Typography;
 
 // // Define a mapping from CartStatusEnum to the expected string values
@@ -123,13 +124,13 @@ const CartPage: React.FC = () => {
                       <Col span={6} className="text-right">
                         <div className="space-y-2">
                           <Text className="block text-lg font-semibold text-[#02005dc6]">
-                            ${item.price_paid.toFixed(2)}
+                            {helpers.moneyFormat(item.price_paid)}
                           </Text>
                           <Text className="block text-sm text-gray-500 line-through">
-                            ${item.price.toFixed(2)}
+                            {helpers.moneyFormat(item.price)}
                           </Text>
                           <Text className="block text-sm text-green-600">
-                            Save ${item.discount}
+                            Sale {(item.discount)} %
                           </Text>
                         </div>
                       </Col>
@@ -150,12 +151,12 @@ const CartPage: React.FC = () => {
             <div className="space-y-4">
               <div className="flex justify-between text-gray-600">
                 <Text>Subtotal:</Text>
-                <Text>${cartItems.reduce((acc, item) => acc + item.price, 0).toFixed(2)}</Text>
+                <Text>{helpers.moneyFormat(cartItems.reduce((acc, item) => acc + item.price, 0))}</Text>
               </div>
 
               <div className="flex justify-between text-green-600">
                 <Text>Discount:</Text>
-                <Text>-${cartItems.reduce((acc, item) => acc + item.discount, 0).toFixed(2)}</Text>
+                <Text>- {(cartItems.reduce((acc, item) => acc + item.discount, 0))} %</Text>
               </div>
 
               <Divider className="my-6" />
@@ -163,7 +164,7 @@ const CartPage: React.FC = () => {
               <div className="flex justify-between">
                 <Text className="text-xl font-bold text-gray-800">Total:</Text>
                 <Text className="text-xl font-bold text-[#02005dc6]">
-                  ${cartItems.reduce((acc, item) => acc + (item.price - item.discount), 0).toFixed(2)}
+                  {helpers.moneyFormat(cartItems.reduce((acc, item) => acc + (item.price - item.discount), 0))}
                 </Text>
               </div>
             </div>
