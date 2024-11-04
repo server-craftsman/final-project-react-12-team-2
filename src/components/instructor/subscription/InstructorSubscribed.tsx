@@ -15,6 +15,8 @@ interface InstructorSubscriptionProps {
   searchQuery: string;
 }
 
+
+
 const InstructorSubscribed: React.FC<InstructorSubscriptionProps> = ({ searchQuery }) => {
   const [subscriptions, setSubscriptions] = useState<GetSubscriptionsResponse | null>(null);
   const [users,] = useState<User[]>([]);
