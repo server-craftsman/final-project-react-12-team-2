@@ -22,7 +22,7 @@ export const ROUTER_URL = {
     PURCHASES_LOG: "/admin/purchases-log",
     CATEGORIES_DETAILS: "/admin/categories/details-category",
     CATEGORIES_DETAILS_ID: "/admin/categories/categories-details/:id",
-    COURSES_LOG: "/admin/courses-log",
+    BLOG: "/admin/admin-blog",
     SUBSCRIPTION: "/admin/subscription",
     REQUEST_ACCOUNT: "/admin/request-account"
   },

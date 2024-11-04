@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import CoursesLog from "../../../components/admin/courses-log/CoursesLog";
+import AdminBlog from "../../../components/admin/blog/BLogManagement";
 import CustomSearch from "../../../components/generic/search/CustomSearch";
-import FilterStatus from "../../../components/admin/courses-log/FilterStatus";
+import FilterStatus from "../../../components/admin/blog/FilterStatus";
 import { Course } from "../../../models/prototype/Course";
 import coursesData from "../../../data/courses.json";
 import reviewsData from "../../../data/reviews.json";
 import { Content } from "antd/es/layout/layout";
 import { Card } from "antd";
-import CreateBlog from "../../../components/admin/courses-log/CreateBlog";
+import CreateBlog from "../../../components/admin/blog/CreateBlog";
 
 const CoursesLogManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -42,7 +42,7 @@ const CoursesLogManagement: React.FC = () => {
           <FilterStatus status={statusFilter} setStatus={setStatusFilter} />
           <CreateBlog />
         </div>
-        <CoursesLog data={data} searchQuery={searchTerm} />
+        <AdminBlog data={data} searchQuery={searchTerm} />
       </Card>
     </Content>
   );

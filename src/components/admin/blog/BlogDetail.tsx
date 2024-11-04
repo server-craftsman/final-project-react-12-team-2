@@ -101,7 +101,7 @@ const BlogDetail: React.FC = () => {
                 Edit
             </Button>
             <Button className="mr-3 bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">Delete</Button>
-            <Link to={ROUTER_URL.ADMIN.COURSES_LOG}>
+            <Link to={ROUTER_URL.ADMIN.BLOG}>
                 <Button className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">Back To Categories</Button>
             </Link>
         </div>

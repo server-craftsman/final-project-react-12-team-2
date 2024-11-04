@@ -50,8 +50,8 @@ const AdminNavbar: React.FC = () => {
     {
       key: "7",
       icon: <BookOutlined className="text-white" />,
-      label: "Courses Log",
-      path: "/admin/courses-log"
+      label: "Blog Management",
+      path: "/admin/admin-blog"
     },
     {
       key: "8",

@@ -15,7 +15,7 @@ const ManageUser = lazy(() => import("../../pages/admin/user/ManageUser"));
 const EditUserProfile = lazy(() => import("../../components/admin/setting/EditUserProfile"));
 const EditCategory = lazy(() => import("../../components/admin/category/EditCategory"));
 const PurchasesLog = lazy(() => import("../../pages/admin/purchasesLog/PurchasesLogManagement"));
-const CoursesLog = lazy(() => import("../../pages/admin/course-log/CoursesLogManagement"));
+const AdminBlog = lazy(() => import("../../pages/admin/blog/BLogManagement"));
 const SubscriptionPage = lazy(() => import("../../pages/instructor/subscription/SubscriptionPage"));
 const RequestAccountManagement = lazy(() => import("../../pages/admin/request-account/RequestAccountManagement"));
 
@@ -62,8 +62,8 @@ export const adminSubPaths: Record<string, RouteObject[]> = {
     },
     {
       index: false,
-      path: ROUTER_URL.ADMIN.COURSES_LOG,
-      element: <CoursesLog />
+      path: ROUTER_URL.ADMIN.BLOG,
+      element: <AdminBlog />
     },
     {
       index: false,
