@@ -153,9 +153,6 @@ const Navbar = () => {
                 </Link>
               </>
             )}
-            {/* <button className="hidden text-gray-300 hover:text-white lg:block">
-              <FaUserCircle className="h-8 w-8" />
-            </button> */}
           </div>
           <div className="flex items-center lg:hidden">
             <button onClick={toggleMenu} className="from-gold hover:from-gold-dark inline-flex transform items-center justify-center rounded-full bg-gradient-to-r to-amber-500 p-3 text-white shadow-lg transition-all duration-500 ease-in-out hover:scale-110 hover:to-amber-600 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-amber-300 focus:ring-offset-2 focus:ring-offset-gray-800">
@@ -184,14 +181,31 @@ const Navbar = () => {
             <Link to="/about" className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">
               About
             </Link>
-            <div className="mt-4 flex flex-col space-y-2 px-3">
-              <Link to="/login" className="bg-btn-submit">
-                Login
-              </Link>
-              <Link to="/register" className="bg-btn-submit">
-                Signup
-              </Link>
-            </div>
+            {userInfo ? (
+              <>
+                <Link to="/cart" className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">
+                  Cart
+                </Link>
+                <Link to={getDashboardLink()} className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">
+                  My Dashboard
+                </Link>
+                <Link to={getSettingsLink()} className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">
+                  Settings
+                </Link>
+                <button onClick={logout} className="block w-full rounded-md px-3 py-2 text-left text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">
+                  Login
+                </Link>
+                <Link to="/register" className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
