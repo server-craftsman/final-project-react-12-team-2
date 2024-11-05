@@ -1,9 +1,14 @@
 import DisplayLesson from "./DisplayLesson";
 
-const LessionComponent = () => {
+interface LessionComponentProps {
+  refreshKey: any; // Replace 'any' with the appropriate type if known
+}
+
+const LessionComponent = ({ refreshKey }: LessionComponentProps) => {
+
   return (
     <div>
-      <DisplayLesson />
+      <DisplayLesson refreshKey={refreshKey} />
     </div>
   );
 };

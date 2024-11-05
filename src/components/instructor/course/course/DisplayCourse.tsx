@@ -235,7 +235,7 @@ const DisplayCourse: React.FC<{
     try {
       const validCourses = courses?.filter(course =>
         selectedCourse.includes(Number(course._id)) &&
-        course.status === StatusType.NEW
+        (course.status === StatusType.NEW || course.status === StatusType.REJECT)
       );
   
       if (!validCourses?.length) {
@@ -291,7 +291,7 @@ const DisplayCourse: React.FC<{
       // Filter courses based on selected row keys
       const validCourses = courses?.filter(course =>
         selectedRowKeys.includes(course._id as unknown as number) && // Ensure course._id is a string
-        course.status === StatusType.NEW
+        (course.status === StatusType.NEW || course.status === StatusType.REJECT)
       );
 
       //test debug
@@ -378,6 +378,7 @@ const DisplayCourse: React.FC<{
           ],
           getCheckboxProps: (record) => ({
             name: record._id,
+            disabled: record.status !== StatusType.NEW && record.status !== StatusType.REJECT, // Disable selection for other statuses
           }),
         }}
         columns={columns}

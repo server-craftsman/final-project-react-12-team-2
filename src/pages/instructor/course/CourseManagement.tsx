@@ -1,6 +1,6 @@
 import { Col, Row, Tag, Layout, Tabs } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
-import React from "react";
+import React, { useState } from "react";
 import { Content } from "antd/es/layout/layout";
 import CourseComponent from "../../../components/instructor/course/course/CourseComponent";
 import SessionComponent from "../../../components/instructor/course/session/SessionComponent";
@@ -9,6 +9,9 @@ import { courseStatusColor } from "../../../utils/courseStatus";
 import { StatusType } from "../../../app/enums";
 
 const CourseManagement = () => {
+  const [activeTabKey, setActiveTabKey] = useState("course");
+  const [refreshKey, setRefreshKey] = useState(0);
+
   const statusLabelList = [
     {
       name: StatusType.NEW,
@@ -57,12 +60,12 @@ const CourseManagement = () => {
     {
       key: "session",
       label: "Session",
-      children: <SessionComponent />
+      children: <SessionComponent refreshKey={refreshKey} />
     },
     {
       key: "lesson",
       label: "Lesson",
-      children: <LessionComponent />
+      children: <LessionComponent refreshKey={refreshKey} />
     }
   ];
 
@@ -89,12 +92,24 @@ const CourseManagement = () => {
     );
   };
 
+  const handleTabChange = (key: string) => {
+    setActiveTabKey(key);
+    setRefreshKey(prevKey => prevKey + 1);
+  };
+
   return (
     <Layout className="layout">
       {renderTagMenu()}
       <Content className="">
         <>
-          <Tabs items={itemsTab} />
+          <Tabs 
+            activeKey={activeTabKey}
+            onChange={handleTabChange}
+            items={itemsTab.map(item => ({
+              ...item,
+              children: React.cloneElement(item.children, { refreshKey })
+            }))}
+          />
         </>
       </Content>
     </Layout>

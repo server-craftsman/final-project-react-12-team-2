@@ -10,7 +10,7 @@ import { CourseService } from "../../../../services/course/course.service";
 import { formatDate } from "../../../../utils/helper";
 import { DisplaySessionResponse } from "../../../../models/api/responsive/session/session.response.model";
 
-const DisplaySession = () => {
+const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
   const [sessions, setSessions] = useState<DisplaySessionResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -82,7 +82,7 @@ const DisplaySession = () => {
 
   useEffect(() => {
     fetchSessions(pageNum, pageSize, searchKeyword);
-  }, [pageNum, pageSize, searchKeyword, fetchSessions]);
+  }, [pageNum, pageSize, searchKeyword, fetchSessions, refreshKey]);
 
   const renderActions = (record: DisplaySessionResponse) => (
     <div className="flex space-x-2">
