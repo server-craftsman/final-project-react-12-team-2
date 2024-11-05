@@ -5,8 +5,8 @@ import { message } from "antd";
 import { clearLocalStorage, getItemInLocalStorage } from "../../utils/storage";
 import { DOMAIN_ADMIN, LOCAL_STORAGE } from "../../const/domain";
 import { ROUTER_URL } from "../../const/router.path";
-import { store } from "../../app/store";
-import { toggleLoading } from "../../app/loadingSlice";
+import { store } from "../../app/redux/store";
+import { toggleLoading } from "../../app/redux/loadingSlice";
 import { HTTP_STATUS } from "../../app/enums";
 import { HttpException } from "../../app/exceptions";
 

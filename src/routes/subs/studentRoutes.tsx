@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { RouteObject } from "react-router-dom";
-import Loading from "../../app/Loading";
+import Loading from "../../app/redux/Loading";
 import EditUserProfile from "../../components/student/setting/EditUserProfile";
 
 //import lazy

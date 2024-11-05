@@ -84,5 +84,8 @@ export const API = {
     //instructor
     GET_SUBSCRIPTIONS: "api/subscription/search-for-subscriber",
     GET_SUBSCRIBERS: "api/subscription/search-for-instructor"
+  },
+  PURCHASE: {
+    GET_PURCHASE_FOR_STUDENT: "api/purchase/search-for-student"
   }
 };

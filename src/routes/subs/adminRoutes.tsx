@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import { RouteObject } from "react-router-dom";
 
 // Import lazy components
-const Loading = lazy(() => import("../../app/Loading"));
+const Loading = lazy(() => import("../../app/redux/Loading"));
 const ManageCourses = lazy(() => import("../../pages/admin/course/ManageCourses"));
 const DashBoardAdmin = lazy(() => import("../../pages/admin/overview/DashBoardAdmin"));
 const ManageCategory = lazy(() => import("../../pages/admin/category/ManageCategory"));

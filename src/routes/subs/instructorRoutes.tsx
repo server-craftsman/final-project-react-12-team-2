@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { RouteObject } from "react-router-dom";
-import Loading from "../../app/Loading";
+import Loading from "../../app/redux/Loading";
 import Purchases from "../../pages/instructor/purchase/PurchasesManagement";
 import ManagePayout from "../../pages/instructor/payout/ManagePayout";
 import CourseManagement from "../../pages/instructor/course/CourseManagement";

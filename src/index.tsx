@@ -5,7 +5,7 @@ import "./index.css";
 import { CartProvider } from "./contexts/CartContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { Provider } from "react-redux";
-import { store } from "./app/store"; // Ensure this is the correct path to your store
+import { store } from "./app/redux/store"; // Ensure this is the correct path to your store
 // console.log("Store initialized:", store);
 
 const rootElement = document.getElementById("root");

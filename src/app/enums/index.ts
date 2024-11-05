@@ -3,5 +3,6 @@ import { UserRoles } from "./role.enum";
 import { StatusType } from "./course.status.enum";
 import { LessonType } from "./lesson.enum";
 import { CartStatusEnum } from "./cart.status.enum";
+import { PurchaseStatus } from "./purchase.status";
 
-export { HTTP_STATUS, UserRoles, StatusType, LessonType, CartStatusEnum };
+export { HTTP_STATUS, UserRoles, StatusType, LessonType, CartStatusEnum, PurchaseStatus };

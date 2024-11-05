@@ -20,8 +20,8 @@ const StudentDashboardNavbar = () => {
     {
       key: "2",
       icon: <BellOutlined />,
-      label: "Orders",
-      path: "/dashboard-student/student-orders"
+      label: "Purchase",
+      path: "/dashboard-student/student-purchase"
     },
     {
       key: "3",

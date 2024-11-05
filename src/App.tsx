@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import ScrollToTopButton from "./components/generic/home/ScrollToTopButton";
-import Loading from "./app/Loading";
+import Loading from "./app/redux/Loading";
 import { useSelector } from "react-redux";
 import RunRoutes from "./routes/run/run";
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import logoAnimation from "../data/logoAnimation.json";
+import logoAnimation from "../../data/logoAnimation.json";
 import Lottie from "lottie-react";
 import "./Loading.css";
 const Loading: React.FC<{ timeout?: number }> = ({ timeout = 10000 }) => {

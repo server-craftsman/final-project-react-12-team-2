@@ -43,6 +43,7 @@ export const ROUTER_URL = {
     BASE: "/dashboard-student",
     SETTING: "/dashboard-student/student-setting",
     ORDERS: "/dashboard-student/student-orders",
+    PURCHASE: "/dashboard-student/student-purchase",
     SUBSCRIPTION: "/dashboard-student/student-subscription",
     EDIT_USER: "/dashboard-student/student/edit-user/:id"
   },

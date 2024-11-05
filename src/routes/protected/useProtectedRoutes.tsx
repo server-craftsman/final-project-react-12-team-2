@@ -4,7 +4,7 @@ import { UserRole } from "../../models/prototype/User";
 import adminRoutes from "../subs/adminRoutes";
 import instructorRoutes from "../subs/instructorRoutes";
 import studentRoutes from "../subs/studentRoutes";
-import Loading from "../../app/Loading";
+import Loading from "../../app/redux/Loading";
 
 const useProtectedRoutes = (): RouteObject[] => {
   const [role, setRole] = useState<UserRole | null>(null);
