@@ -9,7 +9,7 @@ import { store } from "../../app/store";
 import { toggleLoading } from "../../app/loadingSlice";
 import { HTTP_STATUS } from "../../app/enums";
 import { HttpException } from "../../app/exceptions";
-import { Link, useNavigate } from "react-router-dom";
+
 export const axiosInstance = axios.create({
   baseURL: DOMAIN_ADMIN,
   headers: {
@@ -29,14 +29,14 @@ export const BaseService = {
   }: Partial<ApiRequestModel> & {
     toggleLoading?: (isLoading: boolean) => void;
   }): Promise<PromiseState<T>> {
-    if (toggleLoading) toggleLoading(isLoading);
+    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 500);
     return axiosInstance.get<T, PromiseState<T>>(`${url}`, {
       params: payload,
       headers: headers || {}
     });
   },
   post<T = any>({ url, isLoading = true, payload, headers, toggleLoading }: Partial<ApiRequestModel>): Promise<PromiseState<T>> {
-    if (toggleLoading) toggleLoading(isLoading);
+    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 500);
     return axiosInstance.post<T, PromiseState<T>>(`${url}`, payload, {
       headers: headers || {}
     });
@@ -50,7 +50,7 @@ export const BaseService = {
   }: Partial<ApiRequestModel> & {
     toggleLoading?: (isLoading: boolean) => void;
   }): Promise<PromiseState<T>> {
-    if (toggleLoading) toggleLoading(isLoading);
+    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 500);
     return axiosInstance.put(`${url}`, payload, {
       headers: headers || {}
     });
@@ -64,7 +64,7 @@ export const BaseService = {
   }: Partial<ApiRequestModel> & {
     toggleLoading?: (isLoading: boolean) => void;
   }): Promise<PromiseState<T>> {
-    if (toggleLoading) toggleLoading(isLoading);
+    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 500);
     return axiosInstance.delete(`${url}`, {
       params: payload,
       headers: headers || {}
@@ -79,7 +79,7 @@ export const BaseService = {
   }: Partial<ApiRequestModel> & {
     toggleLoading?: (isLoading: boolean) => void;
   }): Promise<PromiseState<T>> {
-    if (toggleLoading) toggleLoading(isLoading);
+    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 500);
     return axiosInstance.get<T, PromiseState<T>>(`${url}`, {
       params: payload,
       headers: headers || {}
@@ -96,7 +96,7 @@ export const BaseService = {
     }
     const user: any = getItemInLocalStorage(LOCAL_STORAGE.ACCOUNT_ADMIN);
     // if (isLoading) useToggleLoading()(true);
-    if (isLoading) store.dispatch(toggleLoading(true));
+    if (isLoading) setTimeout(() => store.dispatch(toggleLoading(true)), 500);
     return axios({
       method: "post",
       url: `${DOMAIN_ADMIN}${url}`,

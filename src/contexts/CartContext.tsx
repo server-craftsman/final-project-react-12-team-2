@@ -37,7 +37,6 @@ export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
       });
       const items = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [response.data.data.pageData];
       setCartItems(items);
-      console.log("Cart items updated:", items);
     } catch (error) {
       console.error("Error fetching cart items:", error);
     }

@@ -9,7 +9,6 @@ import { UserRoles } from "../../app/enums";
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { cartItems } = useCart();
-  console.log("Cart items in Navbar:", cartItems); // Debugging log
   const { userInfo, logout } = useAuth();
 
   useEffect(() => {
