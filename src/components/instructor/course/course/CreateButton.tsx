@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { Button, Col, Form, Input, InputNumber, message, Modal, Row, Select, Upload, UploadFile } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 const { Option } = Select;
@@ -46,31 +46,28 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
     }
   };
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const parentCategoriesData = await CategoryService.getCategory(getParentCategoryParams);
-        const parentCategories = parentCategoriesData.data.data.pageData;
+  const fetchCategories = async () => {
+    try {
+      const parentCategoriesData = await CategoryService.getCategory(getParentCategoryParams);
+           const parentCategories = parentCategoriesData.data.data.pageData;
 
-        const childCategoriesData = await CategoryService.getCategory(getChildCategoryParams);
-        const childCategories = childCategoriesData.data.data.pageData;
+      const childCategoriesData = await CategoryService.getCategory(getChildCategoryParams);
+      const childCategories = childCategoriesData.data.data.pageData;
 
-        const categoriesWithChildren = parentCategories.map((parent) => ({
-          ...parent,
-          children: childCategories.filter((child) => child.parent_category_id === parent._id)
-        }));
+      const categoriesWithChildren = parentCategories.map((parent) => ({
+        ...parent,
+        children: childCategories.filter((child) => child.parent_category_id === parent._id)
+      }));
 
-        setCategories(categoriesWithChildren);
-      } catch (error) {
-        message.error("Failed to load categories.");
-      }
-    };
-
-    fetchCategories();
-  }, []);
+      setCategories(categoriesWithChildren);
+    } catch (error) {
+      message.error("Failed to load categories.");
+    }
+  };
 
   const openCreateModal = () => {
     setIsOpen(true);
+    fetchCategories();
   };
 
   const handleFileUpload = useCallback(async (file: File, type: "image" | "video") => {
