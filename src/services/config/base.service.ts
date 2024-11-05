@@ -161,9 +161,9 @@ axiosInstance.interceptors.response.use(
           break;
         case HTTP_STATUS.NOT_FOUND:
           message.error("Requested resource not found.");
-          setTimeout(() => {
-            window.location.href = ROUTER_URL.LOGIN;
-          }, 2000);
+          // setTimeout(() => {
+          //   window.location.href = ROUTER_URL.LOGIN;
+          // }, 2000);
           break;
         case HTTP_STATUS.INTERNAL_SERVER_ERROR:
           message.error("Internal server error. Please try again later.");

@@ -18,7 +18,7 @@ export const CartService = {
     });
   },
   updateCartStatus(params: UpdateCartStatusParams) {
-    return BaseService.post<ResponseSuccess<any>>({
+    return BaseService.put<ResponseSuccess<any>>({
       url: API.CART.UPDATE_CART_STATUS,
       payload: params
     });

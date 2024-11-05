@@ -188,8 +188,8 @@ const CourseDetails: React.FC = () => {
           <Col xs={24} lg={8}>
             <CourseSidebar 
               course={course} 
-              discountedPrice={discountedPrice} 
-              courseStatus={courseStatus} 
+              discountedPrice={discountedPrice}
+              courseStatus={courseStatus}
             />
           </Col>
         </Row>

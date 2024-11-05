@@ -22,8 +22,16 @@ export const formatDateISO = (date: Date) => {
   return date.toISOString();
 };
 
-export const moneyFormat = (money: number) => {
-  return money.toLocaleString("vi-VN", { style: "currency", currency: "VND" }).replace(/\./g, ",");
+// export const moneyFormat = (money: number) => {
+//   return money.toLocaleString("vi-VN", { style: "currency", currency: "VND" }).replace(/\./g, ",");
+// };
+
+export const moneyFormat = (amount: number | undefined) => {
+  if (amount === undefined || amount === null) {
+    console.warn("moneyFormat received an undefined or null amount");
+    return "N/A"; // Return a default value or handle it as needed
+  }
+  return amount.toLocaleString("vi-VN", { style: "currency", currency: "VND" }).replace(/\./g, ",");
 };
 
 export const formatParamsString = (params: Record<string, any>) => {

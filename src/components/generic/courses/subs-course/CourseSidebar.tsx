@@ -2,20 +2,27 @@ import React from "react";
 import { Button, Card, Typography, Divider } from "antd";
 import { ShoppingCartOutlined, ShareAltOutlined, PlayCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { CourseSidebarProps } from "../../../../models/objects/course/CourseSidebarProps";
-import { useNavigate } from "react-router-dom";
 import { helpers } from "../../../../utils";
-import { CartService } from "../../../../services/cart/cart.service"; // Import CartService
+import { CartService } from "../../../../services/cart/cart.service";
+import { useCart } from "../../../../contexts/CartContext";
+
 const { Title, Text } = Typography;
 
-const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
-  const navigate = useNavigate();
+const CourseSidebar: React.FC<CourseSidebarProps> = ({ course, courseStatus }) => {
+  const { cartItems } = useCart();
+  const isInCart = courseStatus?.is_in_cart;
+  console.log("Cart Items:", JSON.stringify(cartItems, null, 2));
+  console.log("Course ID:", course._id);
+  console.log("Is in Cart:", isInCart);
+
   const handleAddToCart = async () => {
     try {
-      if (!course.is_in_cart) {
-        // Add course to cart
+      if (isInCart) {
+        window.location.href = `/cart`;
+      } else {
         const response = await CartService.createCart(course._id);
         if (response.data.data && response.data.data._id) {
-          navigate(`/cart`);
+          window.location.href = `/cart`;
         } else {
           console.error("Failed to add to cart");
         }
@@ -36,7 +43,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
         onClick={handleAddToCart}
       >
         <ShoppingCartOutlined className="mr-2 text-xl" />
-        Add to Cart
+        {isInCart ? "View Cart" : "Add to Cart"}
       </button>
       <button className="mb-6 h-12 w-full rounded-lg bg-[#1a237e] text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:bg-[#3949ab] hover:shadow-xl active:scale-95">
         Buy Course

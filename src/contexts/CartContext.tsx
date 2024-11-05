@@ -1,10 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { CartService } from "../services/cart/cart.service";
 import { useAuth } from "./AuthContext";
+import { CartStatusEnum } from "../models/prototype/Carts";
 
 interface CartContextType {
   cartItems: any[];
-  updateCartItems: (items?: any[]) => void;
+  updateCartItems: (status?: CartStatusEnum) => Promise<void>;
+  updateCartStatus: (cartIds: string | string[], status: CartStatusEnum) => Promise<void>;
+  deleteCartItem: (cartId: string) => Promise<void>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -12,13 +15,9 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   const [cartItems, setCartItems] = useState<any[]>([]);
   const { token } = useAuth();
+  const defaultStatus = CartStatusEnum.new;
 
-  const updateCartItems = async (items?: any[]) => {
-    if (items) {
-      console.log("Updating cart items:", items);
-      setCartItems(items);
-      return;
-    }
+  const updateCartItems = async (status?: CartStatusEnum) => {
     if (!token) {
       console.log("No token found, skipping cart fetch");
       return;
@@ -27,7 +26,7 @@ export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
     try {
       const response = await CartService.getCartItems({
         searchCondition: {
-          status: "new",
+          status: status ?? defaultStatus,
           is_delete: false
         },
         pageInfo: {
@@ -42,16 +41,43 @@ export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
     }
   };
 
+  const updateCartStatus = async (cartIds: string | string[], status: CartStatusEnum) => {
+    try {
+      const idsArray = Array.isArray(cartIds) ? cartIds : [cartIds];
+
+      const itemsToUpdate = cartItems.filter(item => idsArray.includes(item._id));
+      if (itemsToUpdate.length > 0) {
+        const items = itemsToUpdate.map(item => ({ _id: item._id, cart_no: item.cart_no }));
+        await CartService.updateCartStatus({ status, items });
+        updateCartItems(status); // Refresh cart items after status update
+      } else {
+        console.error(`No cart items found for the provided IDs: ${idsArray.join(', ')}`);
+      }
+    } catch (error) {
+      console.error("Error updating cart status:", error);
+    }
+  };
+
+  const deleteCartItem = async (cartId: string) => {
+    try {
+      await CartService.deleteCart(cartId);
+      console.log(`Cart item with ID ${cartId} deleted`);
+      updateCartItems(CartStatusEnum.new); // Refresh cart items after deletion
+    } catch (error) {
+      console.error("Error deleting cart item:", error);
+    }
+  };
+
   useEffect(() => {
     if (token) {
-      updateCartItems();
+      updateCartItems(CartStatusEnum.new);
     } else {
       setCartItems([]); // Clear cart items when token is not present
     }
   }, [token]);
 
   return (
-    <CartContext.Provider value={{ cartItems, updateCartItems }}>
+    <CartContext.Provider value={{ cartItems, updateCartItems, updateCartStatus, deleteCartItem }}>
       {children}
     </CartContext.Provider>
   );
