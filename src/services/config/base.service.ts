@@ -9,7 +9,7 @@ import { store } from "../../app/store";
 import { toggleLoading } from "../../app/loadingSlice";
 import { HTTP_STATUS } from "../../app/enums";
 import { HttpException } from "../../app/exceptions";
-
+import { Link, useNavigate } from "react-router-dom";
 export const axiosInstance = axios.create({
   baseURL: DOMAIN_ADMIN,
   headers: {
@@ -154,9 +154,16 @@ axiosInstance.interceptors.response.use(
           break;
         case HTTP_STATUS.FORBIDDEN:
           message.error("Access denied. You do not have permission to perform this action.");
+          setTimeout(() => {
+            clearLocalStorage();
+            window.location.href = ROUTER_URL.LOGIN;
+          }, 2000);
           break;
         case HTTP_STATUS.NOT_FOUND:
           message.error("Requested resource not found.");
+          setTimeout(() => {
+            window.location.href = ROUTER_URL.LOGIN;
+          }, 2000);
           break;
         case HTTP_STATUS.INTERNAL_SERVER_ERROR:
           message.error("Internal server error. Please try again later.");
