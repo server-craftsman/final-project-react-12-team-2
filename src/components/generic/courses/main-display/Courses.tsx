@@ -9,6 +9,7 @@ import { User } from "../../../../models/api/responsive/users/users.model";
 import { CourseService } from "../../../../services/course/course.service";
 import { UserService } from "../../../../services/admin/user.service";
 import { helpers } from "../../../../utils";
+import { useCart } from "../../../../contexts/CartContext";
 const { Title, Paragraph } = Typography;
 const { Meta } = Card;
 import parse from "html-react-parser";
@@ -38,6 +39,7 @@ const Courses: React.FC<CoursesProps> = () => {
 
   const [courses, setCourses] = useState<GetPublicCourseResponse | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const { isCoursePurchased } = useCart();
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -72,23 +74,31 @@ const Courses: React.FC<CoursesProps> = () => {
   return (
     <Row gutter={[32, 32]}>
       {courses?.pageData.map((course) => {
+        const { purchased, isInCart } = isCoursePurchased(course._id);
+        console.log(`Course ID: ${course._id}, Purchased: ${purchased}, Is in cart: ${isInCart}`);
         return (
           <Col xs={24} sm={12} md={8} key={course._id} className="mx-auto h-full">
             <motion.div variants={itemVariants} className="h-full">
               <Card
                 hoverable
                 cover={<img alt={course.name} src={course.image_url} className="h-48 w-full object-cover" />}
-                className="group relative flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-lg transition-all duration-300 hover:shadow-xl"
+                className={`group relative flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-lg transition-all duration-300 hover:shadow-xl ${purchased ? 'border-green-500' : ''} ${isInCart ? 'border-blue-500' : ''}`}
                 style={{
                   height: "100%",
                   display: "flex",
                   flexDirection: "column"
                 }}
               >
-                {/* <motion.div className="absolute right-0 top-0 rounded-bl-lg bg-[#8529ff] px-3 py-1 text-white" whileHover={{ scale: 1.05 }}>
-                  <CrownOutlined className="mr-1" />
-                  {course.status === StatusType.ACTIVE}
-                </motion.div> */}
+                {purchased && (
+                  <div className="absolute right-0 top-0 rounded-bl-lg bg-green-500 px-3 py-1 text-white">
+                    Purchased
+                  </div>
+                )}
+                {/* {isInCart && !purchased && (
+                  <div className="absolute right-0 top-0 rounded-bl-lg bg-blue-500 px-3 py-1 text-white">
+                    In Cart
+                  </div>
+                )} */}
                 {course.discount > 0 && (
                   <motion.div className="absolute left-0 top-0 rounded-br-lg bg-gradient-tone px-3 py-1 text-white" whileHover={{ scale: 1.05 }}>
                     <PercentageOutlined className="mr-1" />
