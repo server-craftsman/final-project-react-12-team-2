@@ -92,9 +92,8 @@ const Courses: React.FC<CoursesProps> = () => {
               <Card
                 hoverable
                 cover={<img alt={course.name} src={course.image_url} className="h-48 w-full object-cover" />}
-                className={`group relative flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-lg transition-all duration-300 hover:shadow-xl ${purchased ? 'border-green-500' : ''} ${isInCart ? 'border-blue-500' : ''}`}
+                className={`group relative flex h-[600px] flex-col overflow-hidden rounded-lg bg-white shadow-lg transition-all duration-300 hover:shadow-xl ${purchased ? 'border-green-500' : ''} ${isInCart ? 'border-blue-500' : ''}`}
                 style={{
-                  height: "100%",
                   display: "flex",
                   flexDirection: "column"
                 }}
@@ -104,11 +103,6 @@ const Courses: React.FC<CoursesProps> = () => {
                     Purchased
                   </div>
                 )}
-                {/* {isInCart && !purchased && (
-                  <div className="absolute right-0 top-0 rounded-bl-lg bg-blue-500 px-3 py-1 text-white">
-                    In Cart
-                  </div>
-                )} */}
                 {course.discount > 0 && (
                   <motion.div className="absolute left-0 top-0 rounded-br-lg bg-gradient-tone px-3 py-1 text-white" whileHover={{ scale: 1.05 }}>
                     <PercentageOutlined className="mr-1" />
@@ -116,13 +110,25 @@ const Courses: React.FC<CoursesProps> = () => {
                   </motion.div>
                 )}
                 <div className="flex h-full flex-col">
+                  <Title level={3} className="mb-2 h-16 line-clamp-2 text-xl font-bold text-[#1a237e]">
+                    {course.name}
+                  </Title>
+                  <Paragraph className="h-20 mb-4 line-clamp-3 text-gray-600">{parse(course.description)}</Paragraph>
+                  <div className="h-16">
+                    <div className="mb-4 flex items-center justify-between">
+                      <span className="text-2xl font-bold text-indigo-800">${helpers.moneyFormat(course.price * (1 - course.discount / 100))}</span>
+                      {course.discount > 0 && <span className="text-lg text-gray-500 line-through">${helpers.moneyFormat(course.price)}</span>}
+                    </div>
+                  </div>
                   <Meta
                     avatar={<Avatar src={user?.avatar_url} />}
-                    title={<span className="line-clamp-1 text-lg font-semibold text-gray-800">{user?.name}</span>}
+                    title={<span className="line-clamp-1 h-8 text-lg font-semibold text-gray-800">{user?.name}</span>}
                     description={
-                      <div className="mb-4 flex items-center text-sm">
-                        <Tag className="mr-2 rounded bg-gradient-tone px-2 py-1 text-xs font-semibold uppercase text-white">{course.category_name}</Tag>
-                        <div className="flex items-center space-x-4">
+                      <div className="h-24 mb-4 items-center text-sm">
+                        <div>
+                            <Tag className="mr-2 rounded bg-gradient-tone px-2 py-1 text-xs font-semibold uppercase text-white">{course.category_name}</Tag>
+                        </div>
+                        <div className="flex mt-4 items-center space-x-4">
                           <span className="flex items-center text-gray-600 font-medium">
                             <BookOutlined className="mr-2 text-indigo-500" />
                             <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
@@ -140,17 +146,6 @@ const Courses: React.FC<CoursesProps> = () => {
                     }
                     className="mb-4"
                   />
-                  <Title level={4} className="mb-2 line-clamp-2 h-14 text-xl font-bold text-gray-800">
-                    {course.name}
-                  </Title>
-                  <Paragraph className="h-18 mb-4 line-clamp-3 flex-grow text-gray-600">{parse(course.description)}</Paragraph>
-                  <div className="mt-auto">
-                    <div className="mb-4 flex items-center justify-between">
-                      <span className="text-2xl font-bold text-indigo-800">${helpers.moneyFormat(course.price * (1 - course.discount / 100))}</span>
-                      {course.discount > 0 && <span className="text-lg text-gray-500 line-through">${helpers.moneyFormat(course.price)}</span>}
-                      <Rate disabled defaultValue={4.5} className="text-yellow-400" count={5} />
-                    </div>
-                  </div>
                 </div>
                 <motion.div className="absolute inset-x-0 bottom-0 translate-y-full transform transition-all duration-300 group-hover:translate-y-0" whileHover={{ scale: 1.05 }}>
                   <Link to={`/course/${course._id}`}>
