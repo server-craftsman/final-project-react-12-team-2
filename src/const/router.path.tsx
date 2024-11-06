@@ -59,5 +59,8 @@ export const ROUTER_URL = {
     CART: "/cart",
     ABOUT: "/about"
   },
-  UNAUTHORIZED: "/unauthorized"
+  UNAUTHORIZED: "/unauthorized",
+  PROFILE: {
+    GET_PROFILE_DETAILS: "/profile/:id",
+  }
 };
