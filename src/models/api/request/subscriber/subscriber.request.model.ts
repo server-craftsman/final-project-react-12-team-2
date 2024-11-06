@@ -1,4 +1,4 @@
-export interface GetSubscriptionsParams {
+export interface GetSubscribersParams {
   searchCondition: {
     keyword?: string;
     is_delete?: boolean | undefined;

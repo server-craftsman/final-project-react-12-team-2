@@ -3,7 +3,7 @@ import { Card, Avatar, Row, Col, message } from "antd";
 import { GetSubscriptionsResponse } from "../../../models/api/responsive/subscription/sub.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model";
 import { formatDate } from "../../../utils/helper";
-import { SubscriptionService } from "../../../services/subscription/sub.service";
+import { SubscriptionService } from "../../../services/subscription/subscription.service";
 import { GetSubscriptionsParams } from "../../../models/api/request/subscription/sub.request.model";
 
 interface SearchSubscriptionCondition {
