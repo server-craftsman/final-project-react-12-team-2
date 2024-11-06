@@ -4,7 +4,7 @@ import { Typography, Card, Row, Col, Button, Tag, Avatar, Rate } from "antd";
 import { BookOutlined, PercentageOutlined, VideoCameraOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { GetPublicCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
-import { User } from "../../../../models/api/responsive/users/users.model";
+// import { User } from "../../../../models/api/responsive/users/users.model";
 // import { GetCategoryResponse } from "../../../../models/api/responsive/admin/category.responsive.model";
 import { CourseService } from "../../../../services/course/course.service";
 import { UserService } from "../../../../services/admin/user.service";
@@ -38,7 +38,7 @@ const fetchCoursePublic = async (searchCondition = {}, pageInfo = { pageNum: 1, 
 const Courses: React.FC<CoursesProps> = () => {
 
   const [courses, setCourses] = useState<GetPublicCourseResponse | null>(null);
-  const [user, setUser] = useState<User | null>(null);
+  const [users, setUsers] = useState<{ [key: string]: any }>({});
   const { isCoursePurchased } = useCart();
 
   useEffect(() => {
@@ -46,16 +46,25 @@ const Courses: React.FC<CoursesProps> = () => {
       try {
         const coursesData = await fetchCoursePublic();
         setCourses(coursesData.data);
-        const user_id = coursesData.data.pageData[0].instructor_id;
-        fetchUser(user_id);
+
+        // Fetch user details for each course
+        const userPromises = coursesData.data.pageData.map(async (course) => {
+          const userData = await UserService.getUserDetails(course.instructor_id);
+          return { courseId: course._id, user: userData.data.data };
+        });
+
+        const usersData = await Promise.all(userPromises);
+        const usersMap = usersData.reduce((acc: { [key: string]: any }, { courseId, user }) => { //debug
+          acc[courseId as string] = user;
+          return acc;
+        }, {});
+
+        setUsers(usersMap);
       } catch (error) {
         console.error("Failed to fetch courses:", error);
       }
     };
-    const fetchUser = async (userId: string) => {
-      const userData = await UserService.getUserDetails(userId);
-      setUser(userData.data.data);
-    };
+
     fetchCourses();
   }, []);
 
@@ -75,6 +84,7 @@ const Courses: React.FC<CoursesProps> = () => {
     <Row gutter={[32, 32]}>
       {courses?.pageData.map((course) => {
         const { purchased, isInCart } = isCoursePurchased(course._id);
+        const user = users[course._id]; // Get user details for the course
         console.log(`Course ID: ${course._id}, Purchased: ${purchased}, Is in cart: ${isInCart}`);
         return (
           <Col xs={24} sm={12} md={8} key={course._id} className="mx-auto h-full">
