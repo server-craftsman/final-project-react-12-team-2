@@ -200,10 +200,10 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, se
           <div className="flex items-center" style={{ minHeight: "48px" }}>
             {!record.is_verified && !updatedUsers.includes(record._id) && (
               <>
-                <Button onClick={() => handleApprove(record._id, true)} className="rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-200 hover:bg-blue-600" style={{ width: "48px", marginRight: "4px" }}>
+                <Button onClick={() => handleApprove(record._id, true)} className="rounded-md bg-blue-500 px-4 py-2 text-white transition-all duration-200 hover:bg-blue-600" style={{ width: "48px", marginRight: "4px" }} title="Approve">
                   <CheckOutlined />
                 </Button>
-                <Button onClick={() => handleApprove(record._id, false)} className="rounded-md bg-red-500 px-4 py-2 text-white transition-all duration-200 hover:bg-red-600" style={{ width: "48px" }}>
+                <Button onClick={() => handleApprove(record._id, false)} className="rounded-md bg-red-500 px-4 py-2 text-white transition-all duration-200 hover:bg-red-600" style={{ width: "48px" }} title="Reject">
                   <CloseOutlined />
                 </Button>
               </>

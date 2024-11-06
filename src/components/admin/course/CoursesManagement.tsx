@@ -182,6 +182,7 @@ const CoursesManagement: React.FC<{
                 icon={<CheckOutlined />}
                 className="bg-white text-green-500 mr-2 hover:opacity-80"
                 onClick={() => handleChangeStatus(record._id, CourseStatusEnum.approve)}
+                title="Confirm"
               />
             </Popconfirm>
 
@@ -189,16 +190,19 @@ const CoursesManagement: React.FC<{
               icon={<StopOutlined />}
               className="bg-white text-red-500 mr-2 hover:opacity-80"
               onClick={() => showRejectModal(record._id)}
+              title="Reject"
             />
             <Button 
             icon ={<CarryOutOutlined />}
             onClick={() => showLessonModal(record._id)}
             className="bg-white text-orange-500 mr-2 hover:opacity-80"
+            title="View Lessons"
             />
             <Button
               icon={<ContainerOutlined />}
               onClick={() => showSessionModal(record._id)}
               className="bg-white text-yellow-500 mr-2 hover:opacity-80"
+              title="View Sessions"
             />
           </div>
         ) : (
@@ -207,11 +211,13 @@ const CoursesManagement: React.FC<{
             icon ={<CarryOutOutlined />}
             onClick={() => showLessonModal(record._id)}
             className="bg-white text-orange-500 mr-2 hover:opacity-80"
+            title="View Lessons"
             />
             <Button
               icon={<ContainerOutlined />}
               onClick={() => showSessionModal(record._id)}
               className="bg-white text-yellow-500 mr-2 hover:opacity-80"
+              title="View Sessions"
             />
           </div>
         )
