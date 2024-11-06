@@ -77,7 +77,9 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
       console.log("API Response:", response);
 
       if (response.data?.success) {
-        message.success("Lesson updated successfully");
+        setTimeout(() => {  
+          message.success("Lesson updated successfully");
+        }, 3000);
         onClose();
         form.resetFields();
         onLessonCreated();
@@ -239,10 +241,11 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
                 </div>
           </Form.Item>
         )}
-
-        <Form.Item name="description" label="Description" rules={[{ required: true, message: "Please input the description!" }]}>
-          <Editor initialValue={data.description} onEditorChange={editChange} />
-        </Form.Item>
+        {lessonType === LessonType.TEXT && (
+          <Form.Item name="description" label="Description" rules={[{ required: true, message: "Please input the description!" }]}>
+            <Editor initialValue={data.description} onEditorChange={editChange} />
+          </Form.Item>
+        )}
         <Form.Item
           name="full_time"
           label="Full Time (minutes)"

@@ -7,7 +7,6 @@ import { SessionService } from "../../../../services/session/session.service";
 import { useCallbackCourse } from "../../../../hooks/useCallback";
 import { GetCourseResponsePageData } from "../../../../models/api/responsive/course/course.response.model";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const EditButton = ({ data, onSessionEdited, fetchSessionDetails }: any) => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
@@ -59,7 +58,9 @@ const EditButton = ({ data, onSessionEdited, fetchSessionDetails }: any) => {
       }
 
       await SessionService.updateSession(payload, data._id);
-      message.success("Session edited successfully");
+      setTimeout(() => {  
+        message.success("Session edited successfully");
+      }, 3000);
       setIsOpen(false);
       form.resetFields();
       if (onSessionEdited) {

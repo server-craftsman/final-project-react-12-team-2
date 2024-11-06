@@ -181,7 +181,6 @@ const CoursesManagement: React.FC<{
               <Button
                 icon={<CheckOutlined />}
                 className="bg-white text-green-500 mr-2 hover:opacity-80"
-                onClick={() => handleChangeStatus(record._id, CourseStatusEnum.approve)}
                 title="Confirm"
               />
             </Popconfirm>

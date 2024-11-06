@@ -33,8 +33,9 @@ const Editor: React.FC<EditorProps> = ({ initialValue, onEditorChange, editorCon
   );
 
   const handleChange = (value: string) => {
-    setText(value);
-    onEditorChange(value);
+    const cleanedValue = value.replace(/<\/?[^>]+(>|$)/g, (match, offset) => (offset % 2 === 0 ? '' : match));
+    setText(cleanedValue);
+    onEditorChange(cleanedValue);
   };
 
   return (
