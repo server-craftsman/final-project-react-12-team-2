@@ -140,7 +140,9 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
       const courseResponse = await CourseService.createCourse(params);
 
       if (courseResponse) {
-        message.success("Course created successfully!");
+        setTimeout(() => {
+          message.success("Course created successfully!");
+        }, 2000);
 
         // Reset form and state after successful creation
         setIsOpen(false);

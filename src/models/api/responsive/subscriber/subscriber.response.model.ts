@@ -16,8 +16,7 @@ export interface PageInfo {
   totalItems: number;
   totalPages: number;
 }
-
-export interface GetSubscriptionsResponse {
+export interface GetSubscribersResponse {
   pageData: Subscriptions[];
   pageInfo: PageInfo;
 }

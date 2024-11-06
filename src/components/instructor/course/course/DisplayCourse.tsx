@@ -342,15 +342,18 @@ const DisplayCourse: React.FC<{
       },
     });
   };
-  
 
+  // Ensure that the statusFilter is a valid StatusType or an empty string
+  const validStatusFilter = Object.values(StatusType).includes(statusFilter) ? statusFilter : "";
+  console.log("Valid Status Filter:", validStatusFilter);
+  
   return (
     <>      
       <div className="mb-4 mt-4 flex justify-between">
         <CustomSearch onSearch={handleSearch} placeholder="Search by course name" className="w-1/5" />
         <FilterStatus
           onStatusChange={handleStatusChange}
-          currentStatus={statusFilter}
+          currentStatus={validStatusFilter}
         />
         <div className="flex justify-end gap-2">
           <CreateCourseButton onCourseCreated={handleCourseCreated} />

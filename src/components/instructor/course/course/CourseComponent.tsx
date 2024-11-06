@@ -5,13 +5,14 @@ import { StatusType } from "../../../../app/enums";
 const CourseComponent = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<StatusType | "">("");
-
+  const [tempStatusFilter, setTempStatusFilter] = useState<StatusType | "">("");
   const handleSearch = (value: string) => {
     setSearchTerm(value);
+    setStatusFilter(tempStatusFilter);
   };
 
   const handleStatusChange = (status: StatusType | "") => {
-    setStatusFilter(status);
+    setTempStatusFilter(status);
   };
 
   return (
