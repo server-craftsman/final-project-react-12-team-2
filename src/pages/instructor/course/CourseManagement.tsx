@@ -55,7 +55,7 @@ const CourseManagement = () => {
     {
       key: "course",
       label: "Course",
-      children: <CourseComponent />
+      children: <CourseComponent refreshKey={refreshKey} />
     },
     {
       key: "session",

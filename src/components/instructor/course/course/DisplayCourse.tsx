@@ -17,19 +17,26 @@ import { GetCourseResponsePageData, GetCourseResponse, GetCourseByIdResponse } f
 import { CourseService } from "../../../../services/course/course.service";
 import _ from "lodash";
 
-const DisplayCourse: React.FC<{
+const DisplayCourse = ({
+  searchTerm,
+  statusFilter,
+  onSearch,
+  onStatusChange,
+  refreshKey
+}: {
   searchTerm: string;
   statusFilter: StatusType;
   onSearch: (value: string) => void;
   onStatusChange: (status: StatusType | "") => void;
-}> = ({ searchTerm, statusFilter, onSearch, onStatusChange }) => {
+  refreshKey: number;
+}) => {
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<number[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   // const [courseDetails, setCourseDetails] = useState<any>(null);
-  const [refreshKey, setRefreshKey] = useState<number>(0);
+  // const [refreshKey, setRefreshKey] = useState<number>(0);
   // const [comment, setComment] = useState<string>("");
 
   const getCourseData = useCallback(() => {
@@ -101,7 +108,7 @@ const DisplayCourse: React.FC<{
         fetchCourses();
       }, [searchTerm, statusFilter, pageNum, pageSize, refreshKey]); //debug
     
-      return { courses, totalItems, courseById, fetchCourseById };
+      return { courses, totalItems, courseById, fetchCourseById, fetchCourses, refreshKey };
     };
 
 
@@ -116,10 +123,10 @@ const DisplayCourse: React.FC<{
 
   const { courses, totalItems } = getCourseData();
 
-  // Trigger API call when the active tab changes to "Course"
-  useEffect(() => {
-    setRefreshKey((prevKey) => prevKey + 1); // Increment refreshKey to trigger data fetch
-  }, []);
+  // // Trigger API call when the active tab changes to "Course"
+  // useEffect(() => {
+  //   setRefreshKey((prevKey) => prevKey + 1); // Increment refreshKey to trigger data fetch
+  // }, []);
 
   // Filter courses based on the statusFilter
   const filteredCourses = courses?.filter(course => 
@@ -127,7 +134,6 @@ const DisplayCourse: React.FC<{
   );
 
   const handleCourseCreated = () => {
-    setRefreshKey((prevKey) => prevKey + 1);
   };
 
   useEffect(() => {
@@ -352,7 +358,7 @@ const DisplayCourse: React.FC<{
     } catch (error) {
       message.error("Failed to send courses to admin");
     }
-  }, [courses, selectedCourse, setIsModalVisible, setSelectedRowKeys, setRefreshKey]);
+  }, [courses, selectedCourse, setIsModalVisible, setSelectedRowKeys, refreshKey]); //debug
 
   const handleCancel = () => {
     setIsModalVisible(false);
