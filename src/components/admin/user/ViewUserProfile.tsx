@@ -14,8 +14,8 @@ import { ROUTER_URL } from "../../../const/router.path";
 import { helpers } from "../../../utils";
 
 // handle request - response
-import { HTTP_STATUS, UserRoles } from "../../../app/enums";
-import { HttpException } from "../../../app/exceptions";
+import { UserRoles } from "../../../app/enums";
+// import { HttpException } from "../../../app/exceptions";
 
 interface SearchCondition {
   keyword: string;
@@ -57,7 +57,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
   // Memoize the search condition logic
   const getSearchCondition = React.useCallback((searchQuery: string, selectedRole: UserRoles | null, selectedStatus: boolean | null, activeTab: string): SearchCondition => {
     const baseCondition = {
-      keyword: searchQuery || defaultParams.searchCondition.keyword,
+      keyword: searchQuery, //debug
       role: UserRoles.ALL,
       status: true,
       is_verified: true,
@@ -99,24 +99,15 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
 
       const response = await UserService.getUsersAdmin(params as GetUsersAdminParams);
 
-      if (!response.data) {
-        throw new HttpException("No response data received", HTTP_STATUS.NOT_FOUND);
-      }
-
-      if (!response.data.success) {
-        throw new HttpException("Failed to fetch users", HTTP_STATUS.BAD_REQUEST);
-      }
-
-      // Filter out users with role ADMIN
-      const filteredUsers = response.data.data.pageData.filter((user) => user.role !== UserRoles.ADMIN);
+      // Filter users based on searchQuery
+      const filteredUsers = response.data.data.pageData.filter((user) => 
+        // user.role !== UserRoles.ALL && 
+        (user.name.includes(searchQuery) || user.email.includes(searchQuery))
+      );
 
       setUsers({ ...response.data.data, pageData: filteredUsers });
     } catch (error) {
-      if (error instanceof HttpException) {
-        message.error(error.message);
-      } else {
-        message.error("An unexpected error occurred while fetching users");
-      }
+      console.error("Failed to fetch users:", error);
       setUsers(null);
     }
   }, [searchQuery, selectedRole, selectedStatus, activeTab, getSearchCondition]);
@@ -128,19 +119,18 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
   const handleViewDetails = React.useCallback(
     async (userId: string) => {
       try {
-        const response = await UserService.getUserDetails(userId);
+        await UserService.getUserDetails(userId);
 
-        if (!response.data?.success) {
-          throw new HttpException("Failed to fetch user details", HTTP_STATUS.BAD_REQUEST);
-        }
+        // if (!response.data?.success) {
+        //   throw new HttpException("Failed to fetch user details", HTTP_STATUS.BAD_REQUEST);
+        // }
 
         navigate(ROUTER_URL.ADMIN.VIEW_USER_DETAILS.replace(":id", userId));
       } catch (error) {
-        if (error instanceof HttpException) {
-          message.error(error.message);
-        } else {
-          message.error("An unexpected error occurred while fetching user details");
-        }
+        // if (error instanceof HttpException) {
+        //   message.error(error.message);
+        // } else {
+        message.error("An unexpected error occurred while fetching user details");
       }
     },
     [navigate]
@@ -156,20 +146,20 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
             user_id: userId,
             status
           };
-          const response = await UserService.changeStatus(userId, params as ChangeStatusParams);
+          await UserService.changeStatus(userId, params as ChangeStatusParams);
 
-          if (!response.data?.success) {
-            throw new HttpException(`Failed to ${status ? "unblock" : "block"} account`, HTTP_STATUS.BAD_REQUEST);
-          }
+          // if (!response.data?.success) {
+          //   throw new HttpException(`Failed to ${status ? "unblock" : "block"} account`, HTTP_STATUS.BAD_REQUEST);
+          // }
 
           message.success(`Account has been successfully ${status ? "unblocked" : "blocked"}.`);
           fetchUsers();
         } catch (error) {
-          if (error instanceof HttpException) {
-            message.error(error.message);
-          } else {
-            message.error(`An unexpected error occurred while ${status ? "unblocking" : "blocking"} the account`);
-          }
+          // if (error instanceof HttpException) {
+          //   message.error(error.message);
+          // } else {
+          message.error(`An unexpected error occurred while ${status ? "unblocking" : "blocking"} the account`);
+          // }
         }
       }
     });
@@ -202,23 +192,23 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
           content: `Are you sure you want to change the role from ${currentRole.toUpperCase()} to ${newRole.toUpperCase()}?`,
           onOk: async () => {
             try {
-              const response = await UserService.changeRole(userId, {
+              await UserService.changeRole(userId, {
                 user_id: userId,
                 role: newRole
               } as ChangeRoleParams);
 
-              if (!response.data?.success) {
-                throw new HttpException("Failed to update role", HTTP_STATUS.BAD_REQUEST);
-              }
+              // if (!response.data?.success) {
+              //   throw new HttpException("Failed to update role", HTTP_STATUS.BAD_REQUEST);
+              // }
 
               message.success(`Role updated to ${newRole.toUpperCase()}`);
               fetchUsers();
             } catch (error) {
-              if (error instanceof HttpException) {
-                message.error(error.message);
-              } else {
-                message.error("An unexpected error occurred while updating role");
-              }
+              // if (error instanceof HttpException) {
+              //   message.error(error.message);
+              // } else {
+              message.error("An unexpected error occurred while updating role");
+              // }
             }
           }
         });
@@ -261,22 +251,22 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
 
           if (userIdsToDelete) {
             for (const userId of userIdsToDelete) {
-              const response = await UserService.deleteUser(userId);
+              await UserService.deleteUser(userId);
 
-              if (!response.data?.success) {
-                throw new HttpException("Failed to delete selected accounts", HTTP_STATUS.BAD_REQUEST);
-              }
+              // if (!response.data?.success) {
+              //   throw new HttpException("Failed to delete selected accounts", HTTP_STATUS.BAD_REQUEST);
+              // }
             }
           }
 
           message.success("Selected accounts have been successfully deleted.");
           fetchUsers(); // Refresh the user list
         } catch (error) {
-          if (error instanceof HttpException) {
-            message.error(error.message);
-          } else {
-            message.error("An error occurred while deleting accounts.");
-          }
+          // if (error instanceof HttpException) {
+          //   message.error(error.message);
+          // } else {
+          message.error("An error occurred while deleting accounts.");
+          // }
         }
       }
     });

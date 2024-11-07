@@ -22,7 +22,7 @@ const ManageUser = () => {
 
   // New state to trigger search
   const [searchParams, setSearchParams] = useState({
-    query: "",
+    keyword: "",
     role: null as UserRoles | null,
     status: null as boolean | null,
   });
@@ -32,7 +32,7 @@ const ManageUser = () => {
     setActiveTab(key);
     // Reset all filters when switching tabs
     setSearchParams({
-      query: "",
+      keyword: "",
       role: null,
       status: null,
     });
@@ -51,12 +51,12 @@ const ManageUser = () => {
   };
 
   // Trigger search with current query, role, and status
-  const handleSearch = () => {
-    setSearchParams({
-      query: searchQuery,
-      role: selectedRole,
-      status: selectedStatus,
-    });
+  const handleSearch = (searchTerm: string) => {
+    setSearchQuery(searchTerm);
+    setSearchParams((prevParams) => ({
+      ...prevParams,
+      keyword: searchTerm,
+    }));
   };
 
   const fetchUsers = async (params: GetUsersAdminParams) => {
@@ -69,47 +69,48 @@ const ManageUser = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchUsersData = async () => {
-      try {
-        let searchCondition = {
-          keyword: searchParams.query,
-          role: searchParams.role || UserRoles.ALL,
-          status: searchParams.status !== null ? searchParams.status : true,
-          is_verified: true,
-          is_deleted: false
+  // Ensure fetchUsersData is defined outside useEffect to be called directly
+  const fetchUsersData = async () => {
+    try {
+      let searchCondition = {
+        keyword: searchParams.keyword,
+        role: searchParams.role || UserRoles.ALL,
+        status: searchParams.status !== null ? searchParams.status : true,
+        is_verified: true,
+        is_deleted: false
+      };
+
+      // Modify search conditions based on active tab
+      if (activeTab === "blocked") {
+        searchCondition = {
+          ...searchCondition,
+          status: false,
+          is_deleted: true
         };
-
-        // Modify search conditions based on active tab
-        if (activeTab === "blocked") {
-          searchCondition = {
-            ...searchCondition,
-            status: false,
-            is_deleted: true
-          };
-        } else if (activeTab === "unverified") {
-          searchCondition = {
-            ...searchCondition,
-            is_verified: false
-          };
-        }
-
-        const response = await fetchUsers({
-          searchCondition,
-          pageInfo: {
-            pageNum: 1,
-            pageSize: 10
-          }
-        });
-
-        if (response && response.success) {
-          setUsers(response.data.pageData);
-        }
-      } catch (error) {
-        console.error("Failed to fetch users:", error);
+      } else if (activeTab === "unverified") {
+        searchCondition = {
+          ...searchCondition,
+          is_verified: false
+        };
       }
-    };
 
+      const response = await fetchUsers({
+        searchCondition,
+        pageInfo: {
+          pageNum: 1,
+          pageSize: 10
+        }
+      });
+
+      if (response && response.success) {
+        setUsers(response.data.pageData);
+      }
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchUsersData();
   }, [searchParams, activeTab]);
 
@@ -125,7 +126,11 @@ const ManageUser = () => {
     return (
       <div className="items-center justify-center border-b border-gray-300">
         <div className="flex flex-col items-center p-4 md:flex-row">
-          <CustomSearch onSearch={handleSearch} placeholder="Search by name or email" className="search-input mr-4" />
+          <CustomSearch 
+            onSearch={handleSearch} 
+            placeholder="Search by name or email" 
+            className="search-input mr-4" 
+          />
           {activeTab === "all" && (
             <>
               <FilterRole onRoleChange={handleRoleChange} />
@@ -136,7 +141,7 @@ const ManageUser = () => {
         </div>
         <Tabs defaultActiveKey="all" onChange={handleTabChange} items={tabItems} className="ml-4" />
         <ViewUserProfile 
-          searchQuery={searchParams.query} 
+          searchQuery={searchParams.keyword} 
           selectedRole={searchParams.role} 
           selectedStatus={searchParams.status} 
           activeTab={activeTab} 
