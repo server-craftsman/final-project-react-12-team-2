@@ -116,13 +116,17 @@ const EditUserProfile = () => {
         let videoUrl = state.user?.data.video_url || "";
 
         if (state.selectedFile) {
-          const uploadedUrl = await handleUploadFile(state.selectedFile);
-          const uploadedVideoUrl = await handleUploadFile(state.selectedFile);
-          if (uploadedUrl && uploadedVideoUrl) {
-            avatarUrl = uploadedUrl;
-            videoUrl = uploadedVideoUrl;
+          if (state.selectedFile.type.startsWith("image/")) {
+            const uploadedUrl = await handleUploadFile(state.selectedFile, "image");
+            if (uploadedUrl) {
+              avatarUrl = uploadedUrl;
+            }
+          } else if (state.selectedFile.type.startsWith("video/")) {
+            const uploadedVideoUrl = await handleUploadFile(state.selectedFile, "video");
+            if (uploadedVideoUrl) {
+              videoUrl = uploadedVideoUrl;
+            }
           }
-        
         }
 
         const updatedValues = {
@@ -150,10 +154,15 @@ const EditUserProfile = () => {
     [id, navigate, state.user?.data.avatar_url, state.selectedFile, form]
   );
 
-  const handleUploadFile = useCallback((file: File) => {
-    const maxSize = 5 * 1024 * 1024;
-    if (file.size > maxSize) {
-      message.error("File size should not exceed 5MB");
+  const handleUpload = useCallback((file: File) => {
+    const maxAvatarSize = 5 * 1024 * 1024; // 5MB for avatar
+    const maxVideoSize = 100 * 1024 * 1024; // 100MB for video
+
+    const isImage = file.type.startsWith("image/");
+    const isVideo = file.type.startsWith("video/");
+
+    if ((isImage && file.size > maxAvatarSize) || (isVideo && file.size > maxVideoSize)) {
+      message.error(`File size should not exceed ${isImage ? "5MB" : "100MB"}`);
       return false;
     }
 
@@ -171,8 +180,8 @@ const EditUserProfile = () => {
             ...prev.user,
             data: {
               ...prev.user.data,
-              avatar_url: URL.createObjectURL(file),
-              video_url: URL.createObjectURL(file)
+              avatar_url: isImage ? URL.createObjectURL(file) : prev.user.data.avatar_url,
+              video_url: isVideo ? URL.createObjectURL(file) : prev.user.data.video_url
             }
           }
         : null
@@ -196,7 +205,7 @@ const EditUserProfile = () => {
             <div className="flex flex-col items-center gap-5 sm:flex-row">
               <div className="group relative w-full">
                 <Avatar src={state.user.data.avatar_url} size={120} className="border-4 border-[#1a237e] shadow-lg transition-transform hover:scale-105" />
-                <Upload accept="image/*" showUploadList={false} beforeUpload={handleUploadFile}>
+                <Upload accept="image/*" showUploadList={false} beforeUpload={handleUpload}>
                   <div className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                     <UploadOutlined className="text-2xl text-white" />
                   </div>
@@ -204,7 +213,7 @@ const EditUserProfile = () => {
               </div>
               <div className="group relative w-full sm:w-[500px]">
                 <video src={state.user.data.video_url} controls className="w-full h-full object-cover rounded-lg border-4 border-[#1a237e] shadow-lg transition-transform hover:scale-105" />
-                <Upload accept="video/*" showUploadList={false} beforeUpload={handleUploadFile}>
+                <Upload accept="video/*" showUploadList={false} beforeUpload={handleUpload}>
                   <Button
                     type="primary"
                     icon={<UploadOutlined />}
