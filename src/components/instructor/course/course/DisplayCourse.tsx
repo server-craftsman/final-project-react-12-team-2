@@ -49,7 +49,7 @@ const DisplayCourse = ({
       const params: GetCourseParams = {
         searchCondition: {
           keyword: searchTerm,
-          category_id: statusFilter || "",
+          category_id: "",
           status: statusFilter || "",
           is_delete: false
         },
