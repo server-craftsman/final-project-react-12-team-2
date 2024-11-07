@@ -128,21 +128,22 @@ const EditUserProfile = () => {
             }
           }
         }
-
         const updatedValues = {
           name: values.name,
           email: values.email,
           phone_number: values.phone_number,
           description: values.description || "",
           dob: values.dob ? helpers.formatDate(new Date(values.dob)) : null,
+          
           avatar_url: avatarUrl,
           video_url: videoUrl,
           // bank_name: values.bank_name || "",
           // bank_account_no: values.bank_account_no || "",
           // bank_account_name: values.bank_account_name || ""
         };
-
         await UserService.updateUser(id as string, updatedValues as UpdateUserParams);
+        
+        
         message.success("Profile updated successfully");
         navigate(ROUTER_URL.INSTRUCTOR.SETTING);
       } catch (error: any) {
@@ -154,7 +155,7 @@ const EditUserProfile = () => {
     [id, navigate, state.user?.data.avatar_url, state.selectedFile, form]
   );
 
-  const handleUpload = useCallback((file: File) => {
+  const handleUpload = useCallback(async (file: File) => {
     const maxAvatarSize = 5 * 1024 * 1024; // 5MB for avatar
     const maxVideoSize = 100 * 1024 * 1024; // 100MB for video
 
@@ -172,20 +173,35 @@ const EditUserProfile = () => {
       return false;
     }
 
-    setState((prev) => ({
-      ...prev,
-      selectedFile: file,
-      user: prev.user
-        ? {
-            ...prev.user,
-            data: {
-              ...prev.user.data,
-              avatar_url: isImage ? URL.createObjectURL(file) : prev.user.data.avatar_url,
-              video_url: isVideo ? URL.createObjectURL(file) : prev.user.data.video_url
-            }
-          }
-        : null
-    }));
+    try {
+      let uploadedUrl = "";
+      if (isImage) {
+        uploadedUrl = await handleUploadFile(file, "image");
+      } else if (isVideo) {
+        uploadedUrl = await handleUploadFile(file, "video");
+      }
+
+      if (uploadedUrl) {
+        setState((prev) => ({
+          ...prev,
+          user: prev.user
+            ? {
+                ...prev.user,
+                data: {
+                  ...prev.user.data,
+                  avatar_url: isImage ? uploadedUrl : prev.user.data.avatar_url,
+                  video_url: isVideo ? uploadedUrl : prev.user.data.video_url
+                }
+              }
+            : null
+        }));
+        setTimeout(() => {
+          message.success("File uploaded successfully");
+        }, 3000);
+      }
+    } catch (error) {
+      message.error("Failed to upload file. Please try again.");
+    }
 
     return false;
   }, []);
