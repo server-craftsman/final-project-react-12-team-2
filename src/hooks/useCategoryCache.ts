@@ -1,20 +1,19 @@
-import { useCallback, useRef } from "react";
 import { CategoryService } from "../services/category/category.service";
 
 const useCategoryCache = () => {
-  // Use a ref to store both the cache and pending promises
-  const categoryCache = useRef<Record<string, string>>({});
-  const pendingPromises = useRef<Record<string, Promise<string>>>({});
+  // Use plain objects to store both the cache and pending promises
+  const categoryCache: Record<string, string> = {};
+  const pendingPromises: Record<string, Promise<string>> = {};
 
-  const getCategoryName = useCallback(async (categoryId: string) => {
+  const getCategoryName = async (categoryId: string) => {
     // Return cached result if available
-    if (categoryCache.current[categoryId]) {
-      return categoryCache.current[categoryId];
+    if (categoryCache[categoryId]) {
+      return categoryCache[categoryId];
     }
 
     // Return existing promise if request is already in flight
-    if (categoryId in pendingPromises.current) {
-      return pendingPromises.current[categoryId];
+    if (categoryId in pendingPromises) {
+      return pendingPromises[categoryId];
     }
 
     // Create new promise for this request
@@ -32,20 +31,20 @@ const useCategoryCache = () => {
           }
         });
         const categoryName = categoryResponse?.data?.data?.pageData?.[0]?.name || "Unknown Category";
-        categoryCache.current[categoryId] = categoryName;
+        categoryCache[categoryId] = categoryName;
         return categoryName;
       } catch (error) {
         const fallback = "Unknown Category";
-        categoryCache.current[categoryId] = fallback; // Cache errors too
+        categoryCache[categoryId] = fallback; // Cache errors too
         return fallback;
       } finally {
-        delete pendingPromises.current[categoryId]; // Cleanup
+        delete pendingPromises[categoryId]; // Cleanup
       }
     })();
 
-    pendingPromises.current[categoryId] = promise;
+    pendingPromises[categoryId] = promise;
     return promise;
-  }, []);
+  };
 
   return getCategoryName;
 };

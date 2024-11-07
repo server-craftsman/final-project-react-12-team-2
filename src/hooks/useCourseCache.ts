@@ -52,10 +52,12 @@ const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageN
         setTotalItems(response.data.data.pageInfo.pageNum);
       }
     } catch (error) {
+      console.error("Error fetching courses:", error);
       return null;
     }
   };
 
+  //thực thi
   const fetchCourseById = async (id: string) => {
     try {
       const response = await CourseService.getCourseById(id);

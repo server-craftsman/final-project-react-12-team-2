@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Typography, Card, Row, Col, Button, Tag, Avatar, Rate } from "antd";
+import { Typography, Card, Row, Col, Button, Tag, Avatar } from "antd";
 import { BookOutlined, PercentageOutlined, VideoCameraOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { GetPublicCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
@@ -109,12 +109,12 @@ const Courses: React.FC<CoursesProps> = () => {
                     {course.discount}% OFF
                   </motion.div>
                 )}
-                <div className="flex h-full flex-col">
-                  <Title level={3} className="mb-2 h-16 line-clamp-2 text-xl font-bold text-[#1a237e]">
+                <div className="flex h-[400px] flex-col">
+                  <Title level={3} className="mb-2 h-16 line-clamp-2 text-xl font-bold text-[#1a237e] transition duration-300 hover:text-indigo-900">
                     {course.name}
                   </Title>
-                  <Paragraph className="h-20 mb-4 line-clamp-3 text-gray-600">{parse(course.description)}</Paragraph>
-                  <div className="h-16">
+                  <Paragraph className="mb-4 h-12 line-clamp-2 text-gray-600" ellipsis={{ rows: 2 }}>{parse(course.description)}</Paragraph>
+                  <div className="h-20">
                     <div className="mb-4 flex items-center justify-between">
                       <span className="text-2xl font-bold text-indigo-800">${helpers.moneyFormat(course.price * (1 - course.discount / 100))}</span>
                       {course.discount > 0 && <span className="text-lg text-gray-500 line-through">${helpers.moneyFormat(course.price)}</span>}
@@ -122,9 +122,9 @@ const Courses: React.FC<CoursesProps> = () => {
                   </div>
                   <Meta
                     avatar={<Avatar src={user?.avatar_url} />}
-                    title={<span className="line-clamp-1 h-8 text-lg font-semibold text-gray-800">{user?.name}</span>}
+                    title={<span className="line-clamp-1 text-lg font-semibold text-gray-800">{user?.name}</span>}
                     description={
-                      <div className="h-24 mb-4 items-center text-sm">
+                      <div className="mb-4 h-24 items-center text-sm">
                         <div>
                             <Tag className="mr-2 rounded bg-gradient-tone px-2 py-1 text-xs font-semibold uppercase text-white">{course.category_name}</Tag>
                         </div>
@@ -147,7 +147,7 @@ const Courses: React.FC<CoursesProps> = () => {
                     className="mb-4"
                   />
                 </div>
-                <motion.div className="absolute inset-x-0 bottom-0 translate-y-full transform transition-all duration-300 group-hover:translate-y-0" whileHover={{ scale: 1.05 }}>
+                <motion.div className="absolute inset-x-0 bottom-0 h-12 translate-y-full transform transition-all duration-300 group-hover:translate-y-0" whileHover={{ scale: 1.05 }}>
                   <Link to={`/course/${course._id}`}>
                     <Button type="primary" block size="large" className="border-none bg-gradient-tone hover:bg-gradient-tone-hover">
                       Preview This Course

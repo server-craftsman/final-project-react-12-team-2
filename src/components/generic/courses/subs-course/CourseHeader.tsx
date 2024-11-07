@@ -41,6 +41,9 @@ const CourseHeader: React.FC<CourseHeaderProps> = ({ course, instructor, showVid
           {course.name}
         </Title>
         <Paragraph className="mb-1 text-gray-600">{parse(course.description)}</Paragraph>
+        <Paragraph className="mb-1 text-gray-600">{parse(course.content)}</Paragraph>
+
+
         {instructorData && (
           <Link to={`/profile/${instructorData._id}`}>
             <div className="mb-4 flex items-center space-x-4 rounded-lg bg-gradient-to-r from-gray-50 to-white p-4 shadow-lg">

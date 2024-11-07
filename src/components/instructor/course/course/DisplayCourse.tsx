@@ -1,6 +1,5 @@
 import Table, { ColumnsType } from "antd/es/table";
-import { CheckOutlined, HistoryOutlined, FormOutlined, SendOutlined, EditOutlined } from "@ant-design/icons";
-// import { courseStatusColor } from "../../../../utils/courseStatus";
+import { CheckOutlined, HistoryOutlined, FormOutlined, SendOutlined } from "@ant-design/icons";
 import { formatDate, moneyFormat } from "../../../../utils/helper";
 import { CourseStatusBadge } from "../../../../utils/courseStatus";
 import { StatusType } from "../../../../app/enums";
@@ -11,8 +10,10 @@ import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
 import CreateCourseButton from "./CreateButton";
 import FilterStatus from "./FilterStatus";
-import useCourseCache from "../../../../hooks/useCourseCache";
-import { GetCourseResponsePageData } from "../../../../models/api/responsive/course/course.response.model";
+// import useCourseCache from "../../../../hooks/useCourseCache"; //api
+import useCategoryCache from "../../../../hooks/useCategoryCache";
+import { GetCourseParams } from "../../../../models/api/request/course/course.request.model";
+import { GetCourseResponsePageData, GetCourseResponse, GetCourseByIdResponse } from "../../../../models/api/responsive/course/course.response.model";
 import { CourseService } from "../../../../services/course/course.service";
 import _ from "lodash";
 
@@ -27,11 +28,83 @@ const DisplayCourse: React.FC<{
   const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<number[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [courseDetails, setCourseDetails] = useState<any>(null);
+  // const [courseDetails, setCourseDetails] = useState<any>(null);
   const [refreshKey, setRefreshKey] = useState<number>(0);
   // const [comment, setComment] = useState<string>("");
 
   const getCourseData = useCallback(() => {
+    const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageNum: number, pageSize: number, refreshKey: number) => {
+      const [courses, setCourses] = useState<GetCourseResponse["pageData"]>();
+      const [totalItems, setTotalItems] = useState<number>(0);
+      const [courseById, setCourseById] = useState<GetCourseByIdResponse>();
+      const getCategoryName = useCategoryCache();
+    
+      const params: GetCourseParams = {
+        searchCondition: {
+          keyword: searchTerm,
+          category_id: statusFilter || "",
+          status: statusFilter || "",
+          is_delete: false
+        },
+        pageInfo: {
+          pageNum,
+          pageSize
+        }
+      };
+    
+      const mapCourseData = async (course: any) => {
+        let categoryName = "Unknown Category";
+        if (course.category_name) {
+          categoryName = await getCategoryName(course.category_name);
+        } else {
+          console.warn(`Course ID: ${course.id} does not have a category_id`);
+        }
+        return {
+          ...course,
+          category_name: categoryName,
+          course_id: course.id ? String(course.id) : ""
+        };
+      };
+    
+      const fetchCourses = async () => {
+        try {
+          const response = await CourseService.getCourse(params);
+    
+          if (response.status === 200 && response.data) {
+            const pageData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [];
+    
+            const coursesTempData = await Promise.all(pageData.map(mapCourseData));
+    
+            setCourses(coursesTempData);
+            setTotalItems(response.data.data.pageInfo.pageNum);
+          }
+        } catch (error) {
+          console.error("Error fetching courses:", error);
+          return null;
+        }
+      };
+    
+      //thực thi
+      const fetchCourseById = async (id: string) => {
+        try {
+          const response = await CourseService.getCourseById(id);
+          if (response.status === 200 && response.data) {
+            setCourseById(response.data.data);
+            return response.data.data;
+          }
+        } catch (error) {
+          return null;
+        }
+      };
+    
+      useEffect(() => {
+        fetchCourses();
+      }, [searchTerm, statusFilter, pageNum, pageSize, refreshKey]); //debug
+    
+      return { courses, totalItems, courseById, fetchCourseById };
+    };
+
+
     return useCourseCache(
       searchTerm,
       statusFilter as StatusType | "",
@@ -42,6 +115,11 @@ const DisplayCourse: React.FC<{
   }, [searchTerm, statusFilter, pageNum, pageSize, refreshKey]);
 
   const { courses, totalItems } = getCourseData();
+
+  // Trigger API call when the active tab changes to "Course"
+  useEffect(() => {
+    setRefreshKey((prevKey) => prevKey + 1); // Increment refreshKey to trigger data fetch
+  }, []);
 
   // Filter courses based on the statusFilter
   const filteredCourses = courses?.filter(course => 
@@ -68,9 +146,15 @@ const DisplayCourse: React.FC<{
   const fetchCourseDetails = async (courseId: string) => {
     try {
       const details = await CourseService.getCourseById(courseId);
-      setCourseDetails(details.data.data);
+      if (details && details.data && details.data.data) {
+        return details.data.data; // Return the fetched course details
+      } else {
+        message.error("Course details not found");
+        return null;
+      }
     } catch (error) {
       message.error("Failed to fetch course details");
+      return null;
     }
   };
 
@@ -216,9 +300,10 @@ const DisplayCourse: React.FC<{
                 className="bg-gradient-tone text-white mr-2 hover:opacity-90"
               />
             )}
-            <Button
-              icon={<EditOutlined />}
-              onClick={() => fetchCourseDetails(record._id)}
+            <EditButton 
+              data={record}
+              onEditSuccess={handleCourseCreated}
+              fetchCourseDetails={fetchCourseDetails}
             />
             <DeleteButton courseId={record._id} onDeleteSuccess={handleCourseCreated} />
           </>
@@ -407,9 +492,7 @@ const DisplayCourse: React.FC<{
       <Modal title="Confirm" open={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText="Yes" cancelText="No" okButtonProps={{ className: "bg-gradient-tone" }}>
         <p>Are you sure you want to send the selected courses to admin? This action cannot be undone.</p>
       </Modal>
-      {courseDetails && (
-       <EditButton data={courseDetails} onEditSuccess={handleCourseCreated} />
-      )}
+      {/* {courseDetails && <EditButton data={courseDetails} onEditSuccess={handleCourseCreated} />} */}
     </>
   );
 };

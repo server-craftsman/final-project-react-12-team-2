@@ -3,22 +3,24 @@ const { Option } = Select;
 import { useState, useEffect, useCallback } from "react";
 import { EditOutlined, UploadOutlined } from "@ant-design/icons";
 import {upload } from "../../../../utils";
-import DraftEditor from "../../../generic/tiny/Editor";
+import Editor from "../../../generic/tiny/Editor";
 import { CourseService } from "../../../../services/course/course.service";
 import { UpdateCourseParams } from "../../../../models/api/request/course/course.request.model";
 import { CategoryService } from "../../../../services/category/category.service";
 import { GetCategoryParams } from "../../../../models/api/request/admin/category.request.model";
+// import { handleUploadFile } from "../../../../utils/upload";
 
 interface EditButtonProps {
   data: any;
   onEditSuccess?: () => void;
+  fetchCourseDetails?: (courseId: string) => Promise<any>;
 }
 
-const EditButton = ({ data, onEditSuccess }: EditButtonProps) => { // Added onEditSuccess prop
+const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
-  const [description, setDescription] = useState<string>(data.description || '');
-  const [content, setContent] = useState<string>(data.content || '');
+  const [description, setDescription] = useState<string>('');
+  const [content, setContent] = useState<string>('');
   const [categories, setCategories] = useState<any[]>([]);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -39,11 +41,12 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => { // Added onEd
         price: data.price,
         discount: data.discount
       });
+      setDescription(data.description);
+      setContent(data.content);
       setAvatarPreview(data.image_url);
       setVideoPreview(data.video_url ? `<video controls src="${data.video_url}"></video>` : null);
-      setIsOpen(true);
     }
-  }, [data]);
+  }, [data, form]);
 
   const getParentCategoryParams: GetCategoryParams = {
     searchCondition: {
@@ -93,19 +96,30 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => { // Added onEd
     fetchCategories();
   }, []);
 
-  const openCreateModal = () => {
-    form.setFieldsValue({
-      id: data._id,
-      name: data.name,
-      category_id: data.category_id,
-      description: data.description,
-      content: data.content,
-      image_url: data.image_url,
-      video_url: data.video_url,
-      price: data.price,
-      discount: data.discount
-    });
+  const openCreateModal = async () => {
     setIsOpen(true);
+    if (fetchCourseDetails) {
+      try {
+        const courseDetails = await fetchCourseDetails(data._id);
+        if (courseDetails) {
+          form.setFieldsValue({
+            name: courseDetails.name,
+            category_id: courseDetails.category_id,
+            description: courseDetails.description,
+            content: courseDetails.content,
+            image_url: courseDetails.image_url,
+            video_url: courseDetails.video_url,
+            price: courseDetails.price,
+            discount: courseDetails.discount
+          });
+          setDescription(courseDetails.description);
+          setContent(courseDetails.content);
+        }
+      } catch (error) {
+        console.error("Error fetching course details:", error);
+        message.error("Failed to fetch course details");
+      }
+    }
   };
 
   const handleOk = async () => {
@@ -201,10 +215,13 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => { // Added onEd
     [handleFileUpload, form]
   );
 
-  const editChange = (value: string) => {
-    setContent(value);
-    form.setFieldsValue({ content: value });
-  }
+  //debug clear tag html when editor change
+  const handleEditorChange = (value: string) => {
+    const strippedContent = value.replace(/<[^>]*>/g, '').trim();
+    setContent(strippedContent ? value : '');
+    form.setFieldsValue({ content: strippedContent ? value : '' });
+  };
+
   return (
     <>
       <Button className="mr-2" icon={<EditOutlined />} onClick={openCreateModal} />
@@ -216,7 +233,7 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => { // Added onEd
         width={800}
         style={{ top: "20px" }}
       >
-        <Form form={form} layout="vertical" initialValues={data}>
+        <Form form={form} layout="vertical">
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item name="name" label="Course Name" rules={[{ required: true, message: "Please input the course name!" }]}>
@@ -224,7 +241,7 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => { // Added onEd
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="category_id" initialValue="" label="Category" rules={[{ required: true, message: "Please select a category!" }]}>
+              <Form.Item name="category_id" label="Category" rules={[{ required: true, message: "Please select a category!" }]}>
                 <Select placeholder="Select a category">
                   {categories.map((parent) => (
                     <Select.OptGroup key={parent._id} label={parent.name}>
@@ -245,7 +262,7 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => { // Added onEd
             rules={[{ required: true, message: "Please input the description!" }]}
           >
             <Input.TextArea 
-              // value={data.description}
+              value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
           </Form.Item>
@@ -254,9 +271,9 @@ const EditButton = ({ data, onEditSuccess }: EditButtonProps) => { // Added onEd
             label="Content" 
             rules={[{ required: true, message: "Please input the content!" }]}
           >
-            <DraftEditor 
-              initialValue={data.content}
-              onEditorChange={editChange}
+            <Editor 
+              initialValue={content}
+              onEditorChange={handleEditorChange}
             />
           </Form.Item>
           <Row gutter={16}>
