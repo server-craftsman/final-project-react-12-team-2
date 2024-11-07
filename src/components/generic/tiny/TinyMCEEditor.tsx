@@ -20,19 +20,12 @@ const TinyMCEEditor: React.FC<TinyMCEEditorProps> = ({ initialValue, onEditorCha
       relative_urls: false,
       remove_script_host: true,
       convert_urls: true,
-      document_base_url: "https://final-project-react-12-team-2.vercel.app/",
+      document_base_url: "https://final-project-react-12-team-2.vercel.app/"
     }),
     []
   );
 
-  return (
-    <Editor
-      tinymceScriptSrc="/public/tinymce/js/tinymce/tinymce.min.js"
-      initialValue={initialValue}
-      init={editorConfig || defaultEditorConfig}
-      onEditorChange={onEditorChange}
-    />
-  );
+  return <Editor tinymceScriptSrc="/public/tinymce/js/tinymce/tinymce.min.js" initialValue={initialValue} init={editorConfig || defaultEditorConfig} onEditorChange={onEditorChange} />;
 };
 
 export default TinyMCEEditor;

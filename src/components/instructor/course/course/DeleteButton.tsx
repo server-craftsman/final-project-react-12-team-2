@@ -54,8 +54,8 @@ const DeleteButton = ({ courseId, onDeleteSuccess }: DeleteButtonProps) => {
   };
 
   return (
-    <Button 
-      icon={<DeleteOutlined />} 
+    <Button
+      icon={<DeleteOutlined />}
       onClick={handleClick}
       danger
       style={{

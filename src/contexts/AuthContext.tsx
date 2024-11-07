@@ -51,9 +51,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const storedUserInfo = localStorage.getItem("userInfo");
     return storedUserInfo ? JSON.parse(storedUserInfo) : null;
   });
-   
-  const [isLoading, setIsLoading] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // Store userInfo in localStorage whenever it changes
@@ -269,7 +268,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         verifyToken,
         resendToken,
         forgotPassword,
-        getCurrentUser,
+        getCurrentUser
       }}
     >
       {children}

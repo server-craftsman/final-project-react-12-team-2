@@ -15,27 +15,25 @@ interface InstructorSubscriptionProps {
   searchQuery: string;
 }
 
-
-
 const InstructorSubscribed: React.FC<InstructorSubscriptionProps> = ({ searchQuery }) => {
   const [subscriptions, setSubscriptions] = useState<GetSubscriptionsResponse | null>(null);
-  const [users,] = useState<User[]>([]);
+  const [users] = useState<User[]>([]);
 
   const defaultParams = {
     pageInfo: {
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 10
     },
     searchCondition: {
       keyword: "",
-      is_delete: false,
-    },
+      is_delete: false
+    }
   } as const;
 
   const getSearchCondition = useCallback((searchQuery: string): SearchSubscriptionCondition => {
     return {
       keyword: searchQuery || defaultParams.searchCondition.keyword,
-      is_delete: false,
+      is_delete: false
     };
   }, []);
 
@@ -44,7 +42,7 @@ const InstructorSubscribed: React.FC<InstructorSubscriptionProps> = ({ searchQue
       const searchCondition = getSearchCondition(searchQuery);
       const params: GetSubscriptionsParams = {
         pageInfo: defaultParams.pageInfo,
-        searchCondition,
+        searchCondition
       };
       const response = await SubscriptionService.getSubscriptions(params);
       setSubscriptions(response.data?.data ? response.data.data : null);
@@ -56,8 +54,6 @@ const InstructorSubscribed: React.FC<InstructorSubscriptionProps> = ({ searchQue
   useEffect(() => {
     fetchSubscriptions();
   }, [fetchSubscriptions]);
-
-
 
   return (
     <div style={{ backgroundColor: "#f0f2f5" }}>
@@ -77,7 +73,7 @@ const InstructorSubscribed: React.FC<InstructorSubscriptionProps> = ({ searchQue
                   borderRadius: "15px",
                   border: "2px solid #000",
                   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  backgroundColor: "#f0f2f5",
+                  backgroundColor: "#f0f2f5"
                 }}
               >
                 <p style={{ fontSize: "18px", marginBottom: "8px" }}>

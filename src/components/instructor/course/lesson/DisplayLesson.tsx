@@ -40,14 +40,14 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
   useEffect(() => {
     fetchLessons();
   }, [fetchLessons, refreshKey]);
-  
+
   const handleEditClick = async (lessonId: string) => {
     try {
       const response = await LessonService.getLessonDetails(lessonId);
       if (response?.data) {
         const lessonDetails = response.data.data;
         const lesson = {
-          ...lessonDetails,
+          ...lessonDetails
           // course_id: lessonDetails.course_id || "",
           // session_id: lessonDetails.session_id || ""
         } as any;
@@ -94,9 +94,7 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
     if (searchText === "") {
       setFilteredLessons(lessons);
     } else {
-      const filtered = lessons.filter((lesson) =>
-        (lesson as any).name.toLowerCase().includes(searchText.toLowerCase())
-      );
+      const filtered = lessons.filter((lesson) => (lesson as any).name.toLowerCase().includes(searchText.toLowerCase()));
       setFilteredLessons(filtered as any);
     }
     setPageNum(1);
@@ -169,14 +167,7 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
           className="bg-pagination"
         />
       </div>
-      {selectedLesson && (
-        <EditButton 
-          data={selectedLesson} 
-          isOpen={isEditModalOpen} 
-          onClose={() => setIsEditModalOpen(false)} 
-          onLessonCreated={handleLessonCreated} 
-        />
-      )}
+      {selectedLesson && <EditButton data={selectedLesson} isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onLessonCreated={handleLessonCreated} />}
     </>
   );
 };

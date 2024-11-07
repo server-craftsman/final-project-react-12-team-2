@@ -9,9 +9,8 @@ import data from "../../../data/users.json";
 import { Subscriptions } from "../../../models/prototype/Subscriptions";
 //import { User } from "../../../models/api/responsive/users/users.model";
 
-
 const SubscriptionPage: React.FC = () => {
-  const [,setFilteredSubscriptions] = useState<Subscriptions[]>([]);
+  const [, setFilteredSubscriptions] = useState<Subscriptions[]>([]);
 
   useEffect(() => {
     const instructorSubscriptions = subscriptionData.filter((subscription: Subscriptions) => {

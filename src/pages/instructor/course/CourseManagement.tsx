@@ -94,7 +94,7 @@ const CourseManagement = () => {
 
   const handleTabChange = (key: string) => {
     setActiveTabKey(key);
-    setRefreshKey(prevKey => prevKey + 1);
+    setRefreshKey((prevKey) => prevKey + 1);
   };
 
   return (
@@ -102,10 +102,10 @@ const CourseManagement = () => {
       {renderTagMenu()}
       <Content className="">
         <>
-          <Tabs 
+          <Tabs
             activeKey={activeTabKey}
             onChange={handleTabChange}
-            items={itemsTab.map(item => ({
+            items={itemsTab.map((item) => ({
               ...item,
               children: React.cloneElement(item.children, { refreshKey })
             }))}

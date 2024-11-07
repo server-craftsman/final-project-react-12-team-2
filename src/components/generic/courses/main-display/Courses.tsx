@@ -36,7 +36,6 @@ const fetchCoursePublic = async (searchCondition = {}, pageInfo = { pageNum: 1, 
 };
 
 const Courses: React.FC<CoursesProps> = () => {
-
   const [courses, setCourses] = useState<GetPublicCourseResponse | null>(null);
   const [users, setUsers] = useState<{ [key: string]: any }>({});
   const { isCoursePurchased } = useCart();
@@ -54,7 +53,8 @@ const Courses: React.FC<CoursesProps> = () => {
         });
 
         const usersData = await Promise.all(userPromises);
-        const usersMap = usersData.reduce((acc: { [key: string]: any }, { courseId, user }) => { //debug
+        const usersMap = usersData.reduce((acc: { [key: string]: any }, { courseId, user }) => {
+          //debug
           acc[courseId as string] = user;
           return acc;
         }, {});
@@ -92,28 +92,26 @@ const Courses: React.FC<CoursesProps> = () => {
               <Card
                 hoverable
                 cover={<img alt={course.name} src={course.image_url} className="h-48 w-full object-cover" />}
-                className={`group relative flex h-[600px] flex-col overflow-hidden rounded-lg bg-white shadow-lg transition-all duration-300 hover:shadow-xl ${purchased ? 'border-green-500' : ''} ${isInCart ? 'border-blue-500' : ''}`}
+                className={`group relative flex h-[600px] flex-col overflow-hidden rounded-lg bg-white shadow-lg transition-all duration-300 hover:shadow-xl ${purchased ? "border-green-500" : ""} ${isInCart ? "border-blue-500" : ""}`}
                 style={{
                   display: "flex",
                   flexDirection: "column"
                 }}
               >
-                {purchased && (
-                  <div className="absolute right-0 top-0 rounded-bl-lg bg-green-500 px-3 py-1 text-white">
-                    Purchased
-                  </div>
-                )}
+                {purchased && <div className="absolute right-0 top-0 rounded-bl-lg bg-green-500 px-3 py-1 text-white">Purchased</div>}
                 {course.discount > 0 && (
-                  <motion.div className="absolute left-0 top-0 rounded-br-lg bg-gradient-tone px-3 py-1 text-white" whileHover={{ scale: 1.05 }}>
+                  <motion.div className="bg-gradient-tone absolute left-0 top-0 rounded-br-lg px-3 py-1 text-white" whileHover={{ scale: 1.05 }}>
                     <PercentageOutlined className="mr-1" />
                     {course.discount}% OFF
                   </motion.div>
                 )}
                 <div className="flex h-[400px] flex-col">
-                  <Title level={3} className="mb-2 h-16 line-clamp-2 text-xl font-bold text-[#1a237e] transition duration-300 hover:text-indigo-900">
+                  <Title level={3} className="mb-2 line-clamp-2 h-16 text-xl font-bold text-[#1a237e] transition duration-300 hover:text-indigo-900">
                     {course.name}
                   </Title>
-                  <Paragraph className="mb-4 h-12 line-clamp-2 text-gray-600" ellipsis={{ rows: 2 }}>{parse(course.description)}</Paragraph>
+                  <Paragraph className="mb-4 line-clamp-2 h-12 text-gray-600" ellipsis={{ rows: 2 }}>
+                    {parse(course.description)}
+                  </Paragraph>
                   <div className="h-20">
                     <div className="mb-4 flex items-center justify-between">
                       <span className="text-2xl font-bold text-indigo-800">${helpers.moneyFormat(course.price * (1 - course.discount / 100))}</span>
@@ -126,20 +124,16 @@ const Courses: React.FC<CoursesProps> = () => {
                     description={
                       <div className="mb-4 h-24 items-center text-sm">
                         <div>
-                            <Tag className="mr-2 rounded bg-gradient-tone px-2 py-1 text-xs font-semibold uppercase text-white">{course.category_name}</Tag>
+                          <Tag className="bg-gradient-tone mr-2 rounded px-2 py-1 text-xs font-semibold uppercase text-white">{course.category_name}</Tag>
                         </div>
-                        <div className="flex mt-4 items-center space-x-4">
-                          <span className="flex items-center text-gray-600 font-medium">
+                        <div className="mt-4 flex items-center space-x-4">
+                          <span className="flex items-center font-medium text-gray-600">
                             <BookOutlined className="mr-2 text-indigo-500" />
-                            <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
-                              {course.session_count} Sessions
-                            </span>
+                            <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">{course.session_count} Sessions</span>
                           </span>
-                          <span className="flex items-center text-gray-600 font-medium">
+                          <span className="flex items-center font-medium text-gray-600">
                             <VideoCameraOutlined className="mr-2 text-indigo-500" />
-                            <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
-                              {course.lesson_count} Lessons
-                            </span>
+                            <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">{course.lesson_count} Lessons</span>
                           </span>
                         </div>
                       </div>
@@ -149,7 +143,7 @@ const Courses: React.FC<CoursesProps> = () => {
                 </div>
                 <motion.div className="absolute inset-x-0 bottom-0 h-12 translate-y-full transform transition-all duration-300 group-hover:translate-y-0" whileHover={{ scale: 1.05 }}>
                   <Link to={`/course/${course._id}`}>
-                    <Button type="primary" block size="large" className="border-none bg-gradient-tone hover:bg-gradient-tone-hover">
+                    <Button type="primary" block size="large" className="bg-gradient-tone hover:bg-gradient-tone-hover border-none">
                       Preview This Course
                     </Button>
                   </Link>

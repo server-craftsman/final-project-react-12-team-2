@@ -10,7 +10,6 @@ interface DeleteButtonProps {
 }
 
 const DeleteButton = ({ data, onSessionDeleted }: DeleteButtonProps) => {
-
   const handleClick = () => {
     Modal.confirm({
       title: "Delete Session",
@@ -26,7 +25,7 @@ const DeleteButton = ({ data, onSessionDeleted }: DeleteButtonProps) => {
       },
       cancelButtonProps: {
         style: {
-          border: "1px solid #d9d9d9", 
+          border: "1px solid #d9d9d9",
           boxShadow: "0 2px 0 rgba(0, 0, 0, 0.02)"
         }
       },
@@ -59,8 +58,8 @@ const DeleteButton = ({ data, onSessionDeleted }: DeleteButtonProps) => {
   };
 
   return (
-    <Button 
-      icon={<DeleteOutlined />} 
+    <Button
+      icon={<DeleteOutlined />}
       onClick={handleClick}
       danger
       style={{

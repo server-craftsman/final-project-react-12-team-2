@@ -44,7 +44,7 @@ const EditButton = ({ data, onSessionEdited, fetchSessionDetails }: any) => {
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      
+
       const payload = {
         name: String(values.name).trim(),
         course_id: String(values.course_id).trim(),
@@ -58,7 +58,7 @@ const EditButton = ({ data, onSessionEdited, fetchSessionDetails }: any) => {
       }
 
       await SessionService.updateSession(payload, data._id);
-      setTimeout(() => {  
+      setTimeout(() => {
         message.success("Session edited successfully");
       }, 3000);
       setIsOpen(false);

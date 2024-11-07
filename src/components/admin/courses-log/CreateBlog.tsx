@@ -125,7 +125,7 @@ const CreateBlog = () => {
 
   return (
     <div>
-      <Button className="bg-gradient-tone text-white px-4 py-2" onClick={handleModalToggle}>
+      <Button className="bg-gradient-tone px-4 py-2 text-white" onClick={handleModalToggle}>
         Create Blog Post
       </Button>
 

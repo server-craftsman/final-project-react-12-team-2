@@ -39,10 +39,12 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
       }
 
       const courseIds = Array.from(new Set(sessionData.map((session: any) => session.course_id)));
-      const courseDataArray = await Promise.all(courseIds.map(async (id) => {
-        const response = await CourseService.getCourseById(id);
-        return response.data?.data;
-      }));
+      const courseDataArray = await Promise.all(
+        courseIds.map(async (id) => {
+          const response = await CourseService.getCourseById(id);
+          return response.data?.data;
+        })
+      );
 
       const flattenedCourseDataArray = courseDataArray.flat();
       const coursesMap = new Map(flattenedCourseDataArray.map((course: any) => [course._id, course.name]));
@@ -86,11 +88,7 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
 
   const renderActions = (record: DisplaySessionResponse) => (
     <div className="flex space-x-2">
-      <EditButton 
-        data={record.pageData}
-        onSessionEdited={() => fetchSessions(pageNum, pageSize, searchKeyword)}
-        fetchSessionDetails={fetchSessionDetails}
-      />
+      <EditButton data={record.pageData} onSessionEdited={() => fetchSessions(pageNum, pageSize, searchKeyword)} fetchSessionDetails={fetchSessionDetails} />
       <DeleteButton data={record.pageData} onSessionDeleted={() => fetchSessions(pageNum, pageSize, searchKeyword)} />
     </div>
   );

@@ -88,7 +88,7 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm, activeK
       dataIndex: "name"
     },
     {
-      title: "Course Name", 
+      title: "Course Name",
       key: "course_name",
       dataIndex: "course_name"
     },
@@ -108,7 +108,7 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm, activeK
       key: "video_url",
       dataIndex: "video_url",
       render: (_: any, record: Lesson["pageData"][0]) => renderMedia(record)
-    },
+    }
   ];
 
   return (

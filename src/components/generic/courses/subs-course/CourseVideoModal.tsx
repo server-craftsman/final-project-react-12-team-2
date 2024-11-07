@@ -7,12 +7,7 @@ const CourseVideoModal: React.FC<CourseVideoModalProps> = ({ isModalVisible, han
     <Modal title="Course Video" open={isModalVisible} onCancel={handleCancel} footer={null} width={800}>
       {videoId ? (
         <div className="aspect-video">
-          <video
-            width="100%"
-            height="100%"
-            controls
-            style={{ border: "none" }}
-          >
+          <video width="100%" height="100%" controls style={{ border: "none" }}>
             <source src={videoId} type="video/mp4" />
             Your browser does not support the video tag.
           </video>

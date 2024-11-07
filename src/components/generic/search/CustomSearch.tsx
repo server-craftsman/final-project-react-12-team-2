@@ -14,7 +14,7 @@ interface SearchProps {
 
 const CustomSearch: React.FC<SearchProps> = ({ onSearch, placeholder = "Search...", className, applyFilters }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
@@ -48,7 +48,7 @@ const CustomSearch: React.FC<SearchProps> = ({ onSearch, placeholder = "Search..
           marginLeft: "5px",
           height: "40px",
           display: "flex",
-          alignItems: "center",
+          alignItems: "center"
         }}
       >
         <SearchOutlined className="text-xl" />

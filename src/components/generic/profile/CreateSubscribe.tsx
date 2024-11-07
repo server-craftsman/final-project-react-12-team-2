@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const ButtonSubscribe: React.FC = () => {
-  return (
-    <div>ButtonSubscribe</div>
-  )
-}
+  return <div>ButtonSubscribe</div>;
+};
 
-export default ButtonSubscribe
+export default ButtonSubscribe;

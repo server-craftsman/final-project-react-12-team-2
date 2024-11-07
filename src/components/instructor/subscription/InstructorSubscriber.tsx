@@ -18,7 +18,7 @@ interface InstructorSubscriberProps {
 
 const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchQuery }) => {
   const [subscriptions, setSubscriptions] = useState<GetSubscriptionsResponse | null>(null);
-  const [users,] = useState<User[]>([]);
+  const [users] = useState<User[]>([]);
 
   const defaultParams = {
     pageInfo: {

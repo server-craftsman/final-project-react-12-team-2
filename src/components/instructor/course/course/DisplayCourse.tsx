@@ -17,19 +17,7 @@ import { GetCourseResponsePageData, GetCourseResponse, GetCourseByIdResponse } f
 import { CourseService } from "../../../../services/course/course.service";
 import _ from "lodash";
 
-const DisplayCourse = ({
-  searchTerm,
-  statusFilter,
-  onSearch,
-  onStatusChange,
-  refreshKey
-}: {
-  searchTerm: string;
-  statusFilter: StatusType;
-  onSearch: (value: string) => void;
-  onStatusChange: (status: StatusType | "") => void;
-  refreshKey: number;
-}) => {
+const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, refreshKey }: { searchTerm: string; statusFilter: StatusType; onSearch: (value: string) => void; onStatusChange: (status: StatusType | "") => void; refreshKey: number }) => {
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
@@ -45,7 +33,7 @@ const DisplayCourse = ({
       const [totalItems, setTotalItems] = useState<number>(0);
       const [courseById, setCourseById] = useState<GetCourseByIdResponse>();
       const getCategoryName = useCategoryCache();
-    
+
       const params: GetCourseParams = {
         searchCondition: {
           keyword: searchTerm,
@@ -58,7 +46,7 @@ const DisplayCourse = ({
           pageSize
         }
       };
-    
+
       const mapCourseData = async (course: any) => {
         let categoryName = "Unknown Category";
         if (course.category_name) {
@@ -72,16 +60,16 @@ const DisplayCourse = ({
           course_id: course.id ? String(course.id) : ""
         };
       };
-    
+
       const fetchCourses = async () => {
         try {
           const response = await CourseService.getCourse(params);
-    
+
           if (response.status === 200 && response.data) {
             const pageData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [];
-    
+
             const coursesTempData = await Promise.all(pageData.map(mapCourseData));
-    
+
             setCourses(coursesTempData);
             setTotalItems(response.data.data.pageInfo.pageNum);
           }
@@ -90,7 +78,7 @@ const DisplayCourse = ({
           return null;
         }
       };
-    
+
       //thực thi
       const fetchCourseById = async (id: string) => {
         try {
@@ -103,22 +91,15 @@ const DisplayCourse = ({
           return null;
         }
       };
-    
+
       useEffect(() => {
         fetchCourses();
       }, [searchTerm, statusFilter, pageNum, pageSize, refreshKey]); //debug
-    
+
       return { courses, totalItems, courseById, fetchCourseById, fetchCourses, refreshKey };
     };
 
-
-    return useCourseCache(
-      searchTerm,
-      statusFilter as StatusType | "",
-      pageNum,
-      pageSize,
-      refreshKey
-    );
+    return useCourseCache(searchTerm, statusFilter as StatusType | "", pageNum, pageSize, refreshKey);
   }, [searchTerm, statusFilter, pageNum, pageSize, refreshKey]);
 
   const { courses, totalItems } = getCourseData();
@@ -129,12 +110,9 @@ const DisplayCourse = ({
   // }, []);
 
   // Filter courses based on the statusFilter
-  const filteredCourses = courses?.filter(course => 
-    !statusFilter || course.status === statusFilter
-  );
+  const filteredCourses = courses?.filter((course) => !statusFilter || course.status === statusFilter);
 
-  const handleCourseCreated = () => {
-  };
+  const handleCourseCreated = () => {};
 
   useEffect(() => {
     setPageNum(1);
@@ -193,49 +171,38 @@ const DisplayCourse = ({
   };
 
   const showRequestReviewModal = (courseId: string) => {
-    let tempComment = ''; // Create temporary comment state
+    let tempComment = ""; // Create temporary comment state
 
     Modal.confirm({
-      title: 'Request Course Review',
+      title: "Request Course Review",
       width: 600,
       icon: <FormOutlined />,
       content: (
         <div className="p-6">
-          <h3 className="text-lg font-medium mb-4">Please provide details for your review request</h3>
+          <h3 className="mb-4 text-lg font-medium">Please provide details for your review request</h3>
           <Form layout="vertical">
-            <Form.Item
-              label="Comments"
-              required
-              tooltip="Please explain why you are requesting a review"
-            >
-              <Input.TextArea
-                onChange={(e) => tempComment = e.target.value}
-                placeholder="Enter your comments here..."
-                rows={4}
-                className="w-full"
-                showCount
-                maxLength={500}
-              />
+            <Form.Item label="Comments" required tooltip="Please explain why you are requesting a review">
+              <Input.TextArea onChange={(e) => (tempComment = e.target.value)} placeholder="Enter your comments here..." rows={4} className="w-full" showCount maxLength={500} />
             </Form.Item>
           </Form>
         </div>
       ),
-      okText: 'Submit Request', 
-      cancelText: 'Cancel',
+      okText: "Submit Request",
+      cancelText: "Cancel",
       okButtonProps: {
-        type: 'primary',
+        type: "primary",
         icon: <SendOutlined />
       },
       onOk: () => {
         if (!tempComment.trim()) {
-          message.error('Please enter comments before submitting');
+          message.error("Please enter comments before submitting");
           return Promise.reject();
         }
         return requestReview(courseId, tempComment);
       },
       onCancel: () => {
-        tempComment = '';
-      },
+        tempComment = "";
+      }
     });
   };
 
@@ -247,7 +214,7 @@ const DisplayCourse = ({
   const columns: ColumnsType<GetCourseResponsePageData> = [
     {
       title: "No",
-      key: "_id", 
+      key: "_id",
       dataIndex: "_id",
       render: (_, __, index: number) => <span className="text-gray-500">{index + 1}</span>
     },
@@ -292,25 +259,9 @@ const DisplayCourse = ({
         const { status, _id } = record;
         return (
           <>
-            {status === StatusType.APPROVE && (
-              <Button
-                icon={<CheckOutlined />}
-                onClick={() => handleApprove(_id)}
-                className="bg-gradient-tone text-white mr-2 hover:opacity-90"
-              />
-            )}
-            {status === StatusType.REJECT && (
-              <Button
-                icon={<HistoryOutlined />}
-                onClick={() => showRequestReviewModal(_id)}
-                className="bg-gradient-tone text-white mr-2 hover:opacity-90"
-              />
-            )}
-            <EditButton 
-              data={record}
-              onEditSuccess={handleCourseCreated}
-              fetchCourseDetails={fetchCourseDetails}
-            />
+            {status === StatusType.APPROVE && <Button icon={<CheckOutlined />} onClick={() => handleApprove(_id)} className="bg-gradient-tone mr-2 text-white hover:opacity-90" />}
+            {status === StatusType.REJECT && <Button icon={<HistoryOutlined />} onClick={() => showRequestReviewModal(_id)} className="bg-gradient-tone mr-2 text-white hover:opacity-90" />}
+            <EditButton data={record} onEditSuccess={handleCourseCreated} fetchCourseDetails={fetchCourseDetails} />
             <DeleteButton courseId={record._id} onDeleteSuccess={handleCourseCreated} />
           </>
         );
@@ -319,24 +270,21 @@ const DisplayCourse = ({
   ];
 
   const rowClassName = (record: GetCourseResponsePageData) => {
-    return selectedRowKeys.includes(Number(record._id)) ? 'bg-white' : 'bg-gray-50';
+    return selectedRowKeys.includes(Number(record._id)) ? "bg-white" : "bg-gray-50";
   };
 
   const handleOk = useCallback(async () => {
     try {
-      const validCourses = courses?.filter(course =>
-        selectedCourse.includes(Number(course._id)) &&
-        (course.status === StatusType.NEW || course.status === StatusType.REJECT)
-      );
-  
+      const validCourses = courses?.filter((course) => selectedCourse.includes(Number(course._id)) && (course.status === StatusType.NEW || course.status === StatusType.REJECT));
+
       if (!validCourses?.length) {
         message.warning("No valid courses selected to send");
         return;
       }
-  
+
       const updateStatus = async (courseChunk: typeof validCourses) => {
         return Promise.all(
-          courseChunk.map(course =>
+          courseChunk.map((course) =>
             CourseService.changeStatusCourse({
               course_id: course._id,
               new_status: StatusType.WAITING_APPROVE,
@@ -345,13 +293,13 @@ const DisplayCourse = ({
           )
         );
       };
-  
+
       const chunkSize = 5; // Customize as needed for API rate limits
       for (let i = 0; i < validCourses.length; i += chunkSize) {
         const chunk = validCourses.slice(i, i + chunkSize);
         await updateStatus(chunk); // Await each batch completion
       }
-  
+
       setIsModalVisible(false);
       setSelectedRowKeys([]);
       message.success("Successfully sent courses to admin");
@@ -380,9 +328,10 @@ const DisplayCourse = ({
       // console.log("Selected Row Keys:", selectedRowKeys); // Debugging log
 
       // Filter courses based on selected row keys
-      const validCourses = courses?.filter(course =>
-        selectedRowKeys.includes(course._id as unknown as number) && // Ensure course._id is a string
-        (course.status === StatusType.NEW || course.status === StatusType.REJECT)
+      const validCourses = courses?.filter(
+        (course) =>
+          selectedRowKeys.includes(course._id as unknown as number) && // Ensure course._id is a string
+          (course.status === StatusType.NEW || course.status === StatusType.REJECT)
       );
 
       //test debug
@@ -395,7 +344,7 @@ const DisplayCourse = ({
 
       const updateStatus = async (courseChunk: typeof validCourses) => {
         return Promise.all(
-          courseChunk.map(course =>
+          courseChunk.map((course) =>
             CourseService.changeStatusCourse({
               course_id: course._id,
               new_status: StatusType.WAITING_APPROVE,
@@ -423,33 +372,30 @@ const DisplayCourse = ({
       message.warning("Please select at least one course to send to admin.");
       return;
     }
-  
+
     Modal.confirm({
-      title: 'Confirm Send',
-      content: 'Are you sure you want to send the selected courses to the admin?',
+      title: "Confirm Send",
+      content: "Are you sure you want to send the selected courses to the admin?",
       onOk: sendToAdmin, // Chỉ gọi hàm sendToAdmin khi người dùng xác nhận
       onCancel() {
-        message.info('Send to admin cancelled');
-      },
+        message.info("Send to admin cancelled");
+      }
     });
   };
 
   // Ensure that the statusFilter is a valid StatusType or an empty string
   const validStatusFilter = Object.values(StatusType).includes(statusFilter) ? statusFilter : "";
   console.log("Valid Status Filter:", validStatusFilter);
-  
+
   return (
-    <>      
+    <>
       <div className="mb-4 mt-4 flex justify-between">
         <CustomSearch onSearch={handleSearch} placeholder="Search by course name" className="w-1/5" />
-        <FilterStatus
-          onStatusChange={handleStatusChange}
-          currentStatus={validStatusFilter}
-        />
+        <FilterStatus onStatusChange={handleStatusChange} currentStatus={validStatusFilter} />
         <div className="flex justify-end gap-2">
           <CreateCourseButton onCourseCreated={handleCourseCreated} />
-          <Button 
-            onClick={confirmSendToAdmin} 
+          <Button
+            onClick={confirmSendToAdmin}
             className="bg-gradient-tone text-white hover:opacity-90"
             disabled={selectedRowKeys.length === 0} // Disable button if no checkboxes are selected
           >
@@ -460,24 +406,20 @@ const DisplayCourse = ({
       <div className="mb-2">
         <span>{selectedRowKeys.length} course(s) selected</span>
       </div>
-      <Table 
+      <Table
         rowSelection={{
-          type: 'checkbox',
+          type: "checkbox",
           selectedRowKeys,
           onChange: handleRowSelectionChange,
-          selections: [
-            Table.SELECTION_ALL,
-            Table.SELECTION_INVERT,
-            Table.SELECTION_NONE
-          ],
+          selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT, Table.SELECTION_NONE],
           getCheckboxProps: (record) => ({
             name: record._id,
-            disabled: record.status !== StatusType.NEW && record.status !== StatusType.REJECT, // Disable selection for other statuses
-          }),
+            disabled: record.status !== StatusType.NEW && record.status !== StatusType.REJECT // Disable selection for other statuses
+          })
         }}
         columns={columns}
         dataSource={filteredCourses} // Use filtered courses
-        rowKey={(record) => record._id} 
+        rowKey={(record) => record._id}
         pagination={false}
         rowClassName={rowClassName}
       />

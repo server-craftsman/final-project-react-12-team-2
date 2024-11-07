@@ -80,9 +80,9 @@ const HomePage: React.FC = () => {
   //   setActiveCategory(category);
   // };
 
-  // const filteredCourses = activeCategory === "All Courses" 
-  //   ? coursesData.courses 
-  //   : coursesData.courses.filter((course) => 
+  // const filteredCourses = activeCategory === "All Courses"
+  //   ? coursesData.courses
+  //   : coursesData.courses.filter((course) =>
   //       course.category_id === activeCategory.toLowerCase().replace(" & ", "_").replace(" ", "_")
   //     );
 
@@ -141,7 +141,7 @@ const HomePage: React.FC = () => {
         </h1>
 
         <Categories categoryList={categoryList} />
-        
+
         {/* <div className="absolute bottom-0 left-1/2 mt-4 flex -translate-x-1/2 transform space-x-2">
           {sliderCategories.map((_, index) => (
             <button key={index} className={`h-2 w-2 rounded-full transition-all duration-300 ${index === currentCategoryIndex ? "w-4 bg-indigo-600" : "bg-indigo-200"}`} onClick={() => setCurrentCategoryIndex(index)}></button>

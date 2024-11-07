@@ -17,7 +17,7 @@ const DeleteButton = ({ lessonId, onDeleteSuccess }: DeleteButtonProps) => {
         danger: true,
         style: {
           backgroundColor: "#ff4d4f",
-          borderColor: "#ff4d4f", 
+          borderColor: "#ff4d4f",
           boxShadow: "0 2px 0 rgba(255, 77, 79, 0.1)"
         }
       },
@@ -53,8 +53,8 @@ const DeleteButton = ({ lessonId, onDeleteSuccess }: DeleteButtonProps) => {
   };
 
   return (
-    <Button 
-      icon={<DeleteOutlined />} 
+    <Button
+      icon={<DeleteOutlined />}
       onClick={handleClick}
       danger
       style={{

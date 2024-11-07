@@ -2,7 +2,7 @@ import DisplayCourse from "./DisplayCourse";
 import { useState } from "react";
 import { StatusType } from "../../../../app/enums";
 interface CourseComponentProps {
-  refreshKey: any; // Replace 'any' with the appropriate type if known  
+  refreshKey: any; // Replace 'any' with the appropriate type if known
 }
 
 const CourseComponent = ({ refreshKey }: CourseComponentProps) => {
@@ -20,13 +20,7 @@ const CourseComponent = ({ refreshKey }: CourseComponentProps) => {
 
   return (
     <div className="">
-      <DisplayCourse
-        searchTerm={searchTerm}
-        statusFilter={statusFilter as StatusType}
-        onSearch={handleSearch}
-        onStatusChange={handleStatusChange}
-        refreshKey={refreshKey}
-      />
+      <DisplayCourse searchTerm={searchTerm} statusFilter={statusFilter as StatusType} onSearch={handleSearch} onStatusChange={handleStatusChange} refreshKey={refreshKey} />
     </div>
   );
 };

@@ -24,7 +24,7 @@ const ManageUser = () => {
   const [searchParams, setSearchParams] = useState({
     keyword: "",
     role: null as UserRoles | null,
-    status: null as boolean | null,
+    status: null as boolean | null
   });
 
   // Reset filters when changing tabs
@@ -34,7 +34,7 @@ const ManageUser = () => {
     setSearchParams({
       keyword: "",
       role: null,
-      status: null,
+      status: null
     });
     // setSelectedRole(null);
     // setSelectedStatus(null);
@@ -46,7 +46,7 @@ const ManageUser = () => {
     // setSearchQuery(searchTerm);
     setSearchParams((prevParams) => ({
       ...prevParams,
-      keyword: searchTerm,
+      keyword: searchTerm
     }));
   };
 
@@ -63,7 +63,7 @@ const ManageUser = () => {
     setSearchParams((prevParams) => ({
       ...prevParams,
       role: selectedRole,
-      status: selectedStatus,
+      status: selectedStatus
     }));
   };
 
@@ -134,12 +134,7 @@ const ManageUser = () => {
     return (
       <div className="items-center justify-center border-b border-gray-300">
         <div className="flex flex-col items-center p-4 md:flex-row">
-          <CustomSearch 
-            onSearch={handleSearch} 
-            placeholder="Search by name or email" 
-            className="search-input mr-4" 
-            applyFilters={applyFilters}
-          />
+          <CustomSearch onSearch={handleSearch} placeholder="Search by name or email" className="search-input mr-4" applyFilters={applyFilters} />
           {activeTab === "all" && (
             <>
               <FilterRole onRoleChange={handleRoleChange} />
@@ -149,14 +144,7 @@ const ManageUser = () => {
           <CreateUserProfile />
         </div>
         <Tabs defaultActiveKey="all" onChange={handleTabChange} items={tabItems} className="ml-4" />
-        <ViewUserProfile 
-          searchQuery={searchParams.keyword} 
-          selectedRole={searchParams.role} 
-          selectedStatus={searchParams.status} 
-          activeTab={activeTab} 
-          showActionColumn={activeTab !== "unverified"} 
-          disableActions={activeTab === "unverified"} 
-        />
+        <ViewUserProfile searchQuery={searchParams.keyword} selectedRole={searchParams.role} selectedStatus={searchParams.status} activeTab={activeTab} showActionColumn={activeTab !== "unverified"} disableActions={activeTab === "unverified"} />
       </div>
     );
   }

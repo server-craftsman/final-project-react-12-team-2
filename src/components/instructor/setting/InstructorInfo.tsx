@@ -29,21 +29,17 @@ const InstructorInfo = () => {
     return (
       <div className="max-w-10xl animate-fade-in mx-auto rounded-2xl bg-white p-12 shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
         <div className="mb-12 flex flex-col items-center">
-          <div className="flex flex-col md:flex-row items-center gap-12">
-            <div className="relative group">
+          <div className="flex flex-col items-center gap-12 md:flex-row">
+            <div className="group relative">
               {userInfo.avatar_url ? (
                 <div className="relative mt-6">
-                  <div className="absolute -inset-0.5 rounded-full bg-gradient-tone opacity-75 blur"></div>
-                  <img 
-                    src={userInfo.avatar_url} 
-                    alt="User avatar" 
-                    className="relative h-52 w-52 rounded-full border-4 border-white object-cover shadow-2xl transition-all duration-300 group-hover:scale-105" 
-                  />
+                  <div className="bg-gradient-tone absolute -inset-0.5 rounded-full opacity-75 blur"></div>
+                  <img src={userInfo.avatar_url} alt="User avatar" className="relative h-52 w-52 rounded-full border-4 border-white object-cover shadow-2xl transition-all duration-300 group-hover:scale-105" />
                 </div>
               ) : (
                 <div className="relative">
-                  <div className="absolute -inset-0.5 rounded-full bg-gradient-tone opacity-75 blur"></div>
-                  <div className="relative flex h-52 w-52 items-center justify-center rounded-full border-4 border-white bg-gradient-tone">
+                  <div className="bg-gradient-tone absolute -inset-0.5 rounded-full opacity-75 blur"></div>
+                  <div className="bg-gradient-tone relative flex h-52 w-52 items-center justify-center rounded-full border-4 border-white">
                     <span className="text-3xl font-medium text-white drop-shadow-lg">No Avatar</span>
                   </div>
                 </div>
@@ -52,17 +48,11 @@ const InstructorInfo = () => {
             </div>
 
             {userInfo.video_url && (
-              <div className="relative group">
-                <h1 className="text-3xl font-bold bg-gradient-tone bg-clip-text text-transparent mb-4">Video Introduction</h1>
+              <div className="group relative">
+                <h1 className="bg-gradient-tone mb-4 bg-clip-text text-3xl font-bold text-transparent">Video Introduction</h1>
                 <div className="relative">
-                  <div className="absolute -inset-1 rounded-2xl bg-gradient-tone opacity-75 blur"></div>
-                  <video 
-                    controls
-                    playsInline
-                    preload="metadata"
-                    className="relative h-52 w-96 rounded-xl border-4 border-white object-cover shadow-2xl transition-all duration-300 group-hover:scale-[1.02]"
-                    src={userInfo.video_url}
-                  >
+                  <div className="bg-gradient-tone absolute -inset-1 rounded-2xl opacity-75 blur"></div>
+                  <video controls playsInline preload="metadata" className="relative h-52 w-96 rounded-xl border-4 border-white object-cover shadow-2xl transition-all duration-300 group-hover:scale-[1.02]" src={userInfo.video_url}>
                     Your browser does not support the video tag.
                   </video>
                 </div>
@@ -71,8 +61,8 @@ const InstructorInfo = () => {
           </div>
 
           <div className="mt-8 text-center">
-            <h2 className="text-4xl font-bold bg-gradient-tone bg-clip-text text-transparent mb-3">{userInfo.name}</h2>
-            <p className="text-xl italic text-gray-600 font-medium tracking-wide">{userInfo.role}</p>
+            <h2 className="bg-gradient-tone mb-3 bg-clip-text text-4xl font-bold text-transparent">{userInfo.name}</h2>
+            <p className="text-xl font-medium italic tracking-wide text-gray-600">{userInfo.role}</p>
           </div>
         </div>
 
@@ -108,9 +98,7 @@ const InstructorInfo = () => {
             {userInfo.dob ? helpers.formatDate(new Date(userInfo.dob)) : "-"}
           </Descriptions.Item>
           <Descriptions.Item label="Verified" className="text-lg">
-            <span className={`${userInfo.is_verified ? "text-emerald-500" : "text-rose-500"} font-semibold`}>
-              {userInfo.is_verified ? "Yes" : "No"}
-            </span>
+            <span className={`${userInfo.is_verified ? "text-emerald-500" : "text-rose-500"} font-semibold`}>{userInfo.is_verified ? "Yes" : "No"}</span>
           </Descriptions.Item>
           <Descriptions.Item label="Created At" className="text-lg">
             {userInfo.created_at ? helpers.formatDate(new Date(userInfo.created_at)) : "-"}
@@ -120,11 +108,7 @@ const InstructorInfo = () => {
           </Descriptions.Item>
         </Descriptions>
         <div className="mt-8 flex justify-end">
-          <Button 
-            type="primary" 
-            onClick={handleEdit} 
-            className="flex h-auto items-center gap-2 border-none bg-[#1a237e] px-8 py-4 text-lg transition-colors duration-300 hover:bg-[#0d1453] hover:text-white"
-          >
+          <Button type="primary" onClick={handleEdit} className="flex h-auto items-center gap-2 border-none bg-[#1a237e] px-8 py-4 text-lg transition-colors duration-300 hover:bg-[#0d1453] hover:text-white">
             <EditOutlined className="text-xl transition-transform duration-300 group-hover:rotate-12" />
           </Button>
         </div>

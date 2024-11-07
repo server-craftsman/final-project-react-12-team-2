@@ -114,16 +114,8 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
       key: "action",
       render: (record: Category) => (
         <Space size="middle">
-          	<Button
-              icon={<EditOutlined />}
-              onClick={() => navigate(`/admin/edit-category/${record._id}`)}
-              className="bg-white text-blue-500 mr-2 hover:opacity-80"
-            />
-            <Button
-              icon={<DeleteOutlined />}
-              onClick={() => handleDeleteCategory(record._id)}
-              className="bg-white text-red-500 mr-2 hover:opacity-80"
-            />
+          <Button icon={<EditOutlined />} onClick={() => navigate(`/admin/edit-category/${record._id}`)} className="mr-2 bg-white text-blue-500 hover:opacity-80" />
+          <Button icon={<DeleteOutlined />} onClick={() => handleDeleteCategory(record._id)} className="mr-2 bg-white text-red-500 hover:opacity-80" />
         </Space>
       )
     }

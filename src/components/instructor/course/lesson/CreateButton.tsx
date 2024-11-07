@@ -45,7 +45,7 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
       values.full_time = Number(values.full_time);
       values.position_order = Number(values.position_order);
       await LessonService.createLesson(values);
-      setTimeout(() => {  
+      setTimeout(() => {
         message.success("Lesson created successfully");
       }, 3000);
       setIsOpen(false);
@@ -131,7 +131,7 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
               ))}
             </Select>
           </Form.Item>
-          {(lessonType === LessonType.IMAGE) && (
+          {lessonType === LessonType.IMAGE && (
             <Form.Item name="image_url" label="Image" rules={[{ required: true, message: "Please upload an image!" }]}>
               <div>
                 <Upload accept="image/*" maxCount={1} showUploadList={false} customRequest={(options: any) => upload.customUploadHandler(options, "image", setUploading, onUploadSuccess)}>
@@ -157,8 +157,8 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
             </Form.Item>
           )}
           {lessonType === LessonType.TEXT && (
-          <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
-            <Editor initialValue={description} onEditorChange={editChange} />
+            <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
+              <Editor initialValue={description} onEditorChange={editChange} />
             </Form.Item>
           )}
           <Form.Item

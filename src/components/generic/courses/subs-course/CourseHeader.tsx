@@ -43,22 +43,15 @@ const CourseHeader: React.FC<CourseHeaderProps> = ({ course, instructor, showVid
         <Paragraph className="mb-1 text-gray-600">{parse(course.description)}</Paragraph>
         <Paragraph className="mb-1 text-gray-600">{parse(course.content)}</Paragraph>
 
-
         {instructorData && (
           <Link to={`/profile/${instructorData._id}`}>
             <div className="mb-4 flex items-center space-x-4 rounded-lg bg-gradient-to-r from-gray-50 to-white p-4 shadow-lg">
-              <img
-                src={instructorData.avatar_url}
-                className="h-16 w-16 rounded-full border-4 border-white object-cover shadow-md transition duration-300 hover:scale-105"
-                alt={instructorData.name}
-              />
+              <img src={instructorData.avatar_url} className="h-16 w-16 rounded-full border-4 border-white object-cover shadow-md transition duration-300 hover:scale-105" alt={instructorData.name} />
               <div className="flex flex-col space-y-1">
                 <Text strong className="text-xl font-bold text-gray-800 transition duration-300 hover:text-indigo-900">
                   {instructorData.name}
                 </Text>
-                <Text className="text-md text-gray-600 transition duration-300 hover:text-indigo-700">
-                  {instructorData.email}
-                </Text>
+                <Text className="text-md text-gray-600 transition duration-300 hover:text-indigo-700">{instructorData.email}</Text>
               </div>
             </div>
           </Link>

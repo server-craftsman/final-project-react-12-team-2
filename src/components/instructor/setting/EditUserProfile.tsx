@@ -90,7 +90,7 @@ const EditUserProfile = () => {
           role: userData.role,
           status: userData.status ? "Active" : "Inactive",
           description: userData.description || "",
-          dob: userData.dob ? moment(userData.dob) : null,
+          dob: userData.dob ? moment(userData.dob) : null
           // bank_name: userData.bank_name || "",
           // bank_account_no: userData.bank_account_no || "",
           // bank_account_name: userData.bank_account_name || ""
@@ -134,16 +134,15 @@ const EditUserProfile = () => {
           phone_number: values.phone_number,
           description: values.description || "",
           dob: values.dob ? helpers.formatDate(new Date(values.dob)) : null,
-          
+
           avatar_url: avatarUrl,
-          video_url: videoUrl,
+          video_url: videoUrl
           // bank_name: values.bank_name || "",
           // bank_account_no: values.bank_account_no || "",
           // bank_account_name: values.bank_account_name || ""
         };
         await UserService.updateUser(id as string, updatedValues as UpdateUserParams);
-        
-        
+
         message.success("Profile updated successfully");
         navigate(ROUTER_URL.INSTRUCTOR.SETTING);
       } catch (error: any) {
@@ -217,7 +216,7 @@ const EditUserProfile = () => {
       <div className="max-w-10xl mx-auto rounded-xl bg-white p-8 shadow-2xl">
         <h1 className="mb-6 text-center text-3xl font-bold text-[#1a237e]">Edit User Profile</h1>
         <Form form={form} layout="vertical" onFinish={handleFormSubmit} className="space-y-4">
-          <div className="mb-6 flex flex-col w-full max-w-4xl mx-auto items-center gap-6 sm:flex-row sm:items-start">
+          <div className="mx-auto mb-6 flex w-full max-w-4xl flex-col items-center gap-6 sm:flex-row sm:items-start">
             <div className="flex flex-col items-center gap-5 sm:flex-row">
               <div className="group relative w-full">
                 <Avatar src={state.user.data.avatar_url} size={120} className="border-4 border-[#1a237e] shadow-lg transition-transform hover:scale-105" />
@@ -228,18 +227,12 @@ const EditUserProfile = () => {
                 </Upload>
               </div>
               <div className="group relative w-full sm:w-[500px]">
-                <video src={state.user.data.video_url} controls className="w-full h-full object-cover rounded-lg border-4 border-[#1a237e] shadow-lg transition-transform hover:scale-105" />
+                <video src={state.user.data.video_url} controls className="h-full w-full rounded-lg border-4 border-[#1a237e] object-cover shadow-lg transition-transform hover:scale-105" />
                 <Upload accept="video/*" showUploadList={false} beforeUpload={handleUpload}>
-                  <Button
-                    type="primary"
-                    icon={<UploadOutlined />}
-                    className="absolute bottom-4 right-4 flex items-center justify-center rounded-full bg-[#1a237e] text-white shadow-lg transition-transform hover:scale-110"
-                    style={{ width: "50px", height: "50px" }}
-                  />
+                  <Button type="primary" icon={<UploadOutlined />} className="absolute bottom-4 right-4 flex items-center justify-center rounded-full bg-[#1a237e] text-white shadow-lg transition-transform hover:scale-110" style={{ width: "50px", height: "50px" }} />
                 </Upload>
               </div>
-            
-          </div>
+            </div>
 
             {/* <div className="flex flex-col items-center gap-2 sm:items-start">
               <h3 className="text-lg font-medium text-[#1a237e]">{state.user.data.name}</h3>

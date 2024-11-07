@@ -29,14 +29,13 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
         lesson_type: data.lesson_type,
         course_id: data.course_id,
         session_id: data.session_id,
-        user_id: data.user_id,
+        user_id: data.user_id
       });
       setLessonType(data.lesson_type);
       setImagePreview(data.image_url);
       setVideoPreview(data.video_url);
     }
   }, [data, form]);
-
 
   const handleOk = async () => {
     try {
@@ -68,7 +67,7 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
         video_url: formValues.video_url || "",
         image_url: formValues.image_url || "",
         full_time: Number(formValues.full_time),
-        position_order: formValues.position_order ? Number(formValues.position_order) : null,
+        position_order: formValues.position_order ? Number(formValues.position_order) : null
       };
 
       console.log("Update parameters:", params);
@@ -77,7 +76,7 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
       console.log("API Response:", response);
 
       if (response.data?.success) {
-        setTimeout(() => {  
+        setTimeout(() => {
           message.success("Lesson updated successfully");
         }, 3000);
         onClose();
@@ -166,16 +165,20 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
         <Button key="cancel" onClick={handleCancel}>
           Cancel
         </Button>,
-        <Button key="submit" className="bg-gradient-tone text-white hover:bg-gradient-tone-hover" onClick={handleOk}>
+        <Button key="submit" className="bg-gradient-tone hover:bg-gradient-tone-hover text-white" onClick={handleOk}>
           Update
-        </Button>,
+        </Button>
       ]}
     >
       <Form form={form} layout="vertical">
-        <Form.Item name="name" label="Name" rules={[
-          { required: true, message: "Please input the lesson name!" },
-          { type: 'string', message: "Name must be a string" }
-        ]}>
+        <Form.Item
+          name="name"
+          label="Name"
+          rules={[
+            { required: true, message: "Please input the lesson name!" },
+            { type: "string", message: "Name must be a string" }
+          ]}
+        >
           <Input />
         </Form.Item>
         {/* <Form.Item name="course_id" label="Course ID">
@@ -184,10 +187,14 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
         <Form.Item name="session_id" label="Session ID">
           <Input value={data.session_id} disabled />
         </Form.Item> */}
-        <Form.Item name="lesson_type" label="Lesson Type" rules={[
-          { required: true, message: "Please select the lesson type!" },
-          { type: 'string', message: "Lesson type must be a string" }
-        ]}>
+        <Form.Item
+          name="lesson_type"
+          label="Lesson Type"
+          rules={[
+            { required: true, message: "Please select the lesson type!" },
+            { type: "string", message: "Lesson type must be a string" }
+          ]}
+        >
           <Select onChange={handleLessonTypeChange}>
             {Object.values(LessonType).map((type) => (
               <Option key={type} value={type}>
@@ -198,47 +205,47 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
         </Form.Item>
 
         {lessonType === LessonType.IMAGE && (
-          <Form.Item 
-            name="image_url" 
-            label="Image Url" 
+          <Form.Item
+            name="image_url"
+            label="Image Url"
             rules={[
               { required: true, message: "Please input the image url!" },
-              { type: 'string', message: "Image URL must be a string" }
+              { type: "string", message: "Image URL must be a string" }
             ]}
           >
             <div className="space-y-4">
-                  <Upload accept="image/*" showUploadList={false} beforeUpload={handleImagePreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
-                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingAvatar}>
-                      Select Avatar
-                    </Button>
-                  </Upload>
-                  {imagePreview && <img src={imagePreview} alt="Image Preview" style={{ width: '100%', marginTop: '10px' }} />}
-                </div>
+              <Upload accept="image/*" showUploadList={false} beforeUpload={handleImagePreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
+                <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingAvatar}>
+                  Select Avatar
+                </Button>
+              </Upload>
+              {imagePreview && <img src={imagePreview} alt="Image Preview" style={{ width: "100%", marginTop: "10px" }} />}
+            </div>
           </Form.Item>
         )}
 
         {lessonType === LessonType.VIDEO && (
-          <Form.Item 
-            name="video_url" 
-            label="Video Url" 
+          <Form.Item
+            name="video_url"
+            label="Video Url"
             rules={[
               { required: true, message: "Please input the video url!" },
-              { type: 'string', message: "Video URL must be a string" }
+              { type: "string", message: "Video URL must be a string" }
             ]}
           >
-                <div className="space-y-4">
-                  <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList)}>
-                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingVideo}>
-                      Select Video
-                    </Button>
-                  </Upload>
-                  {videoPreview && (
-                    <video controls style={{ width: '100%', marginTop: '10px' }}>
-                      <source src={videoPreview} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                  )}
-                </div>
+            <div className="space-y-4">
+              <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList)}>
+                <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingVideo}>
+                  Select Video
+                </Button>
+              </Upload>
+              {videoPreview && (
+                <video controls style={{ width: "100%", marginTop: "10px" }}>
+                  <source src={videoPreview} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              )}
+            </div>
           </Form.Item>
         )}
         {lessonType === LessonType.TEXT && (

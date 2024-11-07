@@ -5,7 +5,6 @@ interface LessionComponentProps {
 }
 
 const LessionComponent = ({ refreshKey }: LessionComponentProps) => {
-
   return (
     <div>
       <DisplayLesson refreshKey={refreshKey} />

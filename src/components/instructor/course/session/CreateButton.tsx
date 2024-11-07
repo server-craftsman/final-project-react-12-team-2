@@ -49,7 +49,7 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
       const createSessionResponse = await SessionService.createSession(requestData);
 
       if (createSessionResponse) {
-        setTimeout(() => {  
+        setTimeout(() => {
           message.success("Session created successfully");
         }, 3000);
         setIsOpen(false);

@@ -100,9 +100,10 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
       const response = await UserService.getUsersAdmin(params as GetUsersAdminParams);
 
       // Filter users based on searchQuery
-      const filteredUsers = response.data.data.pageData.filter((user) => 
-        // user.role !== UserRoles.ALL && 
-        (user.name.includes(searchQuery) || user.email.includes(searchQuery))
+      const filteredUsers = response.data.data.pageData.filter(
+        (user) =>
+          // user.role !== UserRoles.ALL &&
+          user.name.includes(searchQuery) || user.email.includes(searchQuery)
       );
 
       setUsers({ ...response.data.data, pageData: filteredUsers });

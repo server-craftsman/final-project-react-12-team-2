@@ -54,7 +54,7 @@ const CourseDetails: React.FC = () => {
         const courseData = response.data.data as GetPublicCourseDetailResponse;
 
         // Set course status directly from course data
-        setCourseStatus({ 
+        setCourseStatus({
           is_in_cart: courseData.is_in_cart,
           is_purchased: courseData.is_purchased
         });
@@ -64,16 +64,16 @@ const CourseDetails: React.FC = () => {
         setInstructor(courseData.instructor_id);
         setCategory(courseData.category_name);
         setDiscountedPrice(((courseData.price ?? 0) - ((courseData.discount ?? 0) * (courseData.price ?? 0)) / 100).toFixed(2));
-        
+
         // Process sessions
         const sessionList = courseData.session_list.map((session, index) => ({
           ...session,
           _id: `session-${index}`
         }));
         setSessions(sessionList);
-        
+
         // Process lessons
-        const lessonList = sessionList.flatMap((session, sessionIndex) => 
+        const lessonList = sessionList.flatMap((session, sessionIndex) =>
           session.lesson_list.map((lesson, lessonIndex) => ({
             ...lesson,
             _id: `lesson-${sessionIndex}-${lessonIndex}`,
@@ -105,7 +105,7 @@ const CourseDetails: React.FC = () => {
 
   const handleCancel = () => {
     // Reset video playback by forcing video element to pause and reset time
-    const videoElement = document.querySelector('video');
+    const videoElement = document.querySelector("video");
     if (videoElement) {
       videoElement.pause();
       videoElement.currentTime = 0;
@@ -116,7 +116,7 @@ const CourseDetails: React.FC = () => {
     {
       key: "1",
       label: (
-        <span className="tab-title rounded-full bg-gradient-tone px-4 py-2 text-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
+        <span className="tab-title bg-gradient-tone rounded-full px-4 py-2 text-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
           <InfoCircleOutlined className="text-gold mr-2 animate-pulse" />
           <span className="font-semibold tracking-wide">Course Insights</span>
         </span>
@@ -126,25 +126,17 @@ const CourseDetails: React.FC = () => {
     {
       key: "2",
       label: (
-        <span className="tab-title rounded-full bg-gradient-tone px-4 py-2 text-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
+        <span className="tab-title bg-gradient-tone rounded-full px-4 py-2 text-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
           <BookOutlined className="text-gold mr-2 animate-pulse" />
           <span className="font-semibold tracking-wide">Course Content</span>
         </span>
       ),
-      children: (
-        <CourseContent
-          sessions={sessions}
-          lessons={lessons}
-          courseId={course._id}
-          activeSessionId={activeSessionId}
-          setActiveSessionId={setActiveSessionId}
-        />
-      )
+      children: <CourseContent sessions={sessions} lessons={lessons} courseId={course._id} activeSessionId={activeSessionId} setActiveSessionId={setActiveSessionId} />
     },
     {
       key: "3",
       label: (
-        <span className="tab-title rounded-full bg-gradient-tone px-4 py-2 text-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
+        <span className="tab-title bg-gradient-tone rounded-full px-4 py-2 text-white shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg">
           <StarOutlined className="text-gold mr-2 animate-pulse" />
           <span className="font-semibold tracking-wide">Reviews</span>
         </span>
@@ -163,12 +155,7 @@ const CourseDetails: React.FC = () => {
         <Row gutter={[32, 32]}>
           <Col xs={24} lg={16}>
             <Card className="overflow-hidden rounded-lg text-left shadow-lg">
-              <CourseHeader 
-                course={course} 
-                category={category} 
-                instructor={instructor} 
-                showVideoModal={() => showVideoModal()}
-              />
+              <CourseHeader course={course} category={category} instructor={instructor} showVideoModal={() => showVideoModal()} />
               <div className="p-4 text-left">
                 <Divider />
                 <Tabs
@@ -186,11 +173,7 @@ const CourseDetails: React.FC = () => {
             </Card>
           </Col>
           <Col xs={24} lg={8}>
-            <CourseSidebar 
-              course={course} 
-              discountedPrice={discountedPrice}
-              courseStatus={courseStatus}
-            />
+            <CourseSidebar course={course} discountedPrice={discountedPrice} courseStatus={courseStatus} />
           </Col>
         </Row>
       </div>

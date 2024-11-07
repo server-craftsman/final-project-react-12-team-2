@@ -8,7 +8,7 @@ interface CartContextType {
   updateCartItems: (status?: CartStatusEnum) => Promise<void>;
   updateCartStatus: (cartIds: string | string[], status: CartStatusEnum) => Promise<void>;
   deleteCartItem: (cartId: string) => Promise<void>;
-  isCoursePurchased: (courseId: string) => { purchased: boolean, isInCart: boolean };
+  isCoursePurchased: (courseId: string) => { purchased: boolean; isInCart: boolean };
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -46,13 +46,13 @@ export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
     try {
       const idsArray = Array.isArray(cartIds) ? cartIds : [cartIds];
 
-      const itemsToUpdate = cartItems.filter(item => idsArray.includes(item._id));
+      const itemsToUpdate = cartItems.filter((item) => idsArray.includes(item._id));
       if (itemsToUpdate.length > 0) {
-        const items = itemsToUpdate.map(item => ({ _id: item._id, cart_no: item.cart_no }));
+        const items = itemsToUpdate.map((item) => ({ _id: item._id, cart_no: item.cart_no }));
         await CartService.updateCartStatus({ status, items });
         updateCartItems(status); // Refresh cart items after status update
       } else {
-        console.error(`No cart items found for the provided IDs: ${idsArray.join(', ')}`);
+        console.error(`No cart items found for the provided IDs: ${idsArray.join(", ")}`);
       }
     } catch (error) {
       console.error("Error updating cart status:", error);
@@ -71,8 +71,8 @@ export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
 
   const isCoursePurchased = (courseId: string) => {
     console.log("Checking if course is purchased or in cart:", courseId);
-    const purchased = cartItems.some(item => item.course_id === courseId && item.status === CartStatusEnum.completed);
-    const isInCart = cartItems.some(item => item.course_id === courseId && item.status === CartStatusEnum.new);
+    const purchased = cartItems.some((item) => item.course_id === courseId && item.status === CartStatusEnum.completed);
+    const isInCart = cartItems.some((item) => item.course_id === courseId && item.status === CartStatusEnum.new);
     console.log("Is course purchased:", purchased, "Is in cart:", isInCart);
     return { purchased, isInCart };
   };
@@ -85,11 +85,7 @@ export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
     }
   }, [token]);
 
-  return (
-    <CartContext.Provider value={{ cartItems, updateCartItems, updateCartStatus, deleteCartItem, isCoursePurchased }}>
-      {children}
-    </CartContext.Provider>
-  );
+  return <CartContext.Provider value={{ cartItems, updateCartItems, updateCartStatus, deleteCartItem, isCoursePurchased }}>{children}</CartContext.Provider>;
 };
 
 export const useCart = () => {

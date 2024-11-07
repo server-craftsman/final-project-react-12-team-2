@@ -75,8 +75,8 @@ const CreateUserProfile = () => {
 
   // Upload image
   const uploadImage = useCallback(async () => {
-    if (!avatarFile) return '';
-    let avatarUrl = '';
+    if (!avatarFile) return "";
+    let avatarUrl = "";
     await customUploadHandler(
       {
         file: avatarFile,
@@ -98,8 +98,8 @@ const CreateUserProfile = () => {
 
   // Upload video
   const uploadVideo = useCallback(async () => {
-    if (!videoFile) return '';
-    let videoUrl = '';
+    if (!videoFile) return "";
+    let videoUrl = "";
     await customUploadHandler(
       {
         file: videoFile,
@@ -129,8 +129,8 @@ const CreateUserProfile = () => {
         // Upload avatar and video files separately
         const [avatarUrl, videoUrl] = await Promise.all([uploadImage(), uploadVideo()]);
 
-        await UserService.createUser({ 
-          ...restValues, 
+        await UserService.createUser({
+          ...restValues,
           avatar_url: avatarUrl,
           video_url: videoUrl
         });
@@ -144,7 +144,7 @@ const CreateUserProfile = () => {
       } catch (error: any) {
         message.error({
           content: error.message || "Failed to create user",
-          className: "custom-error-message", 
+          className: "custom-error-message",
           duration: 5
         });
       } finally {

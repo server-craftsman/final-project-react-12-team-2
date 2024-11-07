@@ -39,19 +39,19 @@ const CartPage: React.FC = () => {
   const tabItems = [
     {
       key: String(CartStatusEnum.new),
-      label: "New",
+      label: "New"
     },
     {
-      key: String(CartStatusEnum.cancel), 
-      label: "Cancel",
+      key: String(CartStatusEnum.cancel),
+      label: "Cancel"
     },
     {
       key: String(CartStatusEnum.waiting_paid),
-      label: "Waiting",
+      label: "Waiting"
     },
     {
       key: String(CartStatusEnum.completed),
-      label: "Completed",
+      label: "Completed"
     }
   ];
 
@@ -94,10 +94,10 @@ const CartPage: React.FC = () => {
 
   // Tính toán lại các giá trị dựa trên các mục đã chọn
   const calculateSummary = () => {
-    const selectedCartItems = cartItems.filter(item => selectedItems.includes(item._id));
+    const selectedCartItems = cartItems.filter((item) => selectedItems.includes(item._id));
     const subtotal = selectedCartItems.reduce((acc, item) => acc + item.price, 0);
     const discount = selectedCartItems.reduce((acc, item) => acc + item.discount, 0);
-    const total = selectedCartItems.reduce((acc, item) => acc + (item.price - (item.price * item.discount / 100)), 0);
+    const total = selectedCartItems.reduce((acc, item) => acc + (item.price - (item.price * item.discount) / 100), 0);
     return {
       subtotal: helpers.moneyFormat(subtotal),
       discount: discount,
@@ -106,7 +106,6 @@ const CartPage: React.FC = () => {
   };
 
   const { subtotal, discount, total } = calculateSummary();
-
 
   const handleConfirmPayment = async (cartId: string) => {
     try {
@@ -132,11 +131,11 @@ const CartPage: React.FC = () => {
 
   return (
     <div className="container mx-auto min-h-screen bg-gradient-to-b from-white to-gray-50 p-8">
-      <Title level={2} className="mb-12 text-center font-bold tracking-wide bg-gradient-to-r from-[#1a237e] to-[#3949ab] bg-clip-text text-transparent drop-shadow-lg transform hover:scale-105 transition-all duration-300">
+      <Title level={2} className="mb-12 transform bg-gradient-to-r from-[#1a237e] to-[#3949ab] bg-clip-text text-center font-bold tracking-wide text-transparent drop-shadow-lg transition-all duration-300 hover:scale-105">
         Shopping Cart
       </Title>
-      
-      <Tabs 
+
+      <Tabs
         activeKey={String(activeTab)}
         onChange={handleTabChange}
         items={tabItems}
@@ -151,7 +150,7 @@ const CartPage: React.FC = () => {
           boxShadow: "0 4px 12px rgba(26, 35, 126, 0.15)",
           padding: "0.5rem 1rem",
           borderRadius: "12px 12px 0 0",
-          backdropFilter: "blur(8px)",
+          backdropFilter: "blur(8px)"
         }}
         tabBarGutter={32}
         animated={{
@@ -163,8 +162,8 @@ const CartPage: React.FC = () => {
         tabBarExtraContent={{
           right: (
             <div className="flex items-center space-x-4 px-6">
-              <div className="h-10 w-[2px] bg-gradient-to-b from-[#1a237e] to-[#3949ab] rounded-full" />
-              <span className="text-base font-serif italic text-[#1a237e] opacity-80">Your Shopping Journey</span>
+              <div className="h-10 w-[2px] rounded-full bg-gradient-to-b from-[#1a237e] to-[#3949ab]" />
+              <span className="font-serif text-base italic text-[#1a237e] opacity-80">Your Shopping Journey</span>
             </div>
           )
         }}
@@ -174,51 +173,43 @@ const CartPage: React.FC = () => {
         <Col span={16}>
           <Card className="overflow-hidden rounded-xl border-0 bg-white shadow-xl">
             {activeTab === CartStatusEnum.waiting_paid ? (
-              <div className="waiting-tab-ui p-12 rounded-[2rem] bg-gradient-to-br from-gray-50 via-white to-gray-50 shadow-inner transition-all duration-500 hover:shadow-lg">
-                <Title level={3} className="mb-12 text-center text-3xl text-gray-900 tracking-wider transform hover:scale-105 transition-transform duration-300">
+              <div className="waiting-tab-ui rounded-[2rem] bg-gradient-to-br from-gray-50 via-white to-gray-50 p-12 shadow-inner transition-all duration-500 hover:shadow-lg">
+                <Title level={3} className="mb-12 transform text-center text-3xl tracking-wider text-gray-900 transition-transform duration-300 hover:scale-105">
                   Pending Orders
                 </Title>
                 <List
                   dataSource={cartItems}
                   renderItem={(item) => (
-                    <List.Item key={item._id} className="py-10 last:border-0 transform hover:-translate-y-1 transition-all duration-300">
-                      <Card className="w-full border border-gray-100 bg-white shadow-xl hover:shadow-2xl transition-all duration-500 rounded-3xl backdrop-blur-sm">
+                    <List.Item key={item._id} className="transform py-10 transition-all duration-300 last:border-0 hover:-translate-y-1">
+                      <Card className="w-full rounded-3xl border border-gray-100 bg-white shadow-xl backdrop-blur-sm transition-all duration-500 hover:shadow-2xl">
                         <Row gutter={32} className="flex items-center p-8">
                           <Col span={16}>
-                            <Text strong className="block text-3xl tracking-wide text-gray-900 mb-4 hover:text-[#02005dc6] transition-colors duration-300">
+                            <Text strong className="mb-4 block text-3xl tracking-wide text-gray-900 transition-colors duration-300 hover:text-[#02005dc6]">
                               {item?.course_name}
                             </Text>
-                            <Text className="mt-4 block text-lg text-gray-600 italic font-light">
-                              Instructor: <span className="font-medium text-gray-800 hover:text-[#02005dc6] transition-colors duration-300">{item?.instructor_name}</span>
+                            <Text className="mt-4 block text-lg font-light italic text-gray-600">
+                              Instructor: <span className="font-medium text-gray-800 transition-colors duration-300 hover:text-[#02005dc6]">{item?.instructor_name}</span>
                             </Text>
                             <div className="mt-8 space-y-4 border-t border-gray-100 pt-6">
-                              <div className="flex justify-between text-lg text-gray-700 hover:text-gray-900 transition-colors duration-300">
+                              <div className="flex justify-between text-lg text-gray-700 transition-colors duration-300 hover:text-gray-900">
                                 <span className="font-serif">Original Price</span>
                                 <span className="font-medium">{helpers.moneyFormat(item?.price)}</span>
                               </div>
-                              <div className="flex justify-between text-lg text-emerald-600 hover:text-emerald-700 transition-colors duration-300">
+                              <div className="flex justify-between text-lg text-emerald-600 transition-colors duration-300 hover:text-emerald-700">
                                 <span className="font-serif">Savings</span>
-                                <span className="font-medium animate-pulse">{item?.discount}% OFF</span>
+                                <span className="animate-pulse font-medium">{item?.discount}% OFF</span>
                               </div>
                               <div className="flex justify-between text-xl text-gray-900">
                                 <span>Final Price</span>
-                                <span className="bg-gradient-to-r from-indigo-900 to-blue-900 bg-clip-text text-transparent">{helpers.moneyFormat(item?.price - (item?.price * item?.discount / 100))}</span>
+                                <span className="bg-gradient-to-r from-indigo-900 to-blue-900 bg-clip-text text-transparent">{helpers.moneyFormat(item?.price - (item?.price * item?.discount) / 100)}</span>
                               </div>
                             </div>
                           </Col>
-                          <Col span={8} className="text-right space-y-6">
-                            <Button 
-                              type="primary" 
-                              onClick={() => handleConfirmPayment(item._id)}
-                              className="w-full bg-gradient-tone text-white font-serif text-lg px-10 py-6 h-auto rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-700 border-0 animate-shimmer"
-                            >
+                          <Col span={8} className="space-y-6 text-right">
+                            <Button type="primary" onClick={() => handleConfirmPayment(item._id)} className="bg-gradient-tone animate-shimmer h-auto w-full transform rounded-2xl border-0 px-10 py-6 font-serif text-lg text-white shadow-lg transition-all duration-700 hover:-translate-y-1 hover:scale-105 hover:shadow-xl">
                               Complete Payment
                             </Button>
-                            <Button 
-                              type="default" 
-                              onClick={() => handleCancelOrder(item._id)}
-                              className="w-full bg-gradient-to-r from-red-600 to-red-800 text-white font-serif text-lg px-10 py-6 h-auto rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-700 border-0 animate-shimmer"
-                            >
+                            <Button type="default" onClick={() => handleCancelOrder(item._id)} className="animate-shimmer h-auto w-full transform rounded-2xl border-0 bg-gradient-to-r from-red-600 to-red-800 px-10 py-6 font-serif text-lg text-white shadow-lg transition-all duration-700 hover:-translate-y-1 hover:scale-105 hover:shadow-xl">
                               Cancel Order
                             </Button>
                           </Col>
@@ -229,44 +220,41 @@ const CartPage: React.FC = () => {
                 />
               </div>
             ) : activeTab === CartStatusEnum.completed ? (
-              <div className="completed-tab-ui p-12 rounded-[2rem] bg-gradient-to-br from-gray-50 via-white to-gray-50 shadow-inner transition-all duration-500 hover:shadow-2xl transform hover:scale-[1.02]">
-                <Title level={3} className="mb-12 text-center text-3xl bg-gradient-tone bg-clip-text text-transparent font-extrabold tracking-wider transform hover:scale-105 transition-transform duration-500">
+              <div className="completed-tab-ui transform rounded-[2rem] bg-gradient-to-br from-gray-50 via-white to-gray-50 p-12 shadow-inner transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl">
+                <Title level={3} className="bg-gradient-tone mb-12 transform bg-clip-text text-center text-3xl font-extrabold tracking-wider text-transparent transition-transform duration-500 hover:scale-105">
                   Completed Orders
                 </Title>
                 <List
-                  dataSource={cartItems.filter(item => item.status === CartStatusEnum.completed)}
+                  dataSource={cartItems.filter((item) => item.status === CartStatusEnum.completed)}
                   renderItem={(item) => (
-                    <List.Item key={item._id} className="py-10 last:border-0 transform hover:-translate-y-2 transition-all duration-500 ease-in-out">
-                      <Card className="w-full border border-gray-100 bg-white/90 shadow-lg hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-700 rounded-3xl backdrop-blur-lg">
+                    <List.Item key={item._id} className="transform py-10 transition-all duration-500 ease-in-out last:border-0 hover:-translate-y-2">
+                      <Card className="w-full rounded-3xl border border-gray-100 bg-white/90 shadow-lg backdrop-blur-lg transition-all duration-700 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
                         <Row gutter={32} className="flex items-center p-8">
                           <Col span={16}>
-                            <Text strong className="block text-3xl tracking-wide bg-gradient-tone bg-clip-text text-transparent mb-4 hover:scale-105 transform transition-all duration-300">
+                            <Text strong className="bg-gradient-tone mb-4 block transform bg-clip-text text-3xl tracking-wide text-transparent transition-all duration-300 hover:scale-105">
                               {item?.course_name}
                             </Text>
-                            <Text className="mt-4 block text-lg text-gray-600 italic font-light">
-                              Instructor: <span className="font-medium bg-gradient-tone bg-clip-text text-transparent hover:scale-105 inline-block transform transition-all duration-300">{item?.instructor_name}</span>
+                            <Text className="mt-4 block text-lg font-light italic text-gray-600">
+                              Instructor: <span className="bg-gradient-tone inline-block transform bg-clip-text font-medium text-transparent transition-all duration-300 hover:scale-105">{item?.instructor_name}</span>
                             </Text>
                             <div className="mt-8 space-y-4 border-t border-gray-100 pt-6">
-                              <div className="flex justify-between text-lg text-gray-700 hover:text-gray-900 transition-colors duration-300">
+                              <div className="flex justify-between text-lg text-gray-700 transition-colors duration-300 hover:text-gray-900">
                                 <span className="font-serif">Original Price</span>
                                 <span className="font-medium">{helpers.moneyFormat(item?.price)}</span>
                               </div>
-                              <div className="flex justify-between text-lg text-green-600 hover:text-green-700 transition-colors duration-300">
+                              <div className="flex justify-between text-lg text-green-600 transition-colors duration-300 hover:text-green-700">
                                 <span className="font-serif">Savings</span>
-                                <span className="font-medium animate-pulse">{item?.discount}% OFF</span>
+                                <span className="animate-pulse font-medium">{item?.discount}% OFF</span>
                               </div>
                               <div className="flex justify-between text-xl">
                                 <span className="font-serif">Final Price</span>
-                                <span className="bg-gradient-tone bg-clip-text text-transparent font-bold">{helpers.moneyFormat(item?.price - (item?.price * item?.discount / 100))}</span>
+                                <span className="bg-gradient-tone bg-clip-text font-bold text-transparent">{helpers.moneyFormat(item?.price - (item?.price * item?.discount) / 100)}</span>
                               </div>
                             </div>
                           </Col>
-                          <Col span={8} className="text-right space-y-6">
+                          <Col span={8} className="space-y-6 text-right">
                             <Link to={`/course/${item._id}/lesson/${item?._id}`}>
-                              <Button 
-                                type="primary" 
-                                className="w-full bg-gradient-tone text-white font-serif text-lg px-10 py-6 h-auto rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:scale-105 transition-all duration-700 border-0 animate-shimmer"
-                              >
+                              <Button type="primary" className="bg-gradient-tone animate-shimmer h-auto w-full transform rounded-2xl border-0 px-10 py-6 font-serif text-lg text-white shadow-lg transition-all duration-700 hover:-translate-y-1 hover:scale-105 hover:shadow-xl">
                                 Learn More
                               </Button>
                             </Link>
@@ -280,11 +268,7 @@ const CartPage: React.FC = () => {
             ) : (
               <div className="default-tab-ui">
                 <div className="mb-6 flex items-center border-b border-gray-100 pb-4">
-                  <Checkbox 
-                    checked={selectAll} 
-                    onChange={handleSelectAllChange}
-                    className="text-lg font-medium text-gray-700"
-                  >
+                  <Checkbox checked={selectAll} onChange={handleSelectAllChange} className="text-lg font-medium text-gray-700">
                     Select All Items
                   </Checkbox>
                 </div>
@@ -299,49 +283,30 @@ const CartPage: React.FC = () => {
                         <Card className="w-full border-0 bg-transparent shadow-none">
                           <Row gutter={24} className="flex items-center">
                             <Col span={1}>
-                              <Checkbox 
-                                checked={selectedItems.includes(item._id)} 
-                                onChange={() => handleItemSelectChange(item._id)}
-                              />
+                              <Checkbox checked={selectedItems.includes(item._id)} onChange={() => handleItemSelectChange(item._id)} />
                             </Col>
 
                             <Col span={5}>
-                              <Image 
-                                src={item?.course_image} 
-                                alt={item?.name}
-                                className="rounded-lg object-cover"
-                                width={120} 
-                                height={80} 
-                              />
+                              <Image src={item?.course_image} alt={item?.name} className="rounded-lg object-cover" width={120} height={80} />
                             </Col>
-                            
+
                             <Col span={12}>
                               <Text strong className="block text-xl font-bold tracking-wide text-gray-800">
                                 {item?.course_name}
                               </Text>
-                              <Text className="mt-2 block text-base text-gray-600">
-                                By {item?.instructor_name}
-                              </Text>
+                              <Text className="mt-2 block text-base text-gray-600">By {item?.instructor_name}</Text>
                             </Col>
 
                             <Col span={6} className="text-right">
                               <div className="space-y-2">
-                                <Text className="block text-lg font-semibold text-[#02005dc6]">
-                                  {helpers.moneyFormat(pricePaid)}
-                                </Text>
+                                <Text className="block text-lg font-semibold text-[#02005dc6]">{helpers.moneyFormat(pricePaid)}</Text>
                                 {item.discount > 0 && (
                                   <>
-                                    <Text className="block text-sm text-gray-500 line-through">
-                                      {helpers.moneyFormat(price)}
-                                    </Text>
-                                    <Text className="block text-sm text-green-600">
-                                      Sale {item.discount} %
-                                    </Text>
+                                    <Text className="block text-sm text-gray-500 line-through">{helpers.moneyFormat(price)}</Text>
+                                    <Text className="block text-sm text-green-600">Sale {item.discount} %</Text>
                                   </>
                                 )}
-                                {item.status === CartStatusEnum.cancel && (
-                                  <Button icon={<DeleteOutlined />} onClick={() => handleDeleteCartItem(item._id)}></Button>
-                                )}
+                                {item.status === CartStatusEnum.cancel && <Button icon={<DeleteOutlined />} onClick={() => handleDeleteCartItem(item._id)}></Button>}
                               </div>
                             </Col>
                           </Row>
@@ -377,30 +342,16 @@ const CartPage: React.FC = () => {
 
                 <div className="flex justify-between">
                   <Text className="text-xl font-bold text-gray-800">Total:</Text>
-                  <Text className="text-xl font-bold text-[#02005dc6]">
-                    {total}
-                  </Text>
+                  <Text className="text-xl font-bold text-[#02005dc6]">{total}</Text>
                 </div>
               </div>
 
               <div className="mt-8 space-y-4">
-                <Button 
-                  type="primary" 
-                  size="large"
-                  block
-                  className="h-12 bg-[#1a237e] text-lg font-bold tracking-wide shadow-lg transition-all hover:bg-[#6a1bff] hover:scale-[1.02] hover:shadow-xl"
-                  icon={<ShoppingCartOutlined />}
-                  onClick={handleCheckout}
-                >
+                <Button type="primary" size="large" block className="h-12 bg-[#1a237e] text-lg font-bold tracking-wide shadow-lg transition-all hover:scale-[1.02] hover:bg-[#6a1bff] hover:shadow-xl" icon={<ShoppingCartOutlined />} onClick={handleCheckout}>
                   Checkout
                 </Button>
 
-                <Button 
-                  size="large"
-                  block
-                  className="h-12 border border-gray-200 text-lg font-medium text-gray-600 transition-all hover:bg-gray-50 hover:text-gray-800"
-                  onClick={handleBackToHome}
-                >
+                <Button size="large" block className="h-12 border border-gray-200 text-lg font-medium text-gray-600 transition-all hover:bg-gray-50 hover:text-gray-800" onClick={handleBackToHome}>
                   Continue Shopping
                 </Button>
               </div>

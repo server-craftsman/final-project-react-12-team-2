@@ -41,7 +41,7 @@ const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm, activ
   const columns = [
     {
       title: "ID",
-      dataIndex: "_id", 
+      dataIndex: "_id",
       key: "_id",
       render: (_: string, __: SessionResponsePageData, index: number) => index + 1
     },
@@ -57,16 +57,14 @@ const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm, activ
       render: (course_name: string) => course_name
     },
     {
-      title: "Created At", 
+      title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
       render: (date: string) => formatDate(new Date(date))
     }
   ];
 
-  const filteredSessions = sessionData.filter((session) =>
-    session.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredSessions = sessionData.filter((session) => session.name.toLowerCase().includes(searchTerm.toLowerCase()));
   console.log(filteredSessions);
   return (
     <>

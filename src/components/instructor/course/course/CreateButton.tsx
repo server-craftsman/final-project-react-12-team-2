@@ -49,7 +49,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
   const fetchCategories = async () => {
     try {
       const parentCategoriesData = await CategoryService.getCategory(getParentCategoryParams);
-           const parentCategories = parentCategoriesData.data.data.pageData;
+      const parentCategories = parentCategoriesData.data.data.pageData;
 
       const childCategoriesData = await CategoryService.getCategory(getChildCategoryParams);
       const childCategories = childCategoriesData.data.data.pageData;

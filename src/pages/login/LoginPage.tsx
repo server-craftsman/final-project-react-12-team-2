@@ -207,10 +207,10 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-tone/90 backdrop-blur-md">
+    <div className="bg-gradient-tone/90 flex min-h-screen flex-col items-center justify-center backdrop-blur-md">
       <ToastContainer />
       <div className="relative flex w-full max-w-7xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl md:flex-row">
-        <div className="flex w-full flex-col items-center justify-center bg-gradient-tone p-12 md:w-1/2">
+        <div className="bg-gradient-tone flex w-full flex-col items-center justify-center p-12 md:w-1/2">
           <Link to="/">
             <Lottie animationData={loginAnimation} loop={true} />
           </Link>
@@ -218,7 +218,7 @@ const LoginPage = () => {
           <p className="mt-4 text-center text-lg text-white">Elevate Your Learning Experience</p>
         </div>
         <div className="w-full bg-gradient-to-br from-white to-gray-100 p-12 md:w-1/2">
-          <Link to="/" className="mb-8 flex items-center text-lg btn-text">
+          <Link to="/" className="btn-text mb-8 flex items-center text-lg">
             <HomeOutlined className="mr-2" />
             Back to Home
           </Link>

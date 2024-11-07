@@ -171,53 +171,18 @@ const CoursesManagement: React.FC<{
       render: (record: Courses) =>
         record.status === CourseStatusEnum.waiting_approve ? (
           <div>
-            <Popconfirm
-              title="Confirm the course?"
-              description="Are you sure to confirm this course?"
-              onConfirm={() => handleChangeStatus(record._id, CourseStatusEnum.approve)}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button
-                icon={<CheckOutlined />}
-                className="bg-white text-green-500 mr-2 hover:opacity-80"
-                title="Confirm"
-              />
+            <Popconfirm title="Confirm the course?" description="Are you sure to confirm this course?" onConfirm={() => handleChangeStatus(record._id, CourseStatusEnum.approve)} okText="Yes" cancelText="No">
+              <Button icon={<CheckOutlined />} className="mr-2 bg-white text-green-500 hover:opacity-80" title="Confirm" />
             </Popconfirm>
 
-            <Button
-              icon={<StopOutlined />}
-              className="bg-white text-red-500 mr-2 hover:opacity-80"
-              onClick={() => showRejectModal(record._id)}
-              title="Reject"
-            />
-            <Button 
-            icon ={<CarryOutOutlined />}
-            onClick={() => showLessonModal(record._id)}
-            className="bg-white text-orange-500 mr-2 hover:opacity-80"
-            title="View Lessons"
-            />
-            <Button
-              icon={<ContainerOutlined />}
-              onClick={() => showSessionModal(record._id)}
-              className="bg-white text-yellow-500 mr-2 hover:opacity-80"
-              title="View Sessions"
-            />
+            <Button icon={<StopOutlined />} className="mr-2 bg-white text-red-500 hover:opacity-80" onClick={() => showRejectModal(record._id)} title="Reject" />
+            <Button icon={<CarryOutOutlined />} onClick={() => showLessonModal(record._id)} className="mr-2 bg-white text-orange-500 hover:opacity-80" title="View Lessons" />
+            <Button icon={<ContainerOutlined />} onClick={() => showSessionModal(record._id)} className="mr-2 bg-white text-yellow-500 hover:opacity-80" title="View Sessions" />
           </div>
         ) : (
           <div>
-             <Button 
-            icon ={<CarryOutOutlined />}
-            onClick={() => showLessonModal(record._id)}
-            className="bg-white text-orange-500 mr-2 hover:opacity-80"
-            title="View Lessons"
-            />
-            <Button
-              icon={<ContainerOutlined />}
-              onClick={() => showSessionModal(record._id)}
-              className="bg-white text-yellow-500 mr-2 hover:opacity-80"
-              title="View Sessions"
-            />
+            <Button icon={<CarryOutOutlined />} onClick={() => showLessonModal(record._id)} className="mr-2 bg-white text-orange-500 hover:opacity-80" title="View Lessons" />
+            <Button icon={<ContainerOutlined />} onClick={() => showSessionModal(record._id)} className="mr-2 bg-white text-yellow-500 hover:opacity-80" title="View Sessions" />
           </div>
         )
     }
@@ -231,18 +196,9 @@ const CoursesManagement: React.FC<{
   return (
     <>
       <Table columns={columns} dataSource={filteredCourses} rowKey="_id" />
-      <Modal
-        title="Reject Course"
-        open={isRejectModalVisible}
-        onOk={handleRejectOk}
-        onCancel={() => setIsRejectModalVisible(false)}
-      >
+      <Modal title="Reject Course" open={isRejectModalVisible} onOk={handleRejectOk} onCancel={() => setIsRejectModalVisible(false)}>
         <p>Please provide a reason for rejecting this course:</p>
-        <Input.TextArea
-          value={rejectComment}
-          onChange={(e) => setRejectComment(e.target.value)}
-          rows={4}
-        />
+        <Input.TextArea value={rejectComment} onChange={(e) => setRejectComment(e.target.value)} rows={4} />
       </Modal>
       <Modal
         width={1000}

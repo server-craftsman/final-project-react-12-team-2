@@ -61,6 +61,6 @@ export const ROUTER_URL = {
   },
   UNAUTHORIZED: "/unauthorized",
   PROFILE: {
-    GET_PROFILE_DETAILS: "/profile/:id",
+    GET_PROFILE_DETAILS: "/profile/:id"
   }
 };

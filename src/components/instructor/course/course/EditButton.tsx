@@ -2,7 +2,7 @@ import { Button, Col, Form, Input, InputNumber, message, Modal, Row, Select, Upl
 const { Option } = Select;
 import { useState, useEffect, useCallback } from "react";
 import { EditOutlined, UploadOutlined } from "@ant-design/icons";
-import {upload } from "../../../../utils";
+import { upload } from "../../../../utils";
 import Editor from "../../../generic/tiny/Editor";
 import { CourseService } from "../../../../services/course/course.service";
 import { UpdateCourseParams } from "../../../../models/api/request/course/course.request.model";
@@ -19,8 +19,8 @@ interface EditButtonProps {
 const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
-  const [description, setDescription] = useState<string>('');
-  const [content, setContent] = useState<string>('');
+  const [description, setDescription] = useState<string>("");
+  const [content, setContent] = useState<string>("");
   const [categories, setCategories] = useState<any[]>([]);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -76,7 +76,6 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-
         const parentCategoriesData = await CategoryService.getCategory(getParentCategoryParams);
         const parentCategories = parentCategoriesData.data.data.pageData;
 
@@ -126,7 +125,7 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
     try {
       await form.validateFields();
       const formValues = form.getFieldsValue();
-      
+
       const updateParams: UpdateCourseParams = {
         name: formValues.name,
         description: formValues.description || description,
@@ -139,7 +138,7 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
       };
 
       const response = await CourseService.updateCourse(data._id, updateParams);
-      
+
       if (response.data?.data) {
         message.success("Course updated successfully");
         setIsOpen(false);
@@ -151,7 +150,7 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
         }
       }
     } catch (error: any) {
-      console.error('Update error:', error);
+      console.error("Update error:", error);
       message.error(error.message || "Failed to update course");
     }
   };
@@ -172,7 +171,6 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
       throw new Error(`${type} upload failed: ${error.message}`);
     }
   }, []);
-
 
   const handleAvatarPreview = useCallback(
     async (file: File) => {
@@ -217,22 +215,15 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
 
   //debug clear tag html when editor change
   const handleEditorChange = (value: string) => {
-    const strippedContent = value.replace(/<[^>]*>/g, '').trim();
-    setContent(strippedContent ? value : '');
-    form.setFieldsValue({ content: strippedContent ? value : '' });
+    const strippedContent = value.replace(/<[^>]*>/g, "").trim();
+    setContent(strippedContent ? value : "");
+    form.setFieldsValue({ content: strippedContent ? value : "" });
   };
 
   return (
     <>
       <Button className="mr-2" icon={<EditOutlined />} onClick={openCreateModal} />
-      <Modal
-        title="Edit Course"
-        open={isOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        width={800}
-        style={{ top: "20px" }}
-      >
+      <Modal title="Edit Course" open={isOpen} onOk={handleOk} onCancel={handleCancel} width={800} style={{ top: "20px" }}>
         <Form form={form} layout="vertical">
           <Row gutter={16}>
             <Col span={12}>
@@ -256,29 +247,15 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item 
-            name="description" 
-            label="Description" 
-            rules={[{ required: true, message: "Please input the description!" }]}
-          >
-            <Input.TextArea 
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
+          <Form.Item name="description" label="Description" rules={[{ required: true, message: "Please input the description!" }]}>
+            <Input.TextArea value={description} onChange={(e) => setDescription(e.target.value)} />
           </Form.Item>
-          <Form.Item 
-            name="content" 
-            label="Content" 
-            rules={[{ required: true, message: "Please input the content!" }]}
-          >
-            <Editor 
-              initialValue={content}
-              onEditorChange={handleEditorChange}
-            />
+          <Form.Item name="content" label="Content" rules={[{ required: true, message: "Please input the content!" }]}>
+            <Editor initialValue={content} onEditorChange={handleEditorChange} />
           </Form.Item>
           <Row gutter={16}>
             <Col span={12}>
-            <Form.Item name="image_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
+              <Form.Item name="image_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
                 <div className="space-y-4">
                   <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
                     <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingAvatar}>
@@ -290,7 +267,7 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
               </Form.Item>
             </Col>
             <Col span={12}>
-            <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
+              <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
                 <div className="space-y-4">
                   <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList)}>
                     <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingVideo}>
