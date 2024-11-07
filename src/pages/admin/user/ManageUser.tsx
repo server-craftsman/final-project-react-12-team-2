@@ -58,6 +58,7 @@ const ManageUser = () => {
     setSelectedStatus(status);
   };
 
+  //debug useState for filters
   const applyFilters = () => {
     setSearchParams((prevParams) => ({
       ...prevParams,
