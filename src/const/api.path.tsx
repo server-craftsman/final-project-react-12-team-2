@@ -31,7 +31,9 @@ export const API = {
     UPDATE_BLOG: "api/blog/:id",
     GET_BLOG: "api/blog/search",
     CREATE_BLOG: "api/blog",
-    DELETE_BLOG: "api/blog/:id"
+    DELETE_BLOG: "api/blog/:id",
+    GET_COURSE_LOG_DETAILS: "/api/course/log/search",
+
   },
   INSTRUCTOR: {
     GET_USER_DETAILS: "api/users/:id",

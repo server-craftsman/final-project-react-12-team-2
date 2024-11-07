@@ -22,6 +22,7 @@ export interface RoutePaths {
     COURSES_LOG: string;
     SUBSCRIPTION: string;
     REQUEST_ACCOUNT: string;
+    COURSE_LOG: string;
   };
   INSTRUCTOR: {
     BASE: string;
