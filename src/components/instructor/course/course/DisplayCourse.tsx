@@ -481,7 +481,7 @@ const DisplayCourse = ({
         pagination={false}
         rowClassName={rowClassName}
       />
-      <div className="mt-5 flex justify-end">
+      <div className="mt-5 flex justify-start">
         <Pagination
           current={pageNum}
           pageSize={pageSize}

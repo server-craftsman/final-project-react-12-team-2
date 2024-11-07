@@ -155,7 +155,7 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
         <CreateButton onLessonCreated={handleLessonCreated} />
       </div>
       <Table columns={columns} dataSource={paginatedCourses()} rowKey="id" pagination={false} />
-      <div className="mt-5 flex justify-end">
+      <div className="mt-5 flex justify-start">
         <Pagination
           current={pageNum}
           pageSize={pageSize}

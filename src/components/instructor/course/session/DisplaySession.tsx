@@ -133,7 +133,7 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
       </div>
 
       <Table loading={loading} columns={columns} dataSource={sessions} rowKey={(record) => record.pageData._id} pagination={false} locale={{ emptyText: "No data available" }} />
-      <div className="mt-5 flex justify-end">
+      <div className="mt-5 flex justify-start">
         <Pagination
           current={pageNum}
           pageSize={pageSize}
