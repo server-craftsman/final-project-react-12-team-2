@@ -2,22 +2,26 @@ import React, { useState, useMemo } from "react";
 import { Input, Button } from "antd";
 // If using Ant Design icons, import the specific icon
 import { SearchOutlined } from "@ant-design/icons";
-
+import { UserRoles } from "../../../app/enums";
 interface SearchProps {
   onSearch: (searchTerm: string) => void;
   placeholder?: string;
   className?: string;
+  role?: UserRoles | null;
+  status?: boolean | null;
+  applyFilters?: () => void;
 }
 
-const CustomSearch: React.FC<SearchProps> = ({ onSearch, placeholder = "Search...", className }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-
+const CustomSearch: React.FC<SearchProps> = ({ onSearch, placeholder = "Search...", className, applyFilters }) => {
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
   const handleSearchSubmit = () => {
     onSearch(searchTerm);
+    applyFilters?.();
   };
 
   const memoizedPlaceholder = useMemo(() => `🔍 ${placeholder}`, [placeholder]);

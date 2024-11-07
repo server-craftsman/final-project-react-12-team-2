@@ -90,7 +90,10 @@ const EditUserProfile = () => {
           role: userData.role,
           status: userData.status ? "Active" : "Inactive",
           description: userData.description || "",
-          dob: userData.dob ? moment(userData.dob) : null
+          dob: userData.dob ? moment(userData.dob) : null,
+          bank_name: userData.bank_name || "",
+          bank_account_no: userData.bank_account_no || "",
+          bank_account_name: userData.bank_account_name || ""
         });
       } catch (error) {
         message.error("Failed to fetch user details. Please try again.");
@@ -118,8 +121,6 @@ const EditUserProfile = () => {
           }
         }
 
-        // const description = parseTinyEditor.getTinyMCEContent("description-editor") || "";
-
         const updatedValues = {
           name: values.name,
           email: values.email,
@@ -128,9 +129,9 @@ const EditUserProfile = () => {
           dob: values.dob ? helpers.formatDate(new Date(values.dob)) : null,
           avatar_url: avatarUrl,
           video_url: "",
-          bank_name: "",
-          bank_account_no: "",
-          bank_account_name: ""
+          bank_name: values.bank_name || "",
+          bank_account_no: values.bank_account_no || "",
+          bank_account_name: values.bank_account_name || ""
         };
 
         await UserService.updateUser(id as string, updatedValues as UpdateUserParams);
@@ -226,6 +227,15 @@ const EditUserProfile = () => {
               defaultPickerValue={state.user?.data.dob ? dayjs(state.user.data.dob) : dayjs()}
               allowClear={false}
             />
+          </Form.Item>
+          <Form.Item label={<span className="font-medium text-[#1a237e]">Bank Name</span>} name="bank_name">
+            <Input className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
+          </Form.Item>
+          <Form.Item label={<span className="font-medium text-[#1a237e]">Bank Account Number</span>} name="bank_account_no">
+            <Input className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
+          </Form.Item>
+          <Form.Item label={<span className="font-medium text-[#1a237e]">Bank Account Name</span>} name="bank_account_name">
+            <Input className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
           </Form.Item>
           <Form.Item className="mt-6 flex justify-end gap-4">
             <Button type="primary" htmlType="submit" className="mr-2 h-10 border-none bg-[#1a237e] px-8 hover:bg-[#0d1453]">

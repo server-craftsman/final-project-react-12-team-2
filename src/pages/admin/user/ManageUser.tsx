@@ -14,7 +14,7 @@ const FilterStatus = lazy(() => import("../../../components/admin/user/FilterSta
 const CreateUserProfile = lazy(() => import("../../../components/admin/user/CreateUserProfile"));
 
 const ManageUser = () => {
-  const [searchQuery, setSearchQuery] = useState("");
+  // const [searchQuery, setSearchQuery] = useState("");
   const [selectedRole, setSelectedRole] = useState<UserRoles | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<boolean | null>(null);
   const [activeTab, setActiveTab] = useState("all");
@@ -36,12 +36,20 @@ const ManageUser = () => {
       role: null,
       status: null,
     });
-    setSelectedRole(null);
-    setSelectedStatus(null);
-    setSearchQuery("");
+    // setSelectedRole(null);
+    // setSelectedStatus(null);
+    // setSearchQuery("");
   };
 
-  // Update role and status without triggering search
+  // Trigger search with current query, role, and status
+  const handleSearch = (searchTerm: string) => {
+    // setSearchQuery(searchTerm);
+    setSearchParams((prevParams) => ({
+      ...prevParams,
+      keyword: searchTerm,
+    }));
+  };
+
   const handleRoleChange = (role: UserRoles | null) => {
     setSelectedRole(role);
   };
@@ -50,12 +58,11 @@ const ManageUser = () => {
     setSelectedStatus(status);
   };
 
-  // Trigger search with current query, role, and status
-  const handleSearch = (searchTerm: string) => {
-    setSearchQuery(searchTerm);
+  const applyFilters = () => {
     setSearchParams((prevParams) => ({
       ...prevParams,
-      keyword: searchTerm,
+      role: selectedRole,
+      status: selectedStatus,
     }));
   };
 
@@ -130,6 +137,7 @@ const ManageUser = () => {
             onSearch={handleSearch} 
             placeholder="Search by name or email" 
             className="search-input mr-4" 
+            applyFilters={applyFilters}
           />
           {activeTab === "all" && (
             <>
