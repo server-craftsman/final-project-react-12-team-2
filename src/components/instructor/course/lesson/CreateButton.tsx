@@ -122,7 +122,7 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
               ))}
             </Select>
           </Form.Item>
-          <Form.Item name="lesson_type" label="Lesson Type" initialValue={LessonType.TEXT} rules={[{ required: true, message: "Please select a lesson type!" }]}>
+          <Form.Item name="lesson_type" label="Lesson Type" initialValue={LessonType.VIDEO} rules={[{ required: true, message: "Please select a lesson type!" }]}>
             <Select onChange={(value) => setLessonType(value)}>
               {Object.values(LessonType).map((type) => (
                 <Option key={type} value={type}>

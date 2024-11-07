@@ -78,7 +78,8 @@ const EditButton = ({ data, onSessionEdited, fetchSessionDetails }: any) => {
   };
 
   const editChange = (value: string) => {
-    form.setFieldsValue({ description: value });
+    const strippedContent = value.replace(/<[^>]*>/g, "").trim();
+    form.setFieldsValue({ description: strippedContent ? value : "" });
   };
 
   return (

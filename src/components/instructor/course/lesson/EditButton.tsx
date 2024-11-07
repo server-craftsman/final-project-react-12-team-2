@@ -96,9 +96,9 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
     onClose();
     form.resetFields();
   };
-
   const editChange = (value: string) => {
-    form.setFieldsValue({ description: value });
+    const strippedContent = value.replace(/<[^>]*>/g, "").trim();
+    form.setFieldsValue({ description: strippedContent ? value : "" });
   };
 
   const handleLessonTypeChange = (value: LessonType) => {

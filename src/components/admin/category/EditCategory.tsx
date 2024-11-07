@@ -80,7 +80,8 @@ const EditCategory = () => {
   );
 
   const editChange = (value: string) => {
-    form.setFieldsValue({ description: value });
+    const strippedContent = value.replace(/<[^>]*>/g, "").trim();
+    form.setFieldsValue({ description: strippedContent ? value : "" });
   };
 
   if (!state.category) {

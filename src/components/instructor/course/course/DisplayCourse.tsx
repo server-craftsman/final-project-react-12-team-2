@@ -4,7 +4,7 @@ import { formatDate, moneyFormat } from "../../../../utils/helper";
 import { CourseStatusBadge } from "../../../../utils/courseStatus";
 import { StatusType } from "../../../../app/enums";
 import { useEffect, useState, useCallback } from "react";
-import { Button, message, Modal, Pagination, Form, Input } from "antd";
+import { Button, message, Modal, Pagination, Form, Input, Switch, Popconfirm } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
@@ -156,6 +156,20 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
     }
   };
 
+  const handleInactive = async (courseId: string) => {
+    try {
+      await CourseService.changeStatusCourse({
+        course_id: courseId,
+        new_status: StatusType.INACTIVE,
+        comment: ""
+      });
+      message.success("Course inactivated");
+      handleCourseCreated();
+    } catch (error) {
+      message.error("Failed to inactivate course");
+    }
+  };
+
   const requestReview = async (courseId: string, comment: string) => {
     try {
       await CourseService.changeStatusCourse({
@@ -246,6 +260,33 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       dataIndex: "discount"
     },
     {
+      title: "Action",
+      key: "action",
+      dataIndex: "action",
+      render: (_, record) => {
+        const { status, _id } = record;
+        return (
+          <>
+            {(status === StatusType.ACTIVE || status === StatusType.INACTIVE) && (
+              <Switch
+                checked={status === StatusType.ACTIVE}
+                onChange={(checked) => {
+                  if (checked) {
+                    handleApprove(_id);
+                  } else {
+                    handleInactive(_id);
+                  }
+                }}
+                checkedChildren="Active"
+                unCheckedChildren="Inactive"
+                className="bg-gradient-tone mr-2 text-white hover:opacity-90"
+              />
+            )}
+          </>
+        );
+      }
+    },
+    {
       title: "Created At",
       key: "created_at",
       dataIndex: "created_at",
@@ -259,8 +300,21 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
         const { status, _id } = record;
         return (
           <>
-            {status === StatusType.APPROVE && <Button icon={<CheckOutlined />} onClick={() => handleApprove(_id)} className="bg-gradient-tone mr-2 text-white hover:opacity-90" />}
-            {status === StatusType.REJECT && <Button icon={<HistoryOutlined />} onClick={() => showRequestReviewModal(_id)} className="bg-gradient-tone mr-2 text-white hover:opacity-90" />}
+            {status === StatusType.APPROVE && (
+              <Popconfirm
+                title="Are you sure to approve this course?"
+                onConfirm={() => handleApprove(_id)}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  icon={<CheckOutlined />}
+                  className="bg-white mr-2 text-black hover:opacity-90"
+                  title="Confirm Active"
+                />
+              </Popconfirm>
+            )}
+            {status === StatusType.REJECT && <Button icon={<HistoryOutlined />} onClick={() => showRequestReviewModal(_id)} className="bg-gradient-tone mr-2 text-white hover:opacity-90" title="Request Review" />}
             <EditButton data={record} onEditSuccess={handleCourseCreated} fetchCourseDetails={fetchCourseDetails} />
             <DeleteButton courseId={record._id} onDeleteSuccess={handleCourseCreated} />
           </>
