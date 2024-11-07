@@ -91,9 +91,9 @@ const EditUserProfile = () => {
           status: userData.status ? "Active" : "Inactive",
           description: userData.description || "",
           dob: userData.dob ? moment(userData.dob) : null,
-          bank_name: userData.bank_name || "",
-          bank_account_no: userData.bank_account_no || "",
-          bank_account_name: userData.bank_account_name || ""
+          // bank_name: userData.bank_name || "",
+          // bank_account_no: userData.bank_account_no || "",
+          // bank_account_name: userData.bank_account_name || ""
         });
       } catch (error) {
         message.error("Failed to fetch user details. Please try again.");
@@ -113,12 +113,16 @@ const EditUserProfile = () => {
       setState((prev) => ({ ...prev, uploading: true }));
       try {
         let avatarUrl = state.user?.data.avatar_url || "";
+        let videoUrl = state.user?.data.video_url || "";
 
         if (state.selectedFile) {
-          const uploadedUrl = await handleUploadFile(state.selectedFile, "image");
-          if (uploadedUrl) {
+          const uploadedUrl = await handleUploadFile(state.selectedFile);
+          const uploadedVideoUrl = await handleUploadFile(state.selectedFile);
+          if (uploadedUrl && uploadedVideoUrl) {
             avatarUrl = uploadedUrl;
+            videoUrl = uploadedVideoUrl;
           }
+        
         }
 
         const updatedValues = {
@@ -128,10 +132,10 @@ const EditUserProfile = () => {
           description: values.description || "",
           dob: values.dob ? helpers.formatDate(new Date(values.dob)) : null,
           avatar_url: avatarUrl,
-          video_url: "",
-          bank_name: values.bank_name || "",
-          bank_account_no: values.bank_account_no || "",
-          bank_account_name: values.bank_account_name || ""
+          video_url: videoUrl,
+          // bank_name: values.bank_name || "",
+          // bank_account_no: values.bank_account_no || "",
+          // bank_account_name: values.bank_account_name || ""
         };
 
         await UserService.updateUser(id as string, updatedValues as UpdateUserParams);
@@ -146,16 +150,16 @@ const EditUserProfile = () => {
     [id, navigate, state.user?.data.avatar_url, state.selectedFile, form]
   );
 
-  const handleImageUpload = useCallback((file: File) => {
+  const handleUploadFile = useCallback((file: File) => {
     const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       message.error("File size should not exceed 5MB");
       return false;
     }
 
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif", "video/mp4", "video/quicktime", "video/x-m4v", "video/webm", "video/ogg"];
     if (!allowedTypes.includes(file.type)) {
-      message.error("Please upload an image file (JPEG, PNG, or GIF)");
+      message.error("Please upload an image or video file (JPEG, PNG, GIF, MP4, M4V, WEBM, OGG)");
       return false;
     }
 
@@ -167,7 +171,8 @@ const EditUserProfile = () => {
             ...prev.user,
             data: {
               ...prev.user.data,
-              avatar_url: URL.createObjectURL(file)
+              avatar_url: URL.createObjectURL(file),
+              video_url: URL.createObjectURL(file)
             }
           }
         : null
@@ -187,19 +192,33 @@ const EditUserProfile = () => {
       <div className="max-w-10xl mx-auto rounded-xl bg-white p-8 shadow-2xl">
         <h1 className="mb-6 text-center text-3xl font-bold text-[#1a237e]">Edit User Profile</h1>
         <Form form={form} layout="vertical" onFinish={handleFormSubmit} className="space-y-4">
-          <div className="mb-6 flex flex-col items-center gap-6 sm:flex-row sm:items-center">
-            <div className="group relative">
-              <Avatar src={state.user.data.avatar_url} size={120} className="border-4 border-[#1a237e] shadow-lg transition-transform hover:scale-105" />
-              <Upload accept="image/*" showUploadList={false} beforeUpload={handleImageUpload}>
-                <div className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
-                  <UploadOutlined className="text-2xl text-white" />
-                </div>
-              </Upload>
-            </div>
+          <div className="mb-6 flex flex-col w-full max-w-4xl mx-auto items-center gap-6 sm:flex-row sm:items-start">
+            <div className="flex flex-col items-center gap-5 sm:flex-row">
+              <div className="group relative w-full">
+                <Avatar src={state.user.data.avatar_url} size={120} className="border-4 border-[#1a237e] shadow-lg transition-transform hover:scale-105" />
+                <Upload accept="image/*" showUploadList={false} beforeUpload={handleUploadFile}>
+                  <div className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+                    <UploadOutlined className="text-2xl text-white" />
+                  </div>
+                </Upload>
+              </div>
+              <div className="group relative w-full sm:w-[500px]">
+                <video src={state.user.data.video_url} controls className="w-full h-full object-cover rounded-lg border-4 border-[#1a237e] shadow-lg transition-transform hover:scale-105" />
+                <Upload accept="video/*" showUploadList={false} beforeUpload={handleUploadFile}>
+                  <Button
+                    type="primary"
+                    icon={<UploadOutlined />}
+                    className="absolute bottom-4 right-4 flex items-center justify-center rounded-full bg-[#1a237e] text-white shadow-lg transition-transform hover:scale-110"
+                    style={{ width: "50px", height: "50px" }}
+                  />
+                </Upload>
+              </div>
+            
+          </div>
 
-            <div className="flex flex-col items-center gap-2 sm:items-start">
+            {/* <div className="flex flex-col items-center gap-2 sm:items-start">
               <h3 className="text-lg font-medium text-[#1a237e]">{state.user.data.name}</h3>
-            </div>
+            </div> */}
           </div>
           <Form.Item label={<span className="font-medium text-[#1a237e]">Name</span>} name="name" rules={validationRules.name as Rule[]}>
             <Input className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
@@ -228,7 +247,7 @@ const EditUserProfile = () => {
               allowClear={false}
             />
           </Form.Item>
-          <Form.Item label={<span className="font-medium text-[#1a237e]">Bank Name</span>} name="bank_name">
+          {/* <Form.Item label={<span className="font-medium text-[#1a237e]">Bank Name</span>} name="bank_name">
             <Input className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
           </Form.Item>
           <Form.Item label={<span className="font-medium text-[#1a237e]">Bank Account Number</span>} name="bank_account_no">
@@ -236,7 +255,7 @@ const EditUserProfile = () => {
           </Form.Item>
           <Form.Item label={<span className="font-medium text-[#1a237e]">Bank Account Name</span>} name="bank_account_name">
             <Input className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item className="mt-6 flex justify-end gap-4">
             <Button type="primary" htmlType="submit" className="mr-2 h-10 border-none bg-[#1a237e] px-8 hover:bg-[#0d1453]">
               Update
