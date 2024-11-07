@@ -20,32 +20,43 @@ const ManageUser = () => {
   const [activeTab, setActiveTab] = useState("all");
   const [users, setUsers] = useState<User[] | null>(null);
 
+  // New state to trigger search
+  const [searchParams, setSearchParams] = useState({
+    query: "",
+    role: null as UserRoles | null,
+    status: null as boolean | null,
+  });
+
   // Reset filters when changing tabs
   const handleTabChange = (key: string) => {
     setActiveTab(key);
     // Reset all filters when switching tabs
+    setSearchParams({
+      query: "",
+      role: null,
+      status: null,
+    });
     setSelectedRole(null);
     setSelectedStatus(null);
     setSearchQuery("");
   };
 
-  // Reset tab when applying filters
+  // Update role and status without triggering search
   const handleRoleChange = (role: UserRoles | null) => {
     setSelectedRole(role);
-    if (activeTab !== "all") {
-      setActiveTab("all");
-    }
   };
 
   const handleStatusChange = (status: boolean | null) => {
     setSelectedStatus(status);
-    if (activeTab !== "all") {
-      setActiveTab("all");
-    }
   };
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
+  // Trigger search with current query, role, and status
+  const handleSearch = () => {
+    setSearchParams({
+      query: searchQuery,
+      role: selectedRole,
+      status: selectedStatus,
+    });
   };
 
   const fetchUsers = async (params: GetUsersAdminParams) => {
@@ -62,9 +73,9 @@ const ManageUser = () => {
     const fetchUsersData = async () => {
       try {
         let searchCondition = {
-          keyword: searchQuery,
-          role: selectedRole || UserRoles.ALL,
-          status: selectedStatus !== null ? selectedStatus : true,
+          keyword: searchParams.query,
+          role: searchParams.role || UserRoles.ALL,
+          status: searchParams.status !== null ? searchParams.status : true,
           is_verified: true,
           is_deleted: false
         };
@@ -100,7 +111,7 @@ const ManageUser = () => {
     };
 
     fetchUsersData();
-  }, [searchQuery, selectedRole, selectedStatus, activeTab]);
+  }, [searchParams, activeTab]);
 
   const tabItems = [
     { label: "All", key: "all" },
@@ -124,7 +135,14 @@ const ManageUser = () => {
           <CreateUserProfile />
         </div>
         <Tabs defaultActiveKey="all" onChange={handleTabChange} items={tabItems} className="ml-4" />
-        <ViewUserProfile searchQuery={searchQuery} selectedRole={selectedRole} selectedStatus={selectedStatus} activeTab={activeTab} showActionColumn={activeTab !== "unverified"} disableActions={activeTab === "unverified"} />
+        <ViewUserProfile 
+          searchQuery={searchParams.query} 
+          selectedRole={searchParams.role} 
+          selectedStatus={searchParams.status} 
+          activeTab={activeTab} 
+          showActionColumn={activeTab !== "unverified"} 
+          disableActions={activeTab === "unverified"} 
+        />
       </div>
     );
   }
