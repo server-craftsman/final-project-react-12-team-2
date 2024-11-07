@@ -1,20 +1,16 @@
-// DisplayBlog.tsx
+// DislayBlog.tsx
 import React, { useEffect, useState, useCallback } from "react";
 import { Table, Space, message } from "antd";
 import { Blog, GetBlogResponse } from "../../../models/api/responsive/admin/blog.responsive.model";
 import { BlogService } from "../../../services/blog/blog.service";
 import { CategoryService } from "../../../services/category/category.service";
 import { Link } from "react-router-dom";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
 import EditBlogModal from "./EditBlog";
 import DeleteBlogModal from "./DeleteBlog";
 
-interface DislayBlogProps {
-  searchQuery: string;
-}
-
-const DislayBlog: React.FC<DislayBlogProps> = ({ searchQuery }) => {
+const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
   const [blogData, setBlogData] = useState<GetBlogResponse | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isEditModalVisible, setEditModalVisible] = useState(false);
@@ -54,15 +50,10 @@ const DislayBlog: React.FC<DislayBlogProps> = ({ searchQuery }) => {
   const fetchCategories = useCallback(async () => {
     try {
       const response = await CategoryService.getPublicCategory(defaultParams);
-
-      // Log the structure of pageData
-      console.log("Fetched Categories:", response.data.data.pageData);
-
       const pageData = response.data.data.pageData;
 
-      // Ensure it's an array of Category objects
       if (Array.isArray(pageData)) {
-        setCategories(pageData); // This should work if pageData is correctly typed
+        setCategories(pageData);
       } else {
         console.error("Expected an array of categories, but got:", pageData);
       }
@@ -75,7 +66,9 @@ const DislayBlog: React.FC<DislayBlogProps> = ({ searchQuery }) => {
   useEffect(() => {
     fetchBlogs();
     fetchCategories();
-  }, [fetchBlogs, fetchCategories]);
+  }, [searchQuery, fetchBlogs, fetchCategories]);
+
+  const filteredData = blogData?.pageData?.filter((blog: Blog) => (blog.name && blog.name.toLowerCase().includes(searchQuery.toLowerCase())) || (blog.description && blog.description.toLowerCase().includes(searchQuery.toLowerCase())));
 
   const columns = [
     {
@@ -105,13 +98,13 @@ const DislayBlog: React.FC<DislayBlogProps> = ({ searchQuery }) => {
       key: "action",
       render: (record: Blog) => (
         <Space size="middle">
-          <EditOutlined
+          <EditTwoTone
             onClick={() => {
               setSelectedBlog(record);
               setEditModalVisible(true);
             }}
           />
-          <DeleteOutlined
+          <DeleteTwoTone
             onClick={() => {
               setSelectedBlog(record);
               setDeleteModalVisible(true);
@@ -124,7 +117,7 @@ const DislayBlog: React.FC<DislayBlogProps> = ({ searchQuery }) => {
 
   return (
     <>
-      <Table columns={columns} dataSource={blogData?.pageData || []} rowKey="_id" />
+      <Table columns={columns} dataSource={filteredData || []} rowKey="_id" />
 
       <EditBlogModal visible={isEditModalVisible} blog={selectedBlog} categories={categories} onClose={() => setEditModalVisible(false)} onSuccess={fetchBlogs} />
 

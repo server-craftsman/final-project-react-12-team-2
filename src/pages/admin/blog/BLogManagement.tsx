@@ -1,20 +1,22 @@
 import React, { useState } from "react";
 import CustomSearch from "../../../components/generic/search/CustomSearch";
-
 import { Content } from "antd/es/layout/layout";
 import { Card } from "antd";
 import CreateBlog from "../../../components/admin/blog/CreateBlog";
 import DislayBlog from "../../../components/admin/blog/DisplayBlog";
 
-const CoursesLogManagement: React.FC = () => {
+const BlogManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearch = (searchTerm: string) => {
+    setSearchTerm(searchTerm);
+  };
 
   return (
     <Content>
       <Card>
         <div className="mb-4 flex justify-between">
-          <CustomSearch className="search-input" placeholder="Search by course name" onSearch={(value) => setSearchTerm(value)} />
-
+          <CustomSearch className="search-input" placeholder="Search by blog name" onSearch={handleSearch} />
           <CreateBlog />
         </div>
         <DislayBlog searchQuery={searchTerm} />
@@ -23,4 +25,4 @@ const CoursesLogManagement: React.FC = () => {
   );
 };
 
-export default CoursesLogManagement;
+export default BlogManagement;
