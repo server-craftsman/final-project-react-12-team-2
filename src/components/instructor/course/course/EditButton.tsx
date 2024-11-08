@@ -220,6 +220,16 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
     form.setFieldsValue({ content: strippedContent ? value : "" });
   };
 
+  const setInitialContent = (value: string) => {
+    setContent(value);
+    form.setFieldsValue({ content: value });
+  };
+
+  // const handleEditorChange = (value: string) => {
+  //   setContent(value);
+  //   form.setFieldsValue({ content: value });
+  // };
+
   return (
     <>
       <Button className="mr-2" icon={<EditOutlined />} onClick={openCreateModal} />
