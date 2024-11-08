@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { User } from "../../../models/api/responsive/users/users.model";
 import { UserService } from "../../../services/admin/user.service";
 import { useParams } from "react-router-dom";
+import ButtonSubscribe from "./CreateSubscribe";
+
 
 const { Title, Paragraph } = Typography;
 
@@ -35,17 +37,20 @@ const ProfileSubscribe: React.FC = () => {
             <Avatar size={96} icon={<UserOutlined />} src={userData?.avatar_url} />
           </Col>
           <Col flex="1">
-            <Space direction="vertical" size="small">
-              <Title level={3}>{userData?.name || "Loading..."}</Title>
-              <Space>
-                <MailOutlined />
-                <span>{userData?.email || "Loading..."}</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <Space direction="vertical" size="small">
+                <Title level={3} style={{ margin: 0 }}>{userData?.name || "Loading..."}</Title>
+                <Space>
+                  <MailOutlined />
+                  <span>{userData?.email || "Loading..."}</span>
+                </Space>
+                <Space>
+                  <PhoneOutlined />
+                  <span>{userData?.phone_number || "Loading..."}</span>
+                </Space>
               </Space>
-              <Space>
-                <PhoneOutlined />
-                <span>{userData?.phone_number || "Loading..."}</span>
-              </Space>
-            </Space>
+              <ButtonSubscribe instructorId={id as string} />
+            </div>
           </Col>
         </Row>
       </Card>

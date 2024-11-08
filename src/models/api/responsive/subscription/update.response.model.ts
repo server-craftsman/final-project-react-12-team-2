@@ -7,13 +7,3 @@ export interface Subscriptions {
   updated_at: Date;
   is_deleted: boolean;
 }
-export interface PageInfo {
-  pageNum: number;
-  pageSize: number;
-  totalItems: number;
-  totalPages: number;
-}
-export interface GetSubscriptionsResponse {
-  pageData: Subscriptions[];
-  pageInfo: PageInfo;
-}
