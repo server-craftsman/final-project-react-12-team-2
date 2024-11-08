@@ -220,10 +220,6 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
     form.setFieldsValue({ content: strippedContent ? value : "" });
   };
 
-  const setInitialContent = (value: string) => {
-    setContent(value);
-    form.setFieldsValue({ content: value });
-  };
 
   // const handleEditorChange = (value: string) => {
   //   setContent(value);
