@@ -1,19 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, Dispatch, SetStateAction } from 'react';
 import { SubscriptionService } from '../../../services/subscription/subscription.service';
 
 interface ButtonSubscribeProps {
+  isModalOpen: boolean;
+  setIsModalOpen: Dispatch<SetStateAction<boolean>>;
   instructorId: string;
+  isSubscribed: boolean;
+  setIsSubscribed: Dispatch<SetStateAction<boolean>>;
 }
 
-const ButtonSubscribe: React.FC<ButtonSubscribeProps> = ({ instructorId }) => {
-  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
+const ButtonSubscribe: React.FC<ButtonSubscribeProps> = ({ instructorId, isSubscribed, setIsSubscribed }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSubscribe = async () => {
     try {
       setIsLoading(true);
       const response = await SubscriptionService.createSubscribe({
-        instructor_id: instructorId
+        instructor_id: instructorId || ""
       });
 
       // Update subscription status based on API response

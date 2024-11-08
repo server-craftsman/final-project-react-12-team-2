@@ -13,7 +13,8 @@ const ProfileSubscribe: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [userData, setUserData] = useState<User | null>(null);
   const [, setLoading] = useState(true);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -49,7 +50,7 @@ const ProfileSubscribe: React.FC = () => {
                   <span>{userData?.phone_number || "Loading..."}</span>
                 </Space>
               </Space>
-              <ButtonSubscribe instructorId={id as string} />
+              <ButtonSubscribe isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} instructorId={id as string} isSubscribed={isSubscribed} setIsSubscribed={setIsSubscribed} />
             </div>
           </Col>
         </Row>
