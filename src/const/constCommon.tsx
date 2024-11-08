@@ -8,9 +8,13 @@ export const LessonDetails = lazy(() => import("../components/generic/lessons/Le
 export const SessionDetails = lazy(() => import("../components/generic/sessions/SessionDetails"));
 export const CartPage = lazy(() => import("../components/generic/cart/CartPage"));
 export const About = lazy(() => import("../components/generic/home/About"));
+// export const Blog =lazy(() => import("../components/generic/home/Blog"));
+
 //routes
 export const homeRoute = { index: true, element: <HomePage /> };
 export const aboutRoute = { path: "/about", element: <About /> };
+// export const blogRoute = { path: "/blog", element: <Blog /> };
+
 export const courseDetailsRoute = {
   path: "/course/:id",
   element: <CourseDetails />

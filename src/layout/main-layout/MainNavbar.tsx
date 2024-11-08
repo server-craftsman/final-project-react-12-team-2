@@ -102,6 +102,9 @@ const Navbar = () => {
                 <Link to="/about" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 transition-all duration-200 ease-in-out hover:bg-indigo-700 hover:text-white">
                   About
                 </Link>
+                <Link to="/blog" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 transition-all duration-200 ease-in-out hover:bg-indigo-700 hover:text-white">
+                  Blog
+                </Link>
               </div>
             </div>
             <div className="relative hidden lg:block">

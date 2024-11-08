@@ -58,7 +58,9 @@ export const ROUTER_URL = {
     SESSION_DETAILS: "/session-details",
     LESSON_DETAILS: "/lesson-details",
     CART: "/cart",
-    ABOUT: "/about"
+    ABOUT: "/about",
+    BLOG: "/blog",
+    BLOG_DETAILS_ID: "/blog-details/:id",
   },
   UNAUTHORIZED: "/unauthorized"
 };

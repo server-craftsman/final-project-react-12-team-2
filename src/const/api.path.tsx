@@ -81,5 +81,9 @@ export const API = {
     //instructor
     GET_SUBSCRIPTIONS: "api/subscription/search-for-subscribed",
     GET_SUBSCRIBERS: "api/subscription/search-for-instructor"
-  }
+  },
+  BLOG: {
+    GET_BLOGS: "api/client/blog/search",
+    GET_BLOGS_DETAILS: "api/client/blog/:id"
+}
 };
