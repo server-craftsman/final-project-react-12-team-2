@@ -71,7 +71,15 @@ const ProfileSubscribe: React.FC = () => {
                   <span>{userData?.phone_number || "Loading..."}</span>
                 </Space>
               </Space>
-              <ButtonSubscribe isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} instructorId={id as string} isSubscribed={isSubscribed} setIsSubscribed={setIsSubscribed} />
+              {userData?.role === 'instructor' && (
+                <ButtonSubscribe
+                  isModalOpen={isModalOpen}
+                  setIsModalOpen={setIsModalOpen}
+                  instructorId={id as string}
+                  isSubscribed={isSubscribed}
+                  setIsSubscribed={setIsSubscribed}
+                />
+              )}
             </div>
           </Col>
         </Row>

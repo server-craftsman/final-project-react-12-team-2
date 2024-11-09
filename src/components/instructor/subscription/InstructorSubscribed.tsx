@@ -61,10 +61,12 @@ const InstructorSubscribed: React.FC<InstructorSubscriptionProps> = ({ searchQue
     try {
       if (subscriptions?.pageData) {
         const instructorIds = subscriptions.pageData.map(sub => sub.instructor_id);
-        const response = await UserService.getUserDetails(instructorIds[0] || "");
-        if (response.data?.data) {
-          setUsers([response.data.data]);
-        }
+        const promises = instructorIds.map(id => UserService.getUserDetails(id));
+        const responses = await Promise.all(promises);
+        const validUsers = responses
+          .filter(response => response.data?.data)
+          .map(response => response.data.data);
+        setUsers(validUsers);
       }
     } catch (error) {
       message.error("Failed to fetch users");
@@ -142,7 +144,7 @@ const InstructorSubscribed: React.FC<InstructorSubscriptionProps> = ({ searchQue
                     <ButtonSubscribe
                       isModalOpen={isModalOpen}
                       setIsModalOpen={setIsModalOpen}
-                      instructorId={users[0]?._id}
+                      instructorId={user?._id || ""}
                       isSubscribed={isSubscribed}
                       setIsSubscribed={setIsSubscribed}
                     />
