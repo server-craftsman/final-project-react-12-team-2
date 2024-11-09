@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Card, Avatar, Row, Col, message } from "antd";
 import { GetSubscriptionsResponse } from "../../../models/api/responsive/subscription/sub.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model";
+import { Link } from "react-router-dom";
 
 import { SubscriptionService } from "../../../services/subscription/subscription.service";
 import { GetSubscriptionsParams } from "../../../models/api/request/subscription/sub.request.model";
@@ -87,34 +88,67 @@ const InstructorSubscribed: React.FC<InstructorSubscriptionProps> = ({ searchQue
           const user = users.find(user => user._id === subscription.instructor_id);
           return (
             <Col span={8} key={subscription._id}>
-              <Card
-                title={
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <Avatar src={user?.avatar_url} size={64} style={{ marginRight: "16px" }} />
-                    <span style={{ fontSize: "24px", fontWeight: "bold" }}>{user?.name}</span>
+              <Link to={`/profile/${subscription.instructor_id}`} style={{ textDecoration: 'none' }}>
+                <Card
+                  hoverable
+                  title={
+                    <div style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      textAlign: "center"
+                    }}>
+                      <Avatar src={user?.avatar_url} size={64} style={{ marginBottom: "8px" }} />
+                      <span style={{ fontSize: "20px", fontWeight: "bold" }}>{user?.name}</span>
+                    </div>
+                  }
+                  style={{
+                    borderRadius: "15px",
+                    border: "2px solid #000",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                    backgroundColor: "#f0f2f5",
+                    cursor: 'pointer',
+                    textAlign: 'center'
+                  }}
+                >
+                  <p style={{
+                    fontSize: "14px",
+                    marginBottom: "8px",
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}>
+                    <strong>Email:</strong> {user?.email}
+                  </p>
+                  <p style={{
+                    fontSize: "14px",
+                    marginBottom: "16px",
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}>
+                    <strong>Phone:</strong> {user?.phone_number}
+                  </p>
+                  <div
+                    onClick={(e) => e.preventDefault()}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      marginTop: 'auto'
+                    }}
+                  >
+                    <ButtonSubscribe
+                      isModalOpen={isModalOpen}
+                      setIsModalOpen={setIsModalOpen}
+                      instructorId={users[0]?._id}
+                      isSubscribed={isSubscribed}
+                      setIsSubscribed={setIsSubscribed}
+                    />
                   </div>
-                }
-                style={{
-                  borderRadius: "15px",
-                  border: "2px solid #000",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                  backgroundColor: "#f0f2f5"
-                }}
-              >
-                <p style={{ fontSize: "18px", marginBottom: "8px" }}>
-                  <strong>Email:</strong> {user?.email}
-                </p>
-                <p style={{ fontSize: "18px" }}>
-                  <strong>Phone:</strong> {user?.phone_number}
-                </p>
-                <ButtonSubscribe
-                  isModalOpen={isModalOpen}
-                  setIsModalOpen={setIsModalOpen}
-                  instructorId={users[0]?._id}
-                  isSubscribed={isSubscribed}
-                  setIsSubscribed={setIsSubscribed}
-                />
-              </Card>
+                </Card>
+              </Link>
             </Col>
           );
         })}

@@ -5,6 +5,7 @@ import { User } from "../../../models/api/responsive/users/users.model";
 import { UserService } from "../../../services/admin/user.service";
 import { useParams } from "react-router-dom";
 import ButtonSubscribe from "./CreateSubscribe";
+import { SubscriptionService } from "../../../services/subscription/subscription.service";
 
 
 const { Title, Paragraph } = Typography;
@@ -15,20 +16,40 @@ const ProfileSubscribe: React.FC = () => {
   const [, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
+
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchData = async () => {
       try {
-        const response = await UserService.getUserDetails(id as string);
-        setUserData(response.data.data);
+        // Fetch user data
+        const userResponse = await UserService.getUserDetails(id as string);
+        setUserData(userResponse.data.data);
+
+        // Fetch subscription status
+        const subscriptionResponse = await SubscriptionService.getSubscriptions({
+          pageInfo: {
+            pageNum: 1,
+            pageSize: 10
+          },
+          searchCondition: {
+            keyword: "",
+            is_delete: false
+          }
+        });
+
+        // Check if this instructor is in the subscriptions list
+        const isCurrentInstructorSubscribed = subscriptionResponse.data?.data.pageData.some(
+          (sub: any) => sub.instructor_id === id
+        );
+        setIsSubscribed(!!isCurrentInstructorSubscribed);
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUserData();
-  }, []);
+    fetchData();
+  }, [id]);
 
   return (
     <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "24px" }}>

@@ -10,6 +10,7 @@ import { Subscriptions } from "../../../models/prototype/Subscriptions";
 //import { User } from "../../../models/api/responsive/users/users.model";
 
 const SubscriptionPage: React.FC = () => {
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [, setFilteredSubscriptions] = useState<Subscriptions[]>([]);
 
   useEffect(() => {
@@ -21,12 +22,7 @@ const SubscriptionPage: React.FC = () => {
   }, []);
 
   const handleSearch = (value: string) => {
-    const lowercasedValue = value.toLowerCase();
-    const filtered = subscriptionData.filter((subscription: Subscriptions) => {
-      const user = data.users.find((user: any) => user.id === subscription.instructor_id);
-      return user?.role === UserRole.instructor && (user?.name.toLowerCase().includes(lowercasedValue) || user?.email.toLowerCase().includes(lowercasedValue) || user?.phone_number.toLowerCase().includes(lowercasedValue) || subscription.id.toLowerCase().includes(lowercasedValue));
-    });
-    setFilteredSubscriptions(filtered);
+    setSearchQuery(value);
   };
 
   //  const subscriptionsWithUserData = filteredSubscriptions.map((subscription) => {
@@ -46,12 +42,12 @@ const SubscriptionPage: React.FC = () => {
     {
       key: "1",
       label: "Subscribed",
-      children: <InstructorSubscribed searchQuery={""} /*subscriptions={filteredSubscriptions}*/ />
+      children: <InstructorSubscribed searchQuery={searchQuery} />
     },
     {
       key: "2",
       label: "Subscriber",
-      children: <InstructorSubscriber searchQuery={""} />
+      children: <InstructorSubscriber searchQuery={searchQuery} />
     }
   ];
 
