@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { CourseService } from "../../../../services/course/course.service";
 import { HomeOutlined, InfoCircleOutlined, StarOutlined, BookOutlined } from "@ant-design/icons";
-import { Card, Row, Col, Divider, Tabs } from "antd";
+import { Card, Row, Col, Tabs } from "antd";
 // import { CartStatusEnum } from "../../../../app/enums";
 
 //==========connect components==========
