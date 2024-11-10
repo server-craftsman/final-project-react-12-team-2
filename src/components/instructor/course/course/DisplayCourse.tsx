@@ -108,11 +108,10 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
   // Filter courses based on the statusFilter
   const filteredCourses = courses?.filter((course) => !statusFilter || course.status === statusFilter);
 
-  const handleCourseCreated = () => {
+  const handleCourseCreated = useCallback(async () => {
     setPageNum(1);
-    // const { fetchCourses } = getCourseData();
-    // fetchCourses();
-  };
+    // getCourseData();
+  }, [getCourseData]);
 
   useEffect(() => {
     setPageNum(1);
