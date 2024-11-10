@@ -57,7 +57,7 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
         },
         pageInfo: {
           pageNum: 1,
-          pageSize: 100,
+          pageSize: 10,
           totalItems: 0,
           totalPages: 0
         }

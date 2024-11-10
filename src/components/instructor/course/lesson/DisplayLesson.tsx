@@ -27,7 +27,7 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
         is_delete: false,
         is_position_order: false
       },
-      pageInfo: { pageNum: 1, pageSize: 100 }
+      pageInfo: { pageNum: 1, pageSize: 10 }
     });
     if (response.data) {
       const lessonData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [response.data.data.pageData];

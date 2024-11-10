@@ -1,10 +1,10 @@
 import Table, { ColumnsType } from "antd/es/table";
-import { CheckOutlined, HistoryOutlined, FormOutlined, SendOutlined } from "@ant-design/icons";
+import { HistoryOutlined, FormOutlined, SendOutlined } from "@ant-design/icons";
 import { formatDate, moneyFormat } from "../../../../utils/helper";
 import { CourseStatusBadge } from "../../../../utils/courseStatus";
 import { StatusType } from "../../../../app/enums";
 import { useEffect, useState, useCallback } from "react";
-import { Button, message, Modal, Pagination, Form, Input, Switch, Popconfirm } from "antd";
+import { Button, message, Modal, Pagination, Form, Input, Switch } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
@@ -26,7 +26,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
   // const [courseDetails, setCourseDetails] = useState<any>(null);
   // const [refreshKey, setRefreshKey] = useState<number>(0);
   // const [comment, setComment] = useState<string>("");
-
+  
   const getCourseData = useCallback(() => {
     const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageNum: number, pageSize: number, refreshKey: number) => {
       const [courses, setCourses] = useState<GetCourseResponse["pageData"]>();
@@ -42,8 +42,8 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
           is_delete: false
         },
         pageInfo: {
-          pageNum,
-          pageSize
+          pageNum: 1,
+          pageSize: 10
         }
       };
 
@@ -94,6 +94,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
 
       useEffect(() => {
         fetchCourses();
+        
       }, [searchTerm, statusFilter, pageNum, pageSize, refreshKey]); //debug
 
       return { courses, totalItems, courseById, fetchCourseById, fetchCourses, refreshKey };
@@ -104,15 +105,14 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
 
   const { courses, totalItems } = getCourseData();
 
-  // // Trigger API call when the active tab changes to "Course"
-  // useEffect(() => {
-  //   setRefreshKey((prevKey) => prevKey + 1); // Increment refreshKey to trigger data fetch
-  // }, []);
-
   // Filter courses based on the statusFilter
   const filteredCourses = courses?.filter((course) => !statusFilter || course.status === statusFilter);
 
-  const handleCourseCreated = () => {};
+  const handleCourseCreated = () => {
+    setPageNum(1);
+    // const { fetchCourses } = getCourseData();
+    // fetchCourses();
+  };
 
   useEffect(() => {
     setPageNum(1);
@@ -149,8 +149,11 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
         new_status: StatusType.ACTIVE,
         comment: ""
       });
-      message.success("Course approved and activated");
-      handleCourseCreated();
+      // window.location.reload();
+      await handleCourseCreated();
+      setTimeout(() => {
+        message.success("Course approved and activated");
+      }, 1000);
     } catch (error) {
       message.error("Failed to approve course");
     }
@@ -163,8 +166,10 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
         new_status: StatusType.INACTIVE,
         comment: ""
       });
-      message.success("Course inactivated");
-      handleCourseCreated();
+      await handleCourseCreated();
+      setTimeout(() => {
+        message.success("Course inactivated");
+      }, 1000);
     } catch (error) {
       message.error("Failed to inactivate course");
     }
@@ -267,9 +272,9 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
         const { status, _id } = record;
         return (
           <>
-            {(status === StatusType.ACTIVE || status === StatusType.INACTIVE) && (
+            {(status === StatusType.ACTIVE || status === StatusType.INACTIVE || status === StatusType.APPROVE) && (
               <Switch
-                checked={status === StatusType.ACTIVE}
+                checked={status === StatusType.ACTIVE || status === StatusType.APPROVE}
                 onChange={(checked) => {
                   if (checked) {
                     handleApprove(_id);
@@ -300,7 +305,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
         const { status, _id } = record;
         return (
           <>
-            {status === StatusType.APPROVE && (
+            {/* {status === StatusType.APPROVE && (
               <Popconfirm
                 title="Are you sure to approve this course?"
                 onConfirm={() => handleApprove(_id)}
@@ -313,7 +318,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
                   title="Confirm Active"
                 />
               </Popconfirm>
-            )}
+            )} */}
             {status === StatusType.REJECT && <Button icon={<HistoryOutlined />} onClick={() => showRequestReviewModal(_id)} className="bg-gradient-tone mr-2 text-white hover:opacity-90" title="Request Review" />}
             <EditButton data={record} onEditSuccess={handleCourseCreated} fetchCourseDetails={fetchCourseDetails} />
             <DeleteButton courseId={record._id} onDeleteSuccess={handleCourseCreated} />
