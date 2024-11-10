@@ -30,7 +30,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
   const [dataRefreshKey, setDataRefreshKey] = useState<number>(0);
   
   const getCourseData = useCallback(() => {
-    const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageNum: number, pageSize: number, refreshKey: number) => {
+    const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageNum: number, pageSize: number, dataRefreshKey: number) => {
       const [courses, setCourses] = useState<GetCourseResponse["pageData"]>();
       const [totalItems, setTotalItems] = useState<number>(0);
       const [courseById, setCourseById] = useState<GetCourseByIdResponse>();
@@ -97,13 +97,13 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       useEffect(() => {
         fetchCourses();
         
-      }, [searchTerm, statusFilter, pageNum, pageSize, refreshKey]); //debug
+      }, [searchTerm, statusFilter, pageNum, pageSize, dataRefreshKey, refreshKey]); //debug
 
-      return { courses, totalItems, courseById, fetchCourseById, fetchCourses, refreshKey };
+      return { courses, totalItems, courseById, fetchCourseById, fetchCourses, dataRefreshKey, refreshKey };
     };
 
     return useCourseCache(searchTerm, statusFilter as StatusType | "", pageNum, pageSize, dataRefreshKey);
-  }, [searchTerm, statusFilter, pageNum, pageSize, dataRefreshKey]);
+  }, [searchTerm, statusFilter, pageNum, pageSize, dataRefreshKey, refreshKey]);
 
   const { courses, totalItems } = getCourseData();
 
@@ -113,7 +113,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
   const handleCourseCreated = useCallback(() => {
     setPageNum(1);
     setDataRefreshKey((prevKey) => prevKey + 1); //debug by new useState refreshKey
-  }, []);
+  }, [refreshKey]);
 
   useEffect(() => {
     setPageNum(1);
@@ -363,10 +363,11 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       setIsModalVisible(false);
       setSelectedRowKeys([]);
       message.success("Successfully sent courses to admin");
+      handleCourseCreated();
     } catch (error) {
       message.error("Failed to send courses to admin");
     }
-  }, [courses, selectedCourse, setIsModalVisible, setSelectedRowKeys, refreshKey]); //debug
+  }, [courses, selectedCourse, setIsModalVisible, setSelectedRowKeys, handleCourseCreated]); //debug
 
   const handleCancel = () => {
     setIsModalVisible(false);
@@ -385,17 +386,12 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
 
   const sendToAdmin = useCallback(async () => {
     try {
-      // console.log("Selected Row Keys:", selectedRowKeys); // Debugging log
-
       // Filter courses based on selected row keys
       const validCourses = courses?.filter(
         (course) =>
-          selectedRowKeys.includes(course._id as unknown as number) && // Ensure course._id is a string
+          selectedRowKeys.includes(course._id as unknown as number) &&
           (course.status === StatusType.NEW || course.status === StatusType.REJECT)
       );
-
-      //test debug
-      // console.log("Valid Courses:", validCourses); // Debugging log
 
       if (!validCourses?.length) {
         message.warning("No valid courses selected to send");
@@ -421,11 +417,12 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       }
 
       handleCourseCreated();
+      setSelectedRowKeys([]); // Clear all selected checkboxes
       message.success("Successfully sent courses to admin");
     } catch (error) {
       message.error("Failed to send courses to admin");
     }
-  }, [courses, selectedRowKeys, handleCourseCreated]);
+  }, [courses, selectedRowKeys, handleCourseCreated, setSelectedRowKeys]);
 
   const confirmSendToAdmin = () => {
     if (selectedRowKeys.length === 0) {
