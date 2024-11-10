@@ -27,6 +27,8 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
   // const [refreshKey, setRefreshKey] = useState<number>(0);
   // const [comment, setComment] = useState<string>("");
   
+  const [dataRefreshKey, setDataRefreshKey] = useState<number>(0);
+  
   const getCourseData = useCallback(() => {
     const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageNum: number, pageSize: number, refreshKey: number) => {
       const [courses, setCourses] = useState<GetCourseResponse["pageData"]>();
@@ -100,18 +102,18 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       return { courses, totalItems, courseById, fetchCourseById, fetchCourses, refreshKey };
     };
 
-    return useCourseCache(searchTerm, statusFilter as StatusType | "", pageNum, pageSize, refreshKey);
-  }, [searchTerm, statusFilter, pageNum, pageSize, refreshKey]);
+    return useCourseCache(searchTerm, statusFilter as StatusType | "", pageNum, pageSize, dataRefreshKey);
+  }, [searchTerm, statusFilter, pageNum, pageSize, dataRefreshKey]);
 
   const { courses, totalItems } = getCourseData();
 
   // Filter courses based on the statusFilter
   const filteredCourses = courses?.filter((course) => !statusFilter || course.status === statusFilter);
 
-  const handleCourseCreated = useCallback(async () => {
+  const handleCourseCreated = useCallback(() => {
     setPageNum(1);
-    // getCourseData();
-  }, [getCourseData]);
+    setDataRefreshKey((prevKey) => prevKey + 1); //debug by new useState refreshKey
+  }, []);
 
   useEffect(() => {
     setPageNum(1);
