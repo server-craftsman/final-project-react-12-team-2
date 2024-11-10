@@ -1,5 +1,5 @@
 import DisplayCourse from "./DisplayCourse";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { StatusType } from "../../../../app/enums";
 
 interface CourseComponentProps {
