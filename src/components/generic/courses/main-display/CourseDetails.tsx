@@ -121,7 +121,7 @@ const CourseDetails: React.FC = () => {
           <span className="font-semibold tracking-wide">Course Insights</span>
         </span>
       ),
-      children: <CourseInsights course={course} instructor={instructor} />
+      children: <CourseInsights course={course} instructor={instructor} content={course.content} />
     },
     {
       key: "2",
@@ -157,7 +157,7 @@ const CourseDetails: React.FC = () => {
             <Card className="overflow-hidden rounded-lg text-left shadow-lg">
               <CourseHeader course={course} category={category} instructor={instructor} showVideoModal={() => showVideoModal()} />
               <div className="p-4 text-left">
-                <Divider />
+                {/* <Divider /> */}
                 <Tabs
                   defaultActiveKey="1"
                   className="custom-tabs"

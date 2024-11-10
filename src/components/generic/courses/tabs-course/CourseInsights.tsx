@@ -1,61 +1,47 @@
 import React from "react";
 import { Card, Row, Col, Typography } from "antd";
-import { PlayCircleOutlined, ClockCircleOutlined, FileTextOutlined } from "@ant-design/icons";
+import { PlayCircleOutlined, StarOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { CourseInsightsProps } from "../../../../models/objects/course/CourseInsightsProps";
+import parse from "html-react-parser";
 const { Title, Text } = Typography;
 
-const CourseInsights: React.FC<CourseInsightsProps> = () => {
+const CourseInsights: React.FC<CourseInsightsProps & { course: string, content: string }> = ({ course, content }) => {
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-      <Title level={4} className="mb-4">
+      <Title level={3} className="mb-6 text-gold font-extrabold">
         Course Insights
       </Title>
-      <Row gutter={[16, 16]}>
+      <Row gutter={[24, 24]}>
         <Col xs={12} sm={6}>
-          <Card className="text-center transition-shadow duration-300 hover:shadow-lg">
-            <PlayCircleOutlined className="mb-2 text-4xl text-[#1a237e]" />
-            <Text className="block text-gray-500">Video Length</Text>
-            <Text strong className="text-lg">
-              2h 30m
+          <Card className="text-center transition-shadow duration-300 hover:shadow-2xl border border-gold rounded-lg">
+            <PlayCircleOutlined className="mb-3 text-5xl text-gold" />
+            <Text className="block text-gray-600 font-medium">Video Length</Text>
+            <Text strong className="text-xl text-gold">
+              {course.full_time} minutes
             </Text>
           </Card>
         </Col>
         <Col xs={12} sm={6}>
-          <Card className="text-center transition-shadow duration-300 hover:shadow-lg">
-            <ClockCircleOutlined className="mb-2 text-4xl text-[#1a237e]" />
-            <Text className="block text-gray-500">Total Duration</Text>
-            <Text strong className="text-lg">
-              4 weeks
+          <Card className="text-center transition-shadow duration-300 hover:shadow-2xl border border-gold rounded-lg">
+            <StarOutlined className="mb-3 text-5xl text-gold" />
+            <Text className="block text-gray-600 font-medium">Total Reviews</Text>
+            <Text strong className="text-xl text-gold">
+              {course.review_count} reviews
             </Text>
           </Card>
         </Col>
-        <Col xs={12} sm={6}>
-          <Card className="text-center transition-shadow duration-300 hover:shadow-lg">
-            <FileTextOutlined className="mb-2 text-4xl text-[#1a237e]" />
-            <Text className="block text-gray-500">Resources</Text>
-            <Text strong className="text-lg">
-              15 files
+        {/* <Col xs={12} sm={6}>
+          <Card className="text-center transition-shadow duration-300 hover:shadow-2xl border border-gold rounded-lg">
+            <FileTextOutlined className="mb-3 text-5xl text-gold" />
+            <Text className="block text-gray-600 font-medium">Resources</Text>
+            <Text strong className="text-xl text-gold">
+              {course.session_count} sessions {course.lesson_count} lessons
             </Text>
           </Card>
-        </Col>
+        </Col> */}
       </Row>
-
-      {/* <Title level={4} className="mb-4 mt-8">
-        Your Instructor
-      </Title>
-      <Card className="transition-shadow duration-300 hover:shadow-lg">
-        <Row gutter={16} align="middle">
-          <Col xs={24} sm={6}>
-            <img src={instructor?.avatar_url || ""} alt={instructor?.name} className="w-full rounded-full" />
-          </Col>
-          <Col xs={24} sm={18}>
-            <Title level={5}>{instructor?.name}</Title>
-            <Text className="block text-gray-500">{instructor?.role}</Text>
-            <Paragraph ellipsis={{ rows: 3, expandable: true, symbol: "more" }}>{instructor?.description}</Paragraph>
-          </Col>
-        </Row>
-      </Card> */}
+      <Text className="block text-gray-800 text-2xl leading-loose font-bold mt-6">{parse(content)}</Text>
     </motion.div>
   );
 };
