@@ -3,7 +3,6 @@ import { Form, Input, Button, Modal, message, Select, Upload, UploadFile, Row, C
 // import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
 import { UserService } from "../../../services/admin/user.service";
 import { AuthService } from "../../../services/authentication/auth.service";
-import { customUploadHandler } from "../../../utils/upload";
 import Editor from "../../generic/tiny/Editor";
 import { BankOutlined, UserOutlined, PhoneOutlined, MailOutlined, LockOutlined, UploadOutlined } from "@ant-design/icons";
 import { useForm } from "antd/lib/form/Form";

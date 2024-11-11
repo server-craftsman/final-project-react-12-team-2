@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Form, Input, Button, message, DatePicker, Avatar, Upload, UploadFile } from "antd";
+import { Form, Input, Button, message, DatePicker, Avatar, Upload } from "antd";
 import { Rule } from "antd/es/form";
 import moment from "moment";
 import dayjs from "dayjs";
@@ -20,7 +20,6 @@ const EditUserProfile = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [avatarPreview, setAvatarPreview] = useState<string>("");
-  const [avatarFileList, setAvatarFileList] = useState<UploadFile<any>[]>([]);
 
   const [state, setState] = useState({
     user: null as GetCurrentUserResponse | null,
@@ -251,6 +250,7 @@ const EditUserProfile = () => {
               <Upload accept="image/*" showUploadList={false} beforeUpload={(file) => handleAvatarPreview(file)}>
                 <div className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                   <UploadOutlined className="text-2xl text-white" />
+                  {avatarPreview && <img src={avatarPreview} alt="Avatar preview" className="h-32 w-32 rounded-lg object-cover" />}
                 </div>
               </Upload>
             </div>
