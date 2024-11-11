@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Form, Input, Button, message, DatePicker, Avatar, Upload } from "antd";
+import { Form, Input, Button, message, DatePicker, Avatar, Upload, UploadFile } from "antd";
 import { Rule } from "antd/es/form";
 import moment from "moment";
 import dayjs from "dayjs";
@@ -9,23 +9,23 @@ import { GetCurrentUserResponse } from "../../../models/api/responsive/authentic
 import { helpers } from "../../../utils";
 import { UpdateUserParams } from "../../../models/api/request/users/user.request.model";
 import { UploadOutlined } from "@ant-design/icons";
-import cloudinaryConfig from "../../../services/config/cloudinaryConfig";
+import { BaseService } from "../../../services/config/base.service";
 import { ROUTER_URL } from "../../../const/router.path";
 import { HTTP_STATUS } from "../../../app/enums";
 import { HttpException } from "../../../app/exceptions";
-// import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
 import Editor from "../../generic/tiny/Editor";
-// import { parseTinyEditor } from "../../../utils";
 
 const EditUserProfile = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  const [avatarPreview, setAvatarPreview] = useState<string>("");
+  const [avatarFileList, setAvatarFileList] = useState<UploadFile<any>[]>([]);
 
   const [state, setState] = useState({
     user: null as GetCurrentUserResponse | null,
-    uploading: false,
-    selectedFile: null as File | null
+    // uploading: false,
+    // selectedFile: null as File | null
   });
 
   const validationRules = useMemo(
@@ -113,40 +113,57 @@ const EditUserProfile = () => {
     }
   }, [id, fetchUserDetails]);
 
+
+  const handleFileUpload = useCallback(async (file: File, type: "image" | "video") => {
+    try {
+      const url = await BaseService.uploadFile(file, type);
+      if (!url) throw new Error(`Failed to upload ${type}`);
+      return url;
+    } catch (error: any) {
+      throw new Error(`${type} upload failed: ${error.message}`);
+    }
+  }, []);
+
+  const handleAvatarPreview = useCallback(
+    async (file: File) => {
+      try {
+        const url = await handleFileUpload(file, "image");
+        form.setFieldsValue({ avatar_url: url });
+        setState((prev) => ({
+          ...prev,
+          user: prev.user
+            ? {
+                ...prev.user,
+                data: {
+                  ...prev.user.data,
+                  avatar_url: url
+                }
+              }
+            : null
+        }));
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setAvatarPreview(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
+      } catch (error: any) {
+        message.error(error.message);
+      }
+      return false; // Prevent default upload behavior
+    },
+    [handleFileUpload, form]
+  );
+
   const handleFormSubmit = useCallback(
     async (values: UpdateUserParams) => {
       setState((prev) => ({ ...prev, uploading: true }));
       try {
-        let avatarUrl = state.user?.data.avatar_url || "";
-
-        if (state.selectedFile) {
-          const formData = new FormData();
-          formData.append("file", state.selectedFile);
-          formData.append("upload_preset", cloudinaryConfig.uploadPreset);
-          formData.append("cloud_name", cloudinaryConfig.cloudName);
-
-          const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/upload`, {
-            method: "POST",
-            body: formData
-          });
-
-          const data = await response.json();
-          if (!response.ok) {
-            throw new HttpException(data.error?.message || "Upload failed", HTTP_STATUS.BAD_REQUEST);
-          }
-
-          if (data.secure_url) {
-            avatarUrl = data.secure_url;
-          }
-        }
+        const avatarUrl = state.user?.data.avatar_url || "";
 
         const updatedValues = {
-          name: values.name,
-          email: values.email,
-          phone_number: values.phone_number,
-          description: values.description || "",
-          dob: values.dob ? helpers.formatDate(new Date(values.dob)) : null,
+          ...values,
           avatar_url: avatarUrl,
+          dob: values.dob ? helpers.formatDate(new Date(values.dob)) : null,
           video_url: "",
           bank_name: "",
           bank_account_no: "",
@@ -171,38 +188,51 @@ const EditUserProfile = () => {
         setState((prev) => ({ ...prev, uploading: false }));
       }
     },
-    [id, navigate, state.user?.data.avatar_url, state.selectedFile]
+    [id, navigate, state.user?.data.avatar_url]
   );
 
-  const handleImageUpload = useCallback((file: File) => {
-    const maxSize = 5 * 1024 * 1024;
-    if (file.size > maxSize) {
-      message.error("File size should not exceed 5MB");
-      return false;
-    }
+  // const handleImageUpload = useCallback(async (file: File) => {
+  //   const maxSize = 5 * 1024 * 1024;
+  //   if (file.size > maxSize) {
+  //     message.error("File size should not exceed 5MB");
+  //     return Upload.LIST_IGNORE;
+  //   }
 
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-    if (!allowedTypes.includes(file.type)) {
-      message.error("Please upload an image file (JPEG, PNG, or GIF)");
-      return false;
-    }
+  //   const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+  //   if (!allowedTypes.includes(file.type)) {
+  //     message.error("Please upload an image file (JPEG, PNG, or GIF)");
+  //     return Upload.LIST_IGNORE;
+  //   }
 
-    setState((prev) => ({
-      ...prev,
-      selectedFile: file,
-      user: prev.user
-        ? {
-            ...prev.user,
-            data: {
-              ...prev.user.data,
-              avatar_url: URL.createObjectURL(file)
-            }
-          }
-        : null
-    }));
+  //   try {
+  //     setState((prev) => ({ ...prev, uploading: true }));
 
-    return false;
-  }, []);
+  //     const response = await BaseService.uploadFile(file, "image");
+  //     if (response.data && response.data.secure_url) {
+  //       setState((prev) => ({
+  //         ...prev,
+  //         selectedFile: file,
+  //         user: prev.user
+  //           ? {
+  //               ...prev.user,
+  //               data: {
+  //                 ...prev.user.data,
+  //                 avatar_url: response.data.secure_url
+  //               }
+  //             }
+  //           : null
+  //       }));
+  //       message.success("Image uploaded successfully");
+  //     } else {
+  //       throw new Error("Upload failed, no secure URL returned");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error during image upload:", error);
+  //     message.error("An error occurred during image upload. Please try again.");
+  //   } finally {
+  //     setState((prev) => ({ ...prev, uploading: false }));
+  //   }
+  // }, []);
 
   const editChange = (value: string) => {
     form.setFieldsValue({ description: value });
@@ -218,7 +248,7 @@ const EditUserProfile = () => {
           <div className="mb-6 flex flex-col items-center gap-6 sm:flex-row sm:items-center">
             <div className="group relative">
               <Avatar src={state.user.data.avatar_url} size={120} className="border-4 border-[#1a237e] shadow-lg transition-transform hover:scale-105" />
-              <Upload accept="image/*" showUploadList={false} beforeUpload={(file) => handleImageUpload(file)}>
+              <Upload accept="image/*" showUploadList={false} beforeUpload={(file) => handleAvatarPreview(file)}>
                 <div className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-full bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                   <UploadOutlined className="text-2xl text-white" />
                 </div>
