@@ -26,6 +26,8 @@ export type GetCourseResponsePageData = {
   created_at: Date;
   updated_at: Date;
   is_deleted: boolean;
+  session_count?: number;
+  lesson_count?: number;
 };
 
 export type GetCourseResponsePageInfo = {
