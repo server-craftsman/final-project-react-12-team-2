@@ -4,7 +4,7 @@ import { Button } from "antd";
 import { BackwardFilled  } from "@ant-design/icons"; 
 import { BlogService } from "../../../services/blog/blog.service";
 import { getPublicBlogsDetails } from "../../../models/api/responsive/admin/blog.responsive.model";
-//import Paragraph from "antd/es/skeleton/Paragraph";
+
 
 const BlogDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -38,6 +38,19 @@ const BlogDetails: React.FC = () => {
 
     fetchBlogDetails();
   }, [id]);
+
+  // Thêm hàm format ngày giờ
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="error">{error}</p>;
@@ -73,26 +86,30 @@ const BlogDetails: React.FC = () => {
         </Link>
       </div>
 
-      <div className="mt-6 flex flex-col sm:flex-row">
-        <div className="flex-1 pr-8">         
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="order-2 md:order-1">         
           <h1 className="text-3xl font-bold text-gray-900 mb-2">{blog?.name}</h1>
           <h1 className="text-1xl font-bold text-gray-900 mb-2 ml-5 pt-2">Category: {blog?.category_name}</h1>
           <h1 className="text-1xl font-bold text-gray-900 mb-2 ml-5">Author: {blog?.user_name}</h1>
-          {/* <p className="text-gray-500 mb-2 ml-5">Created on: {blog?.created_at}</p> */}
+          <p className="text-gray-500 mb-2 ml-5">Created on: {formatDate(blog?.created_at?.toString())}</p>
+          <p className="text-gray-500 mb-2 ml-5">Updated on: {formatDate(blog?.updated_at?.toString())}</p>
           <p className="text-gray-700 mb-6 text-xl">{blog?.description}</p>
           
           <div className="space-y-4">
-            <p className="font-semibold text-lg text-gray-900 ">Content:</p>
-            <div className="text-gray-600 text-lg" dangerouslySetInnerHTML={{ __html: blog?.content || "" }} />
+            <p className="font-semibold text-lg text-gray-900">Content:</p>
+            <div className="text-gray-600 text-lg break-words" 
+                 dangerouslySetInnerHTML={{ __html: blog?.content || "" }} />
           </div>
         </div>
 
-        <div className="flex-1 mt-6 sm:mt-0 sm:ml-8">
-          <img
-            src={blog?.image_url}
-            alt="Blog visual"
-            className="rounded-md shadow-md w-full h-full object-cover transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
-          />
+        <div className="order-1 md:order-2">
+          <div className="sticky top-8">
+            <img
+              src={blog?.image_url}
+              alt="Blog visual"
+              className="rounded-md shadow-md w-full h-[400px] object-cover transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
+            />
+          </div>
         </div>
       </div>
     </div>

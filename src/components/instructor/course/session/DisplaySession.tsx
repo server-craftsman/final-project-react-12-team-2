@@ -95,6 +95,7 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
   );
 
   const handleSearch = (searchText: string) => {
+    fetchSessions(pageNum, pageSize, searchText);
     setSearchKeyword(searchText);
     setPageNum(1);
   };
