@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { CourseService } from "../../../../services/course/course.service";
 import { HomeOutlined, InfoCircleOutlined, StarOutlined, BookOutlined } from "@ant-design/icons";
-import { Card, Row, Col, Tabs } from "antd";
+import { Card, Row, Col, Tabs, Button } from "antd";
 // import { CartStatusEnum } from "../../../../app/enums";
 
 //==========connect components==========
@@ -147,8 +147,13 @@ const CourseDetails: React.FC = () => {
       <div className="min-h-screen w-full bg-white py-12">
       <div className="container mx-auto">
         <Link to="/" className="mb-6 flex items-center text-[#1a237e] hover:text-[#1a237e]">
-          <HomeOutlined className="mr-2" />
-          <span>Back to Home</span>
+          <Button 
+            type="text" 
+            icon={<HomeOutlined className="text-xl" />} 
+            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1a237e] to-[#3949ab] px-6 py-3 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:from-[#3949ab] hover:to-[#1a237e] hover:shadow-xl hover:transform hover:scale-105 active:scale-95"
+          >
+            Back to Home
+          </Button>
         </Link>
         <Row gutter={[32, 32]}>
           <Col xs={24} lg={16}>
