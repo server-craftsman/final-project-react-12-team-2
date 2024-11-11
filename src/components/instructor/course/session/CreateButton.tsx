@@ -1,8 +1,8 @@
 import { Button, Form, Input, message, Modal, Select } from "antd";
 const { Option } = Select;
-import { useState, useEffect } from "react";
+import { useState } from "react";
 // import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
-import Editor from "../../../generic/tiny/Editor";
+// import Editor from "../../../generic/tiny/Editor";
 import { SessionService } from "../../../../services/session/session.service";
 import { CreateSessionRequestModel } from "../../../../models/api/request/session/session.request.model";
 import { CourseService } from "../../../../services/course/course.service";
@@ -11,30 +11,29 @@ import { GetCourseResponse } from "../../../../models/api/responsive/course/cour
 const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
-  const [description, setDescription] = useState("");
+  // const [description, setDescription] = useState("");
   const [courses, setCourses] = useState<GetCourseResponse["pageData"]>([]);
-  useEffect(() => {
-    const loadCourses = async () => {
-      try {
-        const courseData = await CourseService.getCourse({
-          searchCondition: {
-            keyword: "",
-            category_id: "",
-            status: "",
-            is_delete: false
-          },
-          pageInfo: { pageNum: 1, pageSize: 10 }
-        });
-        setCourses(courseData.data.data.pageData.map((course) => ({ ...course, id: course._id })) || []);
-      } catch (error) {
-        message.error("Failed to load courses");
-        console.error(error);
-      }
-    };
-    loadCourses();
-  }, []);
+  
+  const loadCourses = async () => {
+    try {
+      const courseData = await CourseService.getCourse({
+        searchCondition: {
+          keyword: "",
+          category_id: "",
+          status: "",
+          is_delete: false
+        },
+        pageInfo: { pageNum: 1, pageSize: 10 }
+      });
+      setCourses(courseData.data.data.pageData.map((course) => ({ ...course, id: course._id })) || []);
+    } catch (error) {
+      message.error("Failed to load courses");
+      console.error(error);
+    }
+  };
 
-  const openCreateModal = () => {
+  const openCreateModal = async () => {
+    await loadCourses();
     setIsOpen(true);
   };
 
@@ -54,7 +53,7 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
         }, 3000);
         setIsOpen(false);
         form.resetFields();
-        setDescription("");
+        // setDescription("");
         if (onSessionCreated) {
           onSessionCreated();
         }
@@ -68,12 +67,12 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
   const handleCancel = () => {
     setIsOpen(false);
     form.resetFields();
-    setDescription("");
+    // setDescription("");
   };
 
-  const editChange = (value: string) => {
-    form.setFieldsValue({ description: value });
-  };
+  // const editChange = (value: string) => {
+  //   form.setFieldsValue({ description: value });
+  // };
 
   return (
     <>
@@ -94,8 +93,11 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
+          {/* <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
             <Editor initialValue={description || ""} onEditorChange={editChange} />
+          </Form.Item> */}
+          <Form.Item label="Description" name="description" rules={[{ required: true, message: "Please input the description!" }]}>
+            <Input.TextArea />
           </Form.Item>
         </Form>
       </Modal>

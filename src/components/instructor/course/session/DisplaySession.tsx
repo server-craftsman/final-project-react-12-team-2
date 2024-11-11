@@ -12,14 +12,14 @@ import { DisplaySessionResponse } from "../../../../models/api/responsive/sessio
 
 const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
   const [sessions, setSessions] = useState<DisplaySessionResponse[]>([]);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
 
   const fetchSessions = useCallback(async (page: number, size: number, keyword: string) => {
-    setLoading(true);
+    // setLoading(true);
     try {
       const sessionResponse = await SessionService.getSession({
         searchCondition: {
@@ -67,9 +67,10 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
       setTotalItems(sessionResponse.data?.data?.pageInfo?.totalItems || 0);
     } catch (error) {
       console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
     }
+    // } finally {
+    //   setLoading(false);
+    // }
   }, []);
 
   const fetchSessionDetails = async (sessionId: string) => {
@@ -94,6 +95,7 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
   );
 
   const handleSearch = (searchText: string) => {
+    fetchSessions(pageNum, pageSize, searchText);
     setSearchKeyword(searchText);
     setPageNum(1);
   };
@@ -130,7 +132,7 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
         <CreateButton onSessionCreated={() => fetchSessions(pageNum, pageSize, searchKeyword)} />
       </div>
 
-      <Table loading={loading} columns={columns} dataSource={sessions} rowKey={(record) => record.pageData._id} pagination={false} locale={{ emptyText: "No data available" }} />
+      <Table columns={columns} dataSource={sessions} rowKey={(record) => record.pageData._id} pagination={false} locale={{ emptyText: "No data available" }} />
       <div className="mt-5 flex justify-start">
         <Pagination
           current={pageNum}

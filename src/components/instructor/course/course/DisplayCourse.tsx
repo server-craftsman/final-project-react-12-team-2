@@ -1,10 +1,10 @@
 import Table, { ColumnsType } from "antd/es/table";
-import { HistoryOutlined, FormOutlined, SendOutlined } from "@ant-design/icons";
+// import { FormOutlined, SendOutlined } from "@ant-design/icons";
 import { formatDate, moneyFormat } from "../../../../utils/helper";
 import { CourseStatusBadge } from "../../../../utils/courseStatus";
 import { StatusType } from "../../../../app/enums";
 import { useEffect, useState, useCallback } from "react";
-import { Button, message, Modal, Pagination, Form, Input, Switch, Popconfirm } from "antd";
+import { Button, message, Modal, Pagination, Switch } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
@@ -15,7 +15,7 @@ import useCategoryCache from "../../../../hooks/useCategoryCache";
 import { GetCourseParams } from "../../../../models/api/request/course/course.request.model";
 import { GetCourseResponsePageData, GetCourseResponse, GetCourseByIdResponse } from "../../../../models/api/responsive/course/course.response.model";
 import { CourseService } from "../../../../services/course/course.service";
-import _ from "lodash";
+// import _ from "lodash";
 
 const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, refreshKey }: { searchTerm: string; statusFilter: StatusType; onSearch: (value: string) => void; onStatusChange: (status: StatusType | "") => void; refreshKey: number }) => {
   const [pageNum, setPageNum] = useState<number>(1);
@@ -105,7 +105,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
     return useCourseCache(searchTerm, statusFilter as StatusType | "", pageNum, pageSize, dataRefreshKey);
   }, [searchTerm, statusFilter, pageNum, pageSize, dataRefreshKey, refreshKey]);
 
-  const { courses, totalItems } = getCourseData();
+  const { courses, totalItems, fetchCourses } = getCourseData();
 
   // Filter courses based on the statusFilter
   const filteredCourses = courses?.filter((course) => !statusFilter || course.status === statusFilter);
@@ -124,6 +124,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
   }, [selectedRowKeys, setSelectedCourse]);
 
   const handleSearch = (searchText: string) => {
+    fetchCourses();
     setPageNum(1);
     onSearch(searchText);
   };
@@ -176,55 +177,55 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
     }
   };
 
-  const requestReview = async (courseId: string, comment: string) => {
-    try {
-      await CourseService.changeStatusCourse({
-        course_id: courseId,
-        new_status: StatusType.WAITING_APPROVE,
-        comment: comment
-      });
-      message.success("Review requested");
-      handleCourseCreated();
-    } catch (error) {
-      message.error("Failed to request review");
-    }
-  };
+  // const requestReview = async (courseId: string, comment: string) => {
+  //   try {
+  //     await CourseService.changeStatusCourse({
+  //       course_id: courseId,
+  //       new_status: StatusType.WAITING_APPROVE,
+  //       comment: comment
+  //     });
+  //     message.success("Review requested");
+  //     handleCourseCreated();
+  //   } catch (error) {
+  //     message.error("Failed to request review");
+  //   }
+  // };
 
-  const showRequestReviewModal = (courseId: string) => {
-    let tempComment = ""; // Create temporary comment state
+  // const showRequestReviewModal = (courseId: string) => {
+  //   let tempComment = ""; // Create temporary comment state
 
-    Modal.confirm({
-      title: "Request Course Review",
-      width: 600,
-      icon: <FormOutlined />,
-      content: (
-        <div className="p-6">
-          <h3 className="mb-4 text-lg font-medium">Please provide details for your review request</h3>
-          <Form layout="vertical">
-            <Form.Item label="Comments" required tooltip="Please explain why you are requesting a review">
-              <Input.TextArea onChange={(e) => (tempComment = e.target.value)} placeholder="Enter your comments here..." rows={4} className="w-full" showCount maxLength={500} />
-            </Form.Item>
-          </Form>
-        </div>
-      ),
-      okText: "Submit Request",
-      cancelText: "Cancel",
-      okButtonProps: {
-        type: "primary",
-        icon: <SendOutlined />
-      },
-      onOk: () => {
-        if (!tempComment.trim()) {
-          message.error("Please enter comments before submitting");
-          return Promise.reject();
-        }
-        return requestReview(courseId, tempComment);
-      },
-      onCancel: () => {
-        tempComment = "";
-      }
-    });
-  };
+  //   Modal.confirm({
+  //     title: "Request Course Review",
+  //     width: 600,
+  //     icon: <FormOutlined />,
+  //     content: (
+  //       <div className="p-6">
+  //         <h3 className="mb-4 text-lg font-medium">Please provide details for your review request</h3>
+  //         <Form layout="vertical">
+  //           <Form.Item label="Comments" required tooltip="Please explain why you are requesting a review">
+  //             <Input.TextArea onChange={(e) => (tempComment = e.target.value)} placeholder="Enter your comments here..." rows={4} className="w-full" showCount maxLength={500} />
+  //           </Form.Item>
+  //         </Form>
+  //       </div>
+  //     ),
+  //     okText: "Submit Request",
+  //     cancelText: "Cancel",
+  //     okButtonProps: {
+  //       type: "primary",
+  //       icon: <SendOutlined />
+  //     },
+  //     onOk: () => {
+  //       if (!tempComment.trim()) {
+  //         message.error("Please enter comments before submitting");
+  //         return Promise.reject();
+  //       }
+  //       return requestReview(courseId, tempComment);
+  //     },
+  //     onCancel: () => {
+  //       tempComment = "";
+  //     }
+  //   });
+  // };
 
   // const handleCourseSelect = (courseId: string) => {
   //   fetchCourseDetails(courseId);
@@ -273,22 +274,24 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
         const { status, _id } = record;
         return (
           <>
-            {(status === StatusType.ACTIVE || status === StatusType.INACTIVE) && (
-              <Switch
-                checked={status === StatusType.ACTIVE}
-                onChange={(checked) => {
-                  if (checked) {
-                    handleApprove(_id);
-                  } else {
-                    handleInactive(_id);
-                  }
-                }}
-                checkedChildren="Active"
-                unCheckedChildren="Inactive"
-                className="bg-gradient-tone mr-2 text-white hover:opacity-90"
-              />
+            {(status === StatusType.ACTIVE || status === StatusType.INACTIVE || status === StatusType.APPROVE) && (
+              <>
+                <Switch
+                  checked={status === StatusType.ACTIVE}
+                  onChange={(checked) => {
+                    if (checked) {
+                      handleApprove(_id);
+                    } else {
+                      handleInactive(_id);
+                    }
+                  }}
+                  checkedChildren="Active"
+                  unCheckedChildren={status === StatusType.APPROVE ? "Active" : "Inactive"}
+                  className={`${status === StatusType.APPROVE ? "bg-blue-600" : "bg-gradient-tone"} mr-2 text-white hover:opacity-90`}
+                />
+              </>
             )}
-            {status === StatusType.APPROVE && (
+            {/* {status === StatusType.APPROVE && (
               <Popconfirm
                 title="Are you sure to approve this course?"
                 onConfirm={() => handleApprove(_id)}
@@ -302,7 +305,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
                 Active
                 </Button>
               </Popconfirm>
-            )}
+            )} */}
           </>
         );
       }
@@ -318,24 +321,18 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       key: "actions",
       dataIndex: "actions",
       render: (_, record) => {
-        const { status, _id } = record;
+        // const { status, _id, lesson_count, session_count } = record;
         return (
           <>
-            {/* {status === StatusType.APPROVE && (
-              <Popconfirm
-                title="Are you sure to approve this course?"
-                onConfirm={() => handleApprove(_id)}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Button
-                  icon={<CheckOutlined />}
-                  className="bg-white mr-2 text-black hover:opacity-90"
-                  title="Confirm Active"
-                />
-              </Popconfirm>
+            {/* {status === StatusType.REJECT && (
+              <Button
+                icon={<HistoryOutlined />}
+                onClick={() => showRequestReviewModal(_id)}
+                className="bg-gradient-tone mr-2 text-white hover:opacity-90"
+                title="Request Review"
+                disabled={(lesson_count ?? 0) <= 0 || (session_count ?? 0) <= 0} // Disable button if lessons or sessions are <= 0
+              />
             )} */}
-            {status === StatusType.REJECT && <Button icon={<HistoryOutlined />} onClick={() => showRequestReviewModal(_id)} className="bg-gradient-tone mr-2 text-white hover:opacity-90" title="Request Review" />}
             <EditButton data={record} onEditSuccess={handleCourseCreated} fetchCourseDetails={fetchCourseDetails} />
             <DeleteButton courseId={record._id} onDeleteSuccess={handleCourseCreated} />
           </>
@@ -350,7 +347,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
 
   const handleOk = useCallback(async () => {
     try {
-      const validCourses = courses?.filter((course) => selectedCourse.includes(Number(course._id)) && (course.status === StatusType.NEW || course.status === StatusType.REJECT));
+      const validCourses = courses?.filter((course) => selectedCourse.includes(Number(course._id)) && (course.status === StatusType.NEW || course.status === StatusType.REJECT) && (course.lesson_count ?? 0) > 0 && (course.session_count ?? 0) > 0);
 
       if (!validCourses?.length) {
         message.warning("No valid courses selected to send");
@@ -393,11 +390,11 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
     onStatusChange(status);
   };
 
-  const handleRowSelectionChange = (selectedKeys: React.Key[]) => {
-    // Ensure unique selection using lodash
-    const uniqueKeys = _.uniq(selectedKeys as number[]);
-    setSelectedRowKeys(uniqueKeys);
-  };
+  // const handleRowSelectionChange = (selectedKeys: React.Key[]) => {
+  //   // Ensure unique selection using lodash
+  //   const uniqueKeys = _.uniq(selectedKeys as number[]);
+  //   setSelectedRowKeys(uniqueKeys);
+  // };
 
   const sendToAdmin = useCallback(async () => {
     try {
@@ -405,7 +402,9 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       const validCourses = courses?.filter(
         (course) =>
           selectedRowKeys.includes(course._id as unknown as number) &&
-          (course.status === StatusType.NEW || course.status === StatusType.REJECT)
+          (course.status === StatusType.NEW || course.status === StatusType.REJECT) &&
+          (course.lesson_count ?? 0) > 0 &&
+          (course.session_count ?? 0) > 0
       );
 
       if (!validCourses?.length) {
@@ -475,18 +474,17 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
           </Button>
         </div>
       </div>
-      <div className="mb-2">
+      {/* <div className="mb-2">
         <span>{selectedRowKeys.length} course(s) selected</span>
-      </div>
+      </div> */}
       <Table
         rowSelection={{
-          type: "checkbox",
+          type: "radio",
           selectedRowKeys,
-          onChange: handleRowSelectionChange,
-          selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT, Table.SELECTION_NONE],
+          onChange: (selectedKeys) => setSelectedRowKeys(selectedKeys as number[]),
           getCheckboxProps: (record) => ({
             name: record._id,
-            disabled: record.status !== StatusType.NEW && record.status !== StatusType.REJECT // Disable selection for other statuses
+            disabled: (record.status !== StatusType.NEW && record.status !== StatusType.REJECT) || (record.lesson_count ?? 0) <= 0 || (record.session_count ?? 0) <= 0 // Disable selection for other statuses or if lessons or sessions are <= 0
           })
         }}
         columns={columns}

@@ -2,7 +2,7 @@ import { Button, Form, Input, InputNumber, message, Modal, Select } from "antd";
 const { Option } = Select;
 import { useState, useEffect, useCallback } from "react";
 import { EditOutlined } from "@ant-design/icons";
-import Editor from "../../../generic/tiny/Editor";
+// import Editor from "../../../generic/tiny/Editor";
 import { SessionService } from "../../../../services/session/session.service";
 import { useCallbackCourse } from "../../../../hooks/useCallback";
 import { GetCourseResponsePageData } from "../../../../models/api/responsive/course/course.response.model";
@@ -77,10 +77,10 @@ const EditButton = ({ data, onSessionEdited, fetchSessionDetails }: any) => {
     form.resetFields();
   };
 
-  const editChange = (value: string) => {
-    const strippedContent = value.replace(/<[^>]*>/g, "").trim();
-    form.setFieldsValue({ description: strippedContent ? value : "" });
-  };
+  // const editChange = (value: string) => {
+  //   const strippedContent = value.replace(/<[^>]*>/g, "").trim();
+  //   form.setFieldsValue({ description: strippedContent ? value : "" });
+  // };
 
   return (
     <>
@@ -100,7 +100,7 @@ const EditButton = ({ data, onSessionEdited, fetchSessionDetails }: any) => {
             </Select>
           </Form.Item>
           <Form.Item name="description" label="Description" rules={[{ required: true, message: "Please input the description!" }]}>
-            <Editor initialValue={data.description} onEditorChange={editChange} />
+            <Input.TextArea />
           </Form.Item>
           <Form.Item name="position_order" label="Position Order">
             <InputNumber min={0} />

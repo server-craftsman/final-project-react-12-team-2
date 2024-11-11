@@ -5,7 +5,8 @@ const { Option } = Select;
 import { CourseService } from "../../../../services/course/course.service";
 import { CategoryService } from "../../../../services/category/category.service";
 import { CreateCourseParams } from "../../../../models/api/request/course/course.request.model";
-import { upload } from "../../../../utils";
+// import { upload } from "../../../../utils";
+import { BaseService } from "../../../../services/config/base.service";
 import { GetCategoryParams } from "../../../../models/api/request/admin/category.request.model";
 import Editor from "../../../generic/tiny/Editor";
 
@@ -72,7 +73,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
 
   const handleFileUpload = useCallback(async (file: File, type: "image" | "video") => {
     try {
-      const url = await upload.handleUploadFile(file, type);
+      const url = await BaseService.uploadFile(file, type);
       if (!url) throw new Error(`Failed to upload ${type}`);
       return url;
     } catch (error: any) {
