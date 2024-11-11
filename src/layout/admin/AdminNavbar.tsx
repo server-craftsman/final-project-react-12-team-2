@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { BankOutlined, TeamOutlined, DashboardOutlined, SettingOutlined, FileTextOutlined, BookOutlined, ShoppingCartOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import { BankOutlined, TeamOutlined, DashboardOutlined, SettingOutlined, FileTextOutlined, BookOutlined, ShoppingCartOutlined, ClockCircleOutlined, AuditOutlined } from "@ant-design/icons";
 import logo1 from "../../assets/logo1.jpg";
 import useResponsiveCollapse from "../../hooks/useResponsiveCollapse";
 
@@ -50,17 +50,23 @@ const AdminNavbar: React.FC = () => {
     {
       key: "7",
       icon: <BookOutlined className="text-white" />,
-      label: "Courses Log",
-      path: "/admin/courses-log"
+      label: "Blog Management",
+      path: "/admin/admin-blog"
     },
     {
       key: "8",
+      icon: <AuditOutlined className="text-white" />,
+      label: "Course Log",
+      path: "/admin/course-log",
+    },
+    {
+      key: "9",
       icon: <ShoppingCartOutlined className="text-white" />,
       label: "Purchases Log",
       path: "/admin/purchases-log"
     },
     {
-      key: "9",
+      key: "10",
       icon: <SettingOutlined className="text-white" />,
       label: "Setting",
       path: "/admin/admin-info"

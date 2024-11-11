@@ -30,51 +30,51 @@ const Editor: React.FC<EditorProps> = ({ initialValue, onEditorChange, editorCon
   }, [initialValue]);
 
   // Update the handleUpload function in the Editor component
-const handleUpload = () => {
-  if (window.cloudinary) {
-    window.cloudinary.openUploadWidget(
-      {
-        cloud_name: cloudinaryConfig.cloudName,
-        upload_preset: cloudinaryConfig.uploadPreset,
-        sources: ["local", "url"],
-        resource_type: "auto"
-      },
-      (error: any, result: any) => {
-        if (!error && result && result.event === "success") {
-          const mediaUrl = result.info.secure_url;
-          const quill = ReactQuill.Quill;
-          const editorElement = document.querySelector(".ql-editor");
-          if (editorElement) {
-            const editor = quill.find(editorElement);
-            const range = editor.getSelection(true);
-            const type = result.info.resource_type === "image" ? "image" : "video";
-            if (range) {
-              editor.insertEmbed(range.index, type, mediaUrl);
-              editor.insertText(range.index + 1, `\n${mediaUrl}\n`); // Insert URL as text
-              editor.setSelection(range.index + 2);
-              const newText = `${text}\n${mediaUrl}`;
-              setText(newText);
-              onEditorChange(newText);
-              // Save URL for Editor
-              localStorage.setItem('editorMediaUrl', mediaUrl);
+  const handleUpload = () => {
+    if (window.cloudinary) {
+      window.cloudinary.openUploadWidget(
+        {
+          cloud_name: cloudinaryConfig.cloudName,
+          upload_preset: cloudinaryConfig.uploadPreset,
+          sources: ["local", "url"],
+          resource_type: "auto"
+        },
+        (error: any, result: any) => {
+          if (!error && result && result.event === "success") {
+            const mediaUrl = result.info.secure_url;
+            const quill = ReactQuill.Quill;
+            const editorElement = document.querySelector(".ql-editor");
+            if (editorElement) {
+              const editor = quill.find(editorElement);
+              const range = editor.getSelection(true);
+              const type = result.info.resource_type === "image" ? "image" : "video";
+              if (range) {
+                editor.insertEmbed(range.index, type, mediaUrl);
+                editor.insertText(range.index + 1, `\n${mediaUrl}\n`); // Insert URL as text
+                editor.setSelection(range.index + 2);
+                const newText = `${text}\n${mediaUrl}`;
+                setText(newText);
+                onEditorChange(newText);
+                // Save URL for Editor
+                localStorage.setItem('editorMediaUrl', mediaUrl);
+              } else {
+                console.error("No selection range found.");
+              }
             } else {
-              console.error("No selection range found.");
+              console.error("Editor element not found.");
             }
+          } else if (error) {
+            console.error("Upload error:", error);
+            message.error("Upload failed. Please try again.");
           } else {
-            console.error("Editor element not found.");
+            console.log("Upload result:", result);
           }
-        } else if (error) {
-          console.error("Upload error:", error);
-          message.error("Upload failed. Please try again.");
-        } else {
-          console.log("Upload result:", result);
         }
-      }
-    );
-  } else {
-    console.error("Cloudinary widget script not loaded.");
-  }
-};
+      );
+    } else {
+      console.error("Cloudinary widget script not loaded.");
+    }
+  };
 
   const defaultEditorConfig = useMemo(
     () => ({
@@ -129,3 +129,4 @@ const handleUpload = () => {
 };
 
 export default Editor;
+
