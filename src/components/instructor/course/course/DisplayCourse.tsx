@@ -318,24 +318,18 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       key: "actions",
       dataIndex: "actions",
       render: (_, record) => {
-        const { status, _id } = record;
+        const { status, _id, lesson_count, session_count } = record;
         return (
           <>
-            {/* {status === StatusType.APPROVE && (
-              <Popconfirm
-                title="Are you sure to approve this course?"
-                onConfirm={() => handleApprove(_id)}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Button
-                  icon={<CheckOutlined />}
-                  className="bg-white mr-2 text-black hover:opacity-90"
-                  title="Confirm Active"
-                />
-              </Popconfirm>
-            )} */}
-            {status === StatusType.REJECT && <Button icon={<HistoryOutlined />} onClick={() => showRequestReviewModal(_id)} className="bg-gradient-tone mr-2 text-white hover:opacity-90" title="Request Review" />}
+            {status === StatusType.REJECT && (
+              <Button
+                icon={<HistoryOutlined />}
+                onClick={() => showRequestReviewModal(_id)}
+                className="bg-gradient-tone mr-2 text-white hover:opacity-90"
+                title="Request Review"
+                disabled={(lesson_count ?? 0) <= 0 || (session_count ?? 0) <= 0} // Disable button if lessons or sessions are <= 0
+              />
+            )}
             <EditButton data={record} onEditSuccess={handleCourseCreated} fetchCourseDetails={fetchCourseDetails} />
             <DeleteButton courseId={record._id} onDeleteSuccess={handleCourseCreated} />
           </>
@@ -350,7 +344,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
 
   const handleOk = useCallback(async () => {
     try {
-      const validCourses = courses?.filter((course) => selectedCourse.includes(Number(course._id)) && (course.status === StatusType.NEW || course.status === StatusType.REJECT));
+      const validCourses = courses?.filter((course) => selectedCourse.includes(Number(course._id)) && (course.status === StatusType.NEW || course.status === StatusType.REJECT) && (course.lesson_count ?? 0) > 0 && (course.session_count ?? 0) > 0);
 
       if (!validCourses?.length) {
         message.warning("No valid courses selected to send");
@@ -405,7 +399,9 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       const validCourses = courses?.filter(
         (course) =>
           selectedRowKeys.includes(course._id as unknown as number) &&
-          (course.status === StatusType.NEW || course.status === StatusType.REJECT)
+          (course.status === StatusType.NEW || course.status === StatusType.REJECT) &&
+          (course.lesson_count ?? 0) > 0 &&
+          (course.session_count ?? 0) > 0
       );
 
       if (!validCourses?.length) {
@@ -486,7 +482,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
           selections: [Table.SELECTION_ALL, Table.SELECTION_INVERT, Table.SELECTION_NONE],
           getCheckboxProps: (record) => ({
             name: record._id,
-            disabled: record.status !== StatusType.NEW && record.status !== StatusType.REJECT // Disable selection for other statuses
+            disabled: (record.status !== StatusType.NEW && record.status !== StatusType.REJECT) || (record.lesson_count ?? 0) <= 0 || (record.session_count ?? 0) <= 0 // Disable selection for other statuses or if lessons or sessions are <= 0
           })
         }}
         columns={columns}
