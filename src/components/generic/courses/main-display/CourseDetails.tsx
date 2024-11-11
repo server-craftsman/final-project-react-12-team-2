@@ -66,17 +66,17 @@ const CourseDetails: React.FC = () => {
         setDiscountedPrice(((courseData.price ?? 0) - ((courseData.discount ?? 0) * (courseData.price ?? 0)) / 100).toFixed(2));
 
         // Process sessions
-        const sessionList = courseData.session_list.map((session, index) => ({
+        const sessionList = courseData.session_list.map((session) => ({
           ...session,
-          _id: `session-${index}`
+          _id: session._id
         }));
         setSessions(sessionList);
 
         // Process lessons
-        const lessonList = sessionList.flatMap((session, sessionIndex) =>
-          session.lesson_list.map((lesson, lessonIndex) => ({
+        const lessonList = sessionList.flatMap((session) =>
+          session.lesson_list.map((lesson) => ({
             ...lesson,
-            _id: `lesson-${sessionIndex}-${lessonIndex}`,
+            _id: lesson._id,
             session_id: session._id
           }))
         );
@@ -92,9 +92,8 @@ const CourseDetails: React.FC = () => {
     fetchCourseDetails();
   }, [id]);
 
-  if (!course) {
-    return <div className="mt-8 text-center text-2xl">Course not found</div>;
-  }
+  const isCoursePurchased = course && course.is_in_cart && course.is_purchased;
+
   const showVideoModal = () => {
     if (videoId) {
       setIsModalVisible(true);
@@ -121,7 +120,7 @@ const CourseDetails: React.FC = () => {
           <span className="font-semibold tracking-wide">Course Insights</span>
         </span>
       ),
-      children: <CourseInsights course={course} instructor={instructor} content={course.content} />
+      children: course ? <CourseInsights course={course} instructor={instructor} content={course.content} /> : null
     },
     {
       key: "2",
@@ -131,7 +130,7 @@ const CourseDetails: React.FC = () => {
           <span className="font-semibold tracking-wide">Course Content</span>
         </span>
       ),
-      children: <CourseContent sessions={sessions} lessons={lessons} courseId={course._id} activeSessionId={activeSessionId} setActiveSessionId={setActiveSessionId} />
+      children: course ? <CourseContent course={course} sessions={sessions} lessons={lessons} courseId={course?._id} activeSessionId={activeSessionId} setActiveSessionId={setActiveSessionId} /> : null
     },
     {
       key: "3",
@@ -141,12 +140,13 @@ const CourseDetails: React.FC = () => {
           <span className="font-semibold tracking-wide">Reviews</span>
         </span>
       ),
-      children: <CourseReviews reviews={reviews} users={course.users} />
+      children: course ? <CourseReviews reviews={reviews} users={course.users} /> : null
     }
   ];
 
-  return (
-    <div className="min-h-screen w-full bg-white py-12">
+  if (course) {
+    return (
+      <div className="min-h-screen w-full bg-white py-12">
       <div className="container mx-auto">
         <Link to="/" className="mb-6 flex items-center text-[#1a237e] hover:text-[#1a237e]">
           <HomeOutlined className="mr-2" />
@@ -157,18 +157,21 @@ const CourseDetails: React.FC = () => {
             <Card className="overflow-hidden rounded-lg text-left shadow-lg">
               <CourseHeader course={course} category={category} instructor={instructor} showVideoModal={() => showVideoModal()} />
               <div className="p-4 text-left">
-                {/* <Divider /> */}
-                <Tabs
-                  defaultActiveKey="1"
-                  className="custom-tabs"
-                  animated={{ inkBar: true, tabPane: true }}
-                  tabBarStyle={{
-                    marginBottom: "24px",
-                    borderBottom: "2px solid #f0f0f0"
-                  }}
-                  tabBarGutter={32}
-                  items={tabItems}
-                />
+                {isCoursePurchased ? (
+                  <Tabs
+                    defaultActiveKey="1"
+                    className="custom-tabs"
+                    animated={{ inkBar: true, tabPane: true }}
+                    tabBarStyle={{
+                      marginBottom: "24px",
+                      borderBottom: "2px solid #f0f0f0"
+                    }}
+                    tabBarGutter={32}
+                    items={tabItems}
+                  />
+                ) : (
+                  <div className="text-red-600 font-semibold">You need to purchase this course to view the full content.</div>
+                )}
               </div>
             </Card>
           </Col>
@@ -179,7 +182,10 @@ const CourseDetails: React.FC = () => {
       </div>
       <CourseVideoModal isModalVisible={isModalVisible} handleCancel={handleCancel} videoId={videoId} />
     </div>
-  );
+    );
+  } else {
+    return <div className="mt-8 text-center text-2xl">Course not found</div>;
+  }
 };
 
 export default CourseDetails;

@@ -8,7 +8,6 @@ interface CartContextType {
   updateCartItems: (status?: CartStatusEnum) => Promise<void>;
   updateCartStatus: (cartIds: string | string[], status: CartStatusEnum) => Promise<void>;
   deleteCartItem: (cartId: string) => Promise<void>;
-  isCoursePurchased: (courseId: string) => { purchased: boolean; isInCart: boolean };
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -69,14 +68,6 @@ export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
     }
   };
 
-  const isCoursePurchased = (courseId: string) => {
-    console.log("Checking if course is purchased or in cart:", courseId);
-    const purchased = cartItems.some((item) => item.course_id === courseId && item.status === CartStatusEnum.completed);
-    const isInCart = cartItems.some((item) => item.course_id === courseId && item.status === CartStatusEnum.new);
-    console.log("Is course purchased:", purchased, "Is in cart:", isInCart);
-    return { purchased, isInCart };
-  };
-
   useEffect(() => {
     if (token) {
       updateCartItems(CartStatusEnum.new);
@@ -85,7 +76,7 @@ export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
     }
   }, [token]);
 
-  return <CartContext.Provider value={{ cartItems, updateCartItems, updateCartStatus, deleteCartItem, isCoursePurchased }}>{children}</CartContext.Provider>;
+  return <CartContext.Provider value={{ cartItems, updateCartItems, updateCartStatus, deleteCartItem }}>{children}</CartContext.Provider>;
 };
 
 export const useCart = () => {

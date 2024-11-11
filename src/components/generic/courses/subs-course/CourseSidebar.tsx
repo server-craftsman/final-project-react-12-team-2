@@ -4,20 +4,14 @@ import { ShoppingCartOutlined, ShareAltOutlined, PlayCircleOutlined, ClockCircle
 import { CourseSidebarProps } from "../../../../models/objects/course/CourseSidebarProps";
 import { helpers } from "../../../../utils";
 import { CartService } from "../../../../services/cart/cart.service";
-import { useCart } from "../../../../contexts/CartContext";
 
 const { Title, Text } = Typography;
 
-const CourseSidebar: React.FC<CourseSidebarProps> = ({ course, courseStatus }) => {
-  const { cartItems } = useCart();
-  const isInCart = courseStatus?.is_in_cart;
-  console.log("Cart Items:", JSON.stringify(cartItems, null, 2));
-  console.log("Course ID:", course._id);
-  console.log("Is in Cart:", isInCart);
+const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
 
   const handleAddToCart = async () => {
     try {
-      if (isInCart) {
+      if (course.is_in_cart) {
         window.location.href = `/cart`;
       } else {
         const response = await CartService.createCart(course._id);
@@ -40,7 +34,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course, courseStatus }) =
       </div>
       <button className="mb-4 h-12 w-full rounded-lg bg-gradient-to-r from-[#1a237e] to-[#3949ab] text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:from-[#3949ab] hover:to-[#1a237e] hover:shadow-xl active:scale-95" onClick={handleAddToCart}>
         <ShoppingCartOutlined className="mr-2 text-xl" />
-        {isInCart ? "View Cart" : "Add to Cart"}
+        {course.is_in_cart ? "View Cart" : "Add to Cart"}
       </button>
       <button className="mb-6 h-12 w-full rounded-lg bg-[#1a237e] text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:bg-[#3949ab] hover:shadow-xl active:scale-95">Buy Course</button>
       <Divider />

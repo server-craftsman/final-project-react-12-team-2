@@ -1,53 +1,65 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import lessonsData from "../../../data/lessons.json";
-import coursesData from "../../../data/courses.json";
-import usersData from "../../../data/users.json";
-import sessionsData from "../../../data/sessions.json";
-import { PlayCircleOutlined, ClockCircleOutlined, FileTextOutlined, MenuOutlined, CloseOutlined } from "@ant-design/icons";
-import { Button, Card, Row, Col, Typography, Tag, Progress, Breadcrumb, Menu, Modal } from "antd";
-import YouTube from "react-youtube";
-import LessonSidebar from "./LessonSidebar";
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-
+import { PlayCircleOutlined, FileTextOutlined, MenuOutlined, CloseOutlined } from "@ant-design/icons";
+import { Button, Card, Row, Col, Typography, Tag, Breadcrumb, Menu } from "antd";
+import { LessonService } from "../../../services/lesson/lesson.service";
+import { GetPublicCourseDetailResponse } from "../../../models/api/responsive/course/course.response.model";
+import { LessonDetailsResponse } from "../../../models/api/responsive/lesson/lesson.response.model";
 const { Title, Paragraph, Text } = Typography;
+import parse from "html-react-parser";
+import { CourseService } from "../../../services/course/course.service";
+
+// Add this utility function to validate ObjectId
+const isValidObjectId = (id: string) => /^[a-f\d]{24}$/i.test(id);
 
 const LessonDetails: React.FC = () => {
-  const { courseId, sessionId, lessonId } = useParams<{
+  const { courseId, lessonId } = useParams<{
     courseId: string;
-    sessionId: string;
     lessonId: string;
   }>();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [player, setPlayer] = useState<any>(null);
-  const [openKeys, setOpenKeys] = useState<string[]>([]);
   const [menuCollapsed, setMenuCollapsed] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [sidebarVisible, setSidebarVisible] = useState(true);
-  const lesson = lessonsData.lessons.find((lesson) => lesson.id === lessonId);
-  const course = coursesData.courses.find((course) => course.id === courseId);
-  const session = sessionsData.sessions.find((session) => session.id === sessionId);
-  const instructor = usersData.users.find((user) => user.id === lesson?.user_id);
+  const [lesson, setLesson] = useState<LessonDetailsResponse | null>(null);
+  const [course, setCourse] = useState<GetPublicCourseDetailResponse | null>(null);
 
-  const allSessions = sessionsData.sessions.filter((session) => session.course_id === courseId);
-  const allLessons = lessonsData.lessons.filter((lesson) => lesson.course_id === courseId);
+  // Validate the lessonId
+  if (!lessonId || !isValidObjectId(lessonId)) {
+    return <div className="mt-8 text-center text-2xl">Invalid lesson ID</div>;
+  }
 
   useEffect(() => {
-    if (!lesson || !course) {
-      setError("Lesson, course, or session not found");
-    }
-    setLoading(false);
-  }, [lesson, course, session]);
+    const fetchLessonDetails = async () => {
+      try {
+        const response = await LessonService.getLessonDetails(lessonId);
+        setLesson(response.data.data);
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to load lesson details.");
+        setLoading(false);
+      }
+    };
 
-  useEffect(() => {
-    if (player) {
-      player.pauseVideo();
+    if (lessonId) {
+      fetchLessonDetails();
     }
   }, [lessonId]);
+
+  useEffect(() => {
+    const fetchCourseDetails = async () => {
+      try {
+        const response = await CourseService.getPublicCourseDetail(courseId || '');
+        setCourse(response.data.data);
+      } catch (err) {
+        setError("Failed to load course details.");
+      }
+    };
+
+    if (courseId) {
+      fetchCourseDetails();
+    }
+  }, [courseId]);
 
   if (loading) {
     return <div className="mt-8 text-center text-2xl">Loading...</div>;
@@ -62,93 +74,32 @@ const LessonDetails: React.FC = () => {
     );
   }
 
-  const getYouTubeVideoId = (url: string) => {
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-    const match = url.match(regExp);
-    return match && match[2].length === 11 ? match[2] : null;
-  };
-
-  const videoId = getYouTubeVideoId(lesson?.video_url || "");
-
-  const handleTimeUpdate = (event: { target: any }) => {
-    setPlayer(event.target);
-    setCurrentTime(event.target.getCurrentTime());
-    setDuration(event.target.getDuration());
-  };
-
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
-
-  const handleLessonChange = (value: string) => {
-    const selectedLesson = allLessons.find((lesson) => lesson.id === value);
-    if (selectedLesson) {
-      // navigate(`/course/${courseId}/session/${selectedLesson.session_id}/lesson/${value}`);
-      navigate(`/course/${courseId}/lesson/${value}`);
-    }
-  };
-
-  const currentLessonIndex = allLessons.findIndex((l) => l.id === lessonId);
-  const previousLesson = allLessons[currentLessonIndex - 1];
-  const nextLesson = allLessons[currentLessonIndex + 1];
-
-  const handlePreviousLesson = () => {
-    if (previousLesson) {
-      // navigate(`/course/${courseId}/session/${previousLesson.session_id}/lesson/${previousLesson.id}`);
-      navigate(`/course/${courseId}/lesson/${previousLesson.id}`);
-      window.scrollTo(0, 0);
-    }
-  };
-
-  const handleNextLesson = () => {
-    if (nextLesson) {
-      // navigate(`/course/${courseId}/session/${nextLesson.session_id}/lesson/${nextLesson.id}`);
-      navigate(`/course/${courseId}/lesson/${nextLesson.id}`);
-      window.scrollTo(0, 0);
-    }
-  };
-
   const toggleMenu = () => {
     setMenuCollapsed(!menuCollapsed);
   };
 
-  const renderLessonMenu = () => {
-    const menuItems = allSessions.map((session) => ({
-      key: `session-${session.id}`,
-      icon: <MenuOutlined />,
+  const renderLessonMenu = (sessions: any[] | undefined) => {
+    if (!sessions) return null;
+
+    const menuItems = sessions.map((session) => ({
+      key: session._id,
       label: session.name,
-      children: allLessons
-        .filter((lesson) => lesson.session_id === session.id)
-        .map((lesson) => ({
-          key: `lesson-${lesson.id}`,
-          label: lesson.name,
-          onClick: () => handleLessonChange(lesson.id)
-        }))
+      children: session.lesson_list
+        .sort((a: any, b: any) => a.position_order - b.position_order)
+        .map((lesson: any) => ({
+          key: lesson._id,
+          label: <Link to={`/course/${course?._id}/lesson/${lesson._id}`}>{lesson.name}</Link>,
+        })),
     }));
 
-    return <Menu mode="inline" defaultSelectedKeys={[`lesson-${lessonId}`]} openKeys={openKeys} onOpenChange={(keys) => setOpenKeys(keys as string[])} inlineCollapsed={menuCollapsed} items={menuItems} />;
-  };
-
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
+    return <Menu items={menuItems} />;
   };
 
   const breadcrumbItems = [
     { title: <Link to="/">Home</Link> },
-    { title: <Link to={`/course/${courseId}`}>{course?.name}</Link> },
-    // { title: <Link to={`/course/${courseId}/session/${sessionId}`}>{session?.name}</Link> },
+    { title: <Link to={`/course/${course?._id}`}>{course?.name}</Link> },
     { title: lesson?.name }
   ];
-
-  const toggleSidebar = () => {
-    setSidebarVisible(!sidebarVisible);
-  };
 
   return (
     <div className="min-h-screen bg-gray-100 py-12">
@@ -166,77 +117,40 @@ const LessonDetails: React.FC = () => {
                   Course Content
                 </Title>
               </div>
-              {renderLessonMenu()}
+              {renderLessonMenu(course?.session_list)}
             </Card>
           </Col>
           <Col xs={24} lg={menuCollapsed ? 22 : 18}>
             <Card className="mb-8 overflow-hidden rounded-lg shadow-lg">
               <div className="p-6">
                 <Tag color="blue" className="mb-4 bg-[#1a237e] text-white">
-                  {session?.name}
+                  {lesson?.session_name}
                 </Tag>
                 <Title level={2} className="mb-4">
                   {lesson?.name}
                 </Title>
                 <div className="relative mb-6 aspect-video overflow-hidden rounded-lg shadow-2xl">
-                  {videoId && (
-                    <YouTube
-                      videoId={videoId}
-                      opts={{
-                        width: "100%",
-                        height: "100%",
-                        playerVars: {
-                          autoplay: 0,
-                          modestbranding: 1,
-                          rel: 0,
-                          showinfo: 0,
-                          controls: 1,
-                          origin: window.location.origin
-                        }
-                      }}
-                      onReady={handleTimeUpdate}
-                      onStateChange={handleTimeUpdate}
-                      className="h-full w-full object-cover"
-                    />
+                  {lesson?.video_url ? (
+                    <video controls className="w-full h-full">
+                      <source src={lesson.video_url} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : lesson?.image_url ? (
+                    <img src={lesson.image_url} alt={lesson.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="p-4 text-white bg-gradient-to-t from-black to-transparent">
+                      {lesson?.description}
+                    </div>
                   )}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 text-white">
-                    <div
-                      onClick={(e) => {
-                        const progressBar = e.currentTarget.querySelector(".ant-progress-bg") as HTMLElement;
-                        const rect = progressBar.getBoundingClientRect();
-                        const clickPosition = e.clientX - rect.left;
-                        const percentClicked = (clickPosition / rect.width) * 100;
-                        const newTime = (percentClicked / 100) * duration;
-                        if (player) {
-                          player.seekTo(newTime);
-                        }
-                      }}
-                    >
-                      <Progress percent={(currentTime / duration) * 100} showInfo={false} strokeColor="#8529ff" trailColor="rgba(255,255,255,0.3)" size={4} style={{ cursor: "pointer" }} />
-                    </div>
-                    <div className="mt-2 flex justify-between text-sm">
-                      <span className="font-semibold">{formatTime(currentTime)}</span>
-                      <span className="font-semibold">{formatTime(duration)}</span>
-                    </div>
-                  </div>
                 </div>
-                <Paragraph className="mb-6 text-gray-600">{lesson?.description}</Paragraph>
+                <Paragraph className="mb-6 text-gray-600">{parse(lesson?.description || "")}</Paragraph>
                 <div className="mb-6 flex items-center">
-                  <img src={instructor?.avatar_url || ""} className="mr-4 h-16 w-16 rounded-full shadow-lg" alt={instructor?.name || ""} />
-                  <div className="flex-1">
-                    <Text strong className="text-lg text-gray-800">
-                      {instructor?.name}
-                    </Text>
-                    <Text className="block text-sm text-gray-500">{instructor?.description}</Text>
-                  </div>
-                  <Button type="primary" onClick={toggleSidebar} className="ml-4" icon={sidebarVisible ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}>
-                    {sidebarVisible ? "Hide Sidebar" : "Show Sidebar"}
-                  </Button>
+                  {/* Instructor details and other information can be added here */}
                 </div>
               </div>
             </Card>
             <Row gutter={[32, 32]}>
-              <Col xs={24} lg={sidebarVisible ? 16 : 24}>
+              <Col xs={24} lg={24}>
                 <Card className="rounded-lg shadow-lg">
                   <Title level={4} className="mb-4">
                     Lesson Content
@@ -251,15 +165,7 @@ const LessonDetails: React.FC = () => {
                         </Text>
                       </Card>
                     </Col>
-                    <Col xs={12} sm={8}>
-                      <Card className="text-center transition-shadow duration-300 hover:shadow-lg">
-                        <ClockCircleOutlined className="mb-2 text-4xl text-blue-500" />
-                        <Text className="block text-gray-500">Estimated Time</Text>
-                        <Text strong className="text-lg">
-                          {lesson?.full_time} min
-                        </Text>
-                      </Card>
-                    </Col>
+                    
                     <Col xs={12} sm={8}>
                       <Card className="text-center transition-shadow duration-300 hover:shadow-lg">
                         <FileTextOutlined className="mb-2 text-4xl text-blue-500" />
@@ -272,32 +178,10 @@ const LessonDetails: React.FC = () => {
                   </Row>
                 </Card>
               </Col>
-              {sidebarVisible && (
-                <Col xs={24} lg={8}>
-                  <LessonSidebar course={course} session={session} lesson={lesson} onContinueLesson={() => setIsModalVisible(true)} onPreviousLesson={handlePreviousLesson} onNextLesson={handleNextLesson} previousLesson={!!previousLesson} nextLesson={!!nextLesson} />
-                </Col>
-              )}
             </Row>
           </Col>
         </Row>
       </div>
-      <Modal title="Lesson Video" open={isModalVisible} onOk={handleOk} onCancel={handleCancel} width={800} footer={null}>
-        {videoId && (
-          <YouTube
-            videoId={videoId}
-            opts={{
-              width: "100%",
-              height: "450",
-              playerVars: {
-                autoplay: 1,
-                modestbranding: 1,
-                rel: 0,
-                origin: window.location.origin
-              }
-            }}
-          />
-        )}
-      </Modal>
     </div>
   );
 };
