@@ -41,6 +41,9 @@
 }
 
 /* Float animation */
+.un-btn {
+  @apply hidden items-center rounded-full border border-[#dc2626]/30 bg-[#dc2626] bg-gradient-to-r from-[#b91c1c] to-[#dc2626] px-8 py-3 text-sm font-medium text-white shadow-[0_0_20px_rgba(220,38,38,0.3)] backdrop-blur-sm transition-all duration-300 ease-out hover:scale-105 hover:shadow-[0_0_25px_rgba(220,38,38,0.5)] lg:inline-flex;
+}
 @keyframes floatUpDown {
   0%,
   100% {
