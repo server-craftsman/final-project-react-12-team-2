@@ -4,7 +4,7 @@ import { formatDate, moneyFormat } from "../../../../utils/helper";
 import { CourseStatusBadge } from "../../../../utils/courseStatus";
 import { StatusType } from "../../../../app/enums";
 import { useEffect, useState, useCallback } from "react";
-import { Button, message, Modal, Pagination, Form, Input, Switch } from "antd";
+import { Button, message, Modal, Pagination, Form, Input, Switch, Popconfirm } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
@@ -266,16 +266,16 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       dataIndex: "discount"
     },
     {
-      title: "Action",
-      key: "action",
-      dataIndex: "action",
+      title: "Change Status",
+      key: "change_status",
+      dataIndex: "change_status",
       render: (_, record) => {
         const { status, _id } = record;
         return (
           <>
-            {(status === StatusType.ACTIVE || status === StatusType.INACTIVE || status === StatusType.APPROVE) && (
+            {(status === StatusType.ACTIVE || status === StatusType.INACTIVE) && (
               <Switch
-                checked={status === StatusType.ACTIVE || status === StatusType.APPROVE}
+                checked={status === StatusType.ACTIVE}
                 onChange={(checked) => {
                   if (checked) {
                     handleApprove(_id);
@@ -287,6 +287,21 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
                 unCheckedChildren="Inactive"
                 className="bg-gradient-tone mr-2 text-white hover:opacity-90"
               />
+            )}
+            {status === StatusType.APPROVE && (
+              <Popconfirm
+                title="Are you sure to approve this course?"
+                onConfirm={() => handleApprove(_id)}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  // onClick={() => handleApprove(_id)}
+                className="bg-gradient-tone text-white hover:opacity-90"
+              >
+                Active
+                </Button>
+              </Popconfirm>
             )}
           </>
         );
