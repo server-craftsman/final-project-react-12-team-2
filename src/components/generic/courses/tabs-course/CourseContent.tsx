@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography, Collapse, List, Button } from "antd";
+import { Typography, Collapse, List, Button, message } from "antd";
 import { PlayCircleOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -7,7 +7,11 @@ import { CourseContentProps } from "../../../../models/objects/course/CourseCont
 import { GetPublicCourseDetailResponse } from "../../../../models/api/responsive/course/course.response.model";
 const { Title, Paragraph } = Typography;
 
-const CourseContent: React.FC<CourseContentProps & { course: GetPublicCourseDetailResponse }> = ({ sessions, lessons, courseId, activeSessionId, setActiveSessionId }) => {
+const checkUserInfo = (course: GetPublicCourseDetailResponse) => {
+  return course?.is_in_cart || course?.is_purchased;
+};
+
+const CourseContent: React.FC<CourseContentProps & { course: GetPublicCourseDetailResponse }> = ({ course, sessions, lessons, courseId, activeSessionId, setActiveSessionId }) => {
 
   return (
     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
@@ -19,7 +23,6 @@ const CourseContent: React.FC<CourseContentProps & { course: GetPublicCourseDeta
           onChange={(key) => {
             const newActiveKey = Array.isArray(key) ? key[0] : key;
             setActiveSessionId(newActiveKey === activeSessionId ? null : newActiveKey);
-            console.log("New Active Key:", newActiveKey);
           }}
           items={[
             {
@@ -36,7 +39,19 @@ const CourseContent: React.FC<CourseContentProps & { course: GetPublicCourseDeta
                     dataSource={lessons.filter((lesson) => lesson.session_id === session._id).sort((a, b) => a.position_order - b.position_order)}
                     renderItem={(lesson) => (
                       <List.Item key={lesson._id} className="flex flex-row items-start justify-start text-left">
-                        <Link to={`/course/${courseId}/lesson/${lesson._id}`} className="w-full text-left">
+                        <Link
+                          to={checkUserInfo(course) ? `/course/${courseId}/lesson/${lesson._id}` : '/login'}
+                          className="w-full text-left"
+                          onClick={(e) => {
+                            if (!checkUserInfo(course)) {
+                              e.preventDefault();
+                              message.warning('You need to purchase this course to view the full content.');
+                              setTimeout(() => {
+                                window.location.href = '/login';
+                              }, 2000);
+                            }
+                          }}
+                        >
                           <Button type="link" block className="flex items-center text-left text-xl text-[#1a237e] hover:text-[#1a237e]">
                             <PlayCircleOutlined className="mr-2 text-[#1a237e]" />
                             <span className="flex-grow">{lesson.name}</span>

@@ -34,9 +34,9 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
       </div>
       <button className="mb-4 h-12 w-full rounded-lg bg-gradient-to-r from-[#1a237e] to-[#3949ab] text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:from-[#3949ab] hover:to-[#1a237e] hover:shadow-xl active:scale-95" onClick={handleAddToCart}>
         <ShoppingCartOutlined className="mr-2 text-xl" />
-        {course.is_in_cart ? "View Cart" : "Add to Cart"}
+        {course.is_in_cart && course.is_purchased ? "Learn Course" : course.is_in_cart ? "View Cart" : "Add to Cart"}
       </button>
-      <button className="mb-6 h-12 w-full rounded-lg bg-[#1a237e] text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:bg-[#3949ab] hover:shadow-xl active:scale-95">Buy Course</button>
+      {/* <button className="mb-6 h-12 w-full rounded-lg bg-[#1a237e] text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:bg-[#3949ab] hover:shadow-xl active:scale-95">Buy Course</button> */}
       <Divider />
       <Title level={4} className="mb-4">
         This course includes:

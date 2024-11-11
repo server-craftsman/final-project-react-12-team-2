@@ -92,8 +92,6 @@ const CourseDetails: React.FC = () => {
     fetchCourseDetails();
   }, [id]);
 
-  const isCoursePurchased = course && course.is_in_cart && course.is_purchased;
-
   const showVideoModal = () => {
     if (videoId) {
       setIsModalVisible(true);
@@ -157,7 +155,6 @@ const CourseDetails: React.FC = () => {
             <Card className="overflow-hidden rounded-lg text-left shadow-lg">
               <CourseHeader course={course} category={category} instructor={instructor} showVideoModal={() => showVideoModal()} />
               <div className="p-4 text-left">
-                {isCoursePurchased ? (
                   <Tabs
                     defaultActiveKey="1"
                     className="custom-tabs"
@@ -169,9 +166,6 @@ const CourseDetails: React.FC = () => {
                     tabBarGutter={32}
                     items={tabItems}
                   />
-                ) : (
-                  <div className="text-red-600 font-semibold">You need to purchase this course to view the full content.</div>
-                )}
               </div>
             </Card>
           </Col>

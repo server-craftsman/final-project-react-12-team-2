@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Typography, Card, Row, Col, Button, Tag, Avatar } from "antd";
-import { BookOutlined, PercentageOutlined, VideoCameraOutlined } from "@ant-design/icons";
+import { BookOutlined, PercentageOutlined, VideoCameraOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { GetPublicCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
 // import { User } from "../../../../models/api/responsive/users/users.model";
@@ -102,28 +102,32 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                     {course.discount}% OFF
                   </motion.div>
                 )}
-                <div className="flex h-[400px] flex-col">
+                <div className="flex h-[450px] flex-col">
                   <Title level={3} className="mb-2 line-clamp-2 h-16 text-xl font-bold text-[#1a237e] transition duration-300 hover:text-indigo-900">
                     {course.name}
                   </Title>
-                  <Paragraph className="mb-4 line-clamp-2 h-12 text-gray-600" ellipsis={{ rows: 2 }}>
+                  <Paragraph className="mb-4 line-clamp-2 h-11 text-gray-600" ellipsis={{ rows: 2 }}>
                     {parse(course.description)}
                   </Paragraph>
-                  <div className="h-20">
+                  <div className="h-[100px]">
                     <div className="mb-4 flex items-center justify-between">
                       <span className="text-2xl font-bold text-indigo-800">${helpers.moneyFormat(course.price * (1 - course.discount / 100))}</span>
                       {course.discount > 0 && <span className="text-lg text-gray-500 line-through">${helpers.moneyFormat(course.price)}</span>}
                     </div>
-                    {course.is_purchased && (
-                      <div className="text-green-600 font-semibold">Purchased</div>
-                    )}
+                    <div className="mb-4 flex justify-start">
+                      {course.is_purchased && (
+                        <button type="button" className="bg-gradient-to-r from-green-400 to-green-600 border-none font-semibold text-white px-4 rounded-lg shadow-lg transition-all duration-300 hover:from-green-500 hover:to-green-700" disabled>
+                          PURCHASED
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   <Meta
                     avatar={<Avatar src={user?.avatar_url} />}
                     title={<span className="line-clamp-1 text-lg font-semibold text-gray-800">{user?.name}</span>}
                     description={
-                      <div className="mb-4 h-24 items-center text-sm">
+                      <div className="mb-4 h-25 items-center text-sm">
                         <div>
                           <Tag className="bg-gradient-tone mr-2 rounded px-2 py-1 text-xs font-semibold uppercase text-white">{course.category_name}</Tag>
                         </div>
@@ -135,6 +139,10 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                           <span className="flex items-center font-medium text-gray-600">
                             <VideoCameraOutlined className="mr-2 text-indigo-500" />
                             <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">{course.lesson_count} Lessons</span>
+                          </span>
+                          <span className="flex items-center font-medium text-gray-600">
+                            <ClockCircleOutlined className="mr-2 text-indigo-500" />
+                            <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">{course.full_time} min</span>
                           </span>
                         </div>
                       </div>
