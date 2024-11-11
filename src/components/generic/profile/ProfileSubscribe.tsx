@@ -37,9 +37,7 @@ const ProfileSubscribe: React.FC = () => {
         });
 
         // Check if this instructor is in the subscriptions list
-        const isCurrentInstructorSubscribed = subscriptionResponse.data?.data.pageData.some(
-          (sub: any) => sub.instructor_id === id
-        );
+        const isCurrentInstructorSubscribed = subscriptionResponse.data?.data.pageData.some((sub: any) => sub.instructor_id === id);
         setIsSubscribed(!!isCurrentInstructorSubscribed);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -59,9 +57,11 @@ const ProfileSubscribe: React.FC = () => {
             <Avatar size={96} icon={<UserOutlined />} src={userData?.avatar_url} />
           </Col>
           <Col flex="1">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
               <Space direction="vertical" size="small">
-                <Title level={3} style={{ margin: 0 }}>{userData?.name || "Loading..."}</Title>
+                <Title level={3} style={{ margin: 0 }}>
+                  {userData?.name || "Loading..."}
+                </Title>
                 <Space>
                   <MailOutlined />
                   <span>{userData?.email || "Loading..."}</span>
@@ -71,15 +71,7 @@ const ProfileSubscribe: React.FC = () => {
                   <span>{userData?.phone_number || "Loading..."}</span>
                 </Space>
               </Space>
-              {userData?.role === 'instructor' && (
-                <ButtonSubscribe
-                  isModalOpen={isModalOpen}
-                  setIsModalOpen={setIsModalOpen}
-                  instructorId={id as string}
-                  isSubscribed={isSubscribed}
-                  setIsSubscribed={setIsSubscribed}
-                />
-              )}
+              {userData?.role === "instructor" && <ButtonSubscribe isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} instructorId={id as string} isSubscribed={isSubscribed} setIsSubscribed={setIsSubscribed} />}
             </div>
           </Col>
         </Row>

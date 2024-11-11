@@ -1,5 +1,5 @@
-import React, { useState, Dispatch, SetStateAction } from 'react';
-import { SubscriptionService } from '../../../services/subscription/subscription.service';
+import React, { useState, Dispatch, SetStateAction } from "react";
+import { SubscriptionService } from "../../../services/subscription/subscription.service";
 
 interface ButtonSubscribeProps {
   isModalOpen: boolean;
@@ -24,7 +24,7 @@ const ButtonSubscribe: React.FC<ButtonSubscribeProps> = ({ instructorId, isSubsc
         setIsSubscribed(response.data.data.is_subscribed);
       }
     } catch (error) {
-      console.error('Error updating subscription:', error);
+      console.error("Error updating subscription:", error);
     } finally {
       setIsLoading(false);
     }
@@ -38,17 +38,9 @@ const ButtonSubscribe: React.FC<ButtonSubscribeProps> = ({ instructorId, isSubsc
       //   ? 'bg-red-500 hover:bg-red-600'
       //   : 'bg-blue-500 hover:bg-blue-600'
       //   } text-white transition-colors`}
-      className={`px-4 py-2 rounded-md ${isSubscribed
-        ? 'un-btn'
-        : 'bg-btn'
-        } text-white transition-colors`}
+      className={`rounded-md px-4 py-2 ${isSubscribed ? "un-btn" : "bg-btn"} text-white transition-colors`}
     >
-      {isLoading
-        ? 'Loading...'
-        : isSubscribed
-          ? 'Unsubscribe'
-          : 'Subscribe'
-      }
+      {isLoading ? "Loading..." : isSubscribed ? "Unsubscribe" : "Subscribe"}
     </button>
   );
 };

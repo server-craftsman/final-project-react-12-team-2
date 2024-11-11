@@ -135,10 +135,8 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
           {lessonType === LessonType.IMAGE && (
             <Form.Item name="image_url" label="Image" rules={[{ required: true, message: "Please upload an image!" }]}>
               <div>
-                <Upload accept="image/*" maxCount={1} showUploadList={false} customRequest={(options: any) => BaseService.uploadFile(options.file, "image").then(url => onUploadSuccess("image", url))}>
-                  <Button icon={<UploadOutlined />}>
-                    Upload Image
-                  </Button>
+                <Upload accept="image/*" maxCount={1} showUploadList={false} customRequest={(options: any) => BaseService.uploadFile(options.file, "image").then((url) => onUploadSuccess("image", url))}>
+                  <Button icon={<UploadOutlined />}>Upload Image</Button>
                 </Upload>
                 {imagePreview && <img src={imagePreview} alt="Preview" style={{ marginTop: 8, maxWidth: "200px" }} />}
               </div>
@@ -148,10 +146,8 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
           {lessonType === LessonType.VIDEO && (
             <Form.Item name="video_url" label="Video" rules={[{ required: true, message: "Please upload a video!" }]}>
               <div>
-                <Upload accept="video/*" maxCount={1} showUploadList={false} customRequest={(options: any) => BaseService.uploadFile(options.file, "video").then(url => onUploadSuccess("video", url))}>
-                  <Button icon={<UploadOutlined />}>
-                    Upload Video
-                  </Button>
+                <Upload accept="video/*" maxCount={1} showUploadList={false} customRequest={(options: any) => BaseService.uploadFile(options.file, "video").then((url) => onUploadSuccess("video", url))}>
+                  <Button icon={<UploadOutlined />}>Upload Video</Button>
                 </Upload>
                 {videoPreview && <video src={videoPreview} controls style={{ marginTop: 8, maxWidth: "200px" }} />}
               </div>

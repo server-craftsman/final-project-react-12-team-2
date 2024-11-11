@@ -177,10 +177,7 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
         // Upload files only if URLs are not already set
         if (!commonParams.avatar_url || !commonParams.video_url) {
           try {
-            const [avatarUrl, videoUrl] = await Promise.all([
-              commonParams.avatar_url || handleFileUpload(avatarFile, "image"),
-              commonParams.video_url || handleFileUpload(videoFile, "video")
-            ]);
+            const [avatarUrl, videoUrl] = await Promise.all([commonParams.avatar_url || handleFileUpload(avatarFile, "image"), commonParams.video_url || handleFileUpload(videoFile, "video")]);
 
             commonParams.avatar_url = avatarUrl;
             commonParams.video_url = videoUrl;
@@ -307,16 +304,8 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
             <Col span={12}>
               <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
                 <div className="space-y-4">
-                  <Upload
-                    accept="video/*"
-                    showUploadList={false}
-                    beforeUpload={handleVideoPreview}
-                    fileList={videoFileList}
-                    onChange={({ fileList }) => setVideoFileList(fileList as UploadFile<any>[])}>
-                    <Button
-                      icon={<UploadOutlined />}
-                      className="h-12 w-full rounded-lg border-2 border-indigo-200 transition duration-200 hover:border-indigo-300 hover:text-indigo-600"
-                    >
+                  <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList as UploadFile<any>[])}>
+                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-indigo-200 transition duration-200 hover:border-indigo-300 hover:text-indigo-600">
                       Select Video
                     </Button>
                   </Upload>

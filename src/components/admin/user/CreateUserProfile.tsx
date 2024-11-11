@@ -9,7 +9,6 @@ import { useForm } from "antd/lib/form/Form";
 import { Rule } from "antd/lib/form";
 import { BaseService } from "../../../services/config/base.service";
 
-
 const CreateUserProfile = () => {
   const [form] = useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -63,14 +62,14 @@ const CreateUserProfile = () => {
     }
   }, [isModalVisible, fetchBankDetails]);
 
-//debug upload
-const handleFileUpload = useCallback(async (file: File, type: "image" | "video") => {
-  try {
-    const url = await BaseService.uploadFile(file, type);
-    if (!url) throw new Error(`Failed to upload ${type}`);
-    return url;
-  } catch (error: any) {
-    throw new Error(`${type} upload failed: ${error.message}`);
+  //debug upload
+  const handleFileUpload = useCallback(async (file: File, type: "image" | "video") => {
+    try {
+      const url = await BaseService.uploadFile(file, type);
+      if (!url) throw new Error(`Failed to upload ${type}`);
+      return url;
+    } catch (error: any) {
+      throw new Error(`${type} upload failed: ${error.message}`);
     }
   }, []);
 
@@ -118,7 +117,7 @@ const handleFileUpload = useCallback(async (file: File, type: "image" | "video")
     async (values: any) => {
       try {
         await UserService.createUser({
-          ...values,
+          ...values
         });
 
         message.success({
@@ -302,31 +301,31 @@ const handleFileUpload = useCallback(async (file: File, type: "image" | "video")
                       {renderUpload("video", videoPreview)}
                     </Form.Item> */}
                     <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item name="avatar_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
-                <div className="space-y-4">
-                  <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
-                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600">
-                      Select Avatar
-                    </Button>
-                  </Upload>
-                  {avatarPreview && <img src={avatarPreview} alt="Avatar preview" className="h-32 w-32 rounded-lg object-cover" />}
-                </div>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
-                <div className="space-y-4">
-                  <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList)}>
-                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600">
-                      Select Video
-                    </Button>
-                  </Upload>
-                  {videoPreview && <div dangerouslySetInnerHTML={{ __html: videoPreview }} />}
-                </div>
-              </Form.Item>
-            </Col>
-          </Row>
+                      <Col span={12}>
+                        <Form.Item name="avatar_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
+                          <div className="space-y-4">
+                            <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
+                              <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600">
+                                Select Avatar
+                              </Button>
+                            </Upload>
+                            {avatarPreview && <img src={avatarPreview} alt="Avatar preview" className="h-32 w-32 rounded-lg object-cover" />}
+                          </div>
+                        </Form.Item>
+                      </Col>
+                      <Col span={12}>
+                        <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
+                          <div className="space-y-4">
+                            <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList)}>
+                              <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600">
+                                Select Video
+                              </Button>
+                            </Upload>
+                            {videoPreview && <div dangerouslySetInnerHTML={{ __html: videoPreview }} />}
+                          </div>
+                        </Form.Item>
+                      </Col>
+                    </Row>
                   </div>
                   <div className="space-y-6 rounded-xl bg-gray-50 p-6 shadow-sm">
                     <h3 className="text-lg font-medium leading-6 text-gray-900">Bank Information</h3>

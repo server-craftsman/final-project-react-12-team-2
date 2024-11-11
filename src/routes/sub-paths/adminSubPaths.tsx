@@ -109,7 +109,6 @@ export const adminSubPaths: Record<string, RouteObject[]> = {
       index: false,
       path: ROUTER_URL.ADMIN.COURSES_LOG,
       element: <CourseLogManagement />
-    },
-
+    }
   ]
 };

@@ -13,7 +13,7 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
   const [form] = Form.useForm();
   // const [description, setDescription] = useState("");
   const [courses, setCourses] = useState<GetCourseResponse["pageData"]>([]);
-  
+
   const loadCourses = async () => {
     try {
       const courseData = await CourseService.getCourse({

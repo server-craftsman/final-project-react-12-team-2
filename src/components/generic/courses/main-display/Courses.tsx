@@ -116,7 +116,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                     </div>
                     <div className="mb-4 flex justify-start">
                       {course.is_purchased && (
-                        <button type="button" className="bg-gradient-to-r from-green-400 to-green-600 border-none font-semibold text-white px-4 rounded-lg shadow-lg transition-all duration-300 hover:from-green-500 hover:to-green-700" disabled>
+                        <button type="button" className="rounded-lg border-none bg-gradient-to-r from-green-400 to-green-600 px-4 font-semibold text-white shadow-lg transition-all duration-300 hover:from-green-500 hover:to-green-700" disabled>
                           PURCHASED
                         </button>
                       )}
@@ -127,7 +127,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                     avatar={<Avatar src={user?.avatar_url} />}
                     title={<span className="line-clamp-1 text-lg font-semibold text-gray-800">{user?.name}</span>}
                     description={
-                      <div className="mb-4 h-25 items-center text-sm">
+                      <div className="h-25 mb-4 items-center text-sm">
                         <div>
                           <Tag className="bg-gradient-tone mr-2 rounded px-2 py-1 text-xs font-semibold uppercase text-white">{course.category_name}</Tag>
                         </div>
@@ -150,7 +150,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                     className="mb-4"
                   />
                 </div>
-              
+
                 <motion.div className="absolute inset-x-0 bottom-0 h-12 translate-y-full transform transition-all duration-300 group-hover:translate-y-0" whileHover={{ scale: 1.05 }}>
                   <Link to={`/course/${course._id}`}>
                     <Button type="primary" block size="large" className="bg-gradient-tone hover:bg-gradient-tone-hover border-none">

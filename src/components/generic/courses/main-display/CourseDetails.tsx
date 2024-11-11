@@ -184,11 +184,7 @@ const CourseDetails: React.FC = () => {
       <div className="min-h-screen w-full bg-white py-12">
         <div className="container mx-auto">
           <Link to="/" className="mb-6 flex items-center text-[#1a237e] hover:text-[#1a237e]">
-            <Button 
-              type="text" 
-              icon={<HomeOutlined className="text-xl" />} 
-              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1a237e] to-[#3949ab] px-6 py-3 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:from-[#3949ab] hover:to-[#1a237e] hover:shadow-xl hover:transform hover:scale-105 active:scale-95"
-            >
+            <Button type="text" icon={<HomeOutlined className="text-xl" />} className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1a237e] to-[#3949ab] px-6 py-3 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:transform hover:from-[#3949ab] hover:to-[#1a237e] hover:shadow-xl active:scale-95">
               Back to Home
             </Button>
           </Link>

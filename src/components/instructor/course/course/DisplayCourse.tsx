@@ -26,9 +26,9 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
   // const [courseDetails, setCourseDetails] = useState<any>(null);
   // const [refreshKey, setRefreshKey] = useState<number>(0);
   // const [comment, setComment] = useState<string>("");
-  
+
   const [dataRefreshKey, setDataRefreshKey] = useState<number>(0);
-  
+
   const getCourseData = useCallback(() => {
     const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageNum: number, pageSize: number, dataRefreshKey: number) => {
       const [courses, setCourses] = useState<GetCourseResponse["pageData"]>();
@@ -96,7 +96,6 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
 
       useEffect(() => {
         fetchCourses();
-        
       }, [searchTerm, statusFilter, pageNum, pageSize, dataRefreshKey, refreshKey]); //debug
 
       return { courses, totalItems, courseById, fetchCourseById, fetchCourses, dataRefreshKey, refreshKey };
@@ -399,13 +398,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
   const sendToAdmin = useCallback(async () => {
     try {
       // Filter courses based on selected row keys
-      const validCourses = courses?.filter(
-        (course) =>
-          selectedRowKeys.includes(course._id as unknown as number) &&
-          (course.status === StatusType.NEW || course.status === StatusType.REJECT) &&
-          (course.lesson_count ?? 0) > 0 &&
-          (course.session_count ?? 0) > 0
-      );
+      const validCourses = courses?.filter((course) => selectedRowKeys.includes(course._id as unknown as number) && (course.status === StatusType.NEW || course.status === StatusType.REJECT) && (course.lesson_count ?? 0) > 0 && (course.session_count ?? 0) > 0);
 
       if (!validCourses?.length) {
         message.warning("No valid courses selected to send");

@@ -32,8 +32,7 @@ export const API = {
     GET_BLOG: "api/blog/search",
     CREATE_BLOG: "api/blog",
     DELETE_BLOG: "api/blog/:id",
-    GET_COURSE_LOG_DETAILS: "/api/course/log/search",
-
+    GET_COURSE_LOG_DETAILS: "/api/course/log/search"
   },
   INSTRUCTOR: {
     GET_USER_DETAILS: "api/users/:id",
@@ -65,7 +64,7 @@ export const API = {
     //=========================================
     //public
     GET_PUBLIC_COURSE: "api/client/course/search",
-    GET_PUBLIC_COURSE_DETAIL: "api/client/course/:id",
+    GET_PUBLIC_COURSE_DETAIL: "api/client/course/:id"
 
     //=========================================
   },

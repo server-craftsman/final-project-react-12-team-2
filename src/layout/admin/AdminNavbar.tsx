@@ -57,7 +57,7 @@ const AdminNavbar: React.FC = () => {
       key: "8",
       icon: <AuditOutlined className="text-white" />,
       label: "Course Log",
-      path: "/admin/course-log",
+      path: "/admin/course-log"
     },
     {
       key: "9",

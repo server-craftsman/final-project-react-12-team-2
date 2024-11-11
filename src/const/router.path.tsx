@@ -26,7 +26,7 @@ export const ROUTER_URL = {
     SUBSCRIPTION: "/admin/subscription",
     REQUEST_ACCOUNT: "/admin/request-account",
     COURSES_LOG: "/admin/course-log",
-    COURSE_LOG_DETAILS_ID: "/admin/courselog/courselog-detail/:id",
+    COURSE_LOG_DETAILS_ID: "/admin/courselog/courselog-detail/:id"
   },
   INSTRUCTOR: {
     BASE: "/instructor",
@@ -61,7 +61,7 @@ export const ROUTER_URL = {
     CART: "/cart",
     ABOUT: "/about",
     BLOG: "/blog",
-    BLOG_DETAILS_ID: "/blog-details/:id",
+    BLOG_DETAILS_ID: "/blog-details/:id"
   },
   UNAUTHORIZED: "/unauthorized",
   PROFILE: {

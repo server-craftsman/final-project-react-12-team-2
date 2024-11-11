@@ -49,7 +49,7 @@ const LessonDetails: React.FC = () => {
   useEffect(() => {
     const fetchCourseDetails = async () => {
       try {
-        const response = await CourseService.getPublicCourseDetail(courseId || '');
+        const response = await CourseService.getPublicCourseDetail(courseId || "");
         setCourse(response.data.data);
       } catch (err) {
         setError("Failed to load course details.");
@@ -81,30 +81,18 @@ const LessonDetails: React.FC = () => {
     if (!sessions) return null;
 
     return (
-      <Menu 
-        mode="inline" 
-        className="w-full border-none"
-        style={{ maxHeight: '70vh', overflowY: 'auto' }}
-      >
+      <Menu mode="inline" className="w-full border-none" style={{ maxHeight: "70vh", overflowY: "auto" }}>
         {sessions.map((session) => (
           <Menu.SubMenu
             key={session._id}
-            title={
-              <span className="font-semibold text-[#1a237e]">{session.name}</span>
-            }
+            title={<span className="font-semibold text-[#1a237e]">{session.name}</span>}
             // className="border-b border-gray-200"
           >
             {session.lesson_list
               .sort((a: any, b: any) => a.position_order - b.position_order)
               .map((lesson: any) => (
-                <Menu.Item 
-                  key={lesson._id}
-                  className="py-3"
-                >
-                  <Link 
-                    to={`/course/${course?._id}/lesson/${lesson._id}`}
-                    className="flex items-center text-gray-700 hover:text-[#1a237e]"
-                  >
+                <Menu.Item key={lesson._id} className="py-3">
+                  <Link to={`/course/${course?._id}/lesson/${lesson._id}`} className="flex items-center text-gray-700 hover:text-[#1a237e]">
                     <PlayCircleOutlined className="mr-2" />
                     {lesson.name}
                   </Link>
@@ -116,22 +104,13 @@ const LessonDetails: React.FC = () => {
     );
   };
 
-  const breadcrumbItems = [
-    { title: <Link to="/">Home</Link> },
-    { title: <Link to={`/course/${course?._id}`}>{course?.name}</Link> },
-    { title: lesson?.name }
-  ];
+  const breadcrumbItems = [{ title: <Link to="/">Home</Link> }, { title: <Link to={`/course/${course?._id}`}>{course?.name}</Link> }, { title: lesson?.name }];
 
   return (
     <div className="min-h-screen bg-gray-100 py-12">
       <div className="container mx-auto px-4">
         <div className="mb-6 flex items-center">
-          <Button
-            icon={menuCollapsed ? <MenuOutlined /> : <CloseOutlined />}
-            onClick={toggleMenu}
-            type="text"
-            className="mr-4 text-gray-600"
-          />
+          <Button icon={menuCollapsed ? <MenuOutlined /> : <CloseOutlined />} onClick={toggleMenu} type="text" className="mr-4 text-gray-600" />
           <Breadcrumb items={breadcrumbItems} className="flex-grow" />
         </div>
 
@@ -159,22 +138,18 @@ const LessonDetails: React.FC = () => {
                 </Title>
                 <div className="relative mb-6 aspect-video overflow-hidden rounded-lg shadow-2xl">
                   {lesson?.video_url ? (
-                    <video controls className="w-full h-full">
+                    <video controls className="h-full w-full">
                       <source src={lesson.video_url} type="video/mp4" />
                       Your browser does not support the video tag.
                     </video>
                   ) : lesson?.image_url ? (
-                    <img src={lesson.image_url} alt={lesson.name} className="w-full h-full object-cover" />
+                    <img src={lesson.image_url} alt={lesson.name} className="h-full w-full object-cover" />
                   ) : (
-                    <div className="p-4 text-white bg-gradient-to-t from-black to-transparent">
-                      {lesson?.description}
-                    </div>
+                    <div className="bg-gradient-to-t from-black to-transparent p-4 text-white">{lesson?.description}</div>
                   )}
                 </div>
                 <Paragraph className="mb-6 text-gray-600">{parse(lesson?.description || "")}</Paragraph>
-                <div className="mb-6 flex items-center">
-                  {/* Instructor details and other information can be added here */}
-                </div>
+                <div className="mb-6 flex items-center">{/* Instructor details and other information can be added here */}</div>
               </div>
             </Card>
             <Row gutter={[32, 32]}>
@@ -193,7 +168,7 @@ const LessonDetails: React.FC = () => {
                         </Text>
                       </Card>
                     </Col>
-                    
+
                     <Col xs={12} sm={8}>
                       <Card className="text-center transition-shadow duration-300 hover:shadow-lg">
                         <FileTextOutlined className="mb-2 text-4xl text-blue-500" />

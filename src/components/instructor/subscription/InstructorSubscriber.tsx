@@ -54,12 +54,10 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchQuery
   const fetchUsers = React.useCallback(async () => {
     try {
       if (subscriptions?.pageData) {
-        const subscriberIds = subscriptions.pageData.map(sub => sub.subscriber_id);
-        const promises = subscriberIds.map(id => UserService.getUserDetails(id));
+        const subscriberIds = subscriptions.pageData.map((sub) => sub.subscriber_id);
+        const promises = subscriberIds.map((id) => UserService.getUserDetails(id));
         const responses = await Promise.all(promises);
-        const validUsers = responses
-          .filter(response => response.data?.data)
-          .map(response => response.data.data);
+        const validUsers = responses.filter((response) => response.data?.data).map((response) => response.data.data);
         setUsers(validUsers);
       }
     } catch (error) {
@@ -80,60 +78,65 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchQuery
   return (
     <div style={{ backgroundColor: "#f0f2f5" }}>
       <Row gutter={[12, 12]}>
-        {subscriptions?.pageData
-          .map((subscription) => {
-            const user = users.find(user => user._id === subscription.subscriber_id);
-            return (
-              <Col span={6} key={subscription._id}>
-                <Link to={`/profile/${subscription.subscriber_id}`} style={{ textDecoration: 'none' }}>
-                  <Card
-                    hoverable
-                    title={
-                      <div style={{
+        {subscriptions?.pageData.map((subscription) => {
+          const user = users.find((user) => user._id === subscription.subscriber_id);
+          return (
+            <Col span={6} key={subscription._id}>
+              <Link to={`/profile/${subscription.subscriber_id}`} style={{ textDecoration: "none" }}>
+                <Card
+                  hoverable
+                  title={
+                    <div
+                      style={{
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
                         textAlign: "center"
-                      }}>
-                        <Avatar src={user?.avatar_url} size={48} style={{ marginBottom: "4px" }} />
-                        <span style={{ fontSize: "16px", fontWeight: "bold" }}>{user?.name}</span>
-                      </div>
-                    }
+                      }}
+                    >
+                      <Avatar src={user?.avatar_url} size={48} style={{ marginBottom: "4px" }} />
+                      <span style={{ fontSize: "16px", fontWeight: "bold" }}>{user?.name}</span>
+                    </div>
+                  }
+                  style={{
+                    borderRadius: "12px",
+                    border: "1px solid #000",
+                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                    backgroundColor: "#f0f2f5",
+                    cursor: "pointer",
+                    textAlign: "center"
+                  }}
+                  bodyStyle={{ padding: "12px" }}
+                >
+                  <p
                     style={{
-                      borderRadius: "12px",
-                      border: "1px solid #000",
-                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                      backgroundColor: "#f0f2f5",
-                      cursor: 'pointer',
-                      textAlign: 'center'
+                      fontSize: "12px",
+                      marginBottom: "4px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "4px"
                     }}
-                    bodyStyle={{ padding: "12px" }}
                   >
-                    <p style={{
+                    <strong>Email:</strong> {user?.email}
+                  </p>
+                  <p
+                    style={{
                       fontSize: "12px",
                       marginBottom: "4px",
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      gap: '4px'
-                    }}>
-                      <strong>Email:</strong> {user?.email}
-                    </p>
-                    <p style={{
-                      fontSize: "12px",
-                      marginBottom: "4px",
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      gap: '4px'
-                    }}>
-                      <strong>Phone:</strong> {user?.phone_number}
-                    </p>
-                  </Card>
-                </Link>
-              </Col>
-            );
-          })}
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "4px"
+                    }}
+                  >
+                    <strong>Phone:</strong> {user?.phone_number}
+                  </p>
+                </Card>
+              </Link>
+            </Col>
+          );
+        })}
       </Row>
     </div>
   );

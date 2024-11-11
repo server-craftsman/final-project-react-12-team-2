@@ -1,4 +1,4 @@
-export interface CourseLogs{
+export interface CourseLogs {
   _id: string;
   user_id: string;
   user_name: string;

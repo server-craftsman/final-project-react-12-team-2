@@ -12,7 +12,6 @@ const checkUserInfo = (course: GetPublicCourseDetailResponse) => {
 };
 
 const CourseContent: React.FC<CourseContentProps & { course: GetPublicCourseDetailResponse }> = ({ course, sessions, lessons, courseId, activeSessionId, setActiveSessionId }) => {
-
   return (
     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
       {sessions.map((session) => (
@@ -40,14 +39,14 @@ const CourseContent: React.FC<CourseContentProps & { course: GetPublicCourseDeta
                     renderItem={(lesson) => (
                       <List.Item key={lesson._id} className="flex flex-row items-start justify-start text-left">
                         <Link
-                          to={checkUserInfo(course) ? `/course/${courseId}/lesson/${lesson._id}` : '/login'}
+                          to={checkUserInfo(course) ? `/course/${courseId}/lesson/${lesson._id}` : "/login"}
                           className="w-full text-left"
                           onClick={(e) => {
                             if (!checkUserInfo(course)) {
                               e.preventDefault();
-                              message.warning('You need to purchase this course to view the full content.');
+                              message.warning("You need to purchase this course to view the full content.");
                               setTimeout(() => {
-                                window.location.href = '/login';
+                                window.location.href = "/login";
                               }, 2000);
                             }
                           }}
@@ -63,8 +62,8 @@ const CourseContent: React.FC<CourseContentProps & { course: GetPublicCourseDeta
                     className="text-left"
                   />
                 </div>
-              ),
-            },
+              )
+            }
           ]}
         />
       ))}

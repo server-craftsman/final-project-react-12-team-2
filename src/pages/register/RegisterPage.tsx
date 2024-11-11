@@ -125,10 +125,7 @@ const RegisterPage = () => {
           };
 
           try {
-            const [avatarUrl, videoUrl] = await Promise.all([
-              uploadWithTimeout(handleUploadFile(avatarFile, "image")),
-              uploadWithTimeout(handleUploadFile(videoFile, "video"))
-            ]);
+            const [avatarUrl, videoUrl] = await Promise.all([uploadWithTimeout(handleUploadFile(avatarFile, "image")), uploadWithTimeout(handleUploadFile(videoFile, "video"))]);
 
             params.avatar_url = avatarUrl;
             params.video_url = videoUrl;

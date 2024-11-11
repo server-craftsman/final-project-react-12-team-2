@@ -8,7 +8,6 @@ import { CartService } from "../../../../services/cart/cart.service";
 const { Title, Text } = Typography;
 
 const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
-
   const handleAddToCart = async () => {
     try {
       if (course.is_in_cart) {

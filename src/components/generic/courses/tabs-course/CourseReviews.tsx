@@ -34,7 +34,7 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string }> = ({ re
       });
       const reviewsData = response.data.data.pageData;
       setFetchedReviews(reviewsData);
-      setHasUserCommented(reviewsData.some(review => review.reviewer_id === userInfo?._id));
+      setHasUserCommented(reviewsData.some((review) => review.reviewer_id === userInfo?._id));
     } catch (error) {
       console.error("Failed to fetch reviews", error);
     }
@@ -52,7 +52,7 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string }> = ({ re
     setEditingReview(review);
     form.setFieldsValue({
       rating: review.rating,
-      comment: review.comment,
+      comment: review.comment
     });
     setIsModalVisible(true);
   };
@@ -68,7 +68,7 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string }> = ({ re
         await ReviewService.updateReview(editingReview._id, {
           course_id: courseId,
           rating: values.rating,
-          comment: values.comment,
+          comment: values.comment
         });
         message.success("Review updated successfully!");
         setEditingReview(null);
@@ -76,7 +76,7 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string }> = ({ re
         await ReviewService.createReview({
           course_id: courseId,
           rating: values.rating,
-          comment: values.comment,
+          comment: values.comment
         });
         message.success("Review created successfully!");
       }
@@ -107,50 +107,25 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string }> = ({ re
           </Form.Item>
         </Form>
       )}
-      {fetchedReviews.length > 0 ? (
-        fetchedReviews.map((review, index) => (
-          <Card 
-            key={review._id || index} 
-            className="mb-6 rounded-2xl border-none bg-gradient-to-r from-white to-gray-50 p-6 shadow-xl transition-all duration-300 hover:shadow-2xl"
-          >
-            <div className="mb-4 flex items-center space-x-4">
-              <Avatar 
-                src={userInfo?.avatar_url}
-                size={48}
-                className="border-2 border-indigo-100 shadow-md"
-              />
-              <div className="flex flex-col">
-                <Text strong className="text-lg font-semibold text-indigo-900">
-                  {review.reviewer_name || "Unknown User"}
-                </Text>
-                <Rate 
-                  disabled 
-                  value={review.rating} 
-                  className="text-amber-400"
-                />
+      {fetchedReviews.length > 0
+        ? fetchedReviews.map((review, index) => (
+            <Card key={review._id || index} className="mb-6 rounded-2xl border-none bg-gradient-to-r from-white to-gray-50 p-6 shadow-xl transition-all duration-300 hover:shadow-2xl">
+              <div className="mb-4 flex items-center space-x-4">
+                <Avatar src={userInfo?.avatar_url} size={48} className="border-2 border-indigo-100 shadow-md" />
+                <div className="flex flex-col">
+                  <Text strong className="text-lg font-semibold text-indigo-900">
+                    {review.reviewer_name || "Unknown User"}
+                  </Text>
+                  <Rate disabled value={review.rating} className="text-amber-400" />
+                </div>
+                {review.reviewer_id === userInfo?._id && <Button type="link" onClick={() => handleEdit(review)} icon={<EditOutlined className="text-xl" />} className="bg-gradient-tone ml-auto flex items-center gap-2 rounded-xl px-6 py-2 text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-indigo-700 hover:to-indigo-900 hover:shadow-xl active:scale-95" />}
               </div>
-              {review.reviewer_id === userInfo?._id && (
-                <Button
-                  type="link"
-                  onClick={() => handleEdit(review)}
-                  icon={<EditOutlined className="text-xl" />}
-                  className="ml-auto flex items-center gap-2 rounded-xl bg-gradient-tone px-6 py-2 text-white shadow-lg transition-all duration-300 hover:from-indigo-700 hover:to-indigo-900 hover:shadow-xl hover:scale-105 active:scale-95"
-                />
-              )}
-            </div>
-            <Paragraph className="text-base leading-relaxed text-gray-700">
-              {review.comment}
-            </Paragraph>
-          </Card>
-        ))
-      ) : null}
+              <Paragraph className="text-base leading-relaxed text-gray-700">{review.comment}</Paragraph>
+            </Card>
+          ))
+        : null}
 
-      <Modal
-        title={editingReview ? "Edit Review" : "Submit Review"}
-        open={isModalVisible}
-        onCancel={handleModalCancel}
-        footer={null}
-      >
+      <Modal title={editingReview ? "Edit Review" : "Submit Review"} open={isModalVisible} onCancel={handleModalCancel} footer={null}>
         <Form form={form} onFinish={handleSubmit} layout="vertical">
           <Form.Item name="rating" label="Rating" rules={[{ required: true, message: "Please provide a rating" }]}>
             <Rate />

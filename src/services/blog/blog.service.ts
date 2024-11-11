@@ -10,24 +10,24 @@ export const BlogService = {
   createBlog(body: CreateBlogBody) {
     return BaseService.post<ResponseSuccess<GetBlogResponse>>({
       url: API.ADMIN.CREATE_BLOG,
-      payload: body,
+      payload: body
     });
   },
   getBlog(params: GetBlogParams) {
     return BaseService.post<ResponseSuccess<GetBlogResponse>>({
       url: API.ADMIN.GET_BLOG,
-      payload: params,
+      payload: params
     });
   },
   updateBlog(id: string, params: UpdateBlogParams) {
     return BaseService.put<ResponseSuccess<GetBlogResponse>>({
       url: API.ADMIN.UPDATE_BLOG.replace(":id", id),
-      payload: params,
+      payload: params
     });
   },
   deleteBlog(id: string) {
     return BaseService.remove<ResponseSuccess<GetBlogResponse>>({
-      url: API.ADMIN.DELETE_BLOG.replace(":id", id),
+      url: API.ADMIN.DELETE_BLOG.replace(":id", id)
     });
   },
 
@@ -35,13 +35,13 @@ export const BlogService = {
   getPublicBlogs(params: GetBlogParams) {
     return BaseService.post<ResponseSuccess<GetBlogResponse>>({
       url: API.BLOG.GET_BLOGS,
-      payload: params,
+      payload: params
     });
   },
 
   getPublicBlogsDetails(id: string) {
     return BaseService.get<ResponseSuccess<getPublicBlogsDetails>>({
-      url: API.BLOG.GET_BLOGS_DETAILS.replace(":id", id),
+      url: API.BLOG.GET_BLOGS_DETAILS.replace(":id", id)
     });
-  },
+  }
 };

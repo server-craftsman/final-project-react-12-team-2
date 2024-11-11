@@ -15,7 +15,7 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [avatarFileList, setAvatarFileList] = useState<any[]>([]);
   const [videoFileList, setVideoFileList] = useState<any[]>([]);
-  
+
   useEffect(() => {
     if (data) {
       form.setFieldsValue({

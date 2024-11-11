@@ -7,7 +7,6 @@ import { UserRole } from "../../../models/prototype/User";
 import subscriptionData from "../../../data/subscriptions.json";
 import data from "../../../data/users.json";
 
-
 const SubscriptionManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [, setFilteredSubscriptions] = useState<Subscriptions[]>([]);
@@ -25,25 +24,15 @@ const SubscriptionManagement: React.FC = () => {
     const lowercasedValue = value.toLowerCase();
     const filtered = subscriptionData.filter((subscription: Subscriptions) => {
       const user = data.users.find((user: any) => user.id === subscription.instructor_id);
-      return user?.role === UserRole.instructor && (
-        user?.name.toLowerCase().includes(lowercasedValue) ||
-        user?.email.toLowerCase().includes(lowercasedValue) ||
-        user?.phone_number.toLowerCase().includes(lowercasedValue) ||
-        subscription.id.toLowerCase().includes(lowercasedValue)
-      );
+      return user?.role === UserRole.instructor && (user?.name.toLowerCase().includes(lowercasedValue) || user?.email.toLowerCase().includes(lowercasedValue) || user?.phone_number.toLowerCase().includes(lowercasedValue) || subscription.id.toLowerCase().includes(lowercasedValue));
     });
     setFilteredSubscriptions(filtered);
   };
 
   return (
     <div>
-      <CustomSearch
-        onSearch={handleSearch}
-        className="search-input"
-        placeholder="Search by course name or instructor..."
-      />
+      <CustomSearch onSearch={handleSearch} className="search-input" placeholder="Search by course name or instructor..." />
       <StudentSubscription searchQuery={searchQuery} />
-
     </div>
   );
 };

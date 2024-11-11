@@ -26,13 +26,7 @@ const CourseComponent = ({ refreshKey }: CourseComponentProps) => {
 
   return (
     <div className="">
-      <DisplayCourse
-        searchTerm={searchTerm}
-        statusFilter={statusFilter as StatusType}
-        onSearch={handleSearch}
-        onStatusChange={handleStatusChange}
-        refreshKey={refreshKey}
-      />
+      <DisplayCourse searchTerm={searchTerm} statusFilter={statusFilter as StatusType} onSearch={handleSearch} onStatusChange={handleStatusChange} refreshKey={refreshKey} />
     </div>
   );
 };

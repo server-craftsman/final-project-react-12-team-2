@@ -31,10 +31,13 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery }
     }
   } as const;
 
-  const getSearchCondition = useCallback((searchQuery: string) => ({
-    keyword: searchQuery || defaultParams.searchCondition.keyword,
-    is_delete: false
-  }), []);
+  const getSearchCondition = useCallback(
+    (searchQuery: string) => ({
+      keyword: searchQuery || defaultParams.searchCondition.keyword,
+      is_delete: false
+    }),
+    []
+  );
 
   const fetchSubscriptions = useCallback(async () => {
     try {
@@ -53,12 +56,10 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery }
   const fetchUsers = useCallback(async () => {
     try {
       if (subscriptions?.pageData) {
-        const instructorIds = subscriptions.pageData.map(sub => sub.instructor_id);
-        const promises = instructorIds.map(id => UserService.getUserDetails(id));
+        const instructorIds = subscriptions.pageData.map((sub) => sub.instructor_id);
+        const promises = instructorIds.map((id) => UserService.getUserDetails(id));
         const responses = await Promise.all(promises);
-        const validUsers = responses
-          .filter(response => response.data?.data)
-          .map(response => response.data.data);
+        const validUsers = responses.filter((response) => response.data?.data).map((response) => response.data.data);
         setUsers(validUsers);
       }
     } catch (error) {
@@ -81,19 +82,21 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery }
     <div style={{ backgroundColor: "#f0f2f5" }}>
       <Row gutter={[12, 12]}>
         {subscriptions?.pageData.map((subscription) => {
-          const user = users.find(user => user._id === subscription.instructor_id);
+          const user = users.find((user) => user._id === subscription.instructor_id);
           return (
             <Col span={8} key={subscription._id}>
-              <Link to={`/profile/${subscription.instructor_id}`} style={{ textDecoration: 'none' }}>
+              <Link to={`/profile/${subscription.instructor_id}`} style={{ textDecoration: "none" }}>
                 <Card
                   hoverable
                   title={
-                    <div style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      textAlign: "center"
-                    }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        textAlign: "center"
+                      }}
+                    >
                       <Avatar src={user?.avatar_url} size={64} style={{ marginBottom: "8px" }} />
                       <span style={{ fontSize: "20px", fontWeight: "bold" }}>{user?.name}</span>
                     </div>
@@ -103,45 +106,43 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery }
                     border: "2px solid #000",
                     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                     backgroundColor: "#f0f2f5",
-                    cursor: 'pointer',
-                    textAlign: 'center'
+                    cursor: "pointer",
+                    textAlign: "center"
                   }}
                 >
-                  <p style={{
-                    fontSize: "14px",
-                    marginBottom: "8px",
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}>
+                  <p
+                    style={{
+                      fontSize: "14px",
+                      marginBottom: "8px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "4px"
+                    }}
+                  >
                     <strong>Email:</strong> {user?.email}
                   </p>
-                  <p style={{
-                    fontSize: "14px",
-                    marginBottom: "16px",
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}>
+                  <p
+                    style={{
+                      fontSize: "14px",
+                      marginBottom: "16px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "4px"
+                    }}
+                  >
                     <strong>Phone:</strong> {user?.phone_number}
                   </p>
                   <div
                     onClick={(e) => e.preventDefault()}
                     style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      marginTop: 'auto'
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop: "auto"
                     }}
                   >
-                    <ButtonSubscribe
-                      isModalOpen={isModalOpen}
-                      setIsModalOpen={setIsModalOpen}
-                      instructorId={user?._id || ""}
-                      isSubscribed={isSubscribed}
-                      setIsSubscribed={setIsSubscribed}
-                    />
+                    <ButtonSubscribe isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} instructorId={user?._id || ""} isSubscribed={isSubscribed} setIsSubscribed={setIsSubscribed} />
                   </div>
                 </Card>
               </Link>

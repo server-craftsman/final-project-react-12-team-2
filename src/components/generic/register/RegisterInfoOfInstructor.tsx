@@ -117,40 +117,32 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({ for
       </div>
 
       {/* <div className="flex flex-grow gap-6"> */}
-        <Row gutter={16}>
-          <Col span={12}>
-              <Form.Item name="avatar_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
-                <div className="space-y-4">
-                  <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
-                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600">
-                      Select Avatar
-                    </Button>
-                  </Upload>
-                  {avatarPreview && <img src={avatarPreview} alt="Avatar preview" className="h-32 w-32 rounded-lg object-cover" />}
-                </div>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
-                <div className="space-y-4">
-                  <Upload
-                    accept="video/*"
-                    showUploadList={false}
-                    beforeUpload={handleVideoPreview}
-                    fileList={videoFileList}
-                    onChange={({ fileList }) => setVideoFileList(fileList as UploadFile<any>[])}>
-                    <Button
-                      icon={<UploadOutlined />}
-                      className="h-12 w-full rounded-lg border-2 border-indigo-200 transition duration-200 hover:border-indigo-300 hover:text-indigo-600"
-                    >
-                      Select Video
-                    </Button>
-                  </Upload>
-                  {videoPreview && <div dangerouslySetInnerHTML={{ __html: videoPreview }} />}
-                </div>
-              </Form.Item>
-            </Col>
-          </Row>
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item name="avatar_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
+            <div className="space-y-4">
+              <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
+                <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600">
+                  Select Avatar
+                </Button>
+              </Upload>
+              {avatarPreview && <img src={avatarPreview} alt="Avatar preview" className="h-32 w-32 rounded-lg object-cover" />}
+            </div>
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
+            <div className="space-y-4">
+              <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList as UploadFile<any>[])}>
+                <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-indigo-200 transition duration-200 hover:border-indigo-300 hover:text-indigo-600">
+                  Select Video
+                </Button>
+              </Upload>
+              {videoPreview && <div dangerouslySetInnerHTML={{ __html: videoPreview }} />}
+            </div>
+          </Form.Item>
+        </Col>
+      </Row>
       {/* </div> */}
 
       <Form.Item name="description" label={<span className="font-medium text-gray-700">Professional Description</span>} rules={[{ required: true, message: "Please input a description!" }]} className="mb-6">

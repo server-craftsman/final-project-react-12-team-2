@@ -22,7 +22,7 @@ const EditUserProfile = () => {
   const [avatarPreview, setAvatarPreview] = useState<string>("");
 
   const [state, setState] = useState({
-    user: null as GetCurrentUserResponse | null,
+    user: null as GetCurrentUserResponse | null
     // uploading: false,
     // selectedFile: null as File | null
   });
@@ -111,7 +111,6 @@ const EditUserProfile = () => {
       fetchUserDetails(id);
     }
   }, [id, fetchUserDetails]);
-
 
   const handleFileUpload = useCallback(async (file: File, type: "image" | "video") => {
     try {
