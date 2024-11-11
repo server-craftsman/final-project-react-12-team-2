@@ -16,6 +16,7 @@ import CourseHeader from "../subs-course/CourseHeader";
 import CourseSidebar from "../subs-course/CourseSidebar";
 import CourseVideoModal from "../subs-course/CourseVideoModal";
 import { GetPublicCourseDetailResponse } from "../../../../models/api/responsive/course/course.response.model";
+import { ReviewService } from "../../../../services/review/review.service";
 // import { CartService } from "../../../../services/cart/cart.service";
 //=====================================
 
@@ -41,6 +42,7 @@ const CourseDetails: React.FC = () => {
   const [lessons, setLessons] = useState<any[]>([]);
   const [videoId, setVideoId] = useState<string | null>(null);
   const [courseStatus, setCourseStatus] = useState({ is_in_cart: false, is_purchased: false });
+  const [activeTabKey, setActiveTabKey] = useState<string>("1");
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
@@ -92,6 +94,36 @@ const CourseDetails: React.FC = () => {
     fetchCourseDetails();
   }, [id]);
 
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await ReviewService.searchForReview({
+          searchCondition: {
+            course_id: id,
+            rating: 0,
+            is_instructor: false,
+            is_rating_order: false,
+            is_delete: false
+          },
+          pageInfo: {
+            pageNum: 1,
+            pageSize: 10
+          }
+        });
+        setReviews(response.data.data.pageData);
+      } catch (error) {
+        console.error("Failed to fetch reviews:", error);
+      }
+    };
+
+    if (activeTabKey === "3") {
+      // Clear existing reviews
+      setReviews([]);
+      // Fetch reviews again when switching to the "Reviews" tab
+      fetchReviews();
+    }
+  }, [activeTabKey, id]);
+
   const showVideoModal = () => {
     if (videoId) {
       setIsModalVisible(true);
@@ -109,6 +141,11 @@ const CourseDetails: React.FC = () => {
     }
     setIsModalVisible(false);
   };
+
+  const handleTabChange = (key: string): void => {
+    setActiveTabKey(key);
+  };
+
   const tabItems = [
     {
       key: "1",
@@ -138,28 +175,28 @@ const CourseDetails: React.FC = () => {
           <span className="font-semibold tracking-wide">Reviews</span>
         </span>
       ),
-      children: course ? <CourseReviews reviews={reviews} users={course.users} /> : null
+      children: course ? <CourseReviews reviews={reviews} users={course.users} courseId={course._id} /> : null
     }
   ];
 
   if (course) {
     return (
       <div className="min-h-screen w-full bg-white py-12">
-      <div className="container mx-auto">
-        <Link to="/" className="mb-6 flex items-center text-[#1a237e] hover:text-[#1a237e]">
-          <Button 
-            type="text" 
-            icon={<HomeOutlined className="text-xl" />} 
-            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1a237e] to-[#3949ab] px-6 py-3 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:from-[#3949ab] hover:to-[#1a237e] hover:shadow-xl hover:transform hover:scale-105 active:scale-95"
-          >
-            Back to Home
-          </Button>
-        </Link>
-        <Row gutter={[32, 32]}>
-          <Col xs={24} lg={16}>
-            <Card className="overflow-hidden rounded-lg text-left shadow-lg">
-              <CourseHeader course={course} category={category} instructor={instructor} showVideoModal={() => showVideoModal()} />
-              <div className="p-4 text-left">
+        <div className="container mx-auto">
+          <Link to="/" className="mb-6 flex items-center text-[#1a237e] hover:text-[#1a237e]">
+            <Button 
+              type="text" 
+              icon={<HomeOutlined className="text-xl" />} 
+              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1a237e] to-[#3949ab] px-6 py-3 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:from-[#3949ab] hover:to-[#1a237e] hover:shadow-xl hover:transform hover:scale-105 active:scale-95"
+            >
+              Back to Home
+            </Button>
+          </Link>
+          <Row gutter={[32, 32]}>
+            <Col xs={24} lg={16}>
+              <Card className="overflow-hidden rounded-lg text-left shadow-lg">
+                <CourseHeader course={course} category={category} instructor={instructor} showVideoModal={() => showVideoModal()} />
+                <div className="p-4 text-left">
                   <Tabs
                     defaultActiveKey="1"
                     className="custom-tabs"
@@ -170,17 +207,18 @@ const CourseDetails: React.FC = () => {
                     }}
                     tabBarGutter={32}
                     items={tabItems}
+                    onChange={handleTabChange}
                   />
-              </div>
-            </Card>
-          </Col>
-          <Col xs={24} lg={8}>
-            <CourseSidebar course={course} discountedPrice={discountedPrice} courseStatus={courseStatus} />
-          </Col>
-        </Row>
+                </div>
+              </Card>
+            </Col>
+            <Col xs={24} lg={8}>
+              <CourseSidebar course={course} discountedPrice={discountedPrice} courseStatus={courseStatus} />
+            </Col>
+          </Row>
+        </div>
+        <CourseVideoModal isModalVisible={isModalVisible} handleCancel={handleCancel} videoId={videoId} />
       </div>
-      <CourseVideoModal isModalVisible={isModalVisible} handleCancel={handleCancel} videoId={videoId} />
-    </div>
     );
   } else {
     return <div className="mt-8 text-center text-2xl">Course not found</div>;
