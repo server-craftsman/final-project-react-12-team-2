@@ -15,6 +15,8 @@ const { Meta } = Card;
 import parse from "html-react-parser";
 
 interface CoursesProps {
+  pageSize?: number;
+  pageNum?: number;
   // usersData: User[];
   // categoriesData: GetCategoryResponse;
 }
@@ -35,7 +37,7 @@ const fetchCoursePublic = async (searchCondition = {}, pageInfo = { pageNum: 1, 
   return response.data;
 };
 
-const Courses: React.FC<CoursesProps> = () => {
+const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
   const [courses, setCourses] = useState<GetPublicCourseResponse | null>(null);
   const [users, setUsers] = useState<{ [key: string]: any }>({});
   const { isCoursePurchased } = useCart();
@@ -82,7 +84,7 @@ const Courses: React.FC<CoursesProps> = () => {
 
   return (
     <Row gutter={[32, 32]}>
-      {courses?.pageData.map((course) => {
+      {courses?.pageData.slice((pageNum - 1) * pageSize, pageNum * pageSize).map((course) => {
         const { purchased, isInCart } = isCoursePurchased(course._id);
         const user = users[course._id]; // Get user details for the course
         console.log(`Course ID: ${course._id}, Purchased: ${purchased}, Is in cart: ${isInCart}`);

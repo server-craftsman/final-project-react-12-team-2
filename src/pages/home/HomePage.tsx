@@ -25,12 +25,12 @@ const HomePage: React.FC = () => {
   // const { role } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 6;
-  const totalCourses = 0;
   const [isVisible, setIsVisible] = useState(false);
   const [categoryList, setCategoryList] = useState<GetCategoryResponsePublic[]>([]);
-  // const [activeCategory, setActiveCategory] = useState<string>("All Courses");
-  // const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
-  // const [sliderCategories, setSliderCategories] = useState<GetCategoryResponsePublic[]>([]);
+  const totalCourses = categoryList.length;
+
+  // // Phân trang dữ liệu khóa học
+  // const paginatedCourses = categoryList.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -38,13 +38,6 @@ const HomePage: React.FC = () => {
     }, 500);
     return () => clearTimeout(timer);
   }, []);
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setCurrentCategoryIndex((prevIndex) => (prevIndex + 1) % sliderCategories.length);
-  //   }, 5000);
-  //   return () => clearInterval(interval);
-  // }, [sliderCategories]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -76,18 +69,6 @@ const HomePage: React.FC = () => {
     setTimeout(() => setIsVisible(true), 300);
   };
 
-  // const handleCategoryChange = (category: string) => {
-  //   setActiveCategory(category);
-  // };
-
-  // const filteredCourses = activeCategory === "All Courses"
-  //   ? coursesData.courses
-  //   : coursesData.courses.filter((course) =>
-  //       course.category_id === activeCategory.toLowerCase().replace(" & ", "_").replace(" ", "_")
-  //     );
-
-  // const paginatedCourses = filteredCourses.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -111,7 +92,7 @@ const HomePage: React.FC = () => {
         <AnimatePresence>
           {isVisible && (
             <motion.div variants={containerVariants} initial="hidden" animate="visible" exit="hidden">
-              <Courses />
+              <Courses pageNum={currentPage} pageSize={pageSize} />
             </motion.div>
           )}
         </AnimatePresence>
