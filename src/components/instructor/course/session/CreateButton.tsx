@@ -1,6 +1,6 @@
 import { Button, Form, Input, message, Modal, Select } from "antd";
 const { Option } = Select;
-import { useState, useEffect } from "react";
+import { useState } from "react";
 // import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
 // import Editor from "../../../generic/tiny/Editor";
 import { SessionService } from "../../../../services/session/session.service";
