@@ -22,9 +22,11 @@ export const ROUTER_URL = {
     PURCHASES_LOG: "/admin/purchases-log",
     CATEGORIES_DETAILS: "/admin/categories/details-category",
     CATEGORIES_DETAILS_ID: "/admin/categories/categories-details/:id",
-    COURSES_LOG: "/admin/courses-log",
+    BLOG: "/admin/admin-blog",
     SUBSCRIPTION: "/admin/subscription",
-    REQUEST_ACCOUNT: "/admin/request-account"
+    REQUEST_ACCOUNT: "/admin/request-account",
+    COURSES_LOG: "/admin/course-log",
+    COURSE_LOG_DETAILS_ID: "/admin/courselog/courselog-detail/:id",
   },
   INSTRUCTOR: {
     BASE: "/instructor",
@@ -57,7 +59,9 @@ export const ROUTER_URL = {
     SESSION_DETAILS: "/session-details",
     LESSON_DETAILS: "/lesson-details",
     CART: "/cart",
-    ABOUT: "/about"
+    ABOUT: "/about",
+    BLOG: "/blog",
+    BLOG_DETAILS_ID: "/blog-details/:id",
   },
   UNAUTHORIZED: "/unauthorized",
   PROFILE: {

@@ -12,6 +12,8 @@ const LessonDetails = lazy(() => import("../../components/generic/lessons/Lesson
 const SessionDetails = lazy(() => import("../../components/generic/sessions/SessionDetails"));
 const CartPage = lazy(() => import("../../components/generic/cart/CartPage"));
 const About = lazy(() => import("../../components/generic/home/About"));
+const Blog = lazy(() => import("../../pages/blog/BlogPublicManagement"));
+const BlogDetails = lazy(() => import("../../components/generic/home/BlogDetails"));
 const VerifyEmail = lazy(() => import("../../pages/verify/VerifyEmail"));
 const ForgotPassword = lazy(() => import("../../pages/forgot.password/ForgotPassword"));
 const ProfileSubscribe = lazy(() => import("../../pages/profile/ProfileSubscribeManagement"));
@@ -41,6 +43,14 @@ export const publicSubPaths: Record<string, RouteObject[]> = {
         {
           path: ROUTER_URL.COMMON.ABOUT,
           element: <About />
+        },
+        {
+          path: ROUTER_URL.COMMON.BLOG,
+          element: <Blog />
+        },
+        {
+          path: ROUTER_URL.COMMON.BLOG_DETAILS_ID,
+          element: <BlogDetails />
         },
         {
           path: ROUTER_URL.COMMON.CART,
