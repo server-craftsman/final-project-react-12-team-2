@@ -121,7 +121,7 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
 
                 {/* Blog Content */}
                 <div className="flex-grow">
-                  <p className="text-base font-semibold mb-2 text-xl uppercase">{blog.name}</p>
+                  <p className=" font-semibold mb-2 text-xl uppercase">{blog.name}</p>
                   <p className="text-gray-600">{blog.description}</p>
                 </div>
 
