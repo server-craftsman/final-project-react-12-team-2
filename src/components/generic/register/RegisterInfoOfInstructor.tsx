@@ -1,23 +1,25 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Form, Input, Upload, Button, UploadFile, Select } from "antd";
+import { Form, Input, Upload, Button, UploadFile, Select, Col, Row } from "antd";
 import { UploadOutlined, PhoneOutlined, BankOutlined, NumberOutlined, UserOutlined } from "@ant-design/icons";
 import { message } from "antd";
 import { AuthService } from "../../../services/authentication/auth.service";
+import { BaseService } from "../../../services/config/base.service";
 // import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
 import Editor from "../../generic/tiny/Editor";
 interface RegisterInfoOfInstructorProps {
   form: any;
-  uploadingVideo: boolean;
-  uploadingAvatar: boolean;
-  setUploadingVideo: React.Dispatch<React.SetStateAction<boolean>>;
-  setUploadingAvatar: React.Dispatch<React.SetStateAction<boolean>>;
+  // uploading: boolean;
+  // setUploading: React.Dispatch<React.SetStateAction<boolean>>;
+  // onUploadSuccess: (type: "video" | "image", url: string) => void;
 }
 
-const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({ form, uploadingVideo, uploadingAvatar, setUploadingVideo, setUploadingAvatar }) => {
-  const [videoFileList, setVideoFileList] = useState<UploadFile<any>[]>([]);
-  const [avatarFileList, setAvatarFileList] = useState<UploadFile<any>[]>([]);
+const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({ form }) => {
+  // const [uploadingAvatar, setUploadingAvatar] = useState<boolean>(false);
+  // const [uploadingVideo, setUploadingVideo] = useState<boolean>(false);
   const [videoPreview, setVideoPreview] = useState<string>("");
   const [avatarPreview, setAvatarPreview] = useState<string>("");
+  const [videoFileList, setVideoFileList] = useState<UploadFile<any>[]>([]);
+  const [avatarFileList, setAvatarFileList] = useState<UploadFile<any>[]>([]);
   const [bankNames, setBankNames] = useState<string[]>([]);
   const [bankLogos, setBankLogos] = useState<{ [key: string]: string }>({});
 
@@ -53,64 +55,57 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({ for
     fetchBankNames();
   }, []);
 
-  const handleFileUpload = useCallback(
-    (file: File, type: "video" | "avatar") => {
-      const maxSize = type === "video" ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
-      if (file.size > maxSize) {
-        message.error(`File size should not exceed ${type === "video" ? "50MB" : "10MB"}`);
-        return false;
-      }
+  const handleFileUpload = useCallback(async (file: File, type: "image" | "video") => {
+    try {
+      const url = await BaseService.uploadFile(file, type);
+      if (!url) throw new Error(`Failed to upload ${type}`);
+      return url;
+    } catch (error: any) {
+      throw new Error(`${type} upload failed: ${error.message}`);
+    }
+  }, []);
 
-      const allowedTypes = type === "video" ? ["video/mp4", "video/avi", "video/mov", "video/webm"] : ["image/jpeg", "image/png", "image/gif"];
-      if (!allowedTypes.includes(file.type)) {
-        message.error(`Please upload a valid ${type} file`);
-        return false;
-      }
-
-      if (type === "video") {
-        setUploadingVideo(true);
-        // Generate video thumbnail
-        const videoUrl = URL.createObjectURL(file);
-        const video = document.createElement("video");
-        video.src = videoUrl;
-
-        video.addEventListener("loadeddata", () => {
-          video.currentTime = 10; // Seek to 10 seconds
-        });
-
-        video.addEventListener("seeked", () => {
-          const canvas = document.createElement("canvas");
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          const ctx = canvas.getContext("2d");
-          ctx?.drawImage(video, 0, 0, canvas.width, canvas.height);
-          setVideoPreview(canvas.toDataURL());
-          URL.revokeObjectURL(videoUrl); // Clean up the object URL
-        });
-      } else {
-        setUploadingAvatar(true);
-        // Generate image preview
+  const handleAvatarPreview = useCallback(
+    async (file: File) => {
+      // setUploadingAvatar(true);
+      try {
+        const url = await handleFileUpload(file, "image");
+        form.setFieldsValue({ avatar_url: url });
         const reader = new FileReader();
         reader.onload = (e) => {
           setAvatarPreview(e.target?.result as string);
         };
         reader.readAsDataURL(file);
+      } catch (error: any) {
+        message.error(error.message);
+      } finally {
+        // setUploadingAvatar(false);
+        console.log("handleAvatarPreview");
       }
-
-      setTimeout(() => {
-        const fileUrl = `https://example.com/uploads/${file.name}`;
-        form.setFieldsValue({ [`${type}_file`]: { originFileObj: file, url: fileUrl } });
-
-        if (type === "video") {
-          setUploadingVideo(false);
-        } else {
-          setUploadingAvatar(false);
-        }
-      }, 2000);
-
-      return false;
+      return false; // Prevent default upload behavior
     },
-    [form, setUploadingVideo, setUploadingAvatar]
+    [handleFileUpload, form]
+  );
+
+  const handleVideoPreview = useCallback(
+    async (file: File) => {
+      // setUploadingVideo(true);
+      try {
+        const url = await handleFileUpload(file, "video");
+        form.setFieldsValue({ video_url: url });
+        const videoElement = document.createElement("video");
+        videoElement.controls = true;
+        videoElement.src = URL.createObjectURL(file);
+        setVideoPreview(videoElement.outerHTML);
+      } catch (error: any) {
+        message.error(error.message);
+      } finally {
+        // setUploadingVideo(false);
+        console.log("handleVideoPreview");
+      }
+      return false; // Prevent default upload behavior
+    },
+    [handleFileUpload, form]
   );
 
   return (
@@ -121,37 +116,42 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({ for
         </Form.Item>
       </div>
 
-      <div className="flex flex-grow gap-6">
-        <Form.Item name="avatar_file" label={<span className="font-medium text-gray-700">Profile Picture</span>} rules={[{ required: true, message: "Please upload an avatar!" }]} className="mb-0">
-          <div>
-            <Upload accept="image/*" showUploadList={false} beforeUpload={(file) => handleFileUpload(file, "avatar")} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
-              <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-indigo-200 transition duration-200 hover:border-indigo-300 hover:text-indigo-600" loading={uploadingAvatar}>
-                Select Avatar
-              </Button>
-            </Upload>
-            {avatarPreview && (
-              <div className="mt-4">
-                <img src={avatarPreview} alt="Avatar preview" className="h-32 w-32 rounded-lg object-cover" />
-              </div>
-            )}
-          </div>
-        </Form.Item>
-
-        <Form.Item name="video_file" label={<span className="font-medium text-gray-700">Introduction Video</span>} rules={[{ required: true, message: "Please upload an introduction video!" }]} className="mb-0">
-          <div>
-            <Upload accept="video/*" showUploadList={false} beforeUpload={(file) => handleFileUpload(file, "video")} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList as UploadFile<any>[])}>
-              <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-indigo-200 transition duration-200 hover:border-indigo-300 hover:text-indigo-600" loading={uploadingVideo}>
-                Select Video
-              </Button>
-            </Upload>
-            {videoPreview && (
-              <div className="mt-4">
-                <img src={videoPreview} alt="Video thumbnail" className="h-32 w-32 rounded-lg object-cover" />
-              </div>
-            )}
-          </div>
-        </Form.Item>
-      </div>
+      {/* <div className="flex flex-grow gap-6"> */}
+        <Row gutter={16}>
+          <Col span={12}>
+              <Form.Item name="avatar_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
+                <div className="space-y-4">
+                  <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
+                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600">
+                      Select Avatar
+                    </Button>
+                  </Upload>
+                  {avatarPreview && <img src={avatarPreview} alt="Avatar preview" className="h-32 w-32 rounded-lg object-cover" />}
+                </div>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
+                <div className="space-y-4">
+                  <Upload
+                    accept="video/*"
+                    showUploadList={false}
+                    beforeUpload={handleVideoPreview}
+                    fileList={videoFileList}
+                    onChange={({ fileList }) => setVideoFileList(fileList as UploadFile<any>[])}>
+                    <Button
+                      icon={<UploadOutlined />}
+                      className="h-12 w-full rounded-lg border-2 border-indigo-200 transition duration-200 hover:border-indigo-300 hover:text-indigo-600"
+                    >
+                      Select Video
+                    </Button>
+                  </Upload>
+                  {videoPreview && <div dangerouslySetInnerHTML={{ __html: videoPreview }} />}
+                </div>
+              </Form.Item>
+            </Col>
+          </Row>
+      {/* </div> */}
 
       <Form.Item name="description" label={<span className="font-medium text-gray-700">Professional Description</span>} rules={[{ required: true, message: "Please input a description!" }]} className="mb-6">
         <Editor key={form.getFieldValue("description")} initialValue={form.getFieldValue("description")} onEditorChange={handleEditorChange} />

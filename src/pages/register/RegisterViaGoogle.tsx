@@ -1,11 +1,12 @@
 import React, { useState, useCallback, useEffect, useMemo } from "react";
-import { Form, Input, Upload, Button, UploadFile, Select } from "antd";
+import { Form, Input, Upload, Button, UploadFile, Select, Col, Row } from "antd";
 import { UploadOutlined, PhoneOutlined, NumberOutlined, BankOutlined, UserOutlined } from "@ant-design/icons";
 import { message } from "antd";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { ROUTER_URL } from "../../const/router.path";
-import { handleUploadFile } from "../../utils/upload";
+// import { handleUploadFile } from "../../utils/upload";
+import { BaseService } from "../../services/config/base.service";
 import { AuthService } from "../../services/authentication/auth.service";
 // import TinyMCEEditor from "../../components/generic/tiny/TinyMCEEditor";
 import Editor from "../../components/generic/tiny/Editor";
@@ -23,13 +24,11 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
   const [bankAccountNo, setBankAccountNo] = useState("");
   const [bankAccountName, setBankAccountName] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [uploadingVideo, setUploadingVideo] = useState(false);
-  const [uploadingAvatar, setUploadingAvatar] = useState(false);
-  const [videoFileList, setVideoFileList] = useState<UploadFile<any>[]>([]);
-  const [avatarFileList, setAvatarFileList] = useState<UploadFile<any>[]>([]);
+  // const [isLoading, setIsLoading] = useState(false);
   const [videoPreview, setVideoPreview] = useState<string>("");
   const [avatarPreview, setAvatarPreview] = useState<string>("");
+  const [videoFileList, setVideoFileList] = useState<UploadFile<any>[]>([]);
+  const [avatarFileList, setAvatarFileList] = useState<UploadFile<any>[]>([]);
   const [bankData, setBankData] = useState<{
     banks: any[];
     bankNames: string[];
@@ -91,7 +90,7 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
 
   const handleFileUpload = useCallback(async (file: File, type: "image" | "video") => {
     try {
-      const url = await handleUploadFile(file, type);
+      const url = await BaseService.uploadFile(file, type);
       if (!url) throw new Error(`Failed to upload ${type}`);
       return url;
     } catch (error: any) {
@@ -99,8 +98,51 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
     }
   }, []);
 
+  const handleAvatarPreview = useCallback(
+    async (file: File) => {
+      // setUploadingAvatar(true);
+      try {
+        const url = await handleFileUpload(file, "image");
+        form.setFieldsValue({ avatar_url: url });
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setAvatarPreview(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
+      } catch (error: any) {
+        message.error(error.message);
+      } finally {
+        // setUploadingAvatar(false);
+        console.log("handleAvatarPreview");
+      }
+      return false; // Prevent default upload behavior
+    },
+    [handleFileUpload, form]
+  );
+
+  const handleVideoPreview = useCallback(
+    async (file: File) => {
+      // setUploadingVideo(true);
+      try {
+        const url = await handleFileUpload(file, "video");
+        form.setFieldsValue({ video_url: url });
+        const videoElement = document.createElement("video");
+        videoElement.controls = true;
+        videoElement.src = URL.createObjectURL(file);
+        setVideoPreview(videoElement.outerHTML);
+      } catch (error: any) {
+        message.error(error.message);
+      } finally {
+        // setUploadingVideo(false);
+        console.log("handleVideoPreview");
+      }
+      return false; // Prevent default upload behavior
+    },
+    [handleFileUpload, form]
+  );
+
   const handleRegister = useCallback(async () => {
-    setIsLoading(true);
+    // setIsLoading(true);
     try {
       const descriptionValue = description || "";
 
@@ -109,9 +151,9 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
         role,
         password,
         description: descriptionValue,
-        avatar_url: "",
+        avatar_url: form.getFieldValue("avatar_url") || "",
         phone_number: form.getFieldValue("phone_number"),
-        video_url: "",
+        video_url: form.getFieldValue("video_url") || "",
         bank_account_name: form.getFieldValue("bank_account_name"),
         bank_account_no: form.getFieldValue("bank_account_no"),
         bank_name: form.getFieldValue("bank_name")
@@ -132,16 +174,19 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
           throw new Error("Please upload both avatar and video files");
         }
 
-        setUploadingAvatar(true);
-        setUploadingVideo(true);
+        // Upload files only if URLs are not already set
+        if (!commonParams.avatar_url || !commonParams.video_url) {
+          try {
+            const [avatarUrl, videoUrl] = await Promise.all([
+              commonParams.avatar_url || handleFileUpload(avatarFile, "image"),
+              commonParams.video_url || handleFileUpload(videoFile, "video")
+            ]);
 
-        try {
-          const [avatarUrl, videoUrl] = await Promise.all([handleFileUpload(avatarFile, "image"), handleFileUpload(videoFile, "video")]);
-
-          commonParams.avatar_url = avatarUrl;
-          commonParams.video_url = videoUrl;
-        } catch (uploadError: any) {
-          throw new Error(`File upload failed: ${uploadError.message}. Please try again.`);
+            commonParams.avatar_url = avatarUrl;
+            commonParams.video_url = videoUrl;
+          } catch (uploadError: any) {
+            throw new Error(`File upload failed: ${uploadError.message}. Please try again.`);
+          }
         }
       }
 
@@ -161,28 +206,12 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
         message.error(error.message || "Registration failed");
       }
     } finally {
-      setIsLoading(false);
-      setUploadingAvatar(false);
-      setUploadingVideo(false);
+      // setIsLoading(false);
+      // setUploadingAvatar(false);
+      // setUploadingVideo(false);
+      console.log("handleRegister");
     }
   }, [googleId, role, form, navigate, password, avatarFileList, videoFileList, description, handleFileUpload]);
-
-  const handleAvatarPreview = useCallback((file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setAvatarPreview(e.target?.result as string);
-    };
-    reader.readAsDataURL(file);
-    return handleUploadFile(file, "image");
-  }, []);
-
-  const handleVideoPreview = useCallback((file: File) => {
-    const videoElement = document.createElement("video");
-    videoElement.controls = true;
-    videoElement.src = URL.createObjectURL(file);
-    setVideoPreview(videoElement.outerHTML);
-    return handleUploadFile(file, "video");
-  }, []);
 
   const renderBankingFields = useMemo(
     () => (
@@ -238,7 +267,7 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
 
       {role === "instructor" && (
         <div className="space-y-8 rounded-xl bg-white p-8 shadow-lg">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {/* <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <Form.Item name="avatar_file" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
               <div className="space-y-4">
                 <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
@@ -260,7 +289,42 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
                 {videoPreview && <img src={videoPreview} alt="Video thumbnail" className="h-32 w-32 rounded-lg object-cover" />}
               </div>
             </Form.Item>
-          </div>
+          </div> */}
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item name="avatar_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
+                <div className="space-y-4">
+                  <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
+                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600">
+                      Select Avatar
+                    </Button>
+                  </Upload>
+                  {avatarPreview && <img src={avatarPreview} alt="Avatar preview" className="h-32 w-32 rounded-lg object-cover" />}
+                </div>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
+                <div className="space-y-4">
+                  <Upload
+                    accept="video/*"
+                    showUploadList={false}
+                    beforeUpload={handleVideoPreview}
+                    fileList={videoFileList}
+                    onChange={({ fileList }) => setVideoFileList(fileList as UploadFile<any>[])}>
+                    <Button
+                      icon={<UploadOutlined />}
+                      className="h-12 w-full rounded-lg border-2 border-indigo-200 transition duration-200 hover:border-indigo-300 hover:text-indigo-600"
+                    >
+                      Select Video
+                    </Button>
+                  </Upload>
+                  {videoPreview && <div dangerouslySetInnerHTML={{ __html: videoPreview }} />}
+                </div>
+              </Form.Item>
+            </Col>
+          </Row>
 
           <Form.Item name="description" label="Professional Description" rules={[{ required: true, message: "Please input a description!" }]}>
             <Editor initialValue={description} onEditorChange={handleEditorChange} />
@@ -271,7 +335,7 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
       )}
 
       <Form.Item className="mt-6">
-        <Button type="primary" onClick={handleRegister} className="h-12 w-full rounded-lg bg-[#1a237e] font-medium text-white hover:bg-[#02005dc6]" loading={isLoading}>
+        <Button type="primary" onClick={handleRegister} className="h-12 w-full rounded-lg bg-[#1a237e] font-medium text-white hover:bg-[#02005dc6]">
           Register with Google
         </Button>
       </Form.Item>

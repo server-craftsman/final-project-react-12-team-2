@@ -24,9 +24,9 @@ const RegisterPage = () => {
   const [role, setRole] = useState<string>("student");
   const { register } = useAuth();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-  const [uploadingVideo, setUploadingVideo] = useState(false);
-  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [uploadingVideo, setUploadingVideo] = useState(false);
+  // const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [isGoogleModalVisible, setIsGoogleModalVisible] = useState(false);
   const [googleId, setGoogleId] = useState<string>("");
 
@@ -79,7 +79,7 @@ const RegisterPage = () => {
         return;
       }
 
-      setIsLoading(true);
+      // setIsLoading(true);
       try {
         const params: RegisterParams = {
           name: values.name || "",
@@ -111,8 +111,8 @@ const RegisterPage = () => {
             bank_name: values.bank_name
           });
 
-          const avatarFile = form.getFieldValue("avatar_file")?.originFileObj;
-          const videoFile = form.getFieldValue("video_file")?.originFileObj;
+          const avatarFile = form.getFieldValue("avatar_url");
+          const videoFile = form.getFieldValue("video_url");
 
           if (!avatarFile || !videoFile) {
             throw new Error("Please upload both avatar and video files");
@@ -125,7 +125,10 @@ const RegisterPage = () => {
           };
 
           try {
-            const [avatarUrl, videoUrl] = await Promise.all([uploadWithTimeout(handleUploadFile(avatarFile, "image")), uploadWithTimeout(handleUploadFile(videoFile, "video"))]);
+            const [avatarUrl, videoUrl] = await Promise.all([
+              uploadWithTimeout(handleUploadFile(avatarFile, "image")),
+              uploadWithTimeout(handleUploadFile(videoFile, "video"))
+            ]);
 
             params.avatar_url = avatarUrl;
             params.video_url = videoUrl;
@@ -140,7 +143,8 @@ const RegisterPage = () => {
       } catch (error: any) {
         helpers.notification(getErrorMessage(error));
       } finally {
-        setIsLoading(false);
+        // setIsLoading(false);
+        console.log("finish");
       }
     },
     [role, register, navigate, form, getRegistrationSuccessMessage, getErrorMessage]
@@ -157,7 +161,8 @@ const RegisterPage = () => {
 
   const handleModalClose = useCallback(() => {
     setIsGoogleModalVisible(false);
-  }, []);
+    form.resetFields();
+  }, [form]);
 
   const formRules = useMemo(
     () => ({
@@ -212,10 +217,10 @@ const RegisterPage = () => {
               <Input.Password prefix={<LockOutlined className="site-form-item-icon text-indigo-600" />} placeholder="Confirm Password" className="rounded-lg px-4 py-2" />
             </Form.Item>
             <ButtonDivideStudentAndInstructor onSelectRole={handleRoleSelection} />
-            {role === "instructor" && <RegisterInfoOfInstructor form={form} uploadingVideo={uploadingVideo} uploadingAvatar={uploadingAvatar} setUploadingVideo={setUploadingVideo} setUploadingAvatar={setUploadingAvatar} />}
+            {role === "instructor" && <RegisterInfoOfInstructor form={form} />}
             <div className="mt-4">
-              <button type="submit" className="bg-btn-submit" disabled={isLoading}>
-                {isLoading ? "Registering..." : "Register"}
+              <button type="submit" className="bg-btn-submit">
+                Register
               </button>
             </div>
             <Divider plain className="text-gray-400">
