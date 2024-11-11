@@ -9,6 +9,7 @@ import { store } from "../../app/redux/store";
 import { toggleLoading } from "../../app/redux/loadingSlice";
 import { HTTP_STATUS } from "../../app/enums";
 import { HttpException } from "../../app/exceptions";
+import { handleUploadFile } from "../../utils/upload"; // Import the handleUploadFile function
 
 export const axiosInstance = axios.create({
   baseURL: DOMAIN_ADMIN,
@@ -115,6 +116,25 @@ export const BaseService = {
         handleErrorByToast(error);
         return null;
       });
+  },
+  uploadFile: async (file: File, type: "video" | "image", isLoading: boolean = true) => {
+    if (isLoading) setTimeout(() => store.dispatch(toggleLoading(true)), 500);
+
+    try {
+      const url = await handleUploadFile(file, type);
+      if (url) {
+        message.success(`${type} uploaded successfully`);
+        return url;
+      } else {
+        throw new Error("Upload failed");
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      message.error(error instanceof Error ? error.message : "Upload failed");
+      return null;
+    } finally {
+      if (isLoading) store.dispatch(toggleLoading(false));
+    }
   }
 };
 

@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 // import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
 import { LessonService } from "../../../../services/lesson/lesson.service";
 import { useCallbackCourse, useCallbackSession } from "../../../../hooks/useCallback";
-import { upload } from "../../../../utils";
+// import { upload } from "../../../../utils";
+import { BaseService } from "../../../../services/config/base.service";
 import Editor from "../../../generic/tiny/Editor";
 import { LessonType } from "../../../../app/enums";
 import { UploadOutlined } from "@ant-design/icons";
@@ -18,7 +19,7 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
   // const [videoUrl, setVideoUrl] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [videoPreview, setVideoPreview] = useState("");
-  const [uploading, setUploading] = useState(false);
+  // const [uploading, setUploading] = useState(false);
   // const callbackLesson = useCallbackLesson();
   const callbackCourse = useCallbackCourse();
   const callbackSession = useCallbackSession();
@@ -134,8 +135,8 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
           {lessonType === LessonType.IMAGE && (
             <Form.Item name="image_url" label="Image" rules={[{ required: true, message: "Please upload an image!" }]}>
               <div>
-                <Upload accept="image/*" maxCount={1} showUploadList={false} customRequest={(options: any) => upload.customUploadHandler(options, "image", setUploading, onUploadSuccess)}>
-                  <Button icon={<UploadOutlined />} loading={uploading}>
+                <Upload accept="image/*" maxCount={1} showUploadList={false} customRequest={(options: any) => BaseService.uploadFile(options.file, "image").then(url => onUploadSuccess("image", url))}>
+                  <Button icon={<UploadOutlined />}>
                     Upload Image
                   </Button>
                 </Upload>
@@ -147,8 +148,8 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
           {lessonType === LessonType.VIDEO && (
             <Form.Item name="video_url" label="Video" rules={[{ required: true, message: "Please upload a video!" }]}>
               <div>
-                <Upload accept="video/*" maxCount={1} showUploadList={false} customRequest={(options: any) => upload.customUploadHandler(options, "video", setUploading, onUploadSuccess)}>
-                  <Button icon={<UploadOutlined />} loading={uploading}>
+                <Upload accept="video/*" maxCount={1} showUploadList={false} customRequest={(options: any) => BaseService.uploadFile(options.file, "video").then(url => onUploadSuccess("video", url))}>
+                  <Button icon={<UploadOutlined />}>
                     Upload Video
                   </Button>
                 </Upload>

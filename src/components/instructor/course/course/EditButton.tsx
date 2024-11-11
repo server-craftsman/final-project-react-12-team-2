@@ -2,7 +2,8 @@ import { Button, Col, Form, Input, InputNumber, message, Modal, Row, Select, Upl
 const { Option } = Select;
 import { useState, useEffect, useCallback } from "react";
 import { EditOutlined, UploadOutlined } from "@ant-design/icons";
-import { upload } from "../../../../utils";
+// import { upload } from "../../../../utils";
+import { BaseService } from "../../../../services/config/base.service";
 import Editor from "../../../generic/tiny/Editor";
 import { CourseService } from "../../../../services/course/course.service";
 import { UpdateCourseParams } from "../../../../models/api/request/course/course.request.model";
@@ -164,7 +165,7 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
 
   const handleFileUpload = useCallback(async (file: File, type: "image" | "video") => {
     try {
-      const url = await upload.handleUploadFile(file, type);
+      const url = await BaseService.uploadFile(file, type);
       if (!url) throw new Error(`Failed to upload ${type}`);
       return url;
     } catch (error: any) {

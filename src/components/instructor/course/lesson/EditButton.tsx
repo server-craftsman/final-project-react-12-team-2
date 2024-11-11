@@ -3,7 +3,8 @@ import { Button, Form, Input, message, Modal, Select, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import Editor from "../../../generic/tiny/Editor";
 import { LessonService } from "../../../../services/lesson/lesson.service";
-import { upload } from "../../../../utils";
+// import { upload } from "../../../../utils";
+import { BaseService } from "../../../../services/config/base.service";
 import { LessonType } from "../../../../app/enums";
 const { Option } = Select;
 
@@ -16,7 +17,7 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [avatarFileList, setAvatarFileList] = useState<any[]>([]);
   const [videoFileList, setVideoFileList] = useState<any[]>([]);
-
+  
   useEffect(() => {
     if (data) {
       form.setFieldsValue({
@@ -63,7 +64,7 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
         session_id: data.session_id,
         user_id: data.user_id,
         lesson_type: formValues.lesson_type as LessonType,
-        description: formValues.description || null,
+        description: formValues.description || "",
         video_url: formValues.video_url || "",
         image_url: formValues.image_url || "",
         full_time: Number(formValues.full_time),
@@ -108,7 +109,7 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
 
   const handleFileUpload = useCallback(async (file: File, type: "image" | "video") => {
     try {
-      const url = await upload.handleUploadFile(file, type);
+      const url = await BaseService.uploadFile(file, type);
       if (!url) throw new Error(`Failed to upload ${type}`);
       return url;
     } catch (error: any) {
