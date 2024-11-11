@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState, useEffect } from "react";
-import { Form, Input, Button, Modal, message, Select, Upload } from "antd";
+import { Form, Input, Button, Modal, message, Select, Upload, UploadFile, Row, Col } from "antd";
 // import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
 import { UserService } from "../../../services/admin/user.service";
 import { AuthService } from "../../../services/authentication/auth.service";
@@ -8,15 +8,25 @@ import Editor from "../../generic/tiny/Editor";
 import { BankOutlined, UserOutlined, PhoneOutlined, MailOutlined, LockOutlined, UploadOutlined } from "@ant-design/icons";
 import { useForm } from "antd/lib/form/Form";
 import { Rule } from "antd/lib/form";
+import { BaseService } from "../../../services/config/base.service";
+
 
 const CreateUserProfile = () => {
   const [form] = useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string>();
-  const [videoPreview, setVideoPreview] = useState<string>();
+  // const [uploading, setUploading] = useState(false);
+  // const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  // const [videoFile, setVideoFile] = useState<File | null>(null);
+  // const [avatarPreview, setAvatarPreview] = useState<string>();
+  // const [videoPreview, setVideoPreview] = useState<string>();
+
+  const [uploadingAvatar, setUploadingAvatar] = useState<boolean>(false);
+  const [uploadingVideo, setUploadingVideo] = useState<boolean>(false);
+  const [videoPreview, setVideoPreview] = useState<string>("");
+  const [avatarPreview, setAvatarPreview] = useState<string>("");
+  const [videoFileList, setVideoFileList] = useState<UploadFile<any>[]>([]);
+  const [avatarFileList, setAvatarFileList] = useState<UploadFile<any>[]>([]);
+
   const [bankOptions, setBankOptions] = useState<{ value: string; label: string; logo: string }[]>([]);
   const [selectedBankLogo, setSelectedBankLogo] = useState<string>();
 
@@ -24,10 +34,14 @@ const CreateUserProfile = () => {
   const handleModalToggle = useCallback(() => {
     setIsModalVisible((prev) => !prev);
     form.resetFields();
-    setAvatarFile(null);
-    setVideoFile(null);
-    setAvatarPreview(undefined);
-    setVideoPreview(undefined);
+    // setAvatarFile(null);
+    // setVideoFile(null);
+    // setAvatarPreview(undefined);
+    // setVideoPreview(undefined);
+    setVideoFileList([]);
+    setAvatarFileList([]);
+    setAvatarPreview("");
+    setVideoPreview("");
     setSelectedBankLogo(undefined);
   }, [form]);
 
@@ -62,77 +76,129 @@ const CreateUserProfile = () => {
     }
   }, [isModalVisible, fetchBankDetails]);
 
-  // Handle file changes
-  const handleFileChange = useCallback((file: File, type: "image" | "video") => {
-    if (type === "image") {
-      setAvatarFile(file);
-      setAvatarPreview(URL.createObjectURL(file));
-    } else {
-      setVideoFile(file);
-      setVideoPreview(URL.createObjectURL(file));
+  // // Handle file changes
+  // const handleFileChange = useCallback((file: File, type: "image" | "video") => {
+  //   if (type === "image") {
+  //     setAvatarFile(file);
+  //     setAvatarPreview(URL.createObjectURL(file));
+  //   } else {
+  //     setVideoFile(file);
+  //     setVideoPreview(URL.createObjectURL(file));
+  //   }
+  // }, []);
+
+  // Upload image
+  // const uploadImage = useCallback(async () => {
+  //   if (!avatarFile) return "";
+  //   let avatarUrl = "";
+  //   await customUploadHandler(
+  //     {
+  //       file: avatarFile,
+  //       onSuccess: (url) => {
+  //         avatarUrl = url;
+  //       },
+  //       onError: () => {
+  //         message.error("Failed to upload avatar");
+  //       }
+  //     },
+  //     "image",
+  //     setUploading,
+  //     (type, url) => {
+  //       console.log(`${type} uploaded to ${url}`);
+  //     }
+  //   );
+  //   return avatarUrl;
+  // }, [avatarFile]);
+
+  // // Upload video
+  // const uploadVideo = useCallback(async () => {
+  //   if (!videoFile) return "";
+  //   let videoUrl = "";
+  //   await customUploadHandler(
+  //     {
+  //       file: videoFile,
+  //       onSuccess: (url) => {
+  //         videoUrl = url;
+  //       },
+  //       onError: () => {
+  //         message.error("Failed to upload video");
+  //       }
+  //     },
+  //     "video",
+  //     setUploading,
+  //     (type, url) => {
+  //       console.log(`${type} uploaded to ${url}`);
+  //     }
+  //   );
+  //   return videoUrl;
+  // }, [videoFile]);
+
+//debug upload
+const handleFileUpload = useCallback(async (file: File, type: "image" | "video") => {
+  try {
+    const url = await BaseService.uploadFile(file, type);
+    if (!url) throw new Error(`Failed to upload ${type}`);
+    return url;
+  } catch (error: any) {
+    throw new Error(`${type} upload failed: ${error.message}`);
     }
   }, []);
 
-  // Upload image
-  const uploadImage = useCallback(async () => {
-    if (!avatarFile) return "";
-    let avatarUrl = "";
-    await customUploadHandler(
-      {
-        file: avatarFile,
-        onSuccess: (url) => {
-          avatarUrl = url;
-        },
-        onError: () => {
-          message.error("Failed to upload avatar");
-        }
-      },
-      "image",
-      setUploading,
-      (type, url) => {
-        console.log(`${type} uploaded to ${url}`);
+  const handleAvatarPreview = useCallback(
+    async (file: File) => {
+      setUploadingAvatar(true);
+      try {
+        const url = await handleFileUpload(file, "image");
+        form.setFieldsValue({ avatar_url: url });
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setAvatarPreview(e.target?.result as string);
+        };
+        reader.readAsDataURL(file);
+      } catch (error: any) {
+        message.error(error.message);
+      } finally {
+        setUploadingAvatar(false);
       }
-    );
-    return avatarUrl;
-  }, [avatarFile]);
+      return false; // Prevent default upload behavior
+    },
+    [handleFileUpload, form]
+  );
 
-  // Upload video
-  const uploadVideo = useCallback(async () => {
-    if (!videoFile) return "";
-    let videoUrl = "";
-    await customUploadHandler(
-      {
-        file: videoFile,
-        onSuccess: (url) => {
-          videoUrl = url;
-        },
-        onError: () => {
-          message.error("Failed to upload video");
-        }
-      },
-      "video",
-      setUploading,
-      (type, url) => {
-        console.log(`${type} uploaded to ${url}`);
+  const handleVideoPreview = useCallback(
+    async (file: File) => {
+      setUploadingVideo(true);
+      try {
+        const url = await handleFileUpload(file, "video");
+        form.setFieldsValue({ video_url: url });
+        const videoElement = document.createElement("video");
+        videoElement.controls = true;
+        videoElement.src = URL.createObjectURL(file);
+        setVideoPreview(videoElement.outerHTML);
+      } catch (error: any) {
+        message.error(error.message);
+      } finally {
+        setUploadingVideo(false);
       }
-    );
-    return videoUrl;
-  }, [videoFile]);
+      return false; // Prevent default upload behavior
+    },
+    [handleFileUpload, form]
+  );
 
   // Form submission
   const onFinish = useCallback(
     async (values: any) => {
       try {
-        setUploading(true);
-        const { avatar_url, video_url, ...restValues } = values;
+        // setUploading(true);
+        // const { avatar_url, video_url, ...restValues } = values;
 
-        // Upload avatar and video files separately
-        const [avatarUrl, videoUrl] = await Promise.all([uploadImage(), uploadVideo()]);
+        // // Upload avatar and video files separately
+        // const [avatarUrl, videoUrl] = await Promise.all([uploadImage(), uploadVideo()]);
 
         await UserService.createUser({
-          ...restValues,
-          avatar_url: avatarUrl,
-          video_url: videoUrl
+          ...values,
+          // avatar_url: values.avatar_url,
+          // video_url: values.video_url
         });
 
         message.success({
@@ -141,6 +207,11 @@ const CreateUserProfile = () => {
           duration: 3
         });
         handleModalToggle();
+        form.resetFields();
+        setVideoFileList([]);
+        setAvatarFileList([]);
+        setAvatarPreview("");
+        setVideoPreview("");
       } catch (error: any) {
         message.error({
           content: error.message || "Failed to create user",
@@ -148,10 +219,11 @@ const CreateUserProfile = () => {
           duration: 5
         });
       } finally {
-        setUploading(false);
+        // setUploading(false);
+        console.log("uploading false");
       }
     },
-    [handleModalToggle, uploadImage, uploadVideo]
+    [handleModalToggle, handleFileUpload]
   );
 
   // Form validation rules
@@ -188,35 +260,35 @@ const CreateUserProfile = () => {
     []
   );
 
-  // Render upload components
-  const renderUpload = useCallback(
-    (type: "image" | "video", preview: string | undefined) => (
-      <Upload
-        listType="picture-card"
-        showUploadList={false}
-        beforeUpload={(file) => {
-          handleFileChange(file, type);
-          return false; // Prevent default upload behavior
-        }}
-        accept={type === "image" ? "image/*" : "video/*"}
-        maxCount={1}
-      >
-        {preview ? (
-          type === "image" ? (
-            <img src={preview} alt="avatar" className="h-full w-full rounded-lg object-cover" />
-          ) : (
-            <video src={preview} className="h-full w-full rounded-lg object-cover" controls />
-          )
-        ) : (
-          <div className="flex flex-col items-center">
-            <UploadOutlined className="text-2xl" />
-            <div className="mt-2">Upload</div>
-          </div>
-        )}
-      </Upload>
-    ),
-    [handleFileChange]
-  );
+  // // Render upload components
+  // const renderUpload = useCallback(
+  //   (type: "image" | "video", preview: string | undefined) => (
+  //     <Upload
+  //       listType="picture-card"
+  //       showUploadList={false}
+  //       beforeUpload={(file) => {
+  //         handleFileChange(file, type);
+  //         return false; // Prevent default upload behavior
+  //       }}
+  //       accept={type === "image" ? "image/*" : "video/*"}
+  //       maxCount={1}
+  //     >
+  //       {preview ? (
+  //         type === "image" ? (
+  //           <img src={preview} alt="avatar" className="h-full w-full rounded-lg object-cover" />
+  //         ) : (
+  //           <video src={preview} className="h-full w-full rounded-lg object-cover" controls />
+  //         )
+  //       ) : (
+  //         <div className="flex flex-col items-center">
+  //           <UploadOutlined className="text-2xl" />
+  //           <div className="mt-2">Upload</div>
+  //         </div>
+  //       )}
+  //     </Upload>
+  //   ),
+  //   [handleFileChange]
+  // );
 
   // Handle bank selection change
   const handleBankChange = useCallback(
@@ -303,12 +375,38 @@ const CreateUserProfile = () => {
                     </Form.Item>
                   </div>
                   <div className="grid grid-cols-2 gap-6">
-                    <Form.Item name="avatar_url" label="Avatar" rules={[{ required: true, message: "Please upload an avatar!" }]}>
+                    {/* <Form.Item name="avatar_url" label="Avatar" rules={[{ required: true, message: "Please upload an avatar!" }]}>
                       {renderUpload("image", avatarPreview)}
                     </Form.Item>
                     <Form.Item name="video_url" label="Video" rules={[{ required: true, message: "Please upload a video!" }]}>
                       {renderUpload("video", videoPreview)}
-                    </Form.Item>
+                    </Form.Item> */}
+                    <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item name="avatar_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
+                <div className="space-y-4">
+                  <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
+                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingAvatar}>
+                      Select Avatar
+                    </Button>
+                  </Upload>
+                  {avatarPreview && <img src={avatarPreview} alt="Avatar preview" className="h-32 w-32 rounded-lg object-cover" />}
+                </div>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
+                <div className="space-y-4">
+                  <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList)}>
+                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingVideo}>
+                      Select Video
+                    </Button>
+                  </Upload>
+                  {videoPreview && <div dangerouslySetInnerHTML={{ __html: videoPreview }} />}
+                </div>
+              </Form.Item>
+            </Col>
+          </Row>
                   </div>
                   <div className="space-y-6 rounded-xl bg-gray-50 p-6 shadow-sm">
                     <h3 className="text-lg font-medium leading-6 text-gray-900">Bank Information</h3>
@@ -348,10 +446,10 @@ const CreateUserProfile = () => {
           </Form.Item>
 
           <Form.Item className="mb-0 flex justify-end gap-4">
-            <Button onClick={handleModalToggle} className="mr-4 h-12 min-w-[120px] rounded-lg border-[#1a237e] text-[#1a237e] hover:border-[#1a237e] hover:text-[#1a237e]" disabled={uploading}>
+            <Button onClick={handleModalToggle} className="mr-4 h-12 min-w-[120px] rounded-lg border-[#1a237e] text-[#1a237e] hover:border-[#1a237e] hover:text-[#1a237e]">
               Cancel
             </Button>
-            <Button type="primary" htmlType="submit" loading={uploading} className="bg-gradient-tone h-12 min-w-[120px] rounded-lg font-semibold text-white shadow-lg transition-all hover:from-[#1a237e] hover:to-[#1a237e] hover:shadow-xl">
+            <Button type="primary" htmlType="submit" className="bg-gradient-tone h-12 min-w-[120px] rounded-lg font-semibold text-white shadow-lg transition-all hover:from-[#1a237e] hover:to-[#1a237e] hover:shadow-xl">
               Create User
             </Button>
           </Form.Item>

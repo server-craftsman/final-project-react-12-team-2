@@ -11,7 +11,7 @@ import { UpdateUserParams } from "../../../models/api/request/users/user.request
 import { UploadOutlined } from "@ant-design/icons";
 import { ROUTER_URL } from "../../../const/router.path";
 // import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
-import { handleUploadFile } from "../../../utils/upload";
+import { BaseService } from "../../../services/config/base.service";
 import Editor from "../../generic/tiny/Editor";
 
 const EditUserProfile = () => {
@@ -117,12 +117,12 @@ const EditUserProfile = () => {
 
         if (state.selectedFile) {
           if (state.selectedFile.type.startsWith("image/")) {
-            const uploadedUrl = await handleUploadFile(state.selectedFile, "image");
+            const uploadedUrl = await BaseService.uploadFile(state.selectedFile, "image");
             if (uploadedUrl) {
               avatarUrl = uploadedUrl;
             }
           } else if (state.selectedFile.type.startsWith("video/")) {
-            const uploadedVideoUrl = await handleUploadFile(state.selectedFile, "video");
+            const uploadedVideoUrl = await BaseService.uploadFile(state.selectedFile, "video");
             if (uploadedVideoUrl) {
               videoUrl = uploadedVideoUrl;
             }
@@ -175,9 +175,9 @@ const EditUserProfile = () => {
     try {
       let uploadedUrl = "";
       if (isImage) {
-        uploadedUrl = await handleUploadFile(file, "image");
+        uploadedUrl = await BaseService.uploadFile(file, "image");
       } else if (isVideo) {
-        uploadedUrl = await handleUploadFile(file, "video");
+        uploadedUrl = await BaseService.uploadFile(file, "video");
       }
 
       if (uploadedUrl) {
