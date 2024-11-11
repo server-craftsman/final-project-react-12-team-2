@@ -95,5 +95,12 @@ export const API = {
   BLOG: {
     GET_BLOGS: "api/client/blog/search",
     GET_BLOGS_DETAILS: "api/client/blog/:id"
+  },
+  REVIEW: {
+    GET_REVIEW: "api/review/search",
+    GET_REVIEW_BY_ID: "api/review/:id",
+    CREATE_REVIEW: "api/review",
+    UPDATE_REVIEW: "api/review/:id",
+    DELETE_REVIEW: "api/review/:id"
   }
 };
