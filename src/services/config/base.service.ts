@@ -125,11 +125,14 @@ export interface PromiseState<T = unknown> extends AxiosResponse<T> {
 axiosInstance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
+    const userInfo = localStorage.getItem("userInfo");
     if (!config.headers) config.headers = {};
-    if (token && role) {
+    if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
-      // config.headers["role"] = role;
+    }
+    if (userInfo) {
+      const parsedUserInfo = JSON.parse(userInfo);
+      config.headers["User-Id"] = parsedUserInfo._id; // debug add user id
     }
     store.dispatch(toggleLoading(true)); // Show loading
     return config as InternalAxiosRequestConfig;
