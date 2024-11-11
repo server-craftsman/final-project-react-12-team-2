@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "antd";
-import { LeftOutlined } from "@ant-design/icons"; 
+import { BackwardFilled  } from "@ant-design/icons"; 
 import { BlogService } from "../../../services/blog/blog.service";
 import { getPublicBlogsDetails } from "../../../models/api/responsive/admin/blog.responsive.model";
+//import Paragraph from "antd/es/skeleton/Paragraph";
 
 const BlogDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -47,8 +48,8 @@ const BlogDetails: React.FC = () => {
         <Link to="/blog">
           <Button
             type="primary"
-            icon={<LeftOutlined />}
-            size="large"
+            icon={<BackwardFilled />}
+             size="large"
             style={{
               backgroundColor: "#1a237e",
               color: "#fff",
@@ -73,13 +74,15 @@ const BlogDetails: React.FC = () => {
       </div>
 
       <div className="mt-6 flex flex-col sm:flex-row">
-        <div className="flex-1 pr-8">
+        <div className="flex-1 pr-8">         
           <h1 className="text-3xl font-bold text-gray-900 mb-2">{blog?.name}</h1>
-          {/* <p className="text-gray-500 mb-1">Created on: {new Date(blog?.created_at).toLocaleDateString()}</p> */}
+          <h1 className="text-1xl font-bold text-gray-900 mb-2 ml-5 pt-2">Category: {blog?.category_name}</h1>
+          <h1 className="text-1xl font-bold text-gray-900 mb-2 ml-5">Author: {blog?.user_name}</h1>
+          {/* <p className="text-gray-500 mb-2 ml-5">Created on: {blog?.created_at}</p> */}
           <p className="text-gray-700 mb-6 text-xl">{blog?.description}</p>
           
           <div className="space-y-4">
-            <p className="font-semibold text-lg text-gray-900">Content:</p>
+            <p className="font-semibold text-lg text-gray-900 ">Content:</p>
             <div className="text-gray-600 text-lg" dangerouslySetInnerHTML={{ __html: blog?.content || "" }} />
           </div>
         </div>
