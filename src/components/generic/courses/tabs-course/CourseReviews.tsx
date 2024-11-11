@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Card, Typography, Rate, Form, Input, Button, Modal, message } from "antd";
+import React, { useState, useEffect, useContext } from "react";
+import { Card, Typography, Rate, Form, Input, Button, Modal, message, Avatar } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { CourseReviewsProps } from "../../../../models/objects/course/CourseReviewsProps";
 const { Text, Paragraph } = Typography;
 import { ReviewService } from "../../../../services/review/review.service";
+import { useAuth } from "../../../../contexts/AuthContext";
 
 const CourseReviews: React.FC<CourseReviewsProps & { courseId: string }> = ({ reviews, courseId }) => {
   const [fetchedReviews, setFetchedReviews] = useState(reviews);
@@ -13,6 +14,8 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string }> = ({ re
   const [hasUserCommented, setHasUserCommented] = useState(false);
   const [editingReview, setEditingReview] = useState<any>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const { userInfo } = useAuth();
 
   const fetchReviews = async () => {
     try {
@@ -31,8 +34,7 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string }> = ({ re
       });
       const reviewsData = response.data.data.pageData;
       setFetchedReviews(reviewsData);
-      const userInfo = JSON.parse(localStorage.getItem("userInfo") || '{}');
-      setHasUserCommented(reviewsData.some(review => review.reviewer_id === userInfo._id));
+      setHasUserCommented(reviewsData.some(review => review.reviewer_id === userInfo?._id));
     } catch (error) {
       console.error("Failed to fetch reviews", error);
     }
@@ -63,9 +65,6 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string }> = ({ re
   const handleSubmit = async (values: { rating: number; comment: string }) => {
     try {
       if (editingReview && editingReview._id) {
-        //debug
-        // console.log("Updating review with ID:", editingReview._id);
-        // console.log("Submitted values:", values);
         await ReviewService.updateReview(editingReview._id, {
           course_id: courseId,
           rating: values.rating,
@@ -74,8 +73,6 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string }> = ({ re
         message.success("Review updated successfully!");
         setEditingReview(null);
       } else {
-        //debug
-        // console.log("Creating new review with values:", values);
         await ReviewService.createReview({
           course_id: courseId,
           rating: values.rating,
@@ -112,20 +109,38 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string }> = ({ re
       )}
       {fetchedReviews.length > 0 ? (
         fetchedReviews.map((review, index) => (
-          <Card key={review._id || index} className="mb-4">
-            <div className="mb-2 flex items-center">
-              <Text strong>{review.reviewer_name || "Unknown User"}</Text>
-              <Rate disabled value={review.rating} className="ml-2" />
-              {review.reviewer_id === JSON.parse(localStorage.getItem("userInfo") || '{}')._id && (
+          <Card 
+            key={review._id || index} 
+            className="mb-6 rounded-2xl border-none bg-gradient-to-r from-white to-gray-50 p-6 shadow-xl transition-all duration-300 hover:shadow-2xl"
+          >
+            <div className="mb-4 flex items-center space-x-4">
+              <Avatar 
+                src={userInfo?.avatar_url}
+                size={48}
+                className="border-2 border-indigo-100 shadow-md"
+              />
+              <div className="flex flex-col">
+                <Text strong className="text-lg font-semibold text-indigo-900">
+                  {review.reviewer_name || "Unknown User"}
+                </Text>
+                <Rate 
+                  disabled 
+                  value={review.rating} 
+                  className="text-amber-400"
+                />
+              </div>
+              {review.reviewer_id === userInfo?._id && (
                 <Button
                   type="link"
                   onClick={() => handleEdit(review)}
                   icon={<EditOutlined className="text-xl" />}
-                  className="ml-2 flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1a237e] to-[#3949ab] px-4 py-2 text-white shadow-md transition-all duration-300 hover:from-[#3949ab] hover:to-[#1a237e] hover:shadow-xl hover:scale-105 active:scale-95"
+                  className="ml-auto flex items-center gap-2 rounded-xl bg-gradient-tone px-6 py-2 text-white shadow-lg transition-all duration-300 hover:from-indigo-700 hover:to-indigo-900 hover:shadow-xl hover:scale-105 active:scale-95"
                 />
               )}
             </div>
-            <Paragraph>{review.comment}</Paragraph>
+            <Paragraph className="text-base leading-relaxed text-gray-700">
+              {review.comment}
+            </Paragraph>
           </Card>
         ))
       ) : null}
