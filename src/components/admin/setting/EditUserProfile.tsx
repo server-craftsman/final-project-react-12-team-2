@@ -9,7 +9,8 @@ import { GetCurrentUserResponse } from "../../../models/api/responsive/authentic
 import { helpers } from "../../../utils";
 import { UpdateUserParams } from "../../../models/api/request/users/user.request.model";
 import { UploadOutlined } from "@ant-design/icons";
-import { handleUploadFile } from "../../../utils/upload";
+// import { handleUploadFile } from "../../../utils/upload";
+import { BaseService } from "../../../services/config/base.service";
 import { ROUTER_URL } from "../../../const/router.path";
 import Editor from "../../generic/tiny/Editor";
 // import { parseTinyEditor } from "../../../utils";
@@ -106,7 +107,7 @@ const EditUserProfile = () => {
         let avatarUrl = state.user?.data.avatar_url || "";
 
         if (state.selectedFile) {
-          const uploadedUrl = await handleUploadFile(state.selectedFile, "image");
+          const uploadedUrl = await BaseService.uploadFile(state.selectedFile, "image");
           if (uploadedUrl) {
             avatarUrl = uploadedUrl;
           }
