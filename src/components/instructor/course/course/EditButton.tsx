@@ -23,9 +23,7 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
   const [description, setDescription] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [categories, setCategories] = useState<any[]>([]);
-  const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const [uploadingVideo, setUploadingVideo] = useState(false);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [avatarFileList, setAvatarFileList] = useState<any[]>([]);
   const [videoFileList, setVideoFileList] = useState<any[]>([]);
@@ -175,7 +173,6 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
 
   const handleAvatarPreview = useCallback(
     async (file: File) => {
-      setUploadingAvatar(true);
       try {
         const url = await handleFileUpload(file, "image");
         form.setFieldsValue({ image_url: url });
@@ -186,8 +183,6 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
         reader.readAsDataURL(file);
       } catch (error: any) {
         message.error(error.message);
-      } finally {
-        setUploadingAvatar(false);
       }
       return false; // Prevent default upload behavior
     },
@@ -196,7 +191,6 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
 
   const handleVideoPreview = useCallback(
     async (file: File) => {
-      setUploadingVideo(true);
       try {
         const url = await handleFileUpload(file, "video");
         form.setFieldsValue({ video_url: url });
@@ -206,8 +200,6 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
         setVideoPreview(videoElement.outerHTML);
       } catch (error: any) {
         message.error(error.message);
-      } finally {
-        setUploadingVideo(false);
       }
       return false; // Prevent default upload behavior
     },
@@ -265,7 +257,7 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
               <Form.Item name="image_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
                 <div className="space-y-4">
                   <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
-                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingAvatar}>
+                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600">
                       Select Avatar
                     </Button>
                   </Upload>
@@ -277,7 +269,7 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
               <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
                 <div className="space-y-4">
                   <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList)}>
-                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingVideo}>
+                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600">
                       Select Video
                     </Button>
                   </Upload>

@@ -10,8 +10,6 @@ const { Option } = Select;
 
 const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
   const [form] = Form.useForm();
-  const [uploadingAvatar, setUploadingAvatar] = useState(false);
-  const [uploadingVideo, setUploadingVideo] = useState(false);
   const [lessonType, setLessonType] = useState<LessonType | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
@@ -119,7 +117,6 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
 
   const handleImagePreview = useCallback(
     async (file: File) => {
-      setUploadingAvatar(true);
       try {
         const url = await handleFileUpload(file, "image");
         form.setFieldsValue({ image_url: String(url) });
@@ -130,8 +127,6 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
         reader.readAsDataURL(file);
       } catch (error: any) {
         message.error(error.message);
-      } finally {
-        setUploadingAvatar(false);
       }
       return false; // Prevent default upload behavior
     },
@@ -140,15 +135,12 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
 
   const handleVideoPreview = useCallback(
     async (file: File) => {
-      setUploadingVideo(true);
       try {
         const url = await handleFileUpload(file, "video");
         form.setFieldsValue({ video_url: String(url) });
         setVideoPreview(url);
       } catch (error: any) {
         message.error(error.message);
-      } finally {
-        setUploadingVideo(false);
       }
       return false; // Prevent default upload behavior
     },
@@ -216,7 +208,7 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
           >
             <div className="space-y-4">
               <Upload accept="image/*" showUploadList={false} beforeUpload={handleImagePreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
-                <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingAvatar}>
+                <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600">
                   Select Avatar
                 </Button>
               </Upload>
@@ -236,7 +228,7 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
           >
             <div className="space-y-4">
               <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList)}>
-                <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingVideo}>
+                <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600">
                   Select Video
                 </Button>
               </Upload>

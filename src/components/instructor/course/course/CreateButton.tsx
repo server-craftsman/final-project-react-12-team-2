@@ -16,8 +16,6 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
   const [description, setDescription] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [categories, setCategories] = useState<{ _id: string; name: string; children?: { _id: string; name: string }[] }[]>([]);
-  const [uploadingAvatar, setUploadingAvatar] = useState<boolean>(false);
-  const [uploadingVideo, setUploadingVideo] = useState<boolean>(false);
   const [videoPreview, setVideoPreview] = useState<string>("");
   const [avatarPreview, setAvatarPreview] = useState<string>("");
   const [videoFileList, setVideoFileList] = useState<UploadFile<any>[]>([]);
@@ -83,7 +81,6 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
 
   const handleAvatarPreview = useCallback(
     async (file: File) => {
-      setUploadingAvatar(true);
       try {
         const url = await handleFileUpload(file, "image");
         form.setFieldsValue({ image_url: url });
@@ -94,8 +91,6 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
         reader.readAsDataURL(file);
       } catch (error: any) {
         message.error(error.message);
-      } finally {
-        setUploadingAvatar(false);
       }
       return false; // Prevent default upload behavior
     },
@@ -104,7 +99,6 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
 
   const handleVideoPreview = useCallback(
     async (file: File) => {
-      setUploadingVideo(true);
       try {
         const url = await handleFileUpload(file, "video");
         form.setFieldsValue({ video_url: url });
@@ -114,8 +108,6 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
         setVideoPreview(videoElement.outerHTML);
       } catch (error: any) {
         message.error(error.message);
-      } finally {
-        setUploadingVideo(false);
       }
       return false; // Prevent default upload behavior
     },
@@ -221,7 +213,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
               <Form.Item name="image_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
                 <div className="space-y-4">
                   <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
-                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingAvatar}>
+                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600">
                       Select Avatar
                     </Button>
                   </Upload>
@@ -233,7 +225,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
               <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
                 <div className="space-y-4">
                   <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList)}>
-                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingVideo}>
+                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600">
                       Select Video
                     </Button>
                   </Upload>

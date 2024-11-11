@@ -13,14 +13,6 @@ import { BaseService } from "../../../services/config/base.service";
 const CreateUserProfile = () => {
   const [form] = useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  // const [uploading, setUploading] = useState(false);
-  // const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  // const [videoFile, setVideoFile] = useState<File | null>(null);
-  // const [avatarPreview, setAvatarPreview] = useState<string>();
-  // const [videoPreview, setVideoPreview] = useState<string>();
-
-  const [uploadingAvatar, setUploadingAvatar] = useState<boolean>(false);
-  const [uploadingVideo, setUploadingVideo] = useState<boolean>(false);
   const [videoPreview, setVideoPreview] = useState<string>("");
   const [avatarPreview, setAvatarPreview] = useState<string>("");
   const [videoFileList, setVideoFileList] = useState<UploadFile<any>[]>([]);
@@ -33,10 +25,6 @@ const CreateUserProfile = () => {
   const handleModalToggle = useCallback(() => {
     setIsModalVisible((prev) => !prev);
     form.resetFields();
-    // setAvatarFile(null);
-    // setVideoFile(null);
-    // setAvatarPreview(undefined);
-    // setVideoPreview(undefined);
     setVideoFileList([]);
     setAvatarFileList([]);
     setAvatarPreview("");
@@ -75,63 +63,6 @@ const CreateUserProfile = () => {
     }
   }, [isModalVisible, fetchBankDetails]);
 
-  // // Handle file changes
-  // const handleFileChange = useCallback((file: File, type: "image" | "video") => {
-  //   if (type === "image") {
-  //     setAvatarFile(file);
-  //     setAvatarPreview(URL.createObjectURL(file));
-  //   } else {
-  //     setVideoFile(file);
-  //     setVideoPreview(URL.createObjectURL(file));
-  //   }
-  // }, []);
-
-  // Upload image
-  // const uploadImage = useCallback(async () => {
-  //   if (!avatarFile) return "";
-  //   let avatarUrl = "";
-  //   await customUploadHandler(
-  //     {
-  //       file: avatarFile,
-  //       onSuccess: (url) => {
-  //         avatarUrl = url;
-  //       },
-  //       onError: () => {
-  //         message.error("Failed to upload avatar");
-  //       }
-  //     },
-  //     "image",
-  //     setUploading,
-  //     (type, url) => {
-  //       console.log(`${type} uploaded to ${url}`);
-  //     }
-  //   );
-  //   return avatarUrl;
-  // }, [avatarFile]);
-
-  // // Upload video
-  // const uploadVideo = useCallback(async () => {
-  //   if (!videoFile) return "";
-  //   let videoUrl = "";
-  //   await customUploadHandler(
-  //     {
-  //       file: videoFile,
-  //       onSuccess: (url) => {
-  //         videoUrl = url;
-  //       },
-  //       onError: () => {
-  //         message.error("Failed to upload video");
-  //       }
-  //     },
-  //     "video",
-  //     setUploading,
-  //     (type, url) => {
-  //       console.log(`${type} uploaded to ${url}`);
-  //     }
-  //   );
-  //   return videoUrl;
-  // }, [videoFile]);
-
 //debug upload
 const handleFileUpload = useCallback(async (file: File, type: "image" | "video") => {
   try {
@@ -145,7 +76,6 @@ const handleFileUpload = useCallback(async (file: File, type: "image" | "video")
 
   const handleAvatarPreview = useCallback(
     async (file: File) => {
-      setUploadingAvatar(true);
       try {
         const url = await handleFileUpload(file, "image");
         form.setFieldsValue({ avatar_url: url });
@@ -157,7 +87,7 @@ const handleFileUpload = useCallback(async (file: File, type: "image" | "video")
       } catch (error: any) {
         message.error(error.message);
       } finally {
-        setUploadingAvatar(false);
+        console.log("handleAvatarPreview");
       }
       return false; // Prevent default upload behavior
     },
@@ -166,7 +96,6 @@ const handleFileUpload = useCallback(async (file: File, type: "image" | "video")
 
   const handleVideoPreview = useCallback(
     async (file: File) => {
-      setUploadingVideo(true);
       try {
         const url = await handleFileUpload(file, "video");
         form.setFieldsValue({ video_url: url });
@@ -177,7 +106,7 @@ const handleFileUpload = useCallback(async (file: File, type: "image" | "video")
       } catch (error: any) {
         message.error(error.message);
       } finally {
-        setUploadingVideo(false);
+        console.log("handleVideoPreview");
       }
       return false; // Prevent default upload behavior
     },
@@ -188,16 +117,8 @@ const handleFileUpload = useCallback(async (file: File, type: "image" | "video")
   const onFinish = useCallback(
     async (values: any) => {
       try {
-        // setUploading(true);
-        // const { avatar_url, video_url, ...restValues } = values;
-
-        // // Upload avatar and video files separately
-        // const [avatarUrl, videoUrl] = await Promise.all([uploadImage(), uploadVideo()]);
-
         await UserService.createUser({
           ...values,
-          // avatar_url: values.avatar_url,
-          // video_url: values.video_url
         });
 
         message.success({
@@ -385,7 +306,7 @@ const handleFileUpload = useCallback(async (file: File, type: "image" | "video")
               <Form.Item name="avatar_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
                 <div className="space-y-4">
                   <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
-                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingAvatar}>
+                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600">
                       Select Avatar
                     </Button>
                   </Upload>
@@ -397,7 +318,7 @@ const handleFileUpload = useCallback(async (file: File, type: "image" | "video")
               <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
                 <div className="space-y-4">
                   <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList)}>
-                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingVideo}>
+                    <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600">
                       Select Video
                     </Button>
                   </Upload>

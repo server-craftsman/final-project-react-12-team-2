@@ -20,7 +20,6 @@ const EditUserProfile = () => {
   const [form] = Form.useForm();
   const [state, setState] = useState({
     user: null as GetCurrentUserResponse | null,
-    uploading: false,
     selectedFile: null as File | null
   });
 
