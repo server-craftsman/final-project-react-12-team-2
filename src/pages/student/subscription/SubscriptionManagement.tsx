@@ -7,6 +7,7 @@ import { UserRole } from "../../../models/prototype/User";
 import subscriptionData from "../../../data/subscriptions.json";
 import data from "../../../data/users.json";
 
+
 const SubscriptionManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [, setFilteredSubscriptions] = useState<Subscriptions[]>([]);
@@ -42,6 +43,7 @@ const SubscriptionManagement: React.FC = () => {
         placeholder="Search by course name or instructor..."
       />
       <StudentSubscription searchQuery={searchQuery} />
+
     </div>
   );
 };

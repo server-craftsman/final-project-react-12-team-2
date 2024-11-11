@@ -6,7 +6,7 @@ import { UserService } from "../../../services/admin/user.service";
 import { useParams } from "react-router-dom";
 import ButtonSubscribe from "./CreateSubscribe";
 import { SubscriptionService } from "../../../services/subscription/subscription.service";
-
+import parse from "html-react-parser";
 
 const { Title, Paragraph } = Typography;
 
@@ -88,7 +88,7 @@ const ProfileSubscribe: React.FC = () => {
         <Title level={4}>About Me</Title>
         <Row gutter={[24, 24]}>
           <Col xs={24}>
-            <Paragraph>{userData?.description || "No description available."}</Paragraph>
+            <Paragraph>{parse(userData?.description || "No description available.")}</Paragraph>
           </Col>
         </Row>
       </Card>
