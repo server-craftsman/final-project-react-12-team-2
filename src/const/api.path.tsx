@@ -105,6 +105,8 @@ export const API = {
     DELETE_REVIEW: "api/review/:id"
   },
   PAYOUT: {
-    CREATE_PAYOUT: "api/payout"
+    CREATE_PAYOUT: "api/payout",
+    GET_PAYOUT: "api/payout/search",
+    UPDATE_PAYOUT: "api/payout/update-status/:id"
   }
 };
