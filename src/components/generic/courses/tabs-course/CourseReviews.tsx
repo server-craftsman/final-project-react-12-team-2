@@ -11,12 +11,19 @@ import { useAuth } from "../../../../contexts/AuthContext";
 const CourseReviews: React.FC<CourseReviewsProps & { courseId: string, course: any }> = ({ reviews, courseId, course }) => {
   const [fetchedReviews, setFetchedReviews] = useState(reviews);
   const [form] = Form.useForm();
+  const [averageRating, setAverageRating] = useState(0);
 
   const [hasUserCommented, setHasUserCommented] = useState(false);
   const [editingReview, setEditingReview] = useState<any>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const { userInfo } = useAuth();
+
+  const calculateAverageRating = (reviews: any[]) => {
+    if (reviews.length === 0) return 0;
+    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+    return totalRating / reviews.length;
+  };
 
   const fetchReviews = async () => {
     try {
@@ -35,6 +42,7 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string, course: a
       });
       const reviewsData = response.data.data.pageData;
       setFetchedReviews(reviewsData);
+      setAverageRating(calculateAverageRating(reviewsData));
       setHasUserCommented(reviewsData.some((review) => review.reviewer_id === userInfo?._id));
     } catch (error) {
       console.error("Failed to fetch reviews", error);
@@ -97,6 +105,14 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string, course: a
   
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+      <div className="mb-6">
+        <Typography.Title level={4}>Reviews and Ratings</Typography.Title>
+        <div className="flex items-center">
+          <Rate disabled value={averageRating} />
+          <Text className="ml-2 text-sm text-gray-500">{averageRating.toFixed(1)} based on {fetchedReviews.length} ratings</Text>
+        </div>
+      </div>
+
       {!hasUserCommented && checkUserInfo(course) && (
         <Form form={form} onFinish={handleSubmit} layout="vertical" className="mb-4">
           <Form.Item name="rating" label="Rating" rules={[{ required: true, message: "Please provide a rating" }]}>
