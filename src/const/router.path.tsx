@@ -23,6 +23,7 @@ export const ROUTER_URL = {
     CATEGORIES_DETAILS: "/admin/categories/details-category",
     CATEGORIES_DETAILS_ID: "/admin/categories/categories-details/:id",
     BLOG: "/admin/admin-blog",
+    BLOG_DETAILS: "/admin/admin-blog/:id",
     SUBSCRIPTION: "/admin/subscription",
     REQUEST_ACCOUNT: "/admin/request-account",
     COURSES_LOG: "/admin/course-log",
@@ -60,7 +61,9 @@ export const ROUTER_URL = {
     CART: "/cart",
     ABOUT: "/about",
     BLOG: "/blog",
-    BLOG_DETAILS_ID: "/blog-details/:id",
+    BLOG_DETAILS_ID: "/blog-details/:id"
+
+    
   },
   UNAUTHORIZED: "/unauthorized"
 };

@@ -9,6 +9,7 @@ import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
 import EditBlogModal from "./EditBlog";
 import DeleteBlogModal from "./DeleteBlog";
+import { ROUTER_URL } from "../../../const/router.path";
 
 const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
   const [blogData, setBlogData] = useState<GetBlogResponse | null>(null);
@@ -72,9 +73,18 @@ const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
 
   const columns = [
     {
+      title: "No",
+      key: "index",
+      render: (_: any, __: Blog, index: number) => index + 1,
+    },
+    {
       title: "Blog Name",
       dataIndex: "name",
-      render: (text: string, record: Blog) => <Link to={`/admin/blog/${record._id}`}>{text}</Link>
+      render: (text: string, record: Blog) => (
+        <Link to={`${ROUTER_URL.ADMIN.BLOG_DETAILS.replace(":id", record._id)}`}>
+          {text}
+        </Link>
+      ),
     },
     {
       title: "Category Name",
