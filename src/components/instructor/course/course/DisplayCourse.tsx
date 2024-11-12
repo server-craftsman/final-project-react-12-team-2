@@ -13,13 +13,14 @@ import FilterStatus from "./FilterStatus";
 // import useCourseCache from "../../../../hooks/useCourseCache"; //api
 import useCategoryCache from "../../../../hooks/useCategoryCache";
 import { GetCourseParams } from "../../../../models/api/request/course/course.request.model";
-import { GetCourseResponsePageData, GetCourseResponse, GetCourseByIdResponse } from "../../../../models/api/responsive/course/course.response.model";
+import { GetCourseResponse, GetCourseByIdResponse } from "../../../../models/api/responsive/course/course.response.model";
 import { CourseService } from "../../../../services/course/course.service";
 // import _ from "lodash";
 
 const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, refreshKey }: { searchTerm: string; statusFilter: StatusType; onSearch: (value: string) => void; onStatusChange: (status: StatusType | "") => void; refreshKey: number }) => {
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
+
   const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<number[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -32,8 +33,8 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
   const getCourseData = useCallback(() => {
     const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageNum: number, pageSize: number, dataRefreshKey: number) => {
       const [courses, setCourses] = useState<GetCourseResponse["pageData"]>();
-      const [totalItems, setTotalItems] = useState<number>(0);
       const [courseById, setCourseById] = useState<GetCourseByIdResponse>();
+      const [pageInfo, setPageInfo] = useState<any>({});
       const getCategoryName = useCategoryCache();
 
       const params: GetCourseParams = {
@@ -44,8 +45,8 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
           is_delete: false
         },
         pageInfo: {
-          pageNum: 1,
-          pageSize: 10
+          pageNum,
+          pageSize
         }
       };
 
@@ -73,7 +74,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
             const coursesTempData = await Promise.all(pageData.map(mapCourseData));
 
             setCourses(coursesTempData);
-            setTotalItems(response.data.data.pageInfo.pageNum);
+            setPageInfo(response.data.data.pageInfo);
           }
         } catch (error) {
           console.error("Error fetching courses:", error);
@@ -98,13 +99,13 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
         fetchCourses();
       }, [searchTerm, statusFilter, pageNum, pageSize, dataRefreshKey, refreshKey]); //debug
 
-      return { courses, totalItems, courseById, fetchCourseById, fetchCourses, dataRefreshKey, refreshKey };
+      return { courses, pageInfo, courseById, fetchCourseById, fetchCourses, dataRefreshKey, refreshKey };
     };
 
     return useCourseCache(searchTerm, statusFilter as StatusType | "", pageNum, pageSize, dataRefreshKey);
   }, [searchTerm, statusFilter, pageNum, pageSize, dataRefreshKey, refreshKey]);
 
-  const { courses, totalItems, fetchCourses } = getCourseData();
+  const { courses, pageInfo, fetchCourses } = getCourseData();
 
   // Filter courses based on the statusFilter
   const filteredCourses = courses?.filter((course) => !statusFilter || course.status === statusFilter);
@@ -176,62 +177,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
     }
   };
 
-  // const requestReview = async (courseId: string, comment: string) => {
-  //   try {
-  //     await CourseService.changeStatusCourse({
-  //       course_id: courseId,
-  //       new_status: StatusType.WAITING_APPROVE,
-  //       comment: comment
-  //     });
-  //     message.success("Review requested");
-  //     handleCourseCreated();
-  //   } catch (error) {
-  //     message.error("Failed to request review");
-  //   }
-  // };
-
-  // const showRequestReviewModal = (courseId: string) => {
-  //   let tempComment = ""; // Create temporary comment state
-
-  //   Modal.confirm({
-  //     title: "Request Course Review",
-  //     width: 600,
-  //     icon: <FormOutlined />,
-  //     content: (
-  //       <div className="p-6">
-  //         <h3 className="mb-4 text-lg font-medium">Please provide details for your review request</h3>
-  //         <Form layout="vertical">
-  //           <Form.Item label="Comments" required tooltip="Please explain why you are requesting a review">
-  //             <Input.TextArea onChange={(e) => (tempComment = e.target.value)} placeholder="Enter your comments here..." rows={4} className="w-full" showCount maxLength={500} />
-  //           </Form.Item>
-  //         </Form>
-  //       </div>
-  //     ),
-  //     okText: "Submit Request",
-  //     cancelText: "Cancel",
-  //     okButtonProps: {
-  //       type: "primary",
-  //       icon: <SendOutlined />
-  //     },
-  //     onOk: () => {
-  //       if (!tempComment.trim()) {
-  //         message.error("Please enter comments before submitting");
-  //         return Promise.reject();
-  //       }
-  //       return requestReview(courseId, tempComment);
-  //     },
-  //     onCancel: () => {
-  //       tempComment = "";
-  //     }
-  //   });
-  // };
-
-  // const handleCourseSelect = (courseId: string) => {
-  //   fetchCourseDetails(courseId);
-  //   setIsModalVisible(true);
-  // };
-
-  const columns: ColumnsType<GetCourseResponsePageData> = [
+  const columns: ColumnsType<any> = [
     {
       title: "No",
       key: "_id",
@@ -290,21 +236,6 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
                 />
               </>
             )}
-            {/* {status === StatusType.APPROVE && (
-              <Popconfirm
-                title="Are you sure to approve this course?"
-                onConfirm={() => handleApprove(_id)}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Button
-                  // onClick={() => handleApprove(_id)}
-                className="bg-gradient-tone text-white hover:opacity-90"
-              >
-                Active
-                </Button>
-              </Popconfirm>
-            )} */}
           </>
         );
       }
@@ -323,15 +254,6 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
         // const { status, _id, lesson_count, session_count } = record;
         return (
           <>
-            {/* {status === StatusType.REJECT && (
-              <Button
-                icon={<HistoryOutlined />}
-                onClick={() => showRequestReviewModal(_id)}
-                className="bg-gradient-tone mr-2 text-white hover:opacity-90"
-                title="Request Review"
-                disabled={(lesson_count ?? 0) <= 0 || (session_count ?? 0) <= 0} // Disable button if lessons or sessions are <= 0
-              />
-            )} */}
             <EditButton data={record} onEditSuccess={handleCourseCreated} fetchCourseDetails={fetchCourseDetails} />
             <DeleteButton courseId={record._id} onDeleteSuccess={handleCourseCreated} />
           </>
@@ -340,7 +262,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
     }
   ];
 
-  const rowClassName = (record: GetCourseResponsePageData) => {
+  const rowClassName = (record: any) => {
     return selectedRowKeys.includes(Number(record._id)) ? "bg-white" : "bg-gray-50";
   };
 
@@ -388,12 +310,6 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
     setPageNum(1);
     onStatusChange(status);
   };
-
-  // const handleRowSelectionChange = (selectedKeys: React.Key[]) => {
-  //   // Ensure unique selection using lodash
-  //   const uniqueKeys = _.uniq(selectedKeys as number[]);
-  //   setSelectedRowKeys(uniqueKeys);
-  // };
 
   const sendToAdmin = useCallback(async () => {
     try {
@@ -451,6 +367,15 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
   const validStatusFilter = Object.values(StatusType).includes(statusFilter) ? statusFilter : "";
   console.log("Valid Status Filter:", validStatusFilter);
 
+  const handlePageChange = (page: number, pageSize?: number) => {
+    setPageNum(page);
+    if (pageSize) setPageSize(pageSize);
+  };
+
+  useEffect(() => {
+    fetchCourses(); // Fetch data when pageNum or pageSize changes
+  }, [pageNum, pageSize]);
+
   return (
     <>
       <div className="mb-4 mt-4 flex justify-between">
@@ -483,19 +408,23 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
         columns={columns}
         dataSource={filteredCourses} // Use filtered courses
         rowKey={(record) => record._id}
-        pagination={false}
+        pagination={{
+          current: pageNum,
+          pageSize: pageSize,
+          total: pageInfo.totalItems,
+          onChange: handlePageChange,
+          showSizeChanger: true,
+          showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+        }}
         rowClassName={rowClassName}
       />
       <div className="mt-5 flex justify-start">
         <Pagination
           current={pageNum}
           pageSize={pageSize}
-          total={totalItems}
+          total={pageInfo.totalItems}
           showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
-          onChange={(page, pageSize) => {
-            setPageNum(page);
-            setPageSize(pageSize);
-          }}
+          onChange={handlePageChange}
           showSizeChanger
           className="bg-pagination"
         />

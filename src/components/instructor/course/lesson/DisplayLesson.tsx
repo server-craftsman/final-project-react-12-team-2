@@ -11,7 +11,6 @@ import { LessonService } from "../../../../services/lesson/lesson.service";
 import { Lesson } from "../../../../models/api/responsive/lesson/lesson.response.model";
 
 const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
-  const [lessons, setLessons] = useState<Lesson["pageData"]>([]);
   const [filteredLessons, setFilteredLessons] = useState<Lesson["pageData"]>([]);
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -27,15 +26,14 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
         is_delete: false,
         is_position_order: false
       },
-      pageInfo: { pageNum: 1, pageSize: 10 }
+      pageInfo: { pageNum, pageSize }
     });
     if (response.data) {
       const lessonData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [response.data.data.pageData];
-      setLessons(lessonData);
       setFilteredLessons(lessonData);
-      setTotalItems(lessonData.length);
+      setTotalItems(response.data.data.pageInfo.totalItems);
     }
-  }, []);
+  }, [pageNum, pageSize]);
 
   useEffect(() => {
     fetchLessons();
@@ -62,22 +60,22 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
     }
   };
 
-  const paginatedCourses = () => {
-    const startIndex = (pageNum - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    return filteredLessons.slice(startIndex, endIndex);
-  };
-
   const handleSearch = async (searchText: string) => {
-    await fetchLessons(); // Fetch lessons before filtering
-    if (searchText === "") {
-      setFilteredLessons(lessons);
-    } else {
-      const filtered = lessons.filter((lesson) => (lesson as any).name.toLowerCase().includes(searchText.toLowerCase()));
-      setFilteredLessons(filtered as any);
-    }
     setPageNum(1);
-    setTotalItems(filteredLessons.length);
+    const response = await LessonService.getLesson({
+      searchCondition: {
+        keyword: searchText,
+        course_id: "",
+        is_delete: false,
+        is_position_order: false
+      },
+      pageInfo: { pageNum: 1, pageSize }
+    });
+    if (response.data) {
+      const lessonData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [response.data.data.pageData];
+      setFilteredLessons(lessonData);
+      setTotalItems(response.data.data.pageInfo.totalItems);
+    }
   };
 
   const columns = [
@@ -131,7 +129,7 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
         <CustomSearch onSearch={handleSearch} placeholder="Search by lesson name" className="w-1/5" />
         <CreateButton onLessonCreated={handleLessonCreated} />
       </div>
-      <Table columns={columns} dataSource={paginatedCourses()} rowKey="id" pagination={false} />
+      <Table columns={columns} dataSource={filteredLessons} rowKey="id" pagination={false} />
       <div className="mt-5 flex justify-start">
         <Pagination
           current={pageNum}

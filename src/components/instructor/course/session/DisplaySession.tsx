@@ -12,14 +12,12 @@ import { DisplaySessionResponse } from "../../../../models/api/responsive/sessio
 
 const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
   const [sessions, setSessions] = useState<DisplaySessionResponse[]>([]);
-  // const [loading, setLoading] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
 
   const fetchSessions = useCallback(async (page: number, size: number, keyword: string) => {
-    // setLoading(true);
     try {
       const sessionResponse = await SessionService.getSession({
         searchCondition: {
@@ -32,12 +30,6 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
       });
 
       const sessionData = sessionResponse.data?.data?.pageData || [];
-
-      if (!Array.isArray(sessionData)) {
-        console.error("Session data is not an array:", sessionData);
-        return;
-      }
-
       const courseIds = Array.from(new Set(sessionData.map((session: any) => session.course_id)));
       const courseDataArray = await Promise.all(
         courseIds.map(async (id) => {
@@ -68,36 +60,15 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-    // } finally {
-    //   setLoading(false);
-    // }
   }, []);
-
-  const fetchSessionDetails = async (sessionId: string) => {
-    try {
-      const sessionDetails = await SessionService.getSessionDetail(sessionId);
-      return sessionDetails.data;
-    } catch (error) {
-      console.error("Failed to fetch session details:", error);
-      return null;
-    }
-  };
 
   useEffect(() => {
     fetchSessions(pageNum, pageSize, searchKeyword);
   }, [pageNum, pageSize, searchKeyword, fetchSessions, refreshKey]);
 
-  const renderActions = (record: DisplaySessionResponse) => (
-    <div className="flex space-x-2">
-      <EditButton data={record.pageData} onSessionEdited={() => fetchSessions(pageNum, pageSize, searchKeyword)} fetchSessionDetails={fetchSessionDetails} />
-      <DeleteButton data={record.pageData} onSessionDeleted={() => fetchSessions(pageNum, pageSize, searchKeyword)} />
-    </div>
-  );
-
   const handleSearch = (searchText: string) => {
-    fetchSessions(pageNum, pageSize, searchText);
-    setSearchKeyword(searchText);
     setPageNum(1);
+    setSearchKeyword(searchText);
   };
 
   const columns = [
@@ -125,6 +96,24 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
       render: (_: any, record: DisplaySessionResponse) => renderActions(record)
     }
   ];
+
+  const renderActions = (record: DisplaySessionResponse) => (
+    <div className="flex space-x-2">
+      <EditButton data={record.pageData} onSessionEdited={() => fetchSessions(pageNum, pageSize, searchKeyword)} fetchSessionDetails={fetchSessionDetails} />
+      <DeleteButton data={record.pageData} onSessionDeleted={() => fetchSessions(pageNum, pageSize, searchKeyword)} />
+    </div>
+  );
+
+  const fetchSessionDetails = async (sessionId: string) => {
+    try {
+      const sessionDetails = await SessionService.getSessionDetail(sessionId);
+      return sessionDetails.data;
+    } catch (error) {
+      console.error("Failed to fetch session details:", error);
+      return null;
+    }
+  };
+
   return (
     <>
       <div className="mb-4 mt-4 flex justify-between">
