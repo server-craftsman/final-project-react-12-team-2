@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { ROUTER_URL } from "../../const/router.path";
 import { RouteObject } from "react-router-dom";
+import AllCourses from "../../components/generic/home/all-courses/AllCourses";
 
 //================= PUBLIC SUB PATHS =================
 const LoginPage = lazy(() => import("../../pages/login/LoginPage"));
@@ -59,6 +60,10 @@ export const publicSubPaths: Record<string, RouteObject[]> = {
         {
           path: ROUTER_URL.PROFILE.GET_PROFILE_DETAILS,
           element: <ProfileSubscribe />
+        },
+        {
+          path: ROUTER_URL.COMMON.ALL_COURSES,
+          element: <AllCourses />
         }
       ]
     }
