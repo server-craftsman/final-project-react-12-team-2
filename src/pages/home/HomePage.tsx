@@ -102,7 +102,7 @@ const HomePage: React.FC = () => {
         <PageNumber currentPage={currentPage} total={totalCourses} pageSize={pageSize} onChange={handlePageChange} />
       </div>
 
-      <Divider className="my-16 border-indigo-200" />
+      {/* <Divider className="my-16 border-indigo-200" />
       <InstructorSlider />
 
       <Divider className="my-16 border-indigo-200" />
@@ -111,6 +111,7 @@ const HomePage: React.FC = () => {
       <Divider className="my-16 border-indigo-200" />
       <UtilityRegisterInformation />
 
+      {/* ------------------------------- */}
       <Divider className="my-16 border-indigo-200" />
 
       <Introduction />
@@ -129,7 +130,7 @@ const HomePage: React.FC = () => {
           ))}
         </div> */}
       </motion.div>
-      <motion.section className="mt-24 bg-white py-16 text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+      {/* <motion.section className="mt-24 bg-white py-16 text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
         <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2, duration: 0.5 }}>
           <Title level={2} className="mb-8 text-5xl font-bold text-indigo-900">
             Elevate Your Expertise
@@ -142,7 +143,7 @@ const HomePage: React.FC = () => {
             </motion.div>
           </Link>
         </motion.div>
-      </motion.section>
+      </motion.section> */}
     </div>
   );
 };
