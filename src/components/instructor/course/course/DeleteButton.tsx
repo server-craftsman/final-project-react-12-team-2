@@ -13,6 +13,7 @@ const DeleteButton = ({ courseId, onDeleteSuccess }: DeleteButtonProps) => {
       content: "Are you sure you want to delete this course? This action cannot be undone.",
       okText: "Delete",
       okButtonProps: {
+        className: "bg-gradient-tone",
         danger: true,
         style: {
           backgroundColor: "#ff4d4f",

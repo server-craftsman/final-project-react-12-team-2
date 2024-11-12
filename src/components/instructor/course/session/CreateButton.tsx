@@ -86,7 +86,7 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
       <Button onClick={openCreateModal} className="rounded-md bg-[#1a237e] text-white">
         Create Session
       </Button>
-      <Modal title="Create Session" open={isOpen} onOk={handleOk} onCancel={handleCancel} width={800} style={{ top: "20px" }} destroyOnClose={true}>
+      <Modal title="Create Session" open={isOpen} onOk={handleOk} onCancel={handleCancel} width={800} style={{ top: "20px" }} destroyOnClose={true} okButtonProps={{ className: "bg-gradient-tone" }}>
         <Form form={form} layout="vertical">
           <Form.Item name="name" label="Name" rules={[{ required: true, message: "Please input the lesson name!" }]}>
             <Input />

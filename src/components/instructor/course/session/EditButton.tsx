@@ -85,7 +85,7 @@ const EditButton = ({ data, onSessionEdited, fetchSessionDetails }: any) => {
   return (
     <>
       <Button className="mr-2" icon={<EditOutlined />} onClick={openCreateModal} />
-      <Modal title="Edit Session" open={isOpen} onOk={handleOk} onCancel={handleCancel} width={800} style={{ top: "20px" }}>
+      <Modal title="Edit Session" open={isOpen} onOk={handleOk} onCancel={handleCancel} width={800} style={{ top: "20px" }} destroyOnClose={true} okButtonProps={{ className: "bg-gradient-tone" }}>
         <Form form={form} layout="vertical">
           <Form.Item name="name" label="Name" rules={[{ required: true, message: "Please input the lesson name!" }]}>
             <Input />

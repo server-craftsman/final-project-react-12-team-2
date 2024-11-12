@@ -113,6 +113,7 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
         onOk={createLesson}
         onCancel={handleCancel}
         width={800}
+        okButtonProps={{ className: "bg-gradient-tone" }}
       >
         <Form form={form} layout="vertical">
           <Form.Item name="name" label="Name" rules={[{ required: true, message: "Please input the lesson name!" }]}>

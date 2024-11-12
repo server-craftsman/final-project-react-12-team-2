@@ -183,7 +183,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
       <Button onClick={() => openCreateModal()} className="rounded-md bg-[#1a237e] text-white">
         Create Course
       </Button>
-      <Modal title="Create Course" open={isOpen} onOk={handleSubmit} onCancel={handleCancel} width={800} style={{ top: "20px" }}>
+      <Modal title="Create Course" open={isOpen} onOk={handleSubmit} onCancel={handleCancel} width={800} style={{ top: "20px" }} okButtonProps={{ className: "bg-gradient-tone" }}>
         <Form form={form} layout="vertical">
           <Row gutter={16}>
             <Col span={12}>

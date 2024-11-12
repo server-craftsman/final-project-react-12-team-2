@@ -154,6 +154,7 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
       onCancel={handleCancel}
       width={800}
       style={{ top: "20px" }}
+      okButtonProps={{ className: "bg-gradient-tone" }}
       footer={[
         <Button key="cancel" onClick={handleCancel}>
           Cancel

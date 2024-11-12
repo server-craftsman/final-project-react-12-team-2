@@ -221,7 +221,7 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
   return (
     <>
       <Button className="mr-2" icon={<EditOutlined />} onClick={openCreateModal} />
-      <Modal title="Edit Course" open={isOpen} onOk={handleOk} onCancel={handleCancel} width={800} style={{ top: "20px" }}>
+      <Modal title="Edit Course" open={isOpen} onOk={handleOk} onCancel={handleCancel} width={800} style={{ top: "20px" }} okButtonProps={{ className: "bg-gradient-tone" }}>
         <Form form={form} layout="vertical">
           <Row gutter={16}>
             <Col span={12}>
