@@ -13,7 +13,7 @@ export const PayoutService = {
   },
   //list payout (admin or instructor)
   getPayout(params: GetPayoutRequestModel) {
-    return BaseService.get<ResponseSuccess<GetPayoutResponseModel>>({
+    return BaseService.post<ResponseSuccess<GetPayoutResponseModel>>({
       url: API.PAYOUT.GET_PAYOUT,
       payload: params
     });
