@@ -1,23 +1,24 @@
 import React from "react";
-import { CourseStatusEnum } from "../../../models/prototype/Course";
+import { StatusType } from "../../../app/enums";
 import { Select } from "antd";
 
 interface FilterStatusProps {
-  onStatusChange: (status: CourseStatusEnum | "") => void;
+  onStatusChange: (status: StatusType | "") => void;
+  statusFilter: StatusType | "";
 }
 
-const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange }) => {
-  const handleChange = (value: CourseStatusEnum | "") => {
+const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange, statusFilter }) => {
+  const handleChange = (value: StatusType | "") => {
     onStatusChange(value);
   };
 
-  const renameStatus = (status: CourseStatusEnum) => {
+  const renameStatus = (status: StatusType) => {
     switch (status) {
-      case CourseStatusEnum.waiting_approve:
+      case StatusType.WAITING_APPROVE:
         return "Waiting for Approval";
-      case CourseStatusEnum.approve:
+      case StatusType.APPROVE:
         return "Approved";
-      case CourseStatusEnum.reject:
+      case StatusType.REJECT:
         return "Rejected";
       default:
         return null;
@@ -25,12 +26,12 @@ const FilterStatus: React.FC<FilterStatusProps> = ({ onStatusChange }) => {
   };
 
   return (
-    <Select style={{ width: 200 }} placeholder="Filter by status" allowClear onChange={handleChange} defaultValue="">
+    <Select style={{ width: 200 }} placeholder="Filter by status" allowClear onChange={handleChange} value={statusFilter || undefined} defaultValue="">
       <Select.Option key="all" value="">
         All
       </Select.Option>
-      {Object.values(CourseStatusEnum)
-        .filter((status) => status === CourseStatusEnum.waiting_approve || status === CourseStatusEnum.approve || status === CourseStatusEnum.reject)
+      {Object.values(StatusType)
+        .filter((status) => status === StatusType.WAITING_APPROVE || status === StatusType.APPROVE || status === StatusType.REJECT)
         .map((status) => {
           return (
             <Select.Option key={status} value={status}>

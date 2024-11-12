@@ -14,10 +14,6 @@ function ManageCategory() {
   const [searchQuery, setSearchQuery] = useState("");
   const [categories, setCategories] = useState<Category[] | null>(null);
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-  };
-
   const fetchCategories = async (params: GetCategoryParams) => {
     try {
       const response = await CategoryService.getCategory(params);
@@ -28,7 +24,6 @@ function ManageCategory() {
     }
   };
 
-  useEffect(() => {
     const fetchCategoriesData = async () => {
       try {
         const searchCondition = {
@@ -52,9 +47,14 @@ function ManageCategory() {
         console.error("Failed to fetch categories:", error);
       }
     };
-
+    useEffect(() => {
     fetchCategoriesData();
   }, [searchQuery]);
+
+  const handleSearch = (query: string) => {
+    fetchCategoriesData();
+    setSearchQuery(query);
+  };
 
   if (categories === null) {
     return <div>Loading...</div>;

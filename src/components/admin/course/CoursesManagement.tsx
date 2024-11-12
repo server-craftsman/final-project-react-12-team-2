@@ -3,20 +3,23 @@ import { moneyFormat, formatDate } from "../../../utils/helper";
 import { courseStatusColor } from "../../../utils/courseStatus";
 import { message, Popconfirm, Table, Modal, Input, Button } from "antd";
 import { CheckOutlined, StopOutlined, CarryOutOutlined, ContainerOutlined } from "@ant-design/icons";
-import { Courses, CourseStatusEnum } from "../../../models/prototype/Course"; // Import the Course model
+// import { Courses } from "../../../models/prototype/Course"; // Import the Course model
 import { GetCourseParams } from "../../../models/api/request/course/course.request.model";
 import { CourseService } from "../../../services/course/course.service";
 import { LessonService } from "../../../services/lesson/lesson.service";
 import { Lesson } from "../../../models/api/responsive/lesson/lesson.response.model";
 import { SessionService } from "../../../services/session/session.service";
+import { StatusType } from "../../../app/enums";
+import { GetCourseResponsePageData } from "../../../models/api/responsive/course/course.response.model";
 const { confirm } = Modal;
 
 const CoursesManagement: React.FC<{
   searchTerm: string;
-  statusFilter: CourseStatusEnum | "";
+  statusFilter: StatusType | "";
   activeKey: string;
-}> = ({ searchTerm, statusFilter, activeKey }) => {
-  const [coursesData, setCourses] = useState<Courses[]>([]);
+  refreshKey: number;
+}> = ({ searchTerm, statusFilter, activeKey, refreshKey }) => {
+  const [coursesData, setCourses] = useState<GetCourseResponsePageData[]>([]);
   const [isRejectModalVisible, setIsRejectModalVisible] = useState(false);
   const [rejectComment, setRejectComment] = useState("");
   const [selectedCourseId, setSelectedCourseId] = useState<string>("");
@@ -25,7 +28,6 @@ const CoursesManagement: React.FC<{
   const [isSessionModalVisible, setIsSessionModalVisible] = useState(false);
   const [sessions, setSessions] = useState<any[]>([]);
 
-  useEffect(() => {
     const fetchCourses = async () => {
       try {
         const params: GetCourseParams = {
@@ -41,16 +43,16 @@ const CoursesManagement: React.FC<{
           }
         };
         const response = await CourseService.getCourse(params);
-        setCourses(response.data.data.pageData as unknown as Courses[]);
+        setCourses(response.data.data.pageData as unknown as GetCourseResponsePageData[]);
       } catch (error) {
         message.error("Failed to fetch courses");
       }
     };
-
+    useEffect(() => {
     fetchCourses();
-  }, [searchTerm, statusFilter, activeKey]);
+  }, [searchTerm, statusFilter, refreshKey, activeKey]);
 
-  const handleChangeStatus = async (id: string, newStatus: CourseStatusEnum, comment: string = "") => {
+  const handleChangeStatus = async (id: string, newStatus: StatusType, comment: string = "") => {
     try {
       await CourseService.changeStatusCourse({ course_id: id, new_status: newStatus, comment });
       const updatedCourses = coursesData.map((course) => {
@@ -76,7 +78,7 @@ const CoursesManagement: React.FC<{
     confirm({
       title: "Are you sure you want to reject this course?",
       onOk: () => {
-        handleChangeStatus(selectedCourseId, CourseStatusEnum.reject, rejectComment);
+        handleChangeStatus(selectedCourseId, StatusType.REJECT, rejectComment);
         setIsRejectModalVisible(false);
       },
       onCancel: () => {
@@ -96,7 +98,7 @@ const CoursesManagement: React.FC<{
           is_delete: false,
           is_position_order: false
         },
-        pageInfo: { pageNum: 1, pageSize: 100 }
+        pageInfo: { pageNum: 1, pageSize: 10 }
       });
       if (response.data) {
         const lessonData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [response.data.data.pageData];
@@ -117,7 +119,7 @@ const CoursesManagement: React.FC<{
           is_delete: false,
           is_position_order: false
         },
-        pageInfo: { pageNum: 1, pageSize: 100 }
+        pageInfo: { pageNum: 1, pageSize: 10 }
       });
       if (response.data) {
         const sessionData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [response.data.data.pageData];
@@ -134,7 +136,7 @@ const CoursesManagement: React.FC<{
       title: "ID",
       dataIndex: "id",
       key: "id",
-      render: (_: string, __: Courses, index: number) => index + 1
+      render: (_: string, __: GetCourseResponsePageData, index: number) => index + 1
     },
     {
       title: "Name Course",
@@ -157,7 +159,7 @@ const CoursesManagement: React.FC<{
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status: CourseStatusEnum) => <span className={`text-sm capitalize ${courseStatusColor[status]}`}>{status}</span>
+      render: (status: StatusType) => <span className={`text-sm capitalize ${courseStatusColor[status]}`}>{status}</span>
     },
     {
       title: "Created At",
@@ -168,10 +170,10 @@ const CoursesManagement: React.FC<{
     {
       title: "Action",
       key: "action",
-      render: (record: Courses) =>
-        record.status === CourseStatusEnum.waiting_approve ? (
+      render: (record: GetCourseResponsePageData) =>
+        record.status === StatusType.WAITING_APPROVE ? (
           <div>
-            <Popconfirm title="Confirm the course?" description="Are you sure to confirm this course?" onConfirm={() => handleChangeStatus(record._id, CourseStatusEnum.approve)} okText="Yes" cancelText="No">
+            <Popconfirm title="Confirm the course?" description="Are you sure to confirm this course?" onConfirm={() => handleChangeStatus(record._id, StatusType.APPROVE)} okText="Yes" cancelText="No">
               <Button icon={<CheckOutlined />} className="mr-2 bg-white text-green-500 hover:opacity-80" title="Confirm" />
             </Popconfirm>
 
@@ -189,10 +191,10 @@ const CoursesManagement: React.FC<{
   ];
 
   const filteredCourses = coursesData.filter((course) => {
-    const validStatuses = [CourseStatusEnum.waiting_approve, CourseStatusEnum.approve, CourseStatusEnum.reject];
+    const validStatuses = [StatusType.WAITING_APPROVE, StatusType.APPROVE, StatusType.REJECT];
     return course.name.toLowerCase().includes(searchTerm.toLowerCase()) && (statusFilter === "" || course.status === statusFilter) && validStatuses.includes(course.status);
   });
-
+ console.log(filteredCourses);
   return (
     <>
       <Table columns={columns} dataSource={filteredCourses} rowKey="_id" />

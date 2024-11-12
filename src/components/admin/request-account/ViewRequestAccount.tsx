@@ -13,7 +13,7 @@ import { userRoleColor } from "../../../utils/userRole";
 
 interface ViewRequestAccountProps {
   searchQuery: string;
-  selectedStatus: boolean | null;
+  refreshKey: number;
 }
 
 interface SearchCondition {
@@ -24,7 +24,7 @@ interface SearchCondition {
   is_deleted: boolean | undefined;
 }
 
-const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, selectedStatus }) => {
+const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, refreshKey }) => {
   const [updatedUsers, setUpdatedUsers] = useState<string[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
 
@@ -43,21 +43,21 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, se
   } as const;
 
   const getSearchCondition = useCallback(
-    (searchQuery: string, selectedStatus: boolean | null): SearchCondition => {
+    (searchQuery: string): SearchCondition => {
       return {
         keyword: searchQuery || defaultParams.searchCondition.keyword,
-        status: selectedStatus !== null ? selectedStatus : defaultParams.searchCondition.status,
+        status: defaultParams.searchCondition.status,
         is_verified: false,
         role: UserRoles.INSTRUCTOR,
         is_deleted: false
       };
     },
-    [searchQuery, selectedStatus]
+    [searchQuery, refreshKey]
   );
 
   const fetchingUsers = useCallback(async () => {
     try {
-      const searchCondition = getSearchCondition(searchQuery, selectedStatus);
+      const searchCondition = getSearchCondition(searchQuery);
       const params = {
         searchCondition,
         pageInfo: defaultParams.pageInfo
@@ -88,7 +88,7 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, se
         message.error("An unexpected error occurred.");
       }
     }
-  }, [searchQuery, selectedStatus, getSearchCondition]);
+  }, [searchQuery, getSearchCondition]);
 
   useEffect(() => {
     fetchingUsers();
