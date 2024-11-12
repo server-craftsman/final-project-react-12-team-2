@@ -28,7 +28,7 @@ const DeleteBlogModal: React.FC<DeleteBlogModalProps> = ({ visible, blogId, onCl
   };
 
   return (
-    <Modal title="Delete Blog" visible={visible} onOk={handleDelete} onCancel={onClose} okText="Delete" cancelText="Cancel">
+    <Modal title="Delete Blog" visible={visible} onOk={handleDelete} onCancel={onClose} okText="Delete" cancelText="Cancel" okButtonProps={{ className: "bg-gradient-tone px-4 py-2 text-white" }}>
       Are you sure you want to delete this blog?
     </Modal>
   );

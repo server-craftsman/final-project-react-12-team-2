@@ -1,11 +1,11 @@
 // DislayBlog.tsx
 import React, { useEffect, useState, useCallback } from "react";
-import { Table, Space, message } from "antd";
+import { Table, Space, message, Button } from "antd";
 import { Blog, GetBlogResponse } from "../../../models/api/responsive/admin/blog.responsive.model";
 import { BlogService } from "../../../services/blog/blog.service";
 import { CategoryService } from "../../../services/category/category.service";
 import { Link } from "react-router-dom";
-import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
 import EditBlogModal from "./EditBlog";
 import DeleteBlogModal from "./DeleteBlog";
@@ -98,13 +98,17 @@ const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
       key: "action",
       render: (record: Blog) => (
         <Space size="middle">
-          <EditTwoTone
+          <Button
+            icon={<EditOutlined />}
+            className="mr-2 bg-white text-blue-500 hover:opacity-80"
             onClick={() => {
               setSelectedBlog(record);
               setEditModalVisible(true);
             }}
           />
-          <DeleteTwoTone
+          <Button
+            icon={<DeleteOutlined />}
+            className="mr-2 bg-white text-red-500 hover:opacity-80"
             onClick={() => {
               setSelectedBlog(record);
               setDeleteModalVisible(true);
