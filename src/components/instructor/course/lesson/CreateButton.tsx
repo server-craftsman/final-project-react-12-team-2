@@ -35,9 +35,16 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
     setIsOpen(true);
   };
 
+  const clearModalData = () => {
+    form.resetFields();
+    setDescription("");
+    setImagePreview("");
+    setVideoPreview("");
+  };
+
   const handleCancel = () => {
     setIsOpen(false);
-    form.resetFields();
+    clearModalData();
   };
 
   const createLesson = async () => {
@@ -100,7 +107,13 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
       <Button onClick={() => openCreateModal()} className="rounded-md bg-[#1a237e] text-white">
         Create Lesson
       </Button>
-      <Modal title="Create Lesson" open={isOpen} onOk={createLesson} onCancel={handleCancel} width={800}>
+      <Modal
+        title="Create Lesson"
+        open={isOpen}
+        onOk={createLesson}
+        onCancel={handleCancel}
+        width={800}
+      >
         <Form form={form} layout="vertical">
           <Form.Item name="name" label="Name" rules={[{ required: true, message: "Please input the lesson name!" }]}>
             <Input />

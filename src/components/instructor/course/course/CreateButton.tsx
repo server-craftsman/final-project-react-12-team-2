@@ -158,19 +158,24 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
     }
   };
 
-  const handleCancel = () => {
-    setIsOpen(false);
+  const clearModalData = () => {
     form.resetFields();
     setDescription("");
     setContent("");
-    // setIsFree(true);
+    setVideoPreview("");
+    setAvatarPreview("");
+    setVideoFileList([]);
+    setAvatarFileList([]);
+    setCategories([]);
+  };
+
+  const handleCancel = () => {
+    setIsOpen(false);
+    clearModalData();
   };
 
   const editChange = (value: string) => {
     form.setFieldsValue({ content: value });
-    // parseTinyEditor.updateTinyMCEContent("content-editor", value);
-    // editor.selection.select(editor.getBody(), true);
-    // editor.selection.collapse(false);
   };
 
   return (

@@ -64,10 +64,17 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
     }
   };
 
+
+  const clearModalData = () => {
+    form.resetFields();
+    setCourses([]);
+    setIsOpen(false);
+    // setDescription("");
+  };
+
   const handleCancel = () => {
     setIsOpen(false);
-    form.resetFields();
-    // setDescription("");
+    clearModalData();
   };
 
   // const editChange = (value: string) => {
