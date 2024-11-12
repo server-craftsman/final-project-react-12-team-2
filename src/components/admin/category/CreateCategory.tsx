@@ -80,6 +80,7 @@ const CreateCategory: React.FC = () => {
   const handleOpenModal = () => {
     form.resetFields();
     setEditorContent("");
+    setCategories(null);
     setOpen(true);
   };
 
