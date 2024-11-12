@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import logoAnimation from "../../data/logoAnimation.json";
 import Lottie from "lottie-react";
 import "./Loading.css";
-const Loading: React.FC<{ timeout?: number }> = ({ timeout = 10000 }) => {
+const Loading: React.FC<{ timeout?: number }> = ({ timeout = 20000 }) => {
   const [showTimeout, setShowTimeout] = useState(false);
 
   useEffect(() => {
