@@ -159,6 +159,7 @@ const RegisterPage = () => {
   const handleModalClose = useCallback(() => {
     setIsGoogleModalVisible(false);
     form.resetFields();
+    setIsGoogleModalVisible(false);
   }, [form]);
 
   const formRules = useMemo(
