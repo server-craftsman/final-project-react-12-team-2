@@ -29,57 +29,16 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm, activeK
           is_delete: false,
           is_position_order: false
         },
-        pageInfo: { pageNum: 1, pageSize: 10 }
+        pageInfo: { pageNum, pageSize }
       });
       if (response.data) {
         const lessonData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [response.data.data.pageData];
         setFilteredLessons(lessonData);
-        setTotalItems(lessonData.length);
+        setTotalItems(response.data.data.pageInfo.totalItems);
       }
     };
     fetchLessons();
-  }, [refreshLessons, searchTerm, activeKey]);
-
-  const paginatedCourses = () => {
-    const startIndex = (pageNum - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    return filteredLessons.slice(startIndex, endIndex);
-  };
-
-  const renderMedia = (record: Lesson["pageData"][0]) => {
-    if (record.video_url) {
-      return (
-        <div className="flex items-center justify-center">
-          <video width="200" controls controlsList="nodownload" className="rounded-md" playsInline autoPlay muted>
-            <source src={record.video_url} type="video/mp4" />
-            <source src={record.video_url} type="video/webm" />
-            <track kind="captions" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
-      );
-    } else if (record.image_url) {
-      return (
-        <div className="flex items-center justify-center">
-          <img src={record.image_url} alt="lesson media" width="200" className="rounded-md" loading="lazy" />
-        </div>
-      );
-    }
-    return null;
-  };
-
-  // const handleSearch = (searchText: string) => {
-  //   if (searchText === "") {
-  //     setFilteredLessons(lessons);
-  //   } else {
-  //     const filtered = lessons.filter((lesson) =>
-  //       lesson.name.toLowerCase().includes(searchText.toLowerCase())
-  //     );
-  //     setFilteredLessons(filtered);
-  //   }
-  //   setPageNum(1);
-  //   setTotalItems(filteredLessons.length);
-  // };
+  }, [refreshLessons, searchTerm, activeKey, pageNum, pageSize]);
 
   const columns = [
     {
@@ -104,20 +63,16 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm, activeK
       render: (text: Date) => formatDate(text)
     },
     {
-      title: "Media",
-      key: "video_url",
-      dataIndex: "video_url",
-      render: (_: any, record: Lesson["pageData"][0]) => renderMedia(record)
+      title: "Lesson Type",
+      key: "lesson_type",
+      dataIndex: "lesson_type"
     }
   ];
 
   return (
     <>
-      {/* <div className="mb-4 mt-4 flex justify-between">
-        <CustomSearch onSearch={handleSearch} placeholder="Search by lesson name" className="w-1/5" />
-      </div> */}
-      <Table columns={columns} dataSource={paginatedCourses()} rowKey="id" pagination={false} />
-      <div className="mt-5 flex justify-end">
+      <Table columns={columns} dataSource={filteredLessons} rowKey="id" pagination={false} />
+      <div className="mt-5 flex justify-start">
         <Pagination
           current={pageNum}
           pageSize={pageSize}

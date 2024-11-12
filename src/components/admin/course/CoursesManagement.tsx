@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { moneyFormat, formatDate } from "../../../utils/helper";
 import { courseStatusColor } from "../../../utils/courseStatus";
-import { message, Popconfirm, Table, Modal, Input, Button } from "antd";
+import { message, Popconfirm, Table, Modal, Input, Button, Pagination } from "antd";
 import { CheckOutlined, StopOutlined, CarryOutOutlined, ContainerOutlined } from "@ant-design/icons";
 // import { Courses } from "../../../models/prototype/Course"; // Import the Course model
 import { GetCourseParams } from "../../../models/api/request/course/course.request.model";
@@ -10,7 +10,7 @@ import { LessonService } from "../../../services/lesson/lesson.service";
 import { Lesson } from "../../../models/api/responsive/lesson/lesson.response.model";
 import { SessionService } from "../../../services/session/session.service";
 import { StatusType } from "../../../app/enums";
-import { GetCourseResponsePageData } from "../../../models/api/responsive/course/course.response.model";
+// import { GetCourseResponsePageData } from "../../../models/api/responsive/course/course.response.model";
 const { confirm } = Modal;
 
 const CoursesManagement: React.FC<{
@@ -19,7 +19,7 @@ const CoursesManagement: React.FC<{
   activeKey: string;
   refreshKey: number;
 }> = ({ searchTerm, statusFilter, activeKey, refreshKey }) => {
-  const [coursesData, setCourses] = useState<GetCourseResponsePageData[]>([]);
+  const [coursesData, setCourses] = useState<any[]>([]);
   const [isRejectModalVisible, setIsRejectModalVisible] = useState(false);
   const [rejectComment, setRejectComment] = useState("");
   const [selectedCourseId, setSelectedCourseId] = useState<string>("");
@@ -27,6 +27,9 @@ const CoursesManagement: React.FC<{
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [isSessionModalVisible, setIsSessionModalVisible] = useState(false);
   const [sessions, setSessions] = useState<any[]>([]);
+  const [pageNum, setPageNum] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageInfo, setPageInfo] = useState<any>({});
 
     const fetchCourses = async () => {
       try {
@@ -38,19 +41,20 @@ const CoursesManagement: React.FC<{
             is_delete: false
           },
           pageInfo: {
-            pageNum: 1,
-            pageSize: 10
+            pageNum,
+            pageSize
           }
         };
         const response = await CourseService.getCourse(params);
-        setCourses(response.data.data.pageData as unknown as GetCourseResponsePageData[]);
+        setCourses(response.data.data.pageData);
+        setPageInfo(response.data.data.pageInfo);
       } catch (error) {
         message.error("Failed to fetch courses");
       }
     };
     useEffect(() => {
     fetchCourses();
-  }, [searchTerm, statusFilter, refreshKey, activeKey]);
+  }, [searchTerm, statusFilter, refreshKey, activeKey, pageNum, pageSize]);
 
   const handleChangeStatus = async (id: string, newStatus: StatusType, comment: string = "") => {
     try {
@@ -136,7 +140,7 @@ const CoursesManagement: React.FC<{
       title: "ID",
       dataIndex: "id",
       key: "id",
-      render: (_: string, __: GetCourseResponsePageData, index: number) => index + 1
+      render: (_: string, __: any, index: number) => index + 1
     },
     {
       title: "Name Course",
@@ -170,7 +174,7 @@ const CoursesManagement: React.FC<{
     {
       title: "Action",
       key: "action",
-      render: (record: GetCourseResponsePageData) =>
+      render: (record: any) =>
         record.status === StatusType.WAITING_APPROVE ? (
           <div>
             <Popconfirm title="Confirm the course?" description="Are you sure to confirm this course?" onConfirm={() => handleChangeStatus(record._id, StatusType.APPROVE)} okText="Yes" cancelText="No">
@@ -192,12 +196,37 @@ const CoursesManagement: React.FC<{
 
   const filteredCourses = coursesData.filter((course) => {
     const validStatuses = [StatusType.WAITING_APPROVE, StatusType.APPROVE, StatusType.REJECT];
-    return course.name.toLowerCase().includes(searchTerm.toLowerCase()) && (statusFilter === "" || course.status === statusFilter) && validStatuses.includes(course.status);
+    const matchesSearchTerm = course.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatusFilter = statusFilter === "" || course.status === statusFilter;
+    const isValidStatus = statusFilter === "" || validStatuses.includes(course.status);
+
+    return matchesSearchTerm && matchesStatusFilter && isValidStatus;
   });
- console.log(filteredCourses);
+
+  const paginatedCourses = filteredCourses.slice((pageNum - 1) * pageSize, pageNum * pageSize);
+ console.log(paginatedCourses);
   return (
     <>
-      <Table columns={columns} dataSource={filteredCourses} rowKey="_id" />
+      <Table
+        columns={columns}
+        dataSource={coursesData}
+        rowKey="_id"
+        pagination={false}
+      />
+      <div className="mt-5 flex justify-start">
+        <Pagination
+          current={pageNum}
+          pageSize={pageSize}
+          total={pageInfo.totalItems}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          onChange={(page, pageSize) => {
+            setPageNum(page);
+            setPageSize(pageSize);
+          }}
+          showSizeChanger
+          className="bg-pagination"
+        />
+      </div>
       <Modal title="Reject Course" open={isRejectModalVisible} onOk={handleRejectOk} onCancel={() => setIsRejectModalVisible(false)}>
         <p>Please provide a reason for rejecting this course:</p>
         <Input.TextArea value={rejectComment} onChange={(e) => setRejectComment(e.target.value)} rows={4} />

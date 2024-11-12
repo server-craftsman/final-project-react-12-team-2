@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, message } from "antd";
+import { Table, message, Pagination } from "antd";
 import { formatDate } from "../../../utils/helper";
 import { SessionService } from "../../../services/session/session.service";
 import { SessionResponsePageData } from "../../../models/api/responsive/session/session.response.model";
@@ -12,6 +12,9 @@ interface SessionManagementProps {
 
 const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm, activeKey }) => {
   const [sessionData, setSessionData] = useState<SessionResponsePageData[]>([]);
+  const [pageNum, setPageNum] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [totalItems, setTotalItems] = useState<number>(0);
 
   useEffect(() => {
     const fetchSessions = async () => {
@@ -24,19 +27,20 @@ const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm, activ
             is_delete: false
           },
           pageInfo: {
-            pageNum: 1,
-            pageSize: 10
+            pageNum,
+            pageSize
           }
         };
         const response = await SessionService.getSession(params);
         setSessionData(response.data.data.pageData as unknown as SessionResponsePageData[]);
+        setTotalItems(response.data.data.pageInfo.totalItems);
       } catch (error) {
         message.error("Failed to fetch sessions");
       }
     };
 
     fetchSessions();
-  }, [searchTerm, activeKey]);
+  }, [searchTerm, activeKey, pageNum, pageSize]);
 
   const columns = [
     {
@@ -64,11 +68,23 @@ const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm, activ
     }
   ];
 
-  const filteredSessions = sessionData.filter((session) => session.name.toLowerCase().includes(searchTerm.toLowerCase()));
-  console.log(filteredSessions);
   return (
     <>
-      <Table columns={columns} dataSource={filteredSessions} rowKey="_id" />
+      <Table columns={columns} dataSource={sessionData} rowKey="_id" pagination={false} />
+      <div className="mt-5 flex justify-start">
+        <Pagination
+          current={pageNum}
+          pageSize={pageSize}
+          total={totalItems}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          onChange={(page, pageSize) => {
+            setPageNum(page);
+            setPageSize(pageSize);
+          }}
+          showSizeChanger
+          className="bg-pagination"
+        />
+      </div>
     </>
   );
 };
