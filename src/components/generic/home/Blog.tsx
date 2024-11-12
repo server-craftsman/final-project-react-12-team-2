@@ -7,6 +7,7 @@ import { BlogService } from "../../../services/blog/blog.service";
 import { Avatar, Card } from "antd";
 import { InfoCircleFilled, UserOutlined } from "@ant-design/icons";
 import { UserService } from "../../../services/student/user.service";
+import { formatDate } from "../../../utils/helper";
 
 interface SearchBlogCondition {
   name: string;
@@ -145,7 +146,7 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
                   <div className="ml-3">
                     <p className="font-10px text-lg">{blog.user_name}</p>
                     <p className="text-gray-500 text-sm">
-                      {new Date(blog.created_at).toLocaleDateString()}
+                      {formatDate(new Date(blog.created_at))}
                     </p>
                   </div>
                 </div>
