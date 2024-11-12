@@ -1,60 +1,87 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs } from "antd";
 import InstructorSubscriber from "../../../components/instructor/subscription/InstructorSubscriber";
 import InstructorSubscribed from "../../../components/instructor/subscription/InstructorSubscribed";
-import subscriptionData from "../../../data/subscriptions.json";
 import CustomSearch from "../../../components/generic/search/CustomSearch";
-import { UserRole } from "../../../models/prototype/User";
-import data from "../../../data/users.json";
-import { Subscriptions } from "../../../models/prototype/Subscriptions";
-//import { User } from "../../../models/api/responsive/users/users.model";
+import { message } from "antd";
 
 const SubscriptionPage: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [, setFilteredSubscriptions] = useState<Subscriptions[]>([]);
-
-  useEffect(() => {
-    const instructorSubscriptions = subscriptionData.filter((subscription: Subscriptions) => {
-      const user = data.users.find((user: any) => user.id === subscription.instructor_id);
-      return user?.role === UserRole.instructor;
-    });
-    setFilteredSubscriptions(instructorSubscriptions);
-  }, []);
+  const [activeTab, setActiveTab] = useState("1");
+  const [subscribedSearchValue, setSubscribedSearchValue] = useState("");
+  const [subscriberSearchValue, setSubscriberSearchValue] = useState("");
 
   const handleSearch = (value: string) => {
-    setSearchQuery(value);
+    if (activeTab === "1") {
+      setSubscribedSearchValue(value);
+    } else {
+      setSubscriberSearchValue(value);
+    }
   };
 
-  //  const subscriptionsWithUserData = filteredSubscriptions.map((subscription) => {
-  //   const user = data.users.find((user: any) => user.id === subscription.instructor_id);
-  //   return {
-  //     ...subscription,
-  //     user: {
-  //       name: user?.name,
-  //       email: user?.email,
-  //       phone_number: user?.phone_number,
-  //       avatar_url: user?.avatar_url
-  //     }
-  //   };
-  // });
+  const handleTabChange = (key: string) => {
+    setActiveTab(key);
+    // Reset search value when switching tabs
+    if (key === "1") {
+      setSubscriberSearchValue("");
+    } else {
+      setSubscribedSearchValue("");
+    }
+  };
+
+  useEffect(() => {
+    // Xóa các hàm fetch không cần thiết
+    // const fetchSubscribedData = async () => { ... };
+    // const fetchSubscriberData = async () => { ... };
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      // Implement your data fetching logic here
+      // For example:
+      // const response = await api.fetchSubscribedData();
+      // return response.data;
+    } catch (error) {
+      message.error("Failed to fetch data");
+    }
+  };
 
   const items = [
     {
       key: "1",
       label: "Subscribed",
-      children: <InstructorSubscribed searchQuery={searchQuery} />
+      children: activeTab === "1" ? (
+        <InstructorSubscribed
+          key={`subscribed-${activeTab}`}
+          searchValue={subscribedSearchValue}
+          fetchData={fetchData}
+        />
+      ) : null
     },
     {
       key: "2",
       label: "Subscriber",
-      children: <InstructorSubscriber searchQuery={searchQuery} />
+      children: activeTab === "2" ? (
+        <InstructorSubscriber
+          key={`subscriber-${activeTab}`}
+          searchValue={subscriberSearchValue}
+        />
+      ) : null
     }
   ];
 
   return (
     <div>
-      <CustomSearch onSearch={handleSearch} placeholder="Search instructors..." className="search-input" />
-      <Tabs defaultActiveKey="1" items={items} />
+      <CustomSearch
+        onSearch={handleSearch}
+        placeholder={activeTab === "1" ? "Search subscribed instructors..." : "Search subscribers..."}
+        className="search-input"
+      />
+      <Tabs
+        activeKey={activeTab}
+        defaultActiveKey="1"
+        items={items}
+        onChange={handleTabChange}
+      />
     </div>
   );
 };

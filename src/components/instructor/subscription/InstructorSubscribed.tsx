@@ -3,7 +3,6 @@ import { Card, Avatar, Row, Col, message } from "antd";
 import { GetSubscriptionsResponse } from "../../../models/api/responsive/subscription/sub.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model";
 import { Link } from "react-router-dom";
-
 import { SubscriptionService } from "../../../services/subscription/subscription.service";
 import { GetSubscriptionsParams } from "../../../models/api/request/subscription/sub.request.model";
 import { UserService } from "../../../services/instructor/user.service";
@@ -14,15 +13,17 @@ interface SearchSubscriptionCondition {
   is_delete: boolean;
 }
 
-interface InstructorSubscriptionProps {
-  searchQuery: string;
+interface InstructorSubscribedProps {
+  searchValue: string;
+  fetchData: () => Promise<void>;
 }
 
-const InstructorSubscribed: React.FC<InstructorSubscriptionProps> = ({ searchQuery }) => {
+const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue }) => {
   const [subscriptions, setSubscriptions] = useState<GetSubscriptionsResponse | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(true);
+  const [loading, setLoading] = useState(false);
 
   const defaultParams = {
     pageInfo: {
@@ -35,16 +36,17 @@ const InstructorSubscribed: React.FC<InstructorSubscriptionProps> = ({ searchQue
     }
   } as const;
 
-  const getSearchCondition = useCallback((searchQuery: string): SearchSubscriptionCondition => {
+  const getSearchCondition = useCallback((): SearchSubscriptionCondition => {
     return {
-      keyword: searchQuery || defaultParams.searchCondition.keyword,
+      keyword: defaultParams.searchCondition.keyword,
       is_delete: false
     };
   }, []);
 
   const fetchSubscriptions = useCallback(async () => {
+    setLoading(true);
     try {
-      const searchCondition = getSearchCondition(searchQuery);
+      const searchCondition = getSearchCondition();
       const params: GetSubscriptionsParams = {
         pageInfo: defaultParams.pageInfo,
         searchCondition
@@ -53,8 +55,10 @@ const InstructorSubscribed: React.FC<InstructorSubscriptionProps> = ({ searchQue
       setSubscriptions(response.data?.data ? response.data.data : null);
     } catch (error) {
       message.error("No subscriptions found");
+    } finally {
+      setLoading(false);
     }
-  }, [searchQuery, getSearchCondition]);
+  }, [getSearchCondition]);
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -62,7 +66,9 @@ const InstructorSubscribed: React.FC<InstructorSubscriptionProps> = ({ searchQue
         const instructorIds = subscriptions.pageData.map((sub) => sub.instructor_id);
         const promises = instructorIds.map((id) => UserService.getUserDetails(id));
         const responses = await Promise.all(promises);
-        const validUsers = responses.filter((response) => response.data?.data).map((response) => response.data.data);
+        const validUsers = responses
+          .filter((response) => response.data?.data)
+          .map((response) => response.data.data);
         setUsers(validUsers);
       }
     } catch (error) {
@@ -70,72 +76,94 @@ const InstructorSubscribed: React.FC<InstructorSubscriptionProps> = ({ searchQue
     }
   }, [subscriptions]);
 
+  // Effect for fetching subscriptions
   useEffect(() => {
     fetchSubscriptions();
-  }, [fetchSubscriptions]);
+    // Cleanup function để tránh memory leak
+    return () => {
+      setSubscriptions(null);
+      setUsers([]);
+    };
+  }, []); // Chỉ chạy một lần khi mount
 
+  // Effect for fetching users when subscriptions change
   useEffect(() => {
     if (subscriptions?.pageData && subscriptions.pageData.length > 0) {
       fetchUsers();
     }
-  }, [subscriptions?.pageData]);
+  }, [subscriptions?.pageData, fetchUsers]);
+
+  const filterUsers = useCallback(() => {
+    if (!users || !subscriptions?.pageData) return [];
+
+    return users.filter(user => {
+      const searchLower = searchValue.toLowerCase();
+      return (
+        user.name?.toLowerCase().includes(searchLower) ||
+        user.email?.toLowerCase().includes(searchLower) ||
+        user.phone_number?.toLowerCase().includes(searchLower)
+      );
+    });
+  }, [users, searchValue]);
+
+  const filteredUsers = filterUsers();
 
   return (
     <div style={{ backgroundColor: "#f0f2f5" }}>
-      <Row gutter={[12, 12]}>
+      <Row gutter={[16, 16]}>
         {subscriptions?.pageData.map((subscription) => {
-          const user = users.find((user) => user._id === subscription.instructor_id);
+          const user = filteredUsers.find((user) => user._id === subscription.instructor_id);
+          if (!user) return null;
           return (
-            <Col span={8} key={subscription._id}>
+            <Col xs={24} sm={12} md={8} lg={6} key={subscription._id}>
               <Link to={`/profile/${subscription.instructor_id}`} style={{ textDecoration: "none" }}>
                 <Card
                   hoverable
+                  loading={loading}
                   title={
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        textAlign: "center"
-                      }}
-                    >
+                    <div style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      textAlign: "center"
+                    }}>
                       <Avatar src={user?.avatar_url} size={64} style={{ marginBottom: "8px" }} />
-                      <span style={{ fontSize: "20px", fontWeight: "bold" }}>{user?.name}</span>
+                      <span style={{ fontSize: "16px", fontWeight: "bold" }}>{user?.name}</span>
                     </div>
                   }
                   style={{
-                    borderRadius: "15px",
-                    border: "2px solid #000",
-                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                    height: '100%',
+                    borderRadius: "12px",
+                    border: "1px solid #000",
+                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                     backgroundColor: "#f0f2f5",
                     cursor: "pointer",
                     textAlign: "center"
                   }}
+                  bodyStyle={{ padding: "12px", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
                 >
-                  <p
-                    style={{
+                  <div>
+                    <p style={{
                       fontSize: "14px",
                       marginBottom: "8px",
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
                       gap: "4px"
-                    }}
-                  >
-                    <strong>Email:</strong> {user?.email}
-                  </p>
-                  <p
-                    style={{
+                    }}>
+                      <strong>Email:</strong> {user?.email}
+                    </p>
+                    <p style={{
                       fontSize: "14px",
                       marginBottom: "16px",
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
                       gap: "4px"
-                    }}
-                  >
-                    <strong>Phone:</strong> {user?.phone_number}
-                  </p>
+                    }}>
+                      <strong>Phone:</strong> {user?.phone_number}
+                    </p>
+                  </div>
                   <div
                     onClick={(e) => e.preventDefault()}
                     style={{
