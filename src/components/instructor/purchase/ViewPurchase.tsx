@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Table, Tag } from "antd";
 import { formatDate, moneyFormat } from "../../../utils/helper";
-import { PurchaseStatusEnum } from "../../../models/prototype/Purchases";
+import { PurchaseStatus } from "../../../app/enums/purchase.status";
 import PurchaseCheckbox from "./PurchaseCheckbox";
 import { PurchaseService } from "../../../services/purchase/purchase.service";
 import { SearchForInstructorPurchaseRequestModel } from "../../../models/api/request/purchase/purchase.request.model";
@@ -77,15 +77,15 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
         let text = "";
 
         switch (status) {
-          case PurchaseStatusEnum.new:
+          case PurchaseStatus.NEW:
             color = "blue";
             text = "new";
             break;
-          case PurchaseStatusEnum.request_paid:
+          case PurchaseStatus.REQUEST_PAID:
             color = "orange";
             text = "request_paid";
             break;
-          case PurchaseStatusEnum.completed:
+          case PurchaseStatus.COMPLETED:
             color = "green";
             text = "completed";
             break;
@@ -122,12 +122,6 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
       key: "created_at",
       render: (date: Date) => formatDate(date)
     },
-    {
-      title: "Updated At",
-      dataIndex: "updated_at",
-      key: "updated_at",
-      render: (date: Date) => formatDate(date)
-    }
   ];
 
   return (

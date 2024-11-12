@@ -103,5 +103,8 @@ export const API = {
     CREATE_REVIEW: "api/review",
     UPDATE_REVIEW: "api/review/:id",
     DELETE_REVIEW: "api/review/:id"
+  },
+  PAYOUT: {
+    CREATE_PAYOUT: "api/payout"
   }
 };

@@ -23,6 +23,7 @@ const PurchasesManagement: React.FC = () => {
 
   const handleRequestComplete = () => {
     console.log("Purchases requested successfully");
+    // Optionally, you can refresh the purchases list or perform other actions here
   };
 
   return (
@@ -35,13 +36,14 @@ const PurchasesManagement: React.FC = () => {
         }}
       >
         <CustomSearch onSearch={handleSearch} placeholder="Search Purchases" className="search-input" />
-        <RequestPurchasesButton onRequestComplete={handleRequestComplete} disabled={selectedPurchases.size === 0} />
+        <RequestPurchasesButton
+          onRequestComplete={handleRequestComplete}
+          disabled={selectedPurchases.size === 0}
+          selectedPurchases={selectedPurchases}
+        />
         <FilterStatusPurchases onFilterChange={handleFilterChange} filterStatus={filterStatus} />
       </div>
       <ViewPurchase searchQuery={searchQuery} filterStatus={filterStatus} onSelectionChange={handleSelectionChange} />
-      {/* <button disabled={selectedPurchases.size === 0} onClick={() => console.log("Create Payout clicked")}>
-        Create Payout
-      </button> */}
     </div>
   );
 };
