@@ -5,6 +5,8 @@ import { GetBlogResponse } from "../../../models/api/responsive/admin/blog.respo
 import { GetBlogParams } from "../../../models/api/request/admin/blog.request.model";
 import { BlogService } from "../../../services/blog/blog.service";
 import { Avatar, Card } from "antd";
+import { InfoCircleFilled, UserOutlined } from "@ant-design/icons";
+import { UserService } from "../../../services/student/user.service";
 
 interface SearchBlogCondition {
   name: string;
@@ -20,6 +22,7 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
   const [blogData, setBlogData] = useState<GetBlogResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [userAvatars, setUserAvatars] = useState<Record<string, string>>({});
 //   const navigate = useNavigate();
 
   const defaultParams: GetBlogParams = {
@@ -68,6 +71,30 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
     fetchBlogs();
   }, [fetchBlogs]);
 
+  const fetchUserAvatar = useCallback(async (userId: string) => {
+    try {
+      const response = await UserService.getUserDetails(userId);
+      if (response.data?.data?.avatar_url) {
+        setUserAvatars(prev => ({
+          ...prev,
+          [userId]: response.data.data.avatar_url
+        }));
+      }
+    } catch (error) {
+      console.error('Error fetching user avatar:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (blogData?.pageData) {
+      blogData.pageData.forEach(blog => {
+        if (blog.user_id && !userAvatars[blog.user_id]) {
+          fetchUserAvatar(blog.user_id);
+        }
+      });
+    }
+  }, [blogData, fetchUserAvatar]);
+
   const filteredData = blogData?.pageData?.filter(
     (blog) =>
       (blog.name && blog.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
@@ -110,7 +137,11 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
               <div className="w-7/10 pl-4 flex flex-col justify-between">
                 {/* Header with Avatar, Author's Name, and Date */}
                 <div className="flex items-center mb-2">
-                  <Avatar src={blog.image_url} size="large" />
+                  <Avatar 
+                    src={userAvatars[blog.user_id]}
+                    size="large"
+                    icon={!userAvatars[blog.user_id] && <UserOutlined />}
+                  />
                   <div className="ml-3">
                     <p className="font-10px text-lg">{blog.user_name}</p>
                     <p className="text-gray-500 text-sm">
@@ -127,8 +158,12 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
 
                 {/* Action Buttons */}
                 <div className="flex justify-between items-center border-t border-gray-200 pt-4 mt-4">
-                  <Link to={`/blog-details/${blog._id}`} className="ml-2 text-blue-500 hover:underline">
-                    View details
+                  <Link 
+                    to={`/blog-details/${blog._id}`} 
+                    className="text-blue-500 hover:text-blue-700 transition-colors duration-200 flex items-center gap-2"
+                  >
+                    {/* <span className="text-lg font-medium">View details</span> */}
+                    <InfoCircleFilled style={{ fontSize: '20px' }} />
                   </Link>
                 </div>
               </div>

@@ -4,7 +4,10 @@ import { Avatar, Button, Card } from "antd";
 import { BackwardFilled  } from "@ant-design/icons"; 
 import { BlogService } from "../../../services/blog/blog.service";
 import { GetBlogResponse, getPublicBlogsDetails } from "../../../models/api/responsive/admin/blog.responsive.model";
-
+import { UserService } from "../../../services/student/user.service";
+import { formatDate } from "../../../utils/helper";
+import { UserOutlined } from "@ant-design/icons";
+import { useCallback } from "react";
 
 const BlogDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -13,17 +16,31 @@ const BlogDetails: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingRelated, setLoadingRelated] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [userAvatars, setUserAvatars] = useState<Record<string, string>>({});
 
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString('vi-VN', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+  const fetchUserAvatar = useCallback(async (userId: string) => {
+    try {
+      const response = await UserService.getUserDetails(userId);
+      if (response.data?.data?.avatar_url) {
+        setUserAvatars(prev => ({
+          ...prev,
+          [userId]: response.data.data.avatar_url
+        }));
+      }
+    } catch (error) {
+      console.error('Error fetching user avatar:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (relatedBlogs?.pageData) {
+      relatedBlogs.pageData.forEach(blog => {
+        if (blog.user_id && !userAvatars[blog.user_id]) {
+          fetchUserAvatar(blog.user_id);
+        }
+      });
+    }
+  }, [relatedBlogs, fetchUserAvatar]);
 
   const fetchData = async () => {
     if (!id) {
@@ -74,15 +91,18 @@ const BlogDetails: React.FC = () => {
       </div>
       <div className="p-4">
         <div className="flex items-center mb-3">
-          <Avatar src={blog.image_url} />
+          <Avatar 
+            src={userAvatars[blog.user_id]} 
+            icon={!userAvatars[blog.user_id] && <UserOutlined />}
+          />
           <div className="ml-2">
             <p className="text-sm font-medium">{blog.user_name}</p>
-            <p className="text-xs text-gray-500">{formatDate(blog.created_at?.toString())}</p>
+            <p className="text-xs text-gray-500">{formatDate(new Date(blog.created_at || ''))}</p>
           </div>
         </div>
         <h3 className="text-lg font-semibold mb-2 line-clamp-2">{blog.name}</h3>
         <p className="text-gray-600 text-sm mb-3 line-clamp-3">{blog.description}</p>
-        <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+        <span className="bg-[#1a237e] text-white text-xs px-2 py-1 rounded">
           {blog.category_name}
         </span>
       </div>
@@ -112,8 +132,10 @@ const BlogDetails: React.FC = () => {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">{blog?.name}</h1>
           <h1 className="text-xl font-bold text-gray-900 mb-2 ml-5 pt-2">Category: {blog?.category_name}</h1>
           <h1 className="text-xl font-bold text-gray-900 mb-2 ml-5">Author: {blog?.user_name}</h1>
-          <p className="text-gray-500 mb-2 ml-5">Created on: {formatDate(blog?.created_at?.toString())}</p>
-          <p className="text-gray-500 mb-2 ml-5">Updated on: {formatDate(blog?.updated_at?.toString())}</p>
+
+          <p className="text-gray-500 mb-2 ml-5"> Created on: {blog?.created_at ? formatDate(new Date(blog.created_at)) : ''}</p>
+          <p className="text-gray-500 mb-2 ml-5">Updated on: {blog?.updated_at ? formatDate(new Date(blog.updated_at)) : ''}</p>
+          
           <p className="text-gray-700 mb-6 text-xl">{blog?.description}</p>
           <div className="text-gray-600 text-lg break-words" dangerouslySetInnerHTML={{ __html: blog?.content || "" }} />
         </div>
