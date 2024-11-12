@@ -8,7 +8,7 @@ import { GetPublicCourseDetailResponse } from "../../../../models/api/responsive
 const { Title, Paragraph } = Typography;
 
 const checkUserInfo = (course: GetPublicCourseDetailResponse) => {
-  return course?.is_in_cart || course?.is_purchased;
+  return course?.is_purchased;
 };
 
 const CourseContent: React.FC<CourseContentProps & { course: GetPublicCourseDetailResponse }> = ({ course, sessions, lessons, courseId, activeSessionId, setActiveSessionId }) => {
@@ -39,14 +39,14 @@ const CourseContent: React.FC<CourseContentProps & { course: GetPublicCourseDeta
                     renderItem={(lesson) => (
                       <List.Item key={lesson._id} className="flex flex-row items-start justify-start text-left">
                         <Link
-                          to={checkUserInfo(course) ? `/course/${courseId}/lesson/${lesson._id}` : "/login"}
+                          to={checkUserInfo(course) ? `/course/${courseId}/lesson/${lesson._id}` : `/courses/all`} 
                           className="w-full text-left"
                           onClick={(e) => {
                             if (!checkUserInfo(course)) {
                               e.preventDefault();
-                              message.warning("You need to purchase this course to view the full content.");
+                              message.warning("Please purchase this course to access the lessons");
                               setTimeout(() => {
-                                window.location.href = "/login";
+                                window.location.href = `/courses/all`;
                               }, 2000);
                             }
                           }}

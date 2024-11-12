@@ -92,7 +92,7 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string, course: a
   };
 
   const checkUserInfo = (course: GetPublicCourseDetailResponse) => {
-    return course?.is_in_cart || course?.is_purchased;
+    return course?.is_purchased;
   };
   
   return (
