@@ -13,6 +13,12 @@ export const BlogService = {
       payload: body,
     });
   },
+  getBlogsDetails(id: string) {
+    return BaseService.get<ResponseSuccess<GetBlogResponse>>({
+      url: API.ADMIN.GET_BLOG_DETAILS.replace(":id", id),
+    });
+  },
+  // Get Blog
   getBlog(params: GetBlogParams) {
     return BaseService.post<ResponseSuccess<GetBlogResponse>>({
       url: API.ADMIN.GET_BLOG,

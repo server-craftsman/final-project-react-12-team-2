@@ -9,7 +9,7 @@ import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
 import EditBlogModal from "./EditBlog";
 import DeleteBlogModal from "./DeleteBlog";
-import { ROUTER_URL } from "../../../const/router.path";
+
 
 const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
   const [blogData, setBlogData] = useState<GetBlogResponse | null>(null);
@@ -42,25 +42,30 @@ const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
         pageInfo: { pageNum: 1, pageSize: 10 },
         searchCondition: { name: searchQuery, is_delete: false }
       });
-      setBlogData(response.data.data);
+      if (response?.data?.data) {
+        setBlogData(response.data.data);
+      } else {
+        throw new Error('Invalid response format');
+      }
     } catch (error) {
-      message.error("An unexpected error occurred while fetching blogs");
+      console.error('Error fetching blogs:', error);
+      message.error("An unexpected error occurred while fetching blogs. Please try again later.");
     }
   }, [searchQuery]);
 
   const fetchCategories = useCallback(async () => {
     try {
       const response = await CategoryService.getPublicCategory(defaultParams);
-      const pageData = response.data.data.pageData;
+      const pageData = response?.data?.data?.pageData;
 
       if (Array.isArray(pageData)) {
         setCategories(pageData);
       } else {
-        console.error("Expected an array of categories, but got:", pageData);
+        throw new Error('Invalid categories data format');
       }
     } catch (error) {
-      message.error("Failed to fetch categories");
       console.error("Error fetching categories:", error);
+      message.error("Failed to fetch categories. Please try again later.");
     }
   }, []);
 
@@ -80,11 +85,11 @@ const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
     {
       title: "Blog Name",
       dataIndex: "name",
-      render: (text: string, record: Blog) => (
-        <Link to={`${ROUTER_URL.ADMIN.BLOG_DETAILS.replace(":id", record._id)}`}>
-          {text}
+      render: (name: string, record: Blog) => (
+        <Link to={`/admin/admin-blog/${record._id}`}>
+          {name}
         </Link>
-      ),
+      )
     },
     {
       title: "Category Name",

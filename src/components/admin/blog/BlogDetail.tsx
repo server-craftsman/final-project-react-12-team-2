@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Col, Form, Input, Row, Skeleton } from 'antd';
 import { ROUTER_URL } from '../../../const/router.path';
-import { API } from '../../../const/api.path';
+import { BlogService } from '../../../services/blog/blog.service';
 
 interface Blog {
     id: string;
@@ -39,13 +39,12 @@ const BlogDetail: React.FC = () => {
 
             try {
                 setLoading(true);
-                const url = API.ADMIN.GET_BLOG_DETAILS.replace(':id', id);
-                const response = await fetch(url);
-                if (!response.ok) {
+                const response = await BlogService.getBlogsDetails(id);
+                if (response?.data?.data) {
+                    setBlog(response.data.data as unknown as Blog);
+                } else {
                     throw new Error('Failed to fetch blog data');
                 }
-                const data: Blog = await response.json();
-                setBlog(data);
             } catch (err: any) {
                 setError(err.message || 'Something went wrong');
             } finally {
@@ -60,12 +59,8 @@ const BlogDetail: React.FC = () => {
         if (!id) return;
 
         try {
-            const url = API.ADMIN.DELETE_BLOG.replace(':id', id);
-            const response = await fetch(url, { method: 'DELETE' });
-            if (!response.ok) {
-                throw new Error('Failed to delete blog');
-            }
-            navigate(ROUTER_URL.ADMIN.BLOG_DETAILS); // Chuyển về danh sách blog sau khi xóa
+            await BlogService.deleteBlog(id);
+            navigate(ROUTER_URL.ADMIN.BLOG); // Chuyển về danh sách blog sau khi xóa
         } catch (err: any) {
             setError(err.message || 'Something went wrong');
         }
@@ -88,11 +83,7 @@ const BlogDetail: React.FC = () => {
             <Col span={24}>
                 <Form layout="vertical">
                     <Row gutter={16}>
-                        <Col span={12}>
-                            <Form.Item label="ID">
-                                <Input value={blog.id} readOnly />
-                            </Form.Item>
-                        </Col>
+
                         <Col span={12}>
                             <Form.Item label="Category ID">
                                 <Input value={blog.category_id || 'N/A'} readOnly />

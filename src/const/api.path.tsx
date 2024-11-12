@@ -85,5 +85,5 @@ export const API = {
   BLOG: {
     GET_BLOGS: "api/client/blog/search",
     GET_BLOGS_DETAILS: "api/client/blog/:id"
-}
+  }
 };

@@ -63,7 +63,7 @@ export const ROUTER_URL = {
     BLOG: "/blog",
     BLOG_DETAILS_ID: "/blog-details/:id"
 
-    
+
   },
   UNAUTHORIZED: "/unauthorized"
 };
