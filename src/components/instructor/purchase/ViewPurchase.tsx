@@ -9,10 +9,11 @@ import { SearchForInstructorPurchaseResponseModel } from "../../../models/api/re
 interface ViewPurchaseProps {
   searchQuery: string;
   filterStatus: string;
-  onSelectionChange: (selectedPurchases: Set<string>) => void;
+  onSelectionChange: (selected: Set<string>) => void;
+  refreshKey: number;
 }
 
-const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, onSelectionChange }) => {
+const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, onSelectionChange, refreshKey }) => {
   const [selectedPurchases, setSelectedPurchases] = useState<Set<string>>(new Set());
   const [purchases, setPurchases] = useState<SearchForInstructorPurchaseResponseModel["pageData"]>([]);
 
@@ -38,9 +39,10 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
         console.error("Failed to fetch purchases", error);
       }
     };
+    
     useEffect(() => {
     fetchPurchases();
-  }, [searchQuery, filterStatus]);
+  }, [searchQuery, filterStatus, refreshKey]);
 
   const handleSelectAllChange = (checked: boolean) => {
     setSelectedPurchases(checked ? new Set(purchases.map((fetchPurchases) => fetchPurchases._id)) : new Set());
@@ -58,10 +60,20 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
 
   const columns = [
     {
-      title: <PurchaseCheckbox checked={selectedPurchases.size === purchases.length} onChange={handleSelectAllChange} />,
+      title: <PurchaseCheckbox 
+               checked={selectedPurchases.size === purchases.length} 
+               onChange={handleSelectAllChange} 
+               disabled={purchases.some(purchase => purchase.status === PurchaseStatus.REQUEST_PAID || purchase.status === PurchaseStatus.COMPLETED)} 
+             />,
       dataIndex: "_id",
       key: "select",
-      render: (id: string) => <PurchaseCheckbox checked={selectedPurchases.has(id)} onChange={(checked) => handleCheckboxChange(id, checked)} />
+      render: (id: string, record: any) => (
+        <PurchaseCheckbox 
+          checked={selectedPurchases.has(id)} 
+          onChange={(checked) => handleCheckboxChange(id, checked)} 
+          disabled={record.status === PurchaseStatus.REQUEST_PAID || record.status === PurchaseStatus.COMPLETED} 
+        />
+      )
     },
     {
       title: "Purchase No",

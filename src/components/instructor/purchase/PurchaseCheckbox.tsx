@@ -4,10 +4,15 @@ import { Checkbox } from "antd";
 const PurchaseCheckbox: React.FC<{
   checked: boolean;
   onChange: (checked: boolean) => void;
-}> = ({ checked, onChange }) => {
+  disabled?: boolean;
+}> = ({ checked, onChange, disabled }) => {
   return (
     <div>
-      <Checkbox checked={checked} onChange={(e) => onChange(e.target.checked)} />
+      <Checkbox 
+        checked={checked} 
+        onChange={(e) => onChange(e.target.checked)} 
+        disabled={disabled} 
+      />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Modal, notification } from "antd";
 import { PayoutService } from "../../../services/payout/payout.service";
 import { CreatePayoutRequestModel } from "../../../models/api/request/payout/payout.request.model";
@@ -10,10 +10,10 @@ interface RequestPurchasesProps {
 }
 
 const RequestPurchases: React.FC<RequestPurchasesProps> = ({ onRequestComplete, disabled, selectedPurchases }) => {
-  const [isRequesting, setIsRequesting] = useState(false);
+  // const [isRequesting, setIsRequesting] = useState(false);
 
   const handleRequestPurchases = async () => {
-    setIsRequesting(true);
+    // setIsRequesting(true);
     try {
       const params: CreatePayoutRequestModel = {
         instructor_id: "instructor_id_here",
@@ -32,9 +32,10 @@ const RequestPurchases: React.FC<RequestPurchasesProps> = ({ onRequestComplete, 
         message: "Error",
         description: "Failed to complete payout request."
       });
-    } finally {
-      setIsRequesting(false);
-    }
+    } 
+    // finally {
+    //   setIsRequesting(false);
+    // }
   };
 
   const showConfirm = () => {
@@ -46,11 +47,11 @@ const RequestPurchases: React.FC<RequestPurchasesProps> = ({ onRequestComplete, 
 
   return (
     <button
-      className={`my-2 rounded-md bg-gradient-to-r from-blue-500 to-purple-500 px-4 text-white ${isRequesting || disabled ? "cursor-not-allowed opacity-50" : ""}`}
       onClick={showConfirm}
-      disabled={isRequesting || disabled}
+      className={`my-2 rounded-md px-4 py-2.5 text-white ${disabled ? 'bg-gray-400' : 'bg-gradient-tone'}`}
+      disabled={disabled}
     >
-      {isRequesting ? "Requesting..." : "Create Payout"}
+      Create Payout
     </button>
   );
 };

@@ -1,14 +1,14 @@
 import React from "react";
 import { Select } from "antd";
-import { PurchaseStatusEnum } from "../../../models/prototype/Purchases";
+import { PurchaseStatus } from "../../../app/enums/purchase.status";
 
 interface FilterStatusPurchasesProps {
-  onFilterChange: (status: string) => void;
-  filterStatus: string;
+  onFilterChange: (status: PurchaseStatus | "") => void;
+  filterStatus: PurchaseStatus | "";
 }
 
 const FilterStatusPurchases: React.FC<FilterStatusPurchasesProps> = ({ onFilterChange, filterStatus }) => {
-  const handleStatusChange = (value: string) => {
+  const handleStatusChange = (value: PurchaseStatus | "") => {
     onFilterChange(value);
   };
 
@@ -16,9 +16,9 @@ const FilterStatusPurchases: React.FC<FilterStatusPurchasesProps> = ({ onFilterC
     <div>
       <Select placeholder="Select Status" onChange={handleStatusChange} value={filterStatus} style={{ width: 200, marginTop: "10px" }}>
         <Select.Option value="">All</Select.Option>
-        <Select.Option value={PurchaseStatusEnum.new}>New</Select.Option>
-        <Select.Option value={PurchaseStatusEnum.request_paid}>Request Paid</Select.Option>
-        <Select.Option value={PurchaseStatusEnum.completed}>Completed</Select.Option>
+        <Select.Option value={PurchaseStatus.NEW}>New</Select.Option>
+        <Select.Option value={PurchaseStatus.REQUEST_PAID}>Request Paid</Select.Option>
+        <Select.Option value={PurchaseStatus.COMPLETED}>Completed</Select.Option>
       </Select>
     </div>
   );
