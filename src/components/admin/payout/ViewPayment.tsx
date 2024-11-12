@@ -12,9 +12,10 @@ interface ViewPaymentProps {
   status: string;
   onStatusChange: (key: string) => void;
   activeTabKey: string;
+  refreshKey: number;
 }
 
-const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatusChange, activeTabKey }) => {
+const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatusChange, activeTabKey, refreshKey }) => {
   const [payments, setPayments] = useState<any[]>([]);
   const [selectedPayoutDetails, setSelectedPayoutDetails] = useState<unknown[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -59,7 +60,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
     return () => {
       isMounted = false;
     };
-  }, [searchQuery, status, activeTabKey]);
+  }, [searchQuery, status, activeTabKey, refreshKey]);
 
   const handleViewDetails = (payoutId: string) => {
     const payout = payments.find((payment) => payment._id === payoutId);
