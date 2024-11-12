@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, Select, Button, Upload, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { BlogService } from "../../../services/blog/blog.service";
 import { Blog } from "../../../models/api/responsive/admin/blog.responsive.model";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
 import Editor from "../../generic/tiny/Editor";
-import { handleUploadFile } from "../../../utils/upload";
+import { BaseService } from "../../../services/config/base.service";
 
 interface EditBlogModalProps {
   visible: boolean;
@@ -19,11 +19,7 @@ const EditBlogModal: React.FC<EditBlogModalProps> = ({ visible, blog, categories
   const [form] = Form.useForm();
   const [image_url, setImageUrl] = useState(blog?.image_url || "");
   const [content, setContent] = useState(blog?.content || "");
-  const [state, setState] = useState({
-    selectedFile: null as File | null,
-    uploading: false,
-    blog: null as Blog | null
-  });
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     form.setFieldsValue(blog);
@@ -31,7 +27,7 @@ const EditBlogModal: React.FC<EditBlogModalProps> = ({ visible, blog, categories
     setContent(blog?.content || "");
   }, [blog, form]);
 
-  const handleImageUpload = useCallback(async (file: File) => {
+  const handleImageUpload = async (file: File) => {
     const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
       message.error("File size should not exceed 5MB");
@@ -44,10 +40,10 @@ const EditBlogModal: React.FC<EditBlogModalProps> = ({ visible, blog, categories
       return false;
     }
 
-    setState((prev) => ({ ...prev, uploading: true }));
+    setUploading(true);
 
     try {
-      const uploadedUrl = await handleUploadFile(file, "image");
+      const uploadedUrl = await BaseService.uploadFile(file, "image", true);
       if (uploadedUrl) {
         setImageUrl(uploadedUrl);
         message.success("Image uploaded successfully");
@@ -58,21 +54,21 @@ const EditBlogModal: React.FC<EditBlogModalProps> = ({ visible, blog, categories
       message.error("Image upload failed");
       console.error("Image upload error:", error);
     } finally {
-      setState((prev) => ({ ...prev, uploading: false }));
+      setUploading(false);
     }
 
-    return false; // Prevent default upload behavior
-  }, []);
+    return false;
+  };
 
   const submitUpdateBlog = async () => {
-    setState((prev) => ({ ...prev, uploading: true }));
+    setUploading(true);
     try {
       const updatedBlog = await form.validateFields();
       const response = await BlogService.updateBlog(blog?._id || "", {
         ...updatedBlog,
         content,
         image_url,
-        user_id: blog?.user_id // Ensuring user_id remains unchanged
+        user_id: blog?.user_id
       });
       if (response.data.success) {
         message.success("Blog updated successfully.");
@@ -83,7 +79,7 @@ const EditBlogModal: React.FC<EditBlogModalProps> = ({ visible, blog, categories
       message.error("Failed to update blog");
       console.error("Error updating blog:", error);
     } finally {
-      setState((prev) => ({ ...prev, uploading: false }));
+      setUploading(false);
     }
   };
 
@@ -97,7 +93,7 @@ const EditBlogModal: React.FC<EditBlogModalProps> = ({ visible, blog, categories
         <Button key="back" onClick={onClose}>
           Cancel
         </Button>,
-        <Button className="bg-gradient-tone px-4 py-2 text-white" key="submit" type="primary" onClick={submitUpdateBlog} loading={state.uploading}>
+        <Button className="bg-gradient-tone px-4 py-2 text-white" key="submit" type="primary" onClick={submitUpdateBlog} loading={uploading}>
           Update
         </Button>
       ]}
