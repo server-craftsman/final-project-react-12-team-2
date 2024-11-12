@@ -89,7 +89,9 @@ export const API = {
     UPDATE_SUBSCRIPTION: "/api/subscription"
   },
   PURCHASE: {
-    GET_PURCHASE_FOR_STUDENT: "api/purchase/search-for-student"
+    GET_PURCHASE_FOR_STUDENT: "api/purchase/search-for-student",
+    GET_PURCHASE_FOR_INSTRUCTOR: "api/purchase/search-for-instructor",
+    GET_PURCHASE_FOR_ADMIN: "/api/purchase/search"
   },
   BLOG: {
     GET_BLOGS: "api/client/blog/search",

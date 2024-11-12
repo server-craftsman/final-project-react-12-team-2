@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Tag } from "antd";
 import { formatDate, moneyFormat } from "../../../utils/helper";
 import { PurchaseStatusEnum } from "../../../models/prototype/Purchases";
-import { purchases } from "../../../data/purchases.json";
 import PurchaseCheckbox from "./PurchaseCheckbox";
+import { PurchaseService } from "../../../services/purchase/purchase.service";
+import { SearchForInstructorPurchaseRequestModel } from "../../../models/api/request/purchase/purchase.request.model";
+import { SearchForInstructorPurchaseResponseModel } from "../../../models/api/responsive/purchase/purchase.reponse.model";
 interface ViewPurchaseProps {
   searchQuery: string;
   filterStatus: string;
@@ -12,17 +14,38 @@ interface ViewPurchaseProps {
 
 const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, onSelectionChange }) => {
   const [selectedPurchases, setSelectedPurchases] = useState<Set<string>>(new Set());
+  const [purchases, setPurchases] = useState<SearchForInstructorPurchaseResponseModel["pageData"]>([]);
+
+    const fetchPurchases = async () => {
+      const params: SearchForInstructorPurchaseRequestModel = {
+        searchCondition: {
+          purchase_no: searchQuery,
+          cart_no: "",
+          course_id: "",
+          status: filterStatus as any, // Adjust type as necessary
+          is_delete: false
+        },
+        pageInfo: {
+          pageNum: 1,
+          pageSize: 10
+        }
+      };
+
+      try {
+        const response = await PurchaseService.searchForInstructorPurchase(params);
+        setPurchases(response.data.data.pageData);
+      } catch (error) {
+        console.error("Failed to fetch purchases", error);
+      }
+    };
+    useEffect(() => {
+    fetchPurchases();
+  }, [searchQuery, filterStatus]);
 
   const handleSelectAllChange = (checked: boolean) => {
-    setSelectedPurchases(checked ? new Set(filteredPurchases.map((purchase) => purchase.id)) : new Set());
-    onSelectionChange(checked ? new Set(filteredPurchases.map((purchase) => purchase.id)) : new Set());
+    setSelectedPurchases(checked ? new Set(purchases.map((fetchPurchases) => fetchPurchases._id)) : new Set());
+    onSelectionChange(checked ? new Set(purchases.map((fetchPurchases) => fetchPurchases._id)) : new Set());
   };
-
-  const filteredPurchases = purchases.filter((item) => {
-    const matchesSearchQuery = item.purchase_no.includes(searchQuery);
-    const matchesStatus = filterStatus === "" || item.status === filterStatus;
-    return matchesSearchQuery && matchesStatus;
-  });
 
   const handleCheckboxChange = (id: string, checked: boolean) => {
     setSelectedPurchases((prev) => {
@@ -35,12 +58,11 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
 
   const columns = [
     {
-      title: <PurchaseCheckbox checked={selectedPurchases.size === filteredPurchases.length} onChange={handleSelectAllChange} />,
-      dataIndex: "id",
+      title: <PurchaseCheckbox checked={selectedPurchases.size === purchases.length} onChange={handleSelectAllChange} />,
+      dataIndex: "_id",
       key: "select",
       render: (id: string) => <PurchaseCheckbox checked={selectedPurchases.has(id)} onChange={(checked) => handleCheckboxChange(id, checked)} />
     },
-
     {
       title: "Purchase No",
       dataIndex: "purchase_no",
@@ -67,7 +89,6 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
             color = "green";
             text = "completed";
             break;
-
           default:
             color = "gray";
             text = "Unknown Status";
@@ -95,7 +116,6 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
       key: "discount",
       render: (money: number) => money + "%"
     },
-
     {
       title: "Created At",
       dataIndex: "created_at",
@@ -110,15 +130,9 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
     }
   ];
 
-  const filteredData = purchases.filter((item) => {
-    const matchesSearchQuery = item.purchase_no.includes(searchQuery);
-    const matchesStatus = filterStatus === "" || item.status === filterStatus;
-    return matchesSearchQuery && matchesStatus;
-  });
-
   return (
     <div>
-      <Table columns={columns} dataSource={filteredData} rowKey="purchase_no" />
+      <Table columns={columns} dataSource={purchases} rowKey="_id" />
     </div>
   );
 };

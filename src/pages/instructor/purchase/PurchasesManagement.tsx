@@ -39,9 +39,9 @@ const PurchasesManagement: React.FC = () => {
         <FilterStatusPurchases onFilterChange={handleFilterChange} filterStatus={filterStatus} />
       </div>
       <ViewPurchase searchQuery={searchQuery} filterStatus={filterStatus} onSelectionChange={handleSelectionChange} />
-      <button disabled={selectedPurchases.size === 0} onClick={() => console.log("Create Payout clicked")}>
+      {/* <button disabled={selectedPurchases.size === 0} onClick={() => console.log("Create Payout clicked")}>
         Create Payout
-      </button>
+      </button> */}
     </div>
   );
 };
