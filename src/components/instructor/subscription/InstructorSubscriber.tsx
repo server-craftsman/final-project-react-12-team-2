@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Card, Avatar, Row, Col, message } from "antd";
+import { Card, Avatar, Row, Col, message, Pagination } from "antd";
 import { User } from "../../../models/api/responsive/users/users.model";
 import { SubscriberService } from "../../../services/subscriber/subscriber.service";
 import { GetSubscribersParams } from "../../../models/api/request/subscriber/subscriber.request.model";
@@ -19,10 +19,13 @@ interface InstructorSubscriberProps {
 const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue }) => {
   const [subscriptions, setSubscriptions] = useState<GetSubscribersResponse | null>(null);
   const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
 
   const defaultParams = {
     pageInfo: {
-      pageNum: 1,
+      pageNum: currentPage,
       pageSize: 10
     },
     searchCondition: {
@@ -39,18 +42,25 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
   }, []);
 
   const fetchSubscriptions = React.useCallback(async () => {
+    setLoading(true);
     try {
       const searchCondition = getSearchCondition();
-      const params = {
-        pageInfo: defaultParams.pageInfo,
+      const params: GetSubscribersParams = {
+        pageInfo: {
+          ...defaultParams.pageInfo,
+          pageNum: currentPage,
+        },
         searchCondition
       };
-      const response = await SubscriberService.getSubscribers(params as GetSubscribersParams);
+      const response = await SubscriberService.getSubscribers(params);
       setSubscriptions(response.data?.data ? response.data.data : null);
+      setTotalItems(response.data?.data?.pageInfo?.totalItems || 0);
     } catch (error) {
       message.error("No subscriptions found");
+    } finally {
+      setLoading(false);
     }
-  }, [getSearchCondition]);
+  }, [getSearchCondition, currentPage]);
 
   const fetchUsers = React.useCallback(async () => {
     try {
@@ -68,7 +78,7 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
 
   useEffect(() => {
     fetchSubscriptions();
-  }, [fetchSubscriptions, searchValue]);
+  }, [fetchSubscriptions, currentPage]);
 
   useEffect(() => {
     if (subscriptions?.pageData && subscriptions.pageData.length > 0) {
@@ -91,6 +101,10 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
 
   const filteredUsers = filterUsers();
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div style={{ backgroundColor: "#f0f2f5" }}>
       <Row gutter={[16, 16]}>
@@ -102,6 +116,7 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
               <Link to={`/profile/${subscription.subscriber_id}`} style={{ textDecoration: "none" }}>
                 <Card
                   hoverable
+                  loading={loading}
                   title={
                     <div style={{
                       display: "flex",
@@ -151,6 +166,24 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
             </Col>
           );
         })}
+      </Row>
+      <Row
+        justify="center"
+        style={{
+          marginTop: '20px',
+          marginBottom: '20px',
+          position: 'sticky',
+          bottom: 20,
+          zIndex: 1000
+        }}
+      >
+        <Pagination
+          current={currentPage}
+          total={totalItems}
+          pageSize={defaultParams.pageInfo.pageSize}
+          onChange={handlePageChange}
+          showSizeChanger={false}
+        />
       </Row>
     </div>
   );

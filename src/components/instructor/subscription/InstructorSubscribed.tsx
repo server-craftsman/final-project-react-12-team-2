@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Card, Avatar, Row, Col, message } from "antd";
+import { Card, Avatar, Row, Col, message, Pagination } from "antd";
 import { GetSubscriptionsResponse } from "../../../models/api/responsive/subscription/sub.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model";
 import { Link } from "react-router-dom";
@@ -24,10 +24,12 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(true);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
 
   const defaultParams = {
     pageInfo: {
-      pageNum: 1,
+      pageNum: currentPage,
       pageSize: 10
     },
     searchCondition: {
@@ -48,17 +50,21 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
     try {
       const searchCondition = getSearchCondition();
       const params: GetSubscriptionsParams = {
-        pageInfo: defaultParams.pageInfo,
+        pageInfo: {
+          ...defaultParams.pageInfo,
+          pageNum: currentPage,
+        },
         searchCondition
       };
       const response = await SubscriptionService.getSubscriptions(params);
       setSubscriptions(response.data?.data ? response.data.data : null);
+      setTotalItems(response.data?.data?.pageInfo?.totalItems || 0);
     } catch (error) {
       message.error("No subscriptions found");
     } finally {
       setLoading(false);
     }
-  }, [getSearchCondition]);
+  }, [getSearchCondition, currentPage]);
 
   const fetchUsers = useCallback(async () => {
     try {
@@ -76,22 +82,21 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
     }
   }, [subscriptions]);
 
-  // Effect for fetching subscriptions
-  useEffect(() => {
-    fetchSubscriptions();
-    // Cleanup function để tránh memory leak
-    return () => {
-      setSubscriptions(null);
-      setUsers([]);
-    };
-  }, []); // Chỉ chạy một lần khi mount
-
   // Effect for fetching users when subscriptions change
   useEffect(() => {
     if (subscriptions?.pageData && subscriptions.pageData.length > 0) {
       fetchUsers();
     }
   }, [subscriptions?.pageData, fetchUsers]);
+
+  // Keep this effect which handles both initial load and page changes
+  useEffect(() => {
+    fetchSubscriptions();
+    return () => {
+      setSubscriptions(null);
+      setUsers([]);
+    };
+  }, [fetchSubscriptions, currentPage]);
 
   const filterUsers = useCallback(() => {
     if (!users || !subscriptions?.pageData) return [];
@@ -107,6 +112,10 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
   }, [users, searchValue]);
 
   const filteredUsers = filterUsers();
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   return (
     <div style={{ backgroundColor: "#f0f2f5" }}>
@@ -179,6 +188,15 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
             </Col>
           );
         })}
+      </Row>
+      <Row justify="center" style={{ marginTop: '20px' }}>
+        <Pagination
+          current={currentPage}
+          total={totalItems}
+          pageSize={defaultParams.pageInfo.pageSize}
+          onChange={handlePageChange}
+          showSizeChanger={false}
+        />
       </Row>
     </div>
   );
