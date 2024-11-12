@@ -97,7 +97,7 @@ const EditBlogModal: React.FC<EditBlogModalProps> = ({ visible, blog, categories
         <Button key="back" onClick={onClose}>
           Cancel
         </Button>,
-        <Button key="submit" type="primary" onClick={submitUpdateBlog} loading={state.uploading}>
+        <Button className="bg-gradient-tone px-4 py-2 text-white" key="submit" type="primary" onClick={submitUpdateBlog} loading={state.uploading}>
           Update
         </Button>
       ]}
