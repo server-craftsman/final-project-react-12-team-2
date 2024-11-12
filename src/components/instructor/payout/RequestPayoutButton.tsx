@@ -1,18 +1,35 @@
 import React from "react";
-import { Button, Modal, message } from "antd";
-
+import { Modal, message } from "antd";
+import { PayoutService } from "../../../services/payout/payout.service";
+import { PayoutStatus } from "../../../app/enums";
 interface RequestPayoutButtonProps {
-  onClick: () => void;
   disabled: boolean;
+  payoutId: string; // Add payoutId prop
+  onRequestComplete: () => void;
 }
 
-const RequestPayoutButton: React.FC<RequestPayoutButtonProps> = ({ onClick, disabled }) => {
+const RequestPayoutButton: React.FC<RequestPayoutButtonProps> = ({ disabled, payoutId, onRequestComplete }) => {
+  
+  const handleRequestPayout = async () => {
+    try {
+      const response = await PayoutService.updatePayout(payoutId, {
+        status: PayoutStatus.REQUEST_PAYOUT,
+        comment: ""
+      });
+      console.log("Request Payout Successful", response);
+      onRequestComplete();
+    } catch (error) {
+      console.error("Request Payout Failed", error);
+    }
+  };
+
+  
   const handleButtonClick = () => {
     Modal.confirm({
       title: "Confirm Request Payout",
       content: "Are you sure you want to request a payout?",
       onOk: () => {
-        onClick();
+        handleRequestPayout();
         message.success("Payout request successful");
       },
       onCancel() {}
@@ -21,14 +38,10 @@ const RequestPayoutButton: React.FC<RequestPayoutButtonProps> = ({ onClick, disa
 
   return (
     <div>
-      <Button
+      <button
         onClick={handleButtonClick}
         disabled={disabled}
-        style={{
-          backgroundColor: disabled ? "#d9d9d9" : "#1a237e",
-          color: disabled ? "rgba(0, 0, 0, 0.25)" : "#fff",
-          transition: "background-color 0.3s ease"
-        }}
+        className={`my-2 rounded-md px-4 py-2.5 text-white ${disabled ? 'bg-gray-400 text-gray-300' : 'bg-indigo-800 text-white hover:bg-indigo-900'}`}
         onMouseEnter={(e) => {
           if (!disabled) {
             e.currentTarget.style.backgroundColor = "#0d1b5e";
@@ -41,7 +54,7 @@ const RequestPayoutButton: React.FC<RequestPayoutButtonProps> = ({ onClick, disa
         }}
       >
         Request Payout
-      </Button>
+      </button>
     </div>
   );
 };

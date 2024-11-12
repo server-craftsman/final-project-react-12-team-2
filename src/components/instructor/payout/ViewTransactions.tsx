@@ -1,24 +1,25 @@
 import React from "react";
 import { Modal, Table } from "antd";
 import { formatDate, moneyFormat } from "../../../utils/helper";
-import { InstructorTransaction } from "../../../models/prototype/InstructorTransaction";
 
-const ViewTransactions: React.FC<{
+interface ViewTransactionsProps {
   isVisible: boolean;
   onClose: () => void;
-  transactions: InstructorTransaction[];
-}> = ({ isVisible, onClose, transactions }) => {
+  transactions: any[];
+}
+
+const ViewTransactions: React.FC<ViewTransactionsProps> = ({ isVisible, onClose, transactions }) => {
   const columns = [
-    {
-      title: "Transaction ID",
-      dataIndex: "id",
-      key: "id"
-    },
-    {
-      title: "Payout ID",
-      dataIndex: "payout_id",
-      key: "payout_id"
-    },
+    // {
+    //   title: "Transaction ID",
+    //   dataIndex: "_id",
+    //   key: "_id"
+    // },
+    // {
+    //   title: "Purchase ID",
+    //   dataIndex: "purchase_id",
+    //   key: "purchase_id"
+    // },
     {
       title: "Price",
       dataIndex: "price",
@@ -40,7 +41,7 @@ const ViewTransactions: React.FC<{
 
   return (
     <Modal title="Transaction Details" open={isVisible} onCancel={onClose} footer={null} width={800}>
-      <Table columns={columns} dataSource={transactions} rowKey="id" pagination={{ pageSize: 5 }} />
+      <Table columns={columns} dataSource={transactions} rowKey="_id" pagination={{ pageSize: 5 }} />
     </Modal>
   );
 };

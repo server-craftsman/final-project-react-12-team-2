@@ -1,23 +1,22 @@
 import React, { useCallback, useMemo } from "react";
 import { Select } from "antd";
-import { PayoutStatusEnum } from "../../../models/prototype/Payout";
-
+import { PayoutStatus } from "../../../app/enums/payout.status";
 const { Option } = Select;
 
 const FilterStatus: React.FC<{
-  filterStatus: string;
-  setFilterStatus: (status: string) => void;
-}> = ({ filterStatus, setFilterStatus }) => {
+  onFilterChange: (status: PayoutStatus | "") => void;
+  filterStatus: PayoutStatus | "";
+}> = ({ onFilterChange, filterStatus }) => {
   const handleStatusChange = useCallback(
-    (value: string) => {
-      setFilterStatus(value);
+    (value: PayoutStatus | "") => {
+      onFilterChange(value);
     },
-    [setFilterStatus]
+    [onFilterChange]
   );
 
   const statusOptions = useMemo(
     () =>
-      Object.values(PayoutStatusEnum).map((status) => (
+      Object.values(PayoutStatus).map((status) => (
         <Option key={status} value={status}>
           {status.toUpperCase()}
         </Option>

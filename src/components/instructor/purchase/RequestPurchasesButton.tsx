@@ -16,7 +16,7 @@ const RequestPurchases: React.FC<RequestPurchasesProps> = ({ onRequestComplete, 
     // setIsRequesting(true);
     try {
       const params: CreatePayoutRequestModel = {
-        instructor_id: "instructor_id_here",
+        instructor_id: "",
         transactions: Array.from(selectedPurchases).map(purchase_id => ({ purchase_id }))
       };
 

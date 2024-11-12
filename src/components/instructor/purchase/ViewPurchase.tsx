@@ -6,6 +6,7 @@ import PurchaseCheckbox from "./PurchaseCheckbox";
 import { PurchaseService } from "../../../services/purchase/purchase.service";
 import { SearchForInstructorPurchaseRequestModel } from "../../../models/api/request/purchase/purchase.request.model";
 import { SearchForInstructorPurchaseResponseModel } from "../../../models/api/responsive/purchase/purchase.reponse.model";
+
 interface ViewPurchaseProps {
   searchQuery: string;
   filterStatus: string;
@@ -39,7 +40,7 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
         console.error("Failed to fetch purchases", error);
       }
     };
-    
+
     useEffect(() => {
     fetchPurchases();
   }, [searchQuery, filterStatus, refreshKey]);
@@ -62,8 +63,7 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
     {
       title: <PurchaseCheckbox 
                checked={selectedPurchases.size === purchases.length} 
-               onChange={handleSelectAllChange} 
-               disabled={purchases.some(purchase => purchase.status === PurchaseStatus.REQUEST_PAID || purchase.status === PurchaseStatus.COMPLETED)} 
+               onChange={handleSelectAllChange}
              />,
       dataIndex: "_id",
       key: "select",
