@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Table, message, Modal } from "antd";
-import { EyeOutlined } from "@ant-design/icons";
+import { EyeOutlined, CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { PayoutStatus } from "../../../app/enums";
 import { formatDate, moneyFormat } from "../../../utils/helper";
 import { payoutColorStatus } from "../../../utils/payoutStatus";
@@ -10,51 +10,56 @@ import ModalTransaction from "./ModalTransaction";
 interface ViewPaymentProps {
   searchQuery: string;
   status: string;
+  onStatusChange: (key: string) => void;
+  activeTabKey: string;
 }
 
-const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status }) => {
+const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatusChange, activeTabKey }) => {
   const [payments, setPayments] = useState<any[]>([]);
   const [selectedPayoutDetails, setSelectedPayoutDetails] = useState<unknown[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
   useEffect(() => {
-    const fetchPayments = async () => {
-      const defaultParams = {
-        searchCondition: {
-          payout_no: "",
-          instructor_id: "",
-          status: "",
-          is_delete: false,
-          is_instructor: true
-        },
-        pageInfo: {
-          pageNum: 1,
-          pageSize: 10
-        }
-      };
+    let isMounted = true;
 
-      try {
-        const response = await PayoutService.getPayout({
-          searchCondition: {
-            ...defaultParams.searchCondition,
-          },
-          pageInfo: defaultParams.pageInfo
-        });
+    const searchCondition = {
+      payout_no: searchQuery || "",
+      instructor_id: "",
+      status: status || "",
+      is_delete: false,
+      is_instructor: true
+    };
 
-        const pageData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [];
+    PayoutService.getPayout({
+      searchCondition,
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 10
+      }
+    })
+      .then((response) => {
+        if (!isMounted) return;
+
+        const pageData = Array.isArray(response.data.data.pageData) 
+          ? response.data.data.pageData 
+          : [];
+
         const filteredPayments = pageData.map((payment: any) => ({
           ...payment,
           status: payment.status,
           instructor_ratio: Number(payment.instructor_ratio)
         }));
-        setPayments(filteredPayments);
-      } catch (error) {
-        message.error("Failed to fetch payments.");
-      }
-    };
 
-    fetchPayments();
-  }, [searchQuery, status]);
+        setPayments(filteredPayments);
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        message.error("Failed to fetch payments.");
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [searchQuery, status, activeTabKey]);
 
   const handleViewDetails = (payoutId: string) => {
     const payout = payments.find((payment) => payment._id === payoutId);
@@ -69,17 +74,64 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status }) => {
     setIsModalVisible(true);
   };
 
-  const handleApprove = (id: string, newStatus: PayoutStatus) => {
-    Modal.confirm({
-      title: `Are you sure you want to ${newStatus === PayoutStatus.COMPLETED ? "approve" : "reject"} this payment?`,
-      onOk: () => {
-        setPayments((prevPayments) => prevPayments.map((payment) => (payment._id === id ? { ...payment, status: newStatus } : payment)));
+  const handleApprove = async (id: string, newStatus: PayoutStatus) => {
+    const updateStatus = async (comment: string = "") => {
+      try {
+        const payout = payments.find((payment) => payment._id === id);
+        
+        if (!payout) {
+          message.error("Payout not found.");
+          return;
+        }
+
+        if (payout.status !== PayoutStatus.REQUEST_PAYOUT) {
+          message.error("Cannot update status. Current status is not 'request_paid'.");
+          return;
+        }
+
+        const payload = { status: newStatus, comment };
+        await PayoutService.updatePayout(id, payload);
+        setPayments((prevPayments) =>
+          prevPayments.map((payment) =>
+            payment._id === id ? { ...payment, status: newStatus } : payment
+          )
+        );
+
         message.success(`Payment ${newStatus === PayoutStatus.COMPLETED ? "approved" : "rejected"} successfully.`);
-      },
-      onCancel: () => {
-        message.info("Action canceled.");
+        
+        onStatusChange(newStatus === PayoutStatus.COMPLETED ? "2" : "3");
+      } catch (error) {
+        console.error("Error updating payment status:", error);
+        message.error("Failed to update payment status.");
       }
-    });
+    };
+
+    let comment: string = "";
+
+    if (newStatus === PayoutStatus.REJECTED) {
+      Modal.confirm({
+        title: "Please provide a reason for rejection",
+        content: (
+          <textarea
+            placeholder="Enter your comment here"
+            onChange={(e) => comment = e.target.value || ""}
+            style={{ width: '100%', minHeight: '100px' }}
+          />
+        ),
+        onOk: () => updateStatus(comment),
+        onCancel: () => {
+          message.info("Action canceled.");
+        }
+      });
+    } else {
+      Modal.confirm({
+        title: "Are you sure you want to approve this payment?",
+        onOk: updateStatus,
+        onCancel: () => {
+          message.info("Action canceled.");
+        }
+      });
+    }
   };
 
   const columns = [
@@ -99,7 +151,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status }) => {
       render: (_: unknown, record: any) => (
         <button
           onClick={() => handleViewDetails(record._id || "")}
-          className="bg-gradient-tone rounded-md p-2 text-white"
+          className="bg-gradient-tone rounded-md p-2 text-white ml-5"
           style={{ width: "40px", textAlign: "center" }}
         >
           <EyeOutlined />
@@ -139,17 +191,25 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status }) => {
       render: (date: string) => formatDate(new Date(date))
     },
     {
-      title: "Action",
+      title: "Change Status",
       key: "action",
       render: (_: unknown, record: any) => (
-        <div className="flex items-center justify-between" style={{ minHeight: "48px" }}>
-          {record.status === status && (
+        <div className="flex items-center gap-2" style={{ minHeight: "48px" }}>
+          {record.status === PayoutStatus.REQUEST_PAYOUT && (
             <>
-              <button onClick={() => handleApprove(record._id || "" , PayoutStatus.COMPLETED)} className="rounded-md bg-blue-500 px-4 py-2 text-white" style={{ width: "100px" }}>
-                Approve
+              <button
+                onClick={() => handleApprove(record._id || "", PayoutStatus.COMPLETED)}
+                className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md flex items-center transition duration-300 ease-in-out transform hover:scale-110"
+                title="Approve"
+              >
+                <CheckOutlined className="mr-1" />
               </button>
-              <button onClick={() => handleApprove(record._id || "", PayoutStatus.REJECTED)} className="ml-1 rounded-md bg-red-500 px-4 py-2 text-white" style={{ width: "70px" }}>
-                Reject
+              <button 
+                onClick={() => handleApprove(record._id || "", PayoutStatus.REJECTED)}
+                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md flex items-center transition duration-300 ease-in-out transform hover:scale-110"
+                title="Reject"
+              >
+                <CloseOutlined className="mr-1" />
               </button>
             </>
           )}

@@ -7,26 +7,31 @@ const ViewPayment = lazy(() => import("../../../components/admin/payout/ViewPaym
 
 const ManagePayment: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [activeTabKey, setActiveTabKey] = useState<string>("1");
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
+  };
+
+  const handleTabChange = (key: string) => {
+    setActiveTabKey(key);
   };
 
   const items = [
     {
       key: "1",
       label: "Request_Payout",
-      children: <ViewPayment searchQuery={searchQuery} status={PayoutStatus.REQUEST_PAYOUT} />
+      children: <ViewPayment searchQuery={searchQuery} status={PayoutStatus.REQUEST_PAYOUT} onStatusChange={handleTabChange} activeTabKey={activeTabKey} />
     },
     {
       key: "2",
       label: "Completed",
-      children: <ViewPayment searchQuery={searchQuery} status={PayoutStatus.COMPLETED} />
+      children: <ViewPayment searchQuery={searchQuery} status={PayoutStatus.COMPLETED} onStatusChange={handleTabChange} activeTabKey={activeTabKey} />
     },
     {
       key: "3",
       label: "Rejected",
-      children: <ViewPayment searchQuery={searchQuery} status={PayoutStatus.REJECTED} />
+      children: <ViewPayment searchQuery={searchQuery} status={PayoutStatus.REJECTED} onStatusChange={handleTabChange} activeTabKey={activeTabKey} />
     }
   ];
 
@@ -34,7 +39,7 @@ const ManagePayment: React.FC = () => {
     <Content>
       <Card>
         <CustomSearch onSearch={handleSearch} placeholder="Search Payment" className="search-input" />
-        <Tabs defaultActiveKey="1" items={items} />
+        <Tabs activeKey={activeTabKey} onChange={handleTabChange} items={items} />
       </Card>
     </Content>
   );
