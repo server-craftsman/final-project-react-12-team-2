@@ -5,9 +5,10 @@ import { motion } from "framer-motion";
 import { CourseReviewsProps } from "../../../../models/objects/course/CourseReviewsProps";
 const { Text, Paragraph } = Typography;
 import { ReviewService } from "../../../../services/review/review.service";
+import { GetPublicCourseDetailResponse } from "../../../../models/api/responsive/course/course.response.model";
 import { useAuth } from "../../../../contexts/AuthContext";
 
-const CourseReviews: React.FC<CourseReviewsProps & { courseId: string }> = ({ reviews, courseId }) => {
+const CourseReviews: React.FC<CourseReviewsProps & { courseId: string, course: any }> = ({ reviews, courseId, course }) => {
   const [fetchedReviews, setFetchedReviews] = useState(reviews);
   const [form] = Form.useForm();
 
@@ -90,9 +91,13 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string }> = ({ re
     }
   };
 
+  const checkUserInfo = (course: GetPublicCourseDetailResponse) => {
+    return course?.is_in_cart || course?.is_purchased;
+  };
+  
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-      {!hasUserCommented && (
+      {!hasUserCommented && checkUserInfo(course) && (
         <Form form={form} onFinish={handleSubmit} layout="vertical" className="mb-4">
           <Form.Item name="rating" label="Rating" rules={[{ required: true, message: "Please provide a rating" }]}>
             <Rate />

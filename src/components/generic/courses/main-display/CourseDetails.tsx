@@ -175,7 +175,7 @@ const CourseDetails: React.FC = () => {
           <span className="font-semibold tracking-wide">Reviews</span>
         </span>
       ),
-      children: course ? <CourseReviews reviews={reviews} users={course.users} courseId={course._id} /> : null
+      children: course ? <CourseReviews reviews={reviews} users={course.users} courseId={course._id} course={course} /> : null
     }
   ];
 
