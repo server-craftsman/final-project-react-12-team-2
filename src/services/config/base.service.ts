@@ -30,17 +30,25 @@ export const BaseService = {
   }: Partial<ApiRequestModel> & {
     toggleLoading?: (isLoading: boolean) => void;
   }): Promise<PromiseState<T>> {
-    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 500);
-    return axiosInstance.get<T, PromiseState<T>>(`${url}`, {
-      params: payload,
-      headers: headers || {}
-    });
+    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 2000);
+    return axiosInstance
+      .get<T, PromiseState<T>>(`${url}`, {
+        params: payload,
+        headers: headers || {}
+      })
+      .finally(() => {
+        if (toggleLoading) toggleLoading(false);
+      });
   },
   post<T = any>({ url, isLoading = true, payload, headers, toggleLoading }: Partial<ApiRequestModel>): Promise<PromiseState<T>> {
-    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 500);
-    return axiosInstance.post<T, PromiseState<T>>(`${url}`, payload, {
-      headers: headers || {}
-    });
+    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 2000);
+    return axiosInstance
+      .post<T, PromiseState<T>>(`${url}`, payload, {
+        headers: headers || {}
+      })
+      .finally(() => {
+        if (toggleLoading) toggleLoading(false);
+      });
   },
   put<T = any>({
     url,
@@ -51,10 +59,14 @@ export const BaseService = {
   }: Partial<ApiRequestModel> & {
     toggleLoading?: (isLoading: boolean) => void;
   }): Promise<PromiseState<T>> {
-    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 500);
-    return axiosInstance.put(`${url}`, payload, {
-      headers: headers || {}
-    });
+    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 2000);
+    return axiosInstance
+      .put<T, PromiseState<T>>(`${url}`, payload, {
+        headers: headers || {}
+      })
+      .finally(() => {
+        if (toggleLoading) toggleLoading(false);
+      });
   },
   remove<T = any>({
     url,
@@ -65,11 +77,15 @@ export const BaseService = {
   }: Partial<ApiRequestModel> & {
     toggleLoading?: (isLoading: boolean) => void;
   }): Promise<PromiseState<T>> {
-    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 500);
-    return axiosInstance.delete(`${url}`, {
-      params: payload,
-      headers: headers || {}
-    });
+    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 2000);
+    return axiosInstance
+      .delete<T, PromiseState<T>>(`${url}`, {
+        params: payload,
+        headers: headers || {}
+      })
+      .finally(() => {
+        if (toggleLoading) toggleLoading(false);
+      });
   },
   getById<T = any>({
     url,
@@ -80,11 +96,15 @@ export const BaseService = {
   }: Partial<ApiRequestModel> & {
     toggleLoading?: (isLoading: boolean) => void;
   }): Promise<PromiseState<T>> {
-    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 500);
-    return axiosInstance.get<T, PromiseState<T>>(`${url}`, {
-      params: payload,
-      headers: headers || {}
-    });
+    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 2000);
+    return axiosInstance
+      .get<T, PromiseState<T>>(`${url}`, {
+        params: payload,
+        headers: headers || {}
+      })
+      .finally(() => {
+        if (toggleLoading) toggleLoading(false);
+      });
   },
   uploadMedia(url: string, file?: any, isMultiple: boolean = false, isLoading: boolean = true) {
     const formData = new FormData();
@@ -97,7 +117,7 @@ export const BaseService = {
     }
     const user: any = getItemInLocalStorage(LOCAL_STORAGE.ACCOUNT_ADMIN);
     // if (isLoading) useToggleLoading()(true);
-    if (isLoading) setTimeout(() => store.dispatch(toggleLoading(true)), 500);
+    if (isLoading) setTimeout(() => store.dispatch(toggleLoading(true)), 2000);
     return axios({
       method: "post",
       url: `${DOMAIN_ADMIN}${url}`,
@@ -118,7 +138,7 @@ export const BaseService = {
       });
   },
   uploadFile: async (file: File, type: "video" | "image", isLoading: boolean = true) => {
-    if (isLoading) setTimeout(() => store.dispatch(toggleLoading(true)), 500);
+    if (isLoading) setTimeout(() => store.dispatch(toggleLoading(true)), 2000);
 
     try {
       const url = await handleUploadFile(file, type);
@@ -154,22 +174,22 @@ axiosInstance.interceptors.request.use(
       const parsedUserInfo = JSON.parse(userInfo);
       config.headers["User-Id"] = parsedUserInfo._id; // debug add user id
     }
-    store.dispatch(toggleLoading(true)); // Show loading
+    setTimeout(() => store.dispatch(toggleLoading(true)), 2000); // Show loading with delay
     return config as InternalAxiosRequestConfig;
   },
   (err) => {
-    store.dispatch(toggleLoading(false));
+    setTimeout(() => store.dispatch(toggleLoading(false)), 2000); // Hide loading with delay
     return handleErrorByToast(err);
   }
 );
 
 axiosInstance.interceptors.response.use(
   (config) => {
-    store.dispatch(toggleLoading(false)); // Hide loading
+    setTimeout(() => store.dispatch(toggleLoading(false)), 2000); // Hide loading with delay
     return Promise.resolve(config);
   },
   (err) => {
-    store.dispatch(toggleLoading(false)); // Hide loading on error
+    setTimeout(() => store.dispatch(toggleLoading(false)), 2000); // Hide loading on error with delay
     const { response } = err;
     if (response) {
       switch (response.status) {
