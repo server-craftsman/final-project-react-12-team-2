@@ -5,7 +5,7 @@ import { GetBlogResponse } from "../../../models/api/responsive/admin/blog.respo
 import { GetBlogParams } from "../../../models/api/request/admin/blog.request.model";
 import { BlogService } from "../../../services/blog/blog.service";
 import { Avatar, Card } from "antd";
-import { InfoCircleFilled, UserOutlined } from "@ant-design/icons";
+import { UserOutlined } from "@ant-design/icons";
 import { UserService } from "../../../services/student/user.service";
 import { formatDate } from "../../../utils/helper";
 
@@ -110,6 +110,10 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
       {/* Card Grid with Single Column */}
       <div className="grid grid-cols-1 gap-6">
         {filteredData?.map((blog) => (
+          <Link 
+          to={`/blog-details/${blog._id}`} >
+
+         
           <Card
             key={blog._id}
             className="rounded-lg shadow-lg p-4 bg-white flex transition-transform duration-300 transform hover:scale-105 hover:shadow-2xl"
@@ -156,20 +160,10 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
                   <p className=" font-semibold mb-2 text-xl uppercase">{blog.name}</p>
                   <p className="text-gray-600">{blog.description}</p>
                 </div>
-
-                {/* Action Buttons */}
-                <div className="flex justify-between items-center border-t border-gray-200 pt-4 mt-4">
-                  <Link 
-                    to={`/blog-details/${blog._id}`} 
-                    className="text-blue-500 hover:text-blue-700 transition-colors duration-200 flex items-center gap-2"
-                  >
-                    {/* <span className="text-lg font-medium">View details</span> */}
-                    <InfoCircleFilled style={{ fontSize: '20px' }} />
-                  </Link>
-                </div>
               </div>
             </div>
           </Card>
+          </Link>
         ))}
       </div>
     </div>
