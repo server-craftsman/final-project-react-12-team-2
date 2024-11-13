@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { Table, Modal, message, Button, Avatar, Input } from "antd";
+import { Table, Modal, message, Button, Avatar, Input, Pagination } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { UserRoles } from "../../../app/enums";
 import { userStatusColor } from "../../../utils/userStatus";
@@ -27,6 +27,9 @@ interface SearchCondition {
 const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, refreshKey }) => {
   const [updatedUsers, setUpdatedUsers] = useState<string[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [pageNum, setPageNum] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageInfo, setPageInfo] = useState<any>({});
 
   const defaultParams = {
     searchCondition: {
@@ -37,8 +40,8 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
       is_deleted: false
     },
     pageInfo: {
-      pageNum: 1,
-      pageSize: 10
+      pageNum,
+      pageSize
     }
   } as const;
 
@@ -76,6 +79,7 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
       }));
 
       setFilteredUsers(users);
+      setPageInfo(response.data.data.pageInfo);
     } catch (error: any) {
       if (error.response) {
         console.error("Error response:", error.response.data);
@@ -88,7 +92,7 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
         message.error("An unexpected error occurred.");
       }
     }
-  }, [searchQuery, getSearchCondition]);
+  }, [searchQuery, getSearchCondition, pageNum, pageSize]);
 
   useEffect(() => {
     fetchingUsers();
@@ -218,7 +222,21 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
 
   return (
     <div className="-mt-3 mb-64 p-4">
-      <Table<User> className="shadow-lg" columns={columns} dataSource={filteredUsers} rowKey="_id" pagination={{ pageSize: 10 }} />
+      <Table<User> className="shadow-lg" columns={columns} dataSource={filteredUsers} rowKey="_id" pagination={false} />
+      <div className="mt-5 flex justify-start">
+        <Pagination
+          current={pageNum}
+          pageSize={pageSize}
+          total={pageInfo.totalItems}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          onChange={(page, pageSize) => {
+            setPageNum(page);
+            setPageSize(pageSize);
+          }}
+          className="bg-pagination"
+          showSizeChanger
+        />
+      </div>
     </div>
   );
 };
