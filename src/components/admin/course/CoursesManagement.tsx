@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { moneyFormat, formatDate } from "../../../utils/helper";
 import { courseStatusColor } from "../../../utils/courseStatus";
 import { message, Popconfirm, Table, Modal, Input, Button, Pagination } from "antd";
-import { CheckOutlined, StopOutlined, CarryOutOutlined, ContainerOutlined } from "@ant-design/icons";
+import { CheckOutlined, StopOutlined, CarryOutOutlined, ContainerOutlined, EyeOutlined } from "@ant-design/icons";
 // import { Courses } from "../../../models/prototype/Course"; // Import the Course model
 import { GetCourseParams } from "../../../models/api/request/course/course.request.model";
 import { CourseService } from "../../../services/course/course.service";
@@ -11,6 +11,8 @@ import { Lesson } from "../../../models/api/responsive/lesson/lesson.response.mo
 import { SessionService } from "../../../services/session/session.service";
 import { StatusType } from "../../../app/enums";
 // import { GetCourseResponsePageData } from "../../../models/api/responsive/course/course.response.model";
+import ModalCourseDetail from "./ModalCourseDetail"; // Adjust the path as necessary
+import { GetCourseByIdResponse } from "../../../models/api/responsive/course/course.response.model";
 const { confirm } = Modal;
 
 const CoursesManagement: React.FC<{
@@ -30,29 +32,32 @@ const CoursesManagement: React.FC<{
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [pageInfo, setPageInfo] = useState<any>({});
+  const [isCourseDetailModalVisible, setIsCourseDetailModalVisible] = useState(false);
+  const [selectedCourseDetail, setSelectedCourseDetail] = useState<GetCourseByIdResponse | null>(null);
 
-    const fetchCourses = async () => {
-      try {
-        const params: GetCourseParams = {
-          searchCondition: {
-            keyword: searchTerm,
-            category_id: "",
-            status: statusFilter,
-            is_delete: false
-          },
-          pageInfo: {
-            pageNum,
-            pageSize
-          }
-        };
-        const response = await CourseService.getCourse(params);
-        setCourses(response.data.data.pageData);
-        setPageInfo(response.data.data.pageInfo);
-      } catch (error) {
-        message.error("Failed to fetch courses");
-      }
-    };
-    useEffect(() => {
+  const fetchCourses = async () => {
+    try {
+      const params: GetCourseParams = {
+        searchCondition: {
+          keyword: searchTerm,
+          category_id: "",
+          status: statusFilter,
+          is_delete: false
+        },
+        pageInfo: {
+          pageNum,
+          pageSize
+        }
+      };
+      const response = await CourseService.getCourse(params);
+      setCourses(response.data.data.pageData);
+      setPageInfo(response.data.data.pageInfo);
+    } catch (error) {
+      message.error("Failed to fetch courses");
+    }
+  };
+
+  useEffect(() => {
     fetchCourses();
   }, [searchTerm, statusFilter, refreshKey, activeKey, pageNum, pageSize]);
 
@@ -76,6 +81,16 @@ const CoursesManagement: React.FC<{
   const showRejectModal = (id: string) => {
     setSelectedCourseId(id);
     setIsRejectModalVisible(true);
+  };
+
+  const showCourseDetailModal = async (courseId: string) => {
+    try {
+      const response = await CourseService.getCourseById(courseId);
+      setSelectedCourseDetail(response.data.data);
+      setIsCourseDetailModalVisible(true);
+    } catch (error) {
+      message.error("Failed to fetch course details");
+    }
   };
 
   const handleRejectOk = () => {
@@ -148,6 +163,19 @@ const CoursesManagement: React.FC<{
       key: "name"
     },
     {
+      title: "Category",
+      dataIndex: "category_name",
+      key: "category_name",
+    },
+    
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: StatusType) => <span className={`text-sm capitalize ${courseStatusColor[status]}`}>{status}</span>
+    },
+    
+    {
       title: "Price",
       dataIndex: "price",
       key: "price",
@@ -160,12 +188,6 @@ const CoursesManagement: React.FC<{
       render: (discount: string) => `${discount}%`
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status: StatusType) => <span className={`text-sm capitalize ${courseStatusColor[status]}`}>{status}</span>
-    },
-    {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
@@ -174,23 +196,29 @@ const CoursesManagement: React.FC<{
     {
       title: "Action",
       key: "action",
-      render: (record: any) =>
-        record.status === StatusType.WAITING_APPROVE ? (
+      render: (record: any) => {
+        const commonButtons = (
           <div>
-            <Popconfirm title="Confirm the course?" description="Are you sure to confirm this course?" onConfirm={() => handleChangeStatus(record._id, StatusType.APPROVE)} okText="Yes" cancelText="No">
-              <Button icon={<CheckOutlined />} className="mr-2 bg-white text-green-500 hover:opacity-80" title="Confirm" />
-            </Popconfirm>
+            <Button icon={<CarryOutOutlined />} onClick={() => showLessonModal(record._id)} className="mr-2 bg-white text-orange-500 hover:opacity-80" title="View Lessons" />
+            <Button icon={<ContainerOutlined />} onClick={() => showSessionModal(record._id)} className="mr-2 bg-white text-yellow-500 hover:opacity-80" title="View Sessions" />
+            <Button icon={<EyeOutlined />} onClick={() => showCourseDetailModal(record._id)} className="mr-2 bg-white text-blue-500 hover:opacity-80" title="View Details" />
+          </div>
+        );
 
-            <Button icon={<StopOutlined />} className="mr-2 bg-white text-red-500 hover:opacity-80" onClick={() => showRejectModal(record._id)} title="Reject" />
-            <Button icon={<CarryOutOutlined />} onClick={() => showLessonModal(record._id)} className="mr-2 bg-white text-orange-500 hover:opacity-80" title="View Lessons" />
-            <Button icon={<ContainerOutlined />} onClick={() => showSessionModal(record._id)} className="mr-2 bg-white text-yellow-500 hover:opacity-80" title="View Sessions" />
-          </div>
-        ) : (
-          <div>
-            <Button icon={<CarryOutOutlined />} onClick={() => showLessonModal(record._id)} className="mr-2 bg-white text-orange-500 hover:opacity-80" title="View Lessons" />
-            <Button icon={<ContainerOutlined />} onClick={() => showSessionModal(record._id)} className="mr-2 bg-white text-yellow-500 hover:opacity-80" title="View Sessions" />
-          </div>
-        )
+        if (record.status === StatusType.WAITING_APPROVE) {
+          return (
+            <div>
+              <Popconfirm title="Confirm the course?" description="Are you sure to confirm this course?" onConfirm={() => handleChangeStatus(record._id, StatusType.APPROVE)} okText="Yes" cancelText="No">
+                <Button icon={<CheckOutlined />} className="mr-2 bg-white text-green-500 hover:opacity-80" title="Confirm" />
+              </Popconfirm>
+              <Button icon={<StopOutlined />} className="mr-2 bg-white text-red-500 hover:opacity-80" onClick={() => showRejectModal(record._id)} title="Reject" />
+              {commonButtons}
+            </div>
+          );
+        }
+
+        return commonButtons;
+      }
     }
   ];
 
@@ -204,7 +232,7 @@ const CoursesManagement: React.FC<{
   });
 
   const paginatedCourses = filteredCourses.slice((pageNum - 1) * pageSize, pageNum * pageSize);
- console.log(paginatedCourses);
+  console.log(paginatedCourses);
   return (
     <>
       <Table
@@ -275,6 +303,11 @@ const CoursesManagement: React.FC<{
           rowKey="_id"
         />
       </Modal>
+      <ModalCourseDetail
+        visible={isCourseDetailModalVisible}
+        onClose={() => setIsCourseDetailModalVisible(false)}
+        courseDetail={selectedCourseDetail}
+      />
     </>
   );
 };

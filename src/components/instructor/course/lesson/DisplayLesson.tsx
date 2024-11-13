@@ -2,13 +2,14 @@ import Table from "antd/es/table";
 import { formatDate } from "../../../../utils/helper";
 import { useCallback, useEffect, useState } from "react";
 import { Pagination, Button } from "antd";
-import { EditOutlined } from "@ant-design/icons";
+import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 import CustomSearch from "../../../generic/search/CustomSearch";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
 import CreateButton from "./CreateButton";
 import { LessonService } from "../../../../services/lesson/lesson.service";
 import { Lesson } from "../../../../models/api/responsive/lesson/lesson.response.model";
+import ModalLessonDetail from "./ModalLessonDetail";
 
 const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
   const [filteredLessons, setFilteredLessons] = useState<Lesson["pageData"]>([]);
@@ -17,6 +18,8 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
   const [totalItems, setTotalItems] = useState<number>(0);
   const [selectedLesson, setSelectedLesson] = useState<Lesson["pageData"][0] | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
+  const [isLessonDetailModalVisible, setIsLessonDetailModalVisible] = useState<boolean>(false);
+  const [selectedLessonDetail, setSelectedLessonDetail] = useState<Lesson["pageData"][0] | null>(null);
 
   const fetchLessons = useCallback(async () => {
     const response = await LessonService.getLesson({
@@ -55,6 +58,16 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
           setIsEditModalOpen(true);
         }
       }
+    } catch (error) {
+      console.error("Failed to fetch lesson details", error);
+    }
+  };
+
+  const showLessonDetailModal = async (lessonId: string) => {
+    try {
+      const response = await LessonService.getLessonDetails(lessonId);
+      setSelectedLessonDetail(response.data.data);
+      setIsLessonDetailModalVisible(true);
     } catch (error) {
       console.error("Failed to fetch lesson details", error);
     }
@@ -113,6 +126,7 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
         <div className="flex space-x-2">
           <Button icon={<EditOutlined />} onClick={() => handleEditClick(record._id)} />
           <DeleteButton lessonId={record._id} onDeleteSuccess={handleLessonCreated} />
+          <Button icon={<EyeOutlined />} onClick={() => showLessonDetailModal(record._id)} />
         </div>
       )
     }
@@ -145,6 +159,11 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
         />
       </div>
       {selectedLesson && <EditButton data={selectedLesson} isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onLessonCreated={handleLessonCreated} />}
+      <ModalLessonDetail
+        visible={isLessonDetailModalVisible}
+        onClose={() => setIsLessonDetailModalVisible(false)}
+        lessonDetail={selectedLessonDetail}
+      />
     </>
   );
 };
