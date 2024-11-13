@@ -9,7 +9,7 @@ import { store } from "../../app/redux/store";
 import { toggleLoading } from "../../app/redux/loadingSlice";
 import { HTTP_STATUS } from "../../app/enums";
 import { HttpException } from "../../app/exceptions";
-import { handleUploadFile } from "../../utils/upload"; // Import the handleUploadFile function
+import { handleUploadFile, deleteFileFromCloudinary } from "../../utils/upload"; // Import the handleUploadFile and deleteFileFromCloudinary functions
 
 export const axiosInstance = axios.create({
   baseURL: DOMAIN_ADMIN,
@@ -30,7 +30,7 @@ export const BaseService = {
   }: Partial<ApiRequestModel> & {
     toggleLoading?: (isLoading: boolean) => void;
   }): Promise<PromiseState<T>> {
-    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 2000);
+    if (toggleLoading) store.dispatch(toggleLoading(isLoading) as any);
     return axiosInstance
       .get<T, PromiseState<T>>(`${url}`, {
         params: payload,
@@ -41,7 +41,7 @@ export const BaseService = {
       });
   },
   post<T = any>({ url, isLoading = true, payload, headers, toggleLoading }: Partial<ApiRequestModel>): Promise<PromiseState<T>> {
-    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 2000);
+    if (toggleLoading) store.dispatch(toggleLoading(isLoading) as any);
     return axiosInstance
       .post<T, PromiseState<T>>(`${url}`, payload, {
         headers: headers || {}
@@ -59,7 +59,7 @@ export const BaseService = {
   }: Partial<ApiRequestModel> & {
     toggleLoading?: (isLoading: boolean) => void;
   }): Promise<PromiseState<T>> {
-    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 2000);
+    if (toggleLoading) store.dispatch(toggleLoading(isLoading) as any);
     return axiosInstance
       .put<T, PromiseState<T>>(`${url}`, payload, {
         headers: headers || {}
@@ -77,7 +77,7 @@ export const BaseService = {
   }: Partial<ApiRequestModel> & {
     toggleLoading?: (isLoading: boolean) => void;
   }): Promise<PromiseState<T>> {
-    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 2000);
+    if (toggleLoading) store.dispatch(toggleLoading(isLoading) as any);
     return axiosInstance
       .delete<T, PromiseState<T>>(`${url}`, {
         params: payload,
@@ -96,7 +96,7 @@ export const BaseService = {
   }: Partial<ApiRequestModel> & {
     toggleLoading?: (isLoading: boolean) => void;
   }): Promise<PromiseState<T>> {
-    if (toggleLoading) setTimeout(() => toggleLoading(isLoading), 2000);
+    if (toggleLoading) store.dispatch(toggleLoading(isLoading) as any);
     return axiosInstance
       .get<T, PromiseState<T>>(`${url}`, {
         params: payload,
@@ -117,7 +117,7 @@ export const BaseService = {
     }
     const user: any = getItemInLocalStorage(LOCAL_STORAGE.ACCOUNT_ADMIN);
     // if (isLoading) useToggleLoading()(true);
-    if (isLoading) setTimeout(() => store.dispatch(toggleLoading(true)), 2000);
+    if (isLoading) store.dispatch(toggleLoading(true) as any);
     return axios({
       method: "post",
       url: `${DOMAIN_ADMIN}${url}`,
@@ -138,7 +138,7 @@ export const BaseService = {
       });
   },
   uploadFile: async (file: File, type: "video" | "image", isLoading: boolean = true) => {
-    if (isLoading) setTimeout(() => store.dispatch(toggleLoading(true)), 2000);
+    if (isLoading) store.dispatch(toggleLoading(true) as any);
 
     try {
       const url = await handleUploadFile(file, type);
@@ -152,6 +152,24 @@ export const BaseService = {
       console.error("Upload error:", error);
       message.error(error instanceof Error ? error.message : "Upload failed");
       return null;
+    } finally {
+      if (isLoading) store.dispatch(toggleLoading(false));
+    }
+  },
+  deleteFile: async (publicId: string, type: "video" | "image", isLoading: boolean = true) => {
+    if (isLoading) store.dispatch(toggleLoading(true) as any);
+    try {
+      const success = await deleteFileFromCloudinary(publicId, type);
+      if (success) {
+        message.success(`${type} deleted successfully`);
+        return true;
+      } else {
+        throw new Error("Delete failed");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      message.error(error instanceof Error ? error.message : "Delete failed");
+      return false;
     } finally {
       if (isLoading) store.dispatch(toggleLoading(false));
     }
@@ -174,7 +192,7 @@ axiosInstance.interceptors.request.use(
       const parsedUserInfo = JSON.parse(userInfo);
       config.headers["User-Id"] = parsedUserInfo._id; // debug add user id
     }
-    setTimeout(() => store.dispatch(toggleLoading(true)), 2000); // Show loading with delay
+    store.dispatch(toggleLoading(true)); // Show loading
     return config as InternalAxiosRequestConfig;
   },
   (err) => {
@@ -185,7 +203,7 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (config) => {
-    setTimeout(() => store.dispatch(toggleLoading(false)), 2000); // Hide loading with delay
+    store.dispatch(toggleLoading(false)); // Hide loading
     return Promise.resolve(config);
   },
   (err) => {

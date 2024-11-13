@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { Button, Col, Form, Input, InputNumber, message, Modal, Row, Select, Upload, UploadFile } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
+import { UploadOutlined, DeleteOutlined } from "@ant-design/icons";
 const { Option } = Select;
 import { CourseService } from "../../../../services/course/course.service";
 import { CategoryService } from "../../../../services/category/category.service";
@@ -114,6 +114,34 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
     [handleFileUpload, form]
   );
 
+  const handleFileDelete = useCallback(async (url: string, type: "image" | "video") => {
+    try {
+      const response = await BaseService.deleteFile(url, type);
+      if (!response) throw new Error(`Failed to delete ${type}`);
+      message.success(`${type.charAt(0).toUpperCase() + type.slice(1)} deleted successfully.`);
+    } catch (error: any) {
+      message.error(`${type} deletion failed: ${error.message}`);
+    }
+  }, []);
+
+  const handleAvatarDelete = () => {
+    const imageUrl = form.getFieldValue("image_url");
+    if (imageUrl) {
+      handleFileDelete(imageUrl, "image");
+      setAvatarPreview("");
+      form.setFieldsValue({ image_url: "" });
+    }
+  };
+
+  const handleVideoDelete = () => {
+    const videoUrl = form.getFieldValue("video_url");
+    if (videoUrl) {
+      handleFileDelete(videoUrl, "video");
+      setVideoPreview("");
+      form.setFieldsValue({ video_url: "" });
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
@@ -213,7 +241,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
           <Form.Item name="content" label="Content">
             <Editor initialValue={content} onEditorChange={editChange} />
           </Form.Item>
-          <Row gutter={16}>
+          <Row gutter={16} className="mt-4">
             <Col span={12}>
               <Form.Item name="image_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
                 <div className="space-y-4">
@@ -222,7 +250,14 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
                       Select Avatar
                     </Button>
                   </Upload>
-                  {avatarPreview && <img src={avatarPreview} alt="Avatar preview" className="h-32 w-32 rounded-lg object-cover" />}
+                  <div className="h-[265px] w-[300px] overflow-hidden rounded-lg">
+                    {avatarPreview && (
+                      <>
+                        <img src={avatarPreview} alt="Avatar preview" className="h-full w-full object-cover" />
+                        <Button onClick={handleAvatarDelete} className="mt-2" icon={<DeleteOutlined />} />
+                      </>
+                    )}
+                  </div>
                 </div>
               </Form.Item>
             </Col>
@@ -234,17 +269,30 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
                       Select Video
                     </Button>
                   </Upload>
-                  {videoPreview && <div dangerouslySetInnerHTML={{ __html: videoPreview }} />}
+                  <div className="h-[350px] w-[350px] overflow-hidden rounded-lg">
+                    {videoPreview && (
+                      <>
+                        <div className="h-full w-full" dangerouslySetInnerHTML={{ __html: videoPreview }} />
+                        <Button onClick={handleVideoDelete} className="mt-2" icon={<DeleteOutlined />} />
+                      </>
+                    )}
+                  </div>
                 </div>
               </Form.Item>
             </Col>
+          </Row>    
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item name="price" label="Price" rules={[{ required: true, message: "Please input the price!" }]}>
+                <InputNumber min={0} style={{ width: "100%" }} formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name="discount" label="Discount" rules={[{ required: true, message: "Please input the discount!" }]}>
+                <InputNumber min={0} max={100} style={{ width: "100%" }} />
+              </Form.Item>
+            </Col>
           </Row>
-          <Form.Item name="price" label="Price" rules={[{ required: true, message: "Please input the price!" }]}>
-            <InputNumber min={0} style={{ width: "100%" }} formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} />
-          </Form.Item>
-          <Form.Item name="discount" label="Discount" rules={[{ required: true, message: "Please input the discount!" }]}>
-            <InputNumber min={0} max={100} style={{ width: "100%" }} />
-          </Form.Item>
         </Form>
       </Modal>
     </>

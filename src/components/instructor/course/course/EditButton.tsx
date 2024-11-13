@@ -251,7 +251,8 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
           <Form.Item name="content" label="Content" rules={[{ required: true, message: "Please input the content!" }]}>
             <Editor initialValue={content} onEditorChange={handleEditorChange} />
           </Form.Item>
-          <Row gutter={16}>
+
+          <Row gutter={16} className="mt-4">
             <Col span={12}>
               <Form.Item name="image_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
                 <div className="space-y-4">
@@ -260,7 +261,9 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
                       Select Avatar
                     </Button>
                   </Upload>
-                  {avatarPreview && <img src={avatarPreview} alt="Avatar preview" className="h-32 w-32 rounded-lg object-cover" />}
+                  <div className="h-[265px] w-[300px] overflow-hidden rounded-lg">
+                    {avatarPreview && <img src={avatarPreview} alt="Avatar preview" className="h-full w-full object-cover" />}
+                  </div>
                 </div>
               </Form.Item>
             </Col>
@@ -272,7 +275,9 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
                       Select Video
                     </Button>
                   </Upload>
-                  {videoPreview && <div dangerouslySetInnerHTML={{ __html: videoPreview }} />}
+                  <div className="h-[265px] w-[300px] overflow-hidden rounded-lg">
+                    {videoPreview && <div dangerouslySetInnerHTML={{ __html: videoPreview }} />}
+                  </div>
                 </div>
               </Form.Item>
             </Col>

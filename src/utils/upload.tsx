@@ -72,6 +72,36 @@ export const customUploadHandler = async (
     setUploading(false);
   }
 };
+
+export const deleteFileFromCloudinary = async (publicId: string, type: "video" | "image") => {
+  const resourceType = type === "video" ? "video" : "image";
+  const deleteUrl = `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/resources/${resourceType}/upload/${publicId}`;
+
+  try {
+    const response = await fetch(deleteUrl, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Basic ${btoa(`${cloudinaryConfig.apiKey}:${cloudinaryConfig.apiSecret}`)}`,
+        'Content-Type': 'application/json'
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Delete failed:", errorData);
+      message.error(`Failed to delete ${type}: ${errorData.error?.message || "Unknown error"}`);
+      return false;
+    }
+
+    message.success(`${type} deleted successfully`);
+    return true;
+  } catch (error) {
+    console.error("Delete error:", error);
+    message.error(`Failed to delete ${type}. Please try again.`);
+    return false;
+  }
+};
+
 // export const handleImageUpload = useCallback(
 //   (file: File, setState: (value: React.SetStateAction<any>) => void) => {
 //     const maxSize = 10 * 1024 * 1024;
