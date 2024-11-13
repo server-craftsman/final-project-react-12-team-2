@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Modal, message, Button, Input, Checkbox } from "antd";
+import { Table, Modal, message, Button, Input, Checkbox, Pagination } from "antd";
 import { useNavigate } from "react-router-dom";
 import { EditOutlined, LockOutlined, UnlockOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { userRoleColor } from "../../../utils/userRole";
@@ -38,12 +38,15 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
   const navigate = useNavigate();
   const [users, setUsers] = useState<GetUsersAdminResponse | null>(null);
   const [selectedUserIds, setSelectedUserIds] = useState<Set<string>>(new Set());
+  const [pageNum, setPageNum] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageInfo, setPageInfo] = useState<any>({});
 
   // Move outside component to prevent recreation on each render
   const defaultParams = {
     pageInfo: {
-      pageNum: 1,
-      pageSize: 10
+      pageNum,
+      pageSize
     },
     searchCondition: {
       keyword: "",
@@ -107,11 +110,12 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
       );
 
       setUsers({ ...response.data.data, pageData: filteredUsers });
+      setPageInfo(response.data.data.pageInfo);
     } catch (error) {
       console.error("Failed to fetch users:", error);
       setUsers(null);
     }
-  }, [searchQuery, selectedRole, selectedStatus, activeTab, getSearchCondition]);
+  }, [searchQuery, selectedRole, selectedStatus, activeTab, getSearchCondition, pageNum, pageSize]);
 
   useEffect(() => {
     fetchUsers();
@@ -374,7 +378,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
     }
 
     return baseColumns;
-  }, [activeTab, handleViewDetails, handleChangeStatus, handleChangeRole, disableActions, selectedUserIds]);
+  }, [activeTab, handleViewDetails, handleChangeStatus, handleChangeRole, disableActions, selectedUserIds, pageNum, pageSize]);
 
   return (
     <div className="f -mt-3 mb-64 p-4">
@@ -383,7 +387,21 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
           <DeleteOutlined />
         </Button>
       )}
-      <Table<User> className="shadow-lg" columns={columns} dataSource={users?.pageData || []} rowKey="_id" pagination={{ pageSize: 10 }} />
+      <Table<User> className="shadow-lg" columns={columns} dataSource={users?.pageData || []} rowKey="_id" pagination={false} />
+      <div className="mt-5 flex justify-start">
+        <Pagination
+          current={pageNum}
+          pageSize={pageSize}
+          total={pageInfo.totalItems}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          onChange={(page, pageSize) => {
+            setPageNum(page);
+            setPageSize(pageSize);
+          }}
+          className="bg-pagination"
+          showSizeChanger
+        />
+      </div>
     </div>
   );
 };

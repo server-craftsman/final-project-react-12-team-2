@@ -1,4 +1,4 @@
-import { Table, Space, message, Modal, Button } from "antd";
+import { Table, Space, message, Modal, Button, Pagination } from "antd";
 import React, { useEffect, useState, useCallback } from "react";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -21,12 +21,15 @@ interface AdminCategoryProps {
 
 const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
   const [category, setCategory] = useState<GetCategoryResponse | null>(null);
+  const [pageNum, setPageNum] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageInfo, setPageInfo] = useState<any>({});
   const navigate = useNavigate();
 
   const defaultParams = {
     pageInfo: {
-      pageNum: 1,
-      pageSize: 10
+      pageNum,
+      pageSize
     },
     searchCondition: {
       keyword: "",
@@ -53,10 +56,11 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
       };
       const response = await CategoryService.getCategory(params as GetCategoryParams);
       setCategory(response.data?.data ? response.data.data : null);
+      setPageInfo(response.data.data.pageInfo);
     } catch (error) {
       message.error("An unexpected error occurred while fetching categories");
     }
-  }, [searchQuery, getSearchCondition]);
+  }, [searchQuery, getSearchCondition, pageNum, pageSize]);
 
   useEffect(() => {
     fetchCategories();
@@ -121,7 +125,25 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
     }
   ];
 
-  return <Table columns={columns} dataSource={filteredData || []} rowKey="id" />;
+  return (
+    <>
+      <Table columns={columns} dataSource={filteredData || []} rowKey="id" pagination={false}/>
+      <div className="mt-5 flex justify-start">
+        <Pagination
+          current={pageNum}
+          pageSize={pageSize}
+          total={pageInfo.totalItems}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          onChange={(page, pageSize) => {
+            setPageNum(page);
+            setPageSize(pageSize);
+          }}
+          className="bg-pagination"
+          showSizeChanger
+        />
+      </div>
+    </>
+  );
 };
 
 export default AdminCategory;

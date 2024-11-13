@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Table, message, Modal } from "antd";
+import { Table, message, Modal, Pagination } from "antd";
 import { EyeOutlined, CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { PayoutStatus } from "../../../app/enums";
 import { formatDate, moneyFormat } from "../../../utils/helper";
@@ -19,6 +19,9 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
   const [payments, setPayments] = useState<any[]>([]);
   const [selectedPayoutDetails, setSelectedPayoutDetails] = useState<unknown[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [pageNum, setPageNum] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [pageInfo, setPageInfo] = useState<any>({});
   useEffect(() => {
     let isMounted = true;
 
@@ -33,8 +36,8 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
     PayoutService.getPayout({
       searchCondition,
       pageInfo: {
-        pageNum: 1,
-        pageSize: 10
+        pageNum,
+        pageSize
       }
     })
       .then((response) => {
@@ -51,6 +54,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
         }));
 
         setPayments(filteredPayments);
+        setPageInfo(response.data.data.pageInfo);
       })
       .catch(() => {
         if (!isMounted) return;
@@ -60,7 +64,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
     return () => {
       isMounted = false;
     };
-  }, [searchQuery, status, activeTabKey, refreshKey]);
+  }, [searchQuery, status, activeTabKey, refreshKey, pageNum, pageSize]);
 
   const handleViewDetails = (payoutId: string) => {
     const payout = payments.find((payment) => payment._id === payoutId);
@@ -226,10 +230,23 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
         columns={columns}
         dataSource={payments}
         rowKey={(record) => record._id || `row-${record.payout_no}`}
-        pagination={{ pageSize: 10 }}
+        pagination={false}
         rowClassName={() => "align-middle"}
       />
-
+      <div className="mt-5 flex justify-start">
+        <Pagination
+          current={pageNum}
+          pageSize={pageSize}
+          total={pageInfo.totalItems}
+          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
+          onChange={(page, pageSize) => {
+            setPageNum(page);
+            setPageSize(pageSize);
+          }}
+          className="bg-pagination"
+          showSizeChanger
+        />
+      </div>
       <ModalTransaction
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
