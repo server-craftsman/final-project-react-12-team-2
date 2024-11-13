@@ -5,8 +5,10 @@ import { useForm } from "antd/lib/form/Form";
 import { BlogService } from "../../../services/blog/blog.service";
 import { customUploadHandler } from "../../../utils/upload";
 import { CategoryService } from "../../../services/category/category.service";
+import { BaseService } from "../../../services/config/base.service";
+import Editor from "../../generic/tiny/Editor";
 
-const CreateBlog = ({ onSuccess, className }: { onSuccess?: () => void, className?: string }) => {
+const CreateBlog = () => {
   const [form] = useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -54,24 +56,16 @@ const CreateBlog = ({ onSuccess, className }: { onSuccess?: () => void, classNam
   // Upload image
   const uploadImage = useCallback(async () => {
     if (!imageFile) return "";
-    let imageUrl = "";
-    await customUploadHandler(
-      {
-        file: imageFile,
-        onSuccess: (url) => {
-          imageUrl = url;
-        },
-        onError: () => {
-          message.error("Failed to upload image");
-        }
-      },
-      "image",
-      setUploading,
-      (type, url) => {
-        console.log(`${type} uploaded to ${url}`);
-      }
-    );
-    return imageUrl;
+    setUploading(true);
+    try {
+      const uploadedUrl = await BaseService.uploadFile(imageFile, "image", true);
+      return uploadedUrl;
+    } catch (error) {
+      message.error("Failed to upload image");
+      return "";
+    } finally {
+      setUploading(false);
+    }
   }, [imageFile]);
 
   // Form submission
@@ -87,16 +81,15 @@ const CreateBlog = ({ onSuccess, className }: { onSuccess?: () => void, classNam
         });
 
         message.success("Blog post created successfully!");
-        // Call the onSuccess callback after successful creation
-        onSuccess?.();
         handleModalToggle();
+        window.location.reload();
       } catch (error: any) {
         message.error(error.message || "Failed to create blog post");
       } finally {
         setUploading(false);
       }
     },
-    [handleModalToggle, uploadImage, onSuccess]
+    [handleModalToggle, uploadImage]
   );
 
   // Render upload component
@@ -126,20 +119,12 @@ const CreateBlog = ({ onSuccess, className }: { onSuccess?: () => void, classNam
   );
 
   return (
-    <>
-      <Button 
-        className={className || "bg-gradient-tone px-4 py-2 text-white"} 
-        onClick={handleModalToggle}
-      >
+    <div>
+      <Button className="bg-gradient-tone px-4 py-2 text-white" onClick={handleModalToggle}>
         Create Blog Post
       </Button>
 
-      <Modal 
-        title="Create Blog Post" 
-        open={isModalVisible} 
-        onCancel={handleModalToggle} 
-        footer={null}
-      >
+      <Modal title="Create Blog Post" open={isModalVisible} onCancel={handleModalToggle} footer={null}>
         <Form form={form} name="create_blog" onFinish={onFinish} layout="vertical" initialValues={{ category_id: categories[0]?.value }}>
           <Form.Item name="name" label="Post Name" rules={[{ required: true, message: "Please input the post name!" }]}>
             <Input />
@@ -150,7 +135,12 @@ const CreateBlog = ({ onSuccess, className }: { onSuccess?: () => void, classNam
           </Form.Item>
 
           <Form.Item name="content" label="Content" rules={[{ required: true, message: "Please input the content!" }]}>
-            <Input.TextArea />
+              <Editor
+                initialValue={form.getFieldValue('content') || ""} 
+                onEditorChange={(content: string) => {
+                  form.setFieldsValue({ content }); 
+                }}
+              />
           </Form.Item>
 
           <Form.Item name="category_id" label="Category" rules={[{ required: true, message: "Please select a category!" }]}>
@@ -160,13 +150,13 @@ const CreateBlog = ({ onSuccess, className }: { onSuccess?: () => void, classNam
           <Form.Item label="Image">{renderUpload()}</Form.Item>
 
           <Form.Item>
-            <Button className="bg-gradient-tone px-4 py-2 text-white" htmlType="submit" loading={uploading}>
+            <Button type="primary" htmlType="submit" loading={uploading}>
               Create Post
             </Button>
           </Form.Item>
         </Form>
       </Modal>
-    </>
+    </div>
   );
 };
 
