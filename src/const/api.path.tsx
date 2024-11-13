@@ -32,7 +32,8 @@ export const API = {
     GET_BLOG: "api/blog/search",
     CREATE_BLOG: "api/blog",
     DELETE_BLOG: "api/blog/:id",
-    GET_COURSE_LOG_DETAILS: "/api/course/log/search"
+    GET_COURSE_LOG_DETAILS: "/api/course/log/search",
+    GET_SETTING: "api/setting/default"
   },
   INSTRUCTOR: {
     GET_USER_DETAILS: "api/users/:id",
