@@ -6,7 +6,7 @@ import { BlogService } from "../../../services/blog/blog.service";
 import { customUploadHandler } from "../../../utils/upload";
 import { CategoryService } from "../../../services/category/category.service";
 
-const CreateBlog = () => {
+const CreateBlog = ({ onSuccess, className }: { onSuccess?: () => void, className?: string }) => {
   const [form] = useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -87,6 +87,8 @@ const CreateBlog = () => {
         });
 
         message.success("Blog post created successfully!");
+        // Call the onSuccess callback after successful creation
+        onSuccess?.();
         handleModalToggle();
       } catch (error: any) {
         message.error(error.message || "Failed to create blog post");
@@ -94,7 +96,7 @@ const CreateBlog = () => {
         setUploading(false);
       }
     },
-    [handleModalToggle, uploadImage]
+    [handleModalToggle, uploadImage, onSuccess]
   );
 
   // Render upload component
@@ -124,12 +126,20 @@ const CreateBlog = () => {
   );
 
   return (
-    <div>
-      <Button className="bg-gradient-tone text-white px-4 py-2" onClick={handleModalToggle}>
+    <>
+      <Button 
+        className={className || "bg-gradient-tone px-4 py-2 text-white"} 
+        onClick={handleModalToggle}
+      >
         Create Blog Post
       </Button>
 
-      <Modal title="Create Blog Post" open={isModalVisible} onCancel={handleModalToggle} footer={null}>
+      <Modal 
+        title="Create Blog Post" 
+        open={isModalVisible} 
+        onCancel={handleModalToggle} 
+        footer={null}
+      >
         <Form form={form} name="create_blog" onFinish={onFinish} layout="vertical" initialValues={{ category_id: categories[0]?.value }}>
           <Form.Item name="name" label="Post Name" rules={[{ required: true, message: "Please input the post name!" }]}>
             <Input />
@@ -150,13 +160,13 @@ const CreateBlog = () => {
           <Form.Item label="Image">{renderUpload()}</Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={uploading}>
+            <Button className="bg-gradient-tone px-4 py-2 text-white" htmlType="submit" loading={uploading}>
               Create Post
             </Button>
           </Form.Item>
         </Form>
       </Modal>
-    </div>
+    </>
   );
 };
 

@@ -9,7 +9,7 @@ import { EditTwoTone, DeleteTwoTone } from "@ant-design/icons";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
 import EditBlogModal from "./EditBlog";
 import DeleteBlogModal from "./DeleteBlog";
-
+import CreateBlog from "./CreateBlog";
 
 const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
   const [blogData, setBlogData] = useState<GetBlogResponse | null>(null);
@@ -84,7 +84,7 @@ const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
     },
     {
       title: "Blog Name",
-      dataIndex: "name",
+      dataIndex: "name",  
       render: (name: string, record: Blog) => (
         <Link to={`/admin/admin-blog/${record._id}`}>
           {name}
@@ -132,6 +132,16 @@ const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
 
   return (
     <>
+    <div className="flex justify-between items-center mb-4">
+        <div className="search-container">
+          {/* Component Search của bạn */}
+        </div>
+        
+        <CreateBlog 
+          onSuccess={fetchBlogs} 
+          className="bg-gradient-tone px-4 py-2 text-white"
+        />
+      </div>
       <Table columns={columns} dataSource={filteredData || []} rowKey="_id" />
 
       <EditBlogModal visible={isEditModalVisible} blog={selectedBlog} categories={categories} onClose={() => setEditModalVisible(false)} onSuccess={fetchBlogs} />
