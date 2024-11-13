@@ -13,8 +13,8 @@ const BlogDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [blog, setBlog] = useState<getPublicBlogsDetails | null>(null);
   const [relatedBlogs, setRelatedBlogs] = useState<GetBlogResponse | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [loadingRelated, setLoadingRelated] = useState<boolean>(false);
+  // const [loading, setLoading] = useState<boolean>(true);
+  // const [loadingRelated, setLoadingRelated] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [userAvatars, setUserAvatars] = useState<Record<string, string>>({});
 
@@ -45,7 +45,7 @@ const BlogDetails: React.FC = () => {
   const fetchData = async () => {
     if (!id) {
       setError("No blog ID provided.");
-      setLoading(false);
+      // setLoading(false);
       return;
     }
 
@@ -71,8 +71,9 @@ const BlogDetails: React.FC = () => {
       console.error("Failed to fetch data:", error);
       setError("Failed to load data. Please try again later.");
     } finally {
-      setLoading(false);
-      setLoadingRelated(false);
+      // setLoading(false);
+      // setLoadingRelated(false);
+      console.log("Fetching data completed");
     }
   };
 
@@ -81,7 +82,7 @@ const BlogDetails: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [id]);
 
-  if (loading) return <p>Loading...</p>;
+  // if (loading) return <p>Loading...</p>;
   if (error) return <p className="error">{error}</p>;
 
   const BlogCard = ({ blog }: { blog: getPublicBlogsDetails }) => (
@@ -157,7 +158,7 @@ const BlogDetails: React.FC = () => {
             </Link>
           ))}
         </div>
-        {loadingRelated && <p className="text-center py-4">Loading related blogs...</p>}
+        {/* {loadingRelated && <p className="text-center py-4">Loading related blogs...</p>} */}
       </div>
     </div>
   );

@@ -23,7 +23,7 @@ const FilteredAllCourses: React.FC<FilteredAllCoursesProps> = ({
   selectedCategory,
   onReset,
 }) => {
-  // Kiểm tra xem có filter nào đang được áp dụng không
+  // Check if there are any active filters
   const hasActiveFilters = selectedSort !== '' || selectedCategory !== '';
 
   return (
