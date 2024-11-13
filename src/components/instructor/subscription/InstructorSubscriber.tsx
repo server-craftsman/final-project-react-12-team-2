@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Card, Avatar, Row, Col, message } from "antd";
+import React, { useState, useEffect, useCallback } from "react";
+import { Card, Avatar, Row, Col, message, Pagination } from "antd";
 import { User } from "../../../models/api/responsive/users/users.model";
 import { SubscriberService } from "../../../services/subscriber/subscriber.service";
 import { GetSubscribersParams } from "../../../models/api/request/subscriber/subscriber.request.model";
@@ -13,16 +13,19 @@ interface SearchSubscriberCondition {
 }
 
 interface InstructorSubscriberProps {
-  searchQuery: string;
+  searchValue: string;
 }
 
-const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchQuery }) => {
+const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue }) => {
   const [subscriptions, setSubscriptions] = useState<GetSubscribersResponse | null>(null);
   const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
 
   const defaultParams = {
     pageInfo: {
-      pageNum: 1,
+      pageNum: currentPage,
       pageSize: 10
     },
     searchCondition: {
@@ -31,25 +34,33 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchQuery
     }
   } as const;
 
-  const getSearchCondition = React.useCallback((searchQuery: string): SearchSubscriberCondition => {
+  const getSearchCondition = React.useCallback((): SearchSubscriberCondition => {
     return {
-      keyword: searchQuery || defaultParams.searchCondition.keyword,
+      keyword: defaultParams.searchCondition.keyword,
       is_delete: false
     };
   }, []);
+
   const fetchSubscriptions = React.useCallback(async () => {
+    setLoading(true);
     try {
-      const searchCondition = getSearchCondition(searchQuery);
-      const params = {
-        pageInfo: defaultParams.pageInfo,
+      const searchCondition = getSearchCondition();
+      const params: GetSubscribersParams = {
+        pageInfo: {
+          ...defaultParams.pageInfo,
+          pageNum: currentPage,
+        },
         searchCondition
       };
-      const response = await SubscriberService.getSubscribers(params as GetSubscribersParams);
+      const response = await SubscriberService.getSubscribers(params);
       setSubscriptions(response.data?.data ? response.data.data : null);
+      setTotalItems(response.data?.data?.pageInfo?.totalItems || 0);
     } catch (error) {
       message.error("No subscriptions found");
+    } finally {
+      setLoading(false);
     }
-  }, [searchQuery, getSearchCondition]);
+  }, [getSearchCondition, currentPage]);
 
   const fetchUsers = React.useCallback(async () => {
     try {
@@ -67,7 +78,7 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchQuery
 
   useEffect(() => {
     fetchSubscriptions();
-  }, [fetchSubscriptions]);
+  }, [fetchSubscriptions, currentPage]);
 
   useEffect(() => {
     if (subscriptions?.pageData && subscriptions.pageData.length > 0) {
@@ -75,30 +86,50 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchQuery
     }
   }, [subscriptions?.pageData, fetchUsers]);
 
+  const filterUsers = useCallback(() => {
+    if (!users || !subscriptions?.pageData) return [];
+
+    return users.filter(user => {
+      const searchLower = searchValue.toLowerCase();
+      return (
+        user.name?.toLowerCase().includes(searchLower) ||
+        user.email?.toLowerCase().includes(searchLower) ||
+        user.phone_number?.toLowerCase().includes(searchLower)
+      );
+    });
+  }, [users, searchValue]);
+
+  const filteredUsers = filterUsers();
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div style={{ backgroundColor: "#f0f2f5" }}>
-      <Row gutter={[12, 12]}>
+      <Row gutter={[16, 16]}>
         {subscriptions?.pageData.map((subscription) => {
-          const user = users.find((user) => user._id === subscription.subscriber_id);
+          const user = filteredUsers.find((user) => user._id === subscription.subscriber_id);
+          if (!user) return null;
           return (
-            <Col span={6} key={subscription._id}>
+            <Col xs={24} sm={12} md={8} lg={6} key={subscription._id}>
               <Link to={`/profile/${subscription.subscriber_id}`} style={{ textDecoration: "none" }}>
                 <Card
                   hoverable
+                  loading={loading}
                   title={
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        textAlign: "center"
-                      }}
-                    >
-                      <Avatar src={user?.avatar_url} size={48} style={{ marginBottom: "4px" }} />
+                    <div style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      textAlign: "center"
+                    }}>
+                      <Avatar src={user?.avatar_url} size={64} style={{ marginBottom: "8px" }} />
                       <span style={{ fontSize: "16px", fontWeight: "bold" }}>{user?.name}</span>
                     </div>
                   }
                   style={{
+                    height: '100%',
                     borderRadius: "12px",
                     border: "1px solid #000",
                     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
@@ -106,37 +137,53 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchQuery
                     cursor: "pointer",
                     textAlign: "center"
                   }}
-                  bodyStyle={{ padding: "12px" }}
+                  bodyStyle={{ padding: "12px", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
                 >
-                  <p
-                    style={{
-                      fontSize: "12px",
-                      marginBottom: "4px",
+                  <div>
+                    <p style={{
+                      fontSize: "14px",
+                      marginBottom: "8px",
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
                       gap: "4px"
-                    }}
-                  >
-                    <strong>Email:</strong> {user?.email}
-                  </p>
-                  <p
-                    style={{
-                      fontSize: "12px",
-                      marginBottom: "4px",
+                    }}>
+                      <strong>Email:</strong> {user?.email}
+                    </p>
+                    <p style={{
+                      fontSize: "14px",
+                      marginBottom: "16px",
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
                       gap: "4px"
-                    }}
-                  >
-                    <strong>Phone:</strong> {user?.phone_number}
-                  </p>
+                    }}>
+                      <strong>Phone:</strong> {user?.phone_number}
+                    </p>
+                  </div>
                 </Card>
               </Link>
             </Col>
           );
         })}
+      </Row>
+      <Row
+        justify="center"
+        style={{
+          marginTop: '20px',
+          marginBottom: '20px',
+          position: 'sticky',
+          bottom: 20,
+          zIndex: 1000
+        }}
+      >
+        <Pagination
+          current={currentPage}
+          total={totalItems}
+          pageSize={defaultParams.pageInfo.pageSize}
+          onChange={handlePageChange}
+          showSizeChanger={false}
+        />
       </Row>
     </div>
   );
