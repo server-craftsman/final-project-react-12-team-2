@@ -77,7 +77,7 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
       if (response.data?.success) {
         setTimeout(() => {
           message.success("Lesson updated successfully");
-        }, 3000);
+        }, 1000);
         onClose();
         form.resetFields();
         onLessonCreated();

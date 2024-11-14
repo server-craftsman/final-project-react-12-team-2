@@ -60,7 +60,7 @@ const EditButton = ({ data, onSessionEdited, fetchSessionDetails }: any) => {
       await SessionService.updateSession(payload, data._id);
       setTimeout(() => {
         message.success("Session edited successfully");
-      }, 3000);
+      }, 1000);
       setIsOpen(false);
       form.resetFields();
       if (onSessionEdited) {

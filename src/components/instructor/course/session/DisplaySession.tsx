@@ -6,7 +6,7 @@ import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
 import CreateButton from "./CreateButton";
 import { SessionService } from "../../../../services/session/session.service";
-import { CourseService } from "../../../../services/course/course.service";
+// import { CourseService } from "../../../../services/course/course.service";
 import { formatDate } from "../../../../utils/helper";
 import { DisplaySessionResponse } from "../../../../models/api/responsive/session/session.response.model";
 
@@ -29,23 +29,21 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
         pageInfo: { pageNum: page, pageSize: size }
       });
 
-      const sessionData = sessionResponse.data?.data?.pageData || [];
-      const courseIds = Array.from(new Set(sessionData.map((session: any) => session.course_id)));
-      const courseDataArray = await Promise.all(
-        courseIds.map(async (id) => {
-          const response = await CourseService.getCourseById(id);
-          return response.data?.data;
-        })
-      );
+      // const sessionData = sessionResponse.data?.data?.pageData || [];
+      // const courseIds = Array.from(new Set(sessionData.map((session: any) => session.course_id)));
+      // const courseDataArray = await Promise.all(
+      //   courseIds.map(async (id) => {
+      //     const response = await CourseService.getCourseById(id);
+      //     return response.data?.data;
+      //   })
+      // );
 
-      const flattenedCourseDataArray = courseDataArray.flat();
-      const coursesMap = new Map(flattenedCourseDataArray.map((course: any) => [course._id, course.name]));
+      // const flattenedCourseDataArray = courseDataArray.flat();
+      // const coursesMap = new Map(flattenedCourseDataArray.map((course: any) => [course._id, course.name]));
 
-      const sessionsWithCourseNames = sessionData.map((session: any) => ({
+      const sessionsWithCourseNames = sessionResponse.data?.data?.pageData.map((session: any) => ({
         pageData: {
           ...session,
-          course_name: coursesMap.get(session.course_id) || "Unassigned",
-          _id: session._id
         },
         pageInfo: {
           pageNum: 1,

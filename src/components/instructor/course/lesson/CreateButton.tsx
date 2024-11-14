@@ -14,7 +14,7 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
   const [description, setDescription] = useState("");
-  const [lessonType, setLessonType] = useState<LessonType>(LessonType.VIDEO);
+  const [lessonType, setLessonType] = useState<LessonType>(LessonType.TEXT);
   // const [imageUrl, setImageUrl] = useState("");
   // const [videoUrl, setVideoUrl] = useState("");
   const [imagePreview, setImagePreview] = useState("");
@@ -55,7 +55,7 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
       await LessonService.createLesson(values);
       setTimeout(() => {
         message.success("Lesson created successfully");
-      }, 3000);
+      }, 1000);
       setIsOpen(false);
 
       form.resetFields();
@@ -137,7 +137,7 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
               ))}
             </Select>
           </Form.Item>
-          <Form.Item name="lesson_type" label="Lesson Type" initialValue={LessonType.VIDEO} rules={[{ required: true, message: "Please select a lesson type!" }]}>
+          <Form.Item name="lesson_type" label="Lesson Type" initialValue={LessonType.TEXT} rules={[{ required: true, message: "Please select a lesson type!" }]}>
             <Select onChange={(value) => setLessonType(value)}>
               {Object.values(LessonType).map((type) => (
                 <Option key={type} value={type}>
@@ -172,21 +172,39 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
               <Editor initialValue={description} onEditorChange={editChange} />
             </Form.Item>
           )}
-          <Form.Item
-            name="full_time"
-            label="Full Time (minutes)"
-            rules={[
-              {
-                required: true,
-                message: "Please input the full time in minutes!"
-              }
-            ]}
-          >
-            <Input type="number" />
-          </Form.Item>
-          <Form.Item name="position_order" label="Position Order" rules={[{ required: true, message: "Please input the position order!" }]}>
-            <Input type="number" />
-          </Form.Item>
+          <div className="flex flex-grow justify-end w-full space-x-4">
+            <Form.Item
+              name="full_time"
+              label="Full Time (minutes)" 
+              rules={[
+                {
+                  required: true,
+                  message: "Please input the full time in minutes!"
+                }
+              ]}
+              className="w-1/2"
+            >
+              <Input 
+                type="number"
+                min={0}
+                className="rounded-lg border-2 border-gray-200 focus:border-blue-500 transition-colors"
+                placeholder="Enter duration in minutes"
+              />
+            </Form.Item>
+            <Form.Item 
+              name="position_order" 
+              label="Position Order"
+              rules={[{ required: true, message: "Please input the position order!" }]}
+              className="w-1/2"
+            >
+              <Input 
+                type="number"
+                min={0}
+                className="rounded-lg border-2 border-gray-200 focus:border-blue-500 transition-colors"
+                placeholder="Enter position number"
+              />
+            </Form.Item>
+          </div>
         </Form>
       </Modal>
     </>

@@ -50,7 +50,7 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
       if (createSessionResponse) {
         setTimeout(() => {
           message.success("Session created successfully");
-        }, 3000);
+        }, 1000);
         setIsOpen(false);
         form.resetFields();
         // setDescription("");

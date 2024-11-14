@@ -4,22 +4,55 @@ import { formatDate, moneyFormat } from "../../../../utils/helper";
 import { CourseStatusBadge } from "../../../../utils/courseStatus";
 import { StatusType } from "../../../../app/enums";
 import { useEffect, useState, useCallback } from "react";
-import { Button, message, Modal, Pagination, Switch } from "antd";
+import { Button, message, Modal, Switch } from "antd";
 import CustomSearch from "../../../generic/search/CustomSearch";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
 import CreateCourseButton from "./CreateButton";
 import FilterStatus from "./FilterStatus";
 // import useCourseCache from "../../../../hooks/useCourseCache"; //api
-import useCategoryCache from "../../../../hooks/useCategoryCache";
+// import useCategoryCache from "../../../../hooks/useCategoryCache";
 import { GetCourseParams } from "../../../../models/api/request/course/course.request.model";
-import { GetCourseResponse, GetCourseByIdResponse } from "../../../../models/api/responsive/course/course.response.model";
+import { GetCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
 import { CourseService } from "../../../../services/course/course.service";
 // import _ from "lodash";
 
 const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, refreshKey }: { searchTerm: string; statusFilter: StatusType; onSearch: (value: string) => void; onStatusChange: (status: StatusType | "") => void; refreshKey: number }) => {
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
+  const [courses, setCourses] = useState<GetCourseResponse["pageData"]>();
+  const [pageInfo, setPageInfo] = useState<any>({});
+  const [dataRefreshKey, setDataRefreshKey] = useState<number>(0);
+
+  const fetchCourses = useCallback(async () => {
+    const params: GetCourseParams = {
+      searchCondition: {
+        keyword: searchTerm,
+        category_id: "",
+        status: statusFilter || "",
+        is_delete: false
+      },
+      pageInfo: {
+        pageNum,
+        pageSize
+      }
+    };
+
+    try {
+      const response = await CourseService.getCourse(params);
+
+      if (response.status === 200 && response.data) {
+        setCourses(response.data.data.pageData as GetCourseResponse["pageData"]);
+        setPageInfo(response.data.data.pageInfo);
+      }
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    }
+  }, [searchTerm, statusFilter, pageNum, pageSize]);
+
+  useEffect(() => {
+    fetchCourses();
+  }, [searchTerm, statusFilter, dataRefreshKey, fetchCourses]);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<number[]>([]);
@@ -27,85 +60,6 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
   // const [courseDetails, setCourseDetails] = useState<any>(null);
   // const [refreshKey, setRefreshKey] = useState<number>(0);
   // const [comment, setComment] = useState<string>("");
-
-  const [dataRefreshKey, setDataRefreshKey] = useState<number>(0);
-
-  const getCourseData = useCallback(() => {
-    const useCourseCache = (searchTerm: string, statusFilter: StatusType | "", pageNum: number, pageSize: number, dataRefreshKey: number) => {
-      const [courses, setCourses] = useState<GetCourseResponse["pageData"]>();
-      const [courseById, setCourseById] = useState<GetCourseByIdResponse>();
-      const [pageInfo, setPageInfo] = useState<any>({});
-      const getCategoryName = useCategoryCache();
-
-      const params: GetCourseParams = {
-        searchCondition: {
-          keyword: searchTerm,
-          category_id: "",
-          status: statusFilter || "",
-          is_delete: false
-        },
-        pageInfo: {
-          pageNum,
-          pageSize
-        }
-      };
-
-      const mapCourseData = async (course: any) => {
-        let categoryName = "Unknown Category";
-        if (course.category_name) {
-          categoryName = await getCategoryName(course.category_name);
-        } else {
-          console.warn(`Course ID: ${course.id} does not have a category_id`);
-        }
-        return {
-          ...course,
-          category_name: categoryName,
-          course_id: course.id ? String(course.id) : ""
-        };
-      };
-
-      const fetchCourses = async () => {
-        try {
-          const response = await CourseService.getCourse(params);
-
-          if (response.status === 200 && response.data) {
-            const pageData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [];
-
-            const coursesTempData = await Promise.all(pageData.map(mapCourseData));
-
-            setCourses(coursesTempData);
-            setPageInfo(response.data.data.pageInfo);
-          }
-        } catch (error) {
-          console.error("Error fetching courses:", error);
-          return null;
-        }
-      };
-
-      //thực thi
-      const fetchCourseById = async (id: string) => {
-        try {
-          const response = await CourseService.getCourseById(id);
-          if (response.status === 200 && response.data) {
-            setCourseById(response.data.data);
-            return response.data.data;
-          }
-        } catch (error) {
-          return null;
-        }
-      };
-
-      useEffect(() => {
-        fetchCourses();
-      }, [searchTerm, statusFilter, pageNum, pageSize, dataRefreshKey, refreshKey]); //debug
-
-      return { courses, pageInfo, courseById, fetchCourseById, fetchCourses, dataRefreshKey, refreshKey };
-    };
-
-    return useCourseCache(searchTerm, statusFilter as StatusType | "", pageNum, pageSize, dataRefreshKey);
-  }, [searchTerm, statusFilter, pageNum, pageSize, dataRefreshKey, refreshKey]);
-
-  const { courses, pageInfo, fetchCourses } = getCourseData();
 
   // Filter courses based on the statusFilter
   const filteredCourses = courses?.filter((course) => !statusFilter || course.status === statusFilter);
@@ -201,17 +155,6 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       render: (status: StatusType) => <CourseStatusBadge status={status} />
     },
     {
-      title: "Price",
-      key: "price",
-      dataIndex: "price",
-      render: (price: number) => moneyFormat(price)
-    },
-    {
-      title: "Discount",
-      key: "discount",
-      dataIndex: "discount"
-    },
-    {
       title: "Change Status",
       key: "change_status",
       dataIndex: "change_status",
@@ -241,6 +184,17 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       }
     },
     {
+      title: "Price",
+      key: "price",
+      dataIndex: "price",
+      render: (price: number) => moneyFormat(price)
+    },
+    {
+      title: "Discount",
+      key: "discount",
+      dataIndex: "discount"
+    },
+    {
       title: "Created At",
       key: "created_at",
       dataIndex: "created_at",
@@ -262,9 +216,9 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
     }
   ];
 
-  const rowClassName = (record: any) => {
-    return selectedRowKeys.includes(Number(record._id)) ? "bg-white" : "bg-gray-50";
-  };
+  // const rowClassName = (record: any) => {
+  //   return selectedRowKeys.includes(Number(record._id)) ? "bg-white" : "bg-gray-50";
+  // };
 
   const handleOk = useCallback(async () => {
     try {
@@ -367,14 +321,10 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
   const validStatusFilter = Object.values(StatusType).includes(statusFilter) ? statusFilter : "";
   console.log("Valid Status Filter:", validStatusFilter);
 
-  const handlePageChange = (page: number, pageSize?: number) => {
-    setPageNum(page);
-    if (pageSize) setPageSize(pageSize);
-  };
-
-  useEffect(() => {
-    fetchCourses(); // Fetch data when pageNum or pageSize changes
-  }, [pageNum, pageSize]);
+  // const handlePageChange = (page: number, pageSize?: number) => {
+  //   setPageNum(page);
+  //   if (pageSize) setPageSize(pageSize);
+  // };
 
   return (
     <>
@@ -412,23 +362,16 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
           current: pageNum,
           pageSize: pageSize,
           total: pageInfo.totalItems,
-          onChange: handlePageChange,
-          showSizeChanger: true,
           showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+          onChange: (page, pageSize) => {
+            setPageNum(page);
+            if (pageSize) setPageSize(pageSize);
+          },
+          showSizeChanger: true,
+          className: "bg-pagination mr-10",
+          position: ["bottomLeft"]
         }}
-        rowClassName={rowClassName}
       />
-      <div className="mt-5 flex justify-start">
-        <Pagination
-          current={pageNum}
-          pageSize={pageSize}
-          total={pageInfo.totalItems}
-          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
-          onChange={handlePageChange}
-          showSizeChanger
-          className="bg-pagination"
-        />
-      </div>
       <Modal title="Confirm" open={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText="Yes" cancelText="No" okButtonProps={{ className: "bg-gradient-tone" }}>
         <p>Are you sure you want to send the selected courses to admin? This action cannot be undone.</p>
       </Modal>
