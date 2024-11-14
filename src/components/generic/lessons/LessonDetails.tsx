@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { PlayCircleOutlined, FileTextOutlined, MenuOutlined, CloseOutlined } from "@ant-design/icons";
-import { Button, Card, Row, Col, Typography, Tag, Breadcrumb, Menu, Divider } from "antd";
+import { Button, Card, Row, Col, Typography, Breadcrumb, Menu, Divider } from "antd";
 import { LessonService } from "../../../services/lesson/lesson.service";
 import { GetPublicCourseDetailResponse } from "../../../models/api/responsive/course/course.response.model";
 import { LessonDetailsResponse } from "../../../models/api/responsive/lesson/lesson.response.model";
