@@ -21,37 +21,37 @@ const InstructorPayout: React.FC<InstructorPayoutProps> = ({ refreshKey, searchQ
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedTransactions, setSelectedTransactions] = useState<GetPayoutResponseModel[]>([]);
   const [selectedPayouts, setSelectedPayouts] = useState<Set<string>>(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalItems, setTotalItems] = useState(0);
 
-    const fetchPayouts = async () => {
-      try {
-        const response = await PayoutService.getPayout({
-          searchCondition: {
-            payout_no: searchQuery,
-            instructor_id: "",
-            status: filterStatus,
-            is_delete: false,
-            is_instructor: true
-          },
-          pageInfo: {
-            pageNum: 1,
-            pageSize: 10
-          }
-        });
+  const fetchPayouts = async () => {
+    try {
+      const response = await PayoutService.getPayout({
+        searchCondition: {
+          payout_no: searchQuery,
+          instructor_id: "",
+          status: filterStatus,
+          is_delete: false,
+          is_instructor: true
+        },
+        pageInfo: {
+          pageNum: currentPage,
+          pageSize: pageSize
+        }
+      });
 
-        const pageData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [];
-        const filteredPayments = pageData.map((payment: any) => ({
-          ...payment,
-          status: payment.status,
-          instructor_ratio: Number(payment.instructor_ratio)
-        }));
-        setPayouts(filteredPayments);
-      } catch (error) {
-        message.error("Failed to fetch payouts.");
-      }
-    };
-    useEffect(() => {
+      const pageData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [];
+      setPayouts(pageData);
+      setTotalItems(response.data.data.pageInfo.totalItems);
+    } catch (error) {
+      message.error("Failed to fetch payouts.");
+    }
+  };
+
+  useEffect(() => {
     fetchPayouts();
-  }, [searchQuery, filterStatus, refreshKey]);
+  }, [searchQuery, filterStatus, refreshKey, currentPage, pageSize]);
 
   const showModal = (payoutId: string) => {
     const payout = payouts.find((payment) => payment._id === payoutId);
@@ -154,7 +154,24 @@ const InstructorPayout: React.FC<InstructorPayoutProps> = ({ refreshKey, searchQ
 
   return (
     <div>
-      <Table columns={columns} dataSource={payouts} rowKey="_id" />
+      <Table 
+        columns={columns} 
+        dataSource={payouts} 
+        rowKey="_id" 
+        pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          total: totalItems,
+          showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+          onChange: (page, pageSize) => {
+            setCurrentPage(page);
+            setPageSize(pageSize);
+          },
+          showSizeChanger: true,
+          className: "bg-pagination",
+          position: ["bottomLeft"]
+        }}
+      />
       <ViewTransactions isVisible={isModalVisible} onClose={() => setIsModalVisible(false)} transactions={selectedTransactions} />
     </div>
   );
