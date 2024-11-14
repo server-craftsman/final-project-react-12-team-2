@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { PlayCircleOutlined, FileTextOutlined, MenuOutlined, CloseOutlined } from "@ant-design/icons";
-import { Button, Card, Row, Col, Typography, Tag, Breadcrumb, Menu } from "antd";
+import { Button, Card, Row, Col, Typography, Tag, Breadcrumb, Menu, Divider } from "antd";
 import { LessonService } from "../../../services/lesson/lesson.service";
 import { GetPublicCourseDetailResponse } from "../../../models/api/responsive/course/course.response.model";
 import { LessonDetailsResponse } from "../../../models/api/responsive/lesson/lesson.response.model";
@@ -81,20 +81,27 @@ const LessonDetails: React.FC = () => {
     if (!sessions) return null;
 
     return (
-      <Menu mode="inline" className="w-full border-none" style={{ maxHeight: "70vh", overflowY: "auto" }}>
+      <Menu mode="inline" className="w-full border-none" style={{ maxHeight: "70vh", overflowY: "auto", padding: "0px" }}>
         {sessions.map((session) => (
           <Menu.SubMenu
             key={session._id}
-            title={<span className="font-semibold text-[#1a237e]">{session.name}</span>}
-            // className="border-b border-gray-200"
+            title={
+              <div className="flex items-center justify-between w-full">
+                <span className="font-semibold text-[#1a237e]">{session.name}</span>
+              </div>
+            }
           >
             {session.lesson_list
               .sort((a: any, b: any) => a.position_order - b.position_order)
               .map((lesson: any) => (
                 <Menu.Item key={lesson._id} className="py-3">
-                  <Link to={`/course/${course?._id}/lesson/${lesson._id}`} className="flex items-center text-gray-700 hover:text-[#1a237e]">
-                    <PlayCircleOutlined className="mr-2" />
-                    {lesson.name}
+                  <Link 
+                    to={`/course/${course?._id}/lesson/${lesson._id}`} 
+                    className="flex items-center text-gray-700 hover:text-[#1a237e]"
+                    title={lesson.name}
+                  >
+                    <PlayCircleOutlined className="mr-2 flex-shrink-0" />
+                    <span className="truncate hover:text-clip">{lesson.name}</span>
                   </Link>
                 </Menu.Item>
               ))}
@@ -116,7 +123,7 @@ const LessonDetails: React.FC = () => {
 
         <Row gutter={[32, 32]}>
           {!menuCollapsed && (
-            <Col xs={24} lg={6}>
+            <Col xs={24} lg={8}>
               <Card className="mb-8 overflow-hidden rounded-lg shadow-lg">
                 <div className="mb-4 flex items-center justify-between">
                   <Title level={4} className="mb-0">
@@ -127,27 +134,31 @@ const LessonDetails: React.FC = () => {
               </Card>
             </Col>
           )}
-          <Col xs={24} lg={menuCollapsed ? 24 : 18}>
+          <Col xs={24} lg={menuCollapsed ? 24 : 16}>
             <Card className="mb-8 overflow-hidden rounded-lg shadow-lg">
               <div className="p-6">
-                <Tag color="blue" className="mb-4 bg-[#1a237e] text-white">
-                  {lesson?.session_name}
-                </Tag>
+                {/* <Tag color="blue" className="mb-4 bg-[#1a237e] text-white">
+                </Tag> */}
+                <Divider className="mb-4 border-[#1a237e]" />
                 <Title level={2} className="mb-4">
                   {lesson?.name}
                 </Title>
-                <div className="relative mb-6 aspect-video overflow-hidden rounded-lg shadow-2xl">
-                  {lesson?.video_url ? (
-                    <video controls className="h-full w-full">
-                      <source src={lesson.video_url} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
-                  ) : lesson?.image_url ? (
-                    <img src={lesson.image_url} alt={lesson.name} className="h-full w-full object-cover" />
-                  ) : (
-                    <div className="bg-gradient-to-t from-black to-transparent p-4 text-white">{lesson?.description}</div>
-                  )}
-                </div>
+                {!lesson?.description && (
+                  <div className="relative mb-6 aspect-video overflow-hidden rounded-lg shadow-2xl">
+                    {lesson?.video_url ? (
+                      <>
+                        <video controls className="h-full w-full">
+                          <source src={lesson.video_url} type="video/mp4" />
+                          Your browser does not support the video tag.
+                        </video>
+                      </>
+                    ) : lesson?.image_url ? (
+                      <>
+                        <img src={lesson.image_url} alt={lesson.name} className="h-full w-full object-cover" />
+                      </>
+                    ) : null}
+                  </div>
+                )}
                 <Paragraph className="mb-6 text-gray-600">{parse(lesson?.description || "")}</Paragraph>
                 <div className="mb-6 flex items-center">{/* Instructor details and other information can be added here */}</div>
               </div>

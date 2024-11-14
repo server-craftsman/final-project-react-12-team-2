@@ -107,7 +107,7 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string, course: a
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
       <div className="mb-6">
         <Typography.Title level={4}>Reviews and Ratings</Typography.Title>
-        <div className="flex items-center">
+        <div className="flex flex-col sm:flex-row items-center">
           <Rate disabled value={averageRating} />
           <Text className="ml-2 text-sm text-gray-500">{averageRating.toFixed(1)} based on {fetchedReviews.length} ratings</Text>
         </div>
@@ -131,7 +131,7 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string, course: a
       {fetchedReviews.length > 0
         ? fetchedReviews.map((review, index) => (
             <Card key={review._id || index} className="mb-6 rounded-2xl border-none bg-gradient-to-r from-white to-gray-50 p-6 shadow-xl transition-all duration-300 hover:shadow-2xl">
-              <div className="mb-4 flex items-center space-x-4">
+              <div className="mb-4 flex flex-col sm:flex-row items-center space-x-4">
                 <Avatar src={userInfo?.avatar_url} size={48} className="border-2 border-indigo-100 shadow-md" />
                 <div className="flex flex-col">
                   <Text strong className="text-lg font-semibold text-indigo-900">
@@ -146,16 +146,36 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string, course: a
           ))
         : null}
 
-      <Modal title={editingReview ? "Edit Review" : "Submit Review"} open={isModalVisible} onCancel={handleModalCancel} footer={null}>
+      <Modal 
+        title={editingReview ? "Edit Review" : "Submit Review"} 
+        open={isModalVisible} 
+        onCancel={handleModalCancel} 
+        footer={null}
+      >
         <Form form={form} onFinish={handleSubmit} layout="vertical">
-          <Form.Item name="rating" label="Rating" rules={[{ required: true, message: "Please provide a rating" }]}>
+          <Form.Item 
+            name="rating" 
+            label="Rating" 
+            rules={[{ required: true, message: "Please provide a rating" }]}
+          >
             <Rate />
           </Form.Item>
-          <Form.Item name="comment" label="Comment" rules={[{ required: true, message: "Please provide a comment" }]}>
+          <Form.Item 
+            name="comment" 
+            label="Comment" 
+            rules={[{ required: true, message: "Please provide a comment" }]}
+          >
             <Input.TextArea rows={4} />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="bg-btn-submit">
+            <Button 
+              type="primary" 
+              htmlType="submit" 
+              className="w-full bg-btn-submit rounded-lg hover:bg-[#1a237e] hover:text-white
+                transition-all duration-300 block
+                hover:scale-[1.02] active:scale-[0.98]
+                sm:inline-block sm:w-40 sm:float-right sm:text-base sm:py-2 sm:px-6 sm:font-medium sm:tracking-wide sm:shadow-lg sm:hover:shadow-xl"
+            >
               {editingReview ? "Update Review" : "Submit Review"}
             </Button>
           </Form.Item>
