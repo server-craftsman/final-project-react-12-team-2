@@ -27,7 +27,7 @@ const LoginPage = () => {
   const getDefaultPath = (userRole: string) => {
     switch (userRole) {
       case "admin":
-        return ROUTER_URL.COMMON.HOME;
+        return ROUTER_URL.ADMIN.BASE;
       case "instructor":
         return ROUTER_URL.COMMON.HOME;
       case "student":
