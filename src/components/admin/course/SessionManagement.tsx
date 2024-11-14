@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Table, message } from "antd";
+import { Button, Table, message } from "antd";
+import { EyeOutlined } from "@ant-design/icons";
 import { formatDate } from "../../../utils/helper";
 import { SessionService } from "../../../services/session/session.service";
 import { SessionResponsePageData } from "../../../models/api/responsive/session/session.response.model";
 import { SessionRequestModel } from "../../../models/api/request/session/session.request.model";
+import ModalSessionModal from "./ModalSessionDetail";
 
 interface SessionManagementProps {
   searchTerm: string;
@@ -14,6 +16,8 @@ const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm, activ
   const [sessionData, setSessionData] = useState<SessionResponsePageData[]>([]);
   const [totalItems, setTotalItems] = useState<number>(0);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
+  const [selectedSessionDetail, setSelectedSessionDetail] = useState<SessionResponsePageData | null>(null);
+  const [isSessionDetailModalVisible, setIsSessionDetailModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchSessions = async () => {
@@ -41,6 +45,16 @@ const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm, activ
     fetchSessions();
   }, [searchTerm, activeKey, pagination]);
 
+  const showSessionDetailModal = async (sessionId: string) => {
+    try {
+      const response = await SessionService.getSessionDetail(sessionId);
+      setSelectedSessionDetail(response.data.data);
+      setIsSessionDetailModalVisible(true);
+    } catch (error) {
+      console.error("Failed to fetch lesson details", error);
+    }
+  };
+
   const columns = [
     {
       title: "ID",
@@ -64,10 +78,21 @@ const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm, activ
       dataIndex: "created_at",
       key: "created_at",
       render: (date: string) => formatDate(new Date(date))
+    },
+    {
+      title: "Action",
+      key: "action",
+      dataIndex: "action",
+      render: (_: any, record: SessionResponsePageData) => (
+        <div className="flex space-x-3">
+          <Button icon={<EyeOutlined />} onClick={() => showSessionDetailModal(record._id)} className="bg-gradient-tone text-white" />
+        </div>
+      )
     }
   ];
 
   return (
+    <>
     <Table
       columns={columns}
       dataSource={sessionData}
@@ -83,8 +108,14 @@ const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm, activ
         showSizeChanger: true,
         className: "bg-pagination",
         position: ["bottomLeft"]
-      }}
-    />
+        }}
+      />
+      <ModalSessionModal
+        sessionDetail={selectedSessionDetail}
+        visible={isSessionDetailModalVisible}
+        onClose={() => setIsSessionDetailModalVisible(false)}
+      />
+    </>
   );
 };
 

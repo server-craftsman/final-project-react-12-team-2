@@ -1,9 +1,11 @@
-import Table from "antd/es/table";
 import { formatDate } from "../../../utils/helper";
 import { useEffect, useState } from "react";
+import { Button, Table } from "antd";
+import { EyeOutlined } from "@ant-design/icons";
 // import CustomSearch from "../../generic/search/CustomSearch";
 import { LessonService } from "../../../services/lesson/lesson.service";
 import { Lesson } from "../../../models/api/responsive/lesson/lesson.response.model";
+import ModalLessonDetail from "./ModalLessonDetail";
 import { useLessonStore } from "../../../hooks/useCallback";
 
 interface LessonManagementProps {
@@ -16,6 +18,8 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm, activeK
   const [totalItems, setTotalItems] = useState<number>(0);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
   const refreshLessons = useLessonStore((state) => state.refreshLessons);
+  const [selectedLessonDetail, setSelectedLessonDetail] = useState<Lesson["pageData"][0] | null>(null);
+  const [isLessonDetailModalVisible, setIsLessonDetailModalVisible] = useState(false);
 
   useEffect(() => {
     refreshLessons();
@@ -38,6 +42,15 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm, activeK
     fetchLessons();
   }, [refreshLessons, searchTerm, activeKey, pagination]);
 
+  const showLessonDetailModal = async (lessonId: string) => {
+    try {
+      const response = await LessonService.getLessonDetails(lessonId);
+      setSelectedLessonDetail(response.data.data);
+      setIsLessonDetailModalVisible(true);
+    } catch (error) {
+      console.error("Failed to fetch lesson details", error);
+    }
+  };
   const columns = [
     {
       title: "Name",
@@ -64,6 +77,16 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm, activeK
       title: "Lesson Type",
       key: "lesson_type",
       dataIndex: "lesson_type"
+    },
+    {
+      title: "Action",
+      key: "action",
+      dataIndex: "action",
+      render: (_: any, record: Lesson["pageData"][0]) => (
+        <div className="flex space-x-3">
+          <Button icon={<EyeOutlined />} onClick={() => showLessonDetailModal(record._id)} className="bg-gradient-tone text-white" />
+        </div>
+      ) 
     }
   ];
 
@@ -99,6 +122,13 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm, activeK
           className="bg-pagination"
         />
       </div> */}
+      {selectedLessonDetail && (
+        <ModalLessonDetail 
+          lessonDetail={selectedLessonDetail} 
+          visible={isLessonDetailModalVisible} 
+          onClose={() => setIsLessonDetailModalVisible(false)} 
+      />
+      )}
     </>
   );
 };
