@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { Button, Col, Form, Input, InputNumber, message, Modal, Row, Select, Upload, UploadFile } from "antd";
-import { UploadOutlined, DeleteOutlined } from "@ant-design/icons";
+import { UploadOutlined } from "@ant-design/icons";
 const { Option } = Select;
 import { CourseService } from "../../../../services/course/course.service";
 import { CategoryService } from "../../../../services/category/category.service";
@@ -114,33 +114,33 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
     [handleFileUpload, form]
   );
 
-  const handleFileDelete = useCallback(async (url: string, type: "image" | "video") => {
-    try {
-      const response = await BaseService.deleteFile(url, type);
-      if (!response) throw new Error(`Failed to delete ${type}`);
-      message.success(`${type.charAt(0).toUpperCase() + type.slice(1)} deleted successfully.`);
-    } catch (error: any) {
-      message.error(`${type} deletion failed: ${error.message}`);
-    }
-  }, []);
+  // const handleFileDelete = useCallback(async (url: string, type: "image" | "video") => {
+  //   try {
+  //     const response = await BaseService.deleteFile(url, type);
+  //     if (!response) throw new Error(`Failed to delete ${type}`);
+  //     message.success(`${type.charAt(0).toUpperCase() + type.slice(1)} deleted successfully.`);
+  //   } catch (error: any) {
+  //     message.error(`${type} deletion failed: ${error.message}`);
+  //   }
+  // }, []);
 
-  const handleAvatarDelete = () => {
-    const imageUrl = form.getFieldValue("image_url");
-    if (imageUrl) {
-      handleFileDelete(imageUrl, "image");
-      setAvatarPreview("");
-      form.setFieldsValue({ image_url: "" });
-    }
-  };
+  // const handleAvatarDelete = () => {
+  //   const imageUrl = form.getFieldValue("image_url");
+  //   if (imageUrl) {
+  //     handleFileDelete(imageUrl, "image");
+  //     setAvatarPreview("");
+  //     form.setFieldsValue({ image_url: "" });
+  //   }
+  // };
 
-  const handleVideoDelete = () => {
-    const videoUrl = form.getFieldValue("video_url");
-    if (videoUrl) {
-      handleFileDelete(videoUrl, "video");
-      setVideoPreview("");
-      form.setFieldsValue({ video_url: "" });
-    }
-  };
+  // const handleVideoDelete = () => {
+  //   const videoUrl = form.getFieldValue("video_url");
+  //   if (videoUrl) {
+  //     handleFileDelete(videoUrl, "video");
+  //     setVideoPreview("");
+  //     form.setFieldsValue({ video_url: "" });
+  //   }
+  // };
 
   const handleSubmit = async () => {
     try {
@@ -254,7 +254,6 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
                     {avatarPreview && (
                       <>
                         <img src={avatarPreview} alt="Avatar preview" className="h-full w-full object-cover" />
-                        <Button onClick={handleAvatarDelete} className="mt-2" icon={<DeleteOutlined />} />
                       </>
                     )}
                   </div>
@@ -273,7 +272,6 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
                     {videoPreview && (
                       <>
                         <div className="h-full w-full" dangerouslySetInnerHTML={{ __html: videoPreview }} />
-                        <Button onClick={handleVideoDelete} className="mt-2" icon={<DeleteOutlined />} />
                       </>
                     )}
                   </div>
