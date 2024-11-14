@@ -5,6 +5,7 @@ import { CourseStatusBadge } from "../../../../utils/courseStatus";
 import { StatusType } from "../../../../app/enums";
 import { useEffect, useState, useCallback } from "react";
 import { Button, message, Modal, Switch } from "antd";
+import { EyeOutlined } from "@ant-design/icons";
 import CustomSearch from "../../../generic/search/CustomSearch";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
@@ -15,6 +16,7 @@ import FilterStatus from "./FilterStatus";
 import { GetCourseParams } from "../../../../models/api/request/course/course.request.model";
 import { GetCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
 import { CourseService } from "../../../../services/course/course.service";
+import DetailModal from './DetailModal';
 // import _ from "lodash";
 
 const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, refreshKey }: { searchTerm: string; statusFilter: StatusType; onSearch: (value: string) => void; onStatusChange: (status: StatusType | "") => void; refreshKey: number }) => {
@@ -131,6 +133,19 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
     }
   };
 
+  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
+
+  const showCourseDetails = (courseId: string) => {
+    setSelectedCourseId(courseId);
+    setIsDetailModalVisible(true);
+  };
+
+  const closeDetailModal = () => {
+    setIsDetailModalVisible(false);
+    setSelectedCourseId(null);
+  };
+
   const columns: ColumnsType<any> = [
     {
       title: "No",
@@ -204,15 +219,13 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       title: "Actions",
       key: "actions",
       dataIndex: "actions",
-      render: (_, record) => {
-        // const { status, _id, lesson_count, session_count } = record;
-        return (
-          <>
-            <EditButton data={record} onEditSuccess={handleCourseCreated} fetchCourseDetails={fetchCourseDetails} />
-            <DeleteButton courseId={record._id} onDeleteSuccess={handleCourseCreated} />
-          </>
-        );
-      }
+      render: (_, record) => (
+        <>
+          <EditButton data={record} onEditSuccess={handleCourseCreated} fetchCourseDetails={fetchCourseDetails} />
+          <DeleteButton courseId={record._id} onDeleteSuccess={handleCourseCreated} />
+          <Button onClick={() => showCourseDetails(record._id)} icon={<EyeOutlined />} className="ml-3 bg-gradient-tone text-white hover:opacity-90"></Button>
+        </>
+      )
     }
   ];
 
@@ -375,7 +388,11 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       <Modal title="Confirm" open={isModalVisible} onOk={handleOk} onCancel={handleCancel} okText="Yes" cancelText="No" okButtonProps={{ className: "bg-gradient-tone" }}>
         <p>Are you sure you want to send the selected courses to admin? This action cannot be undone.</p>
       </Modal>
-      {/* {courseDetails && <EditButton data={courseDetails} onEditSuccess={handleCourseCreated} />} */}
+      <DetailModal
+        courseId={selectedCourseId}
+        isVisible={isDetailModalVisible}
+        onClose={closeDetailModal}
+      />
     </>
   );
 };
