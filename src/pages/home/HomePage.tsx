@@ -116,9 +116,15 @@ const HomePage: React.FC = () => {
 
         <div className="flex justify-center mt-8">
           <Link to="/categories/all">
-            <Button type="primary" size="large" className="rounded-full bg-gradient-to-r from-indigo-600 to-indigo-800 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:from-indigo-700 hover:to-indigo-900 hover:shadow-xl">
-              View All Categories
-            </Button>
+            <motion.div
+                whileHover={{ scale: 1.05, rotate: 2 }}
+                whileTap={{ scale: 0.95, rotate: -2, backgroundColor: "#4c51bf" }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+              <Button type="primary" size="large" className="rounded-full bg-gradient-to-r from-indigo-600 to-indigo-800 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:from-indigo-700 hover:to-indigo-900 hover:shadow-xl">
+                View All Categories
+              </Button>
+            </motion.div>
           </Link>
         </div>
       </motion.div>
