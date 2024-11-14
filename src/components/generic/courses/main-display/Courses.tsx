@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Typography, Card, Row, Col, Button, Tag, Avatar } from "antd";
+import { Typography, Card, Row, Col, Button, Tag } from "antd";
 import { BookOutlined, PercentageOutlined, VideoCameraOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { GetPublicCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
