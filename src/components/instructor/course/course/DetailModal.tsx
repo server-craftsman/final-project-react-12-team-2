@@ -45,7 +45,7 @@ const DetailModal: React.FC<DetailModalProps> = ({ courseId, isVisible, onClose 
               <div className="space-y-3">
                 <p className="text-gray-700 p-2 rounded hover:bg-gray-50 transition-colors">
                   <span className="text-blue-600 font-semibold mr-2">Name:</span>
-                  <span className="text-gray-800">{courseDetails.name}</span>
+                  <span className="text-gray-800 uppercase">{courseDetails.name}</span>
                 </p>
                 <p className="text-gray-700 p-2 rounded hover:bg-gray-50 transition-colors">
                   <span className="text-blue-600 font-semibold mr-2">Status:</span>

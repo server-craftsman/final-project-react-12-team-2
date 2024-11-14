@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Table from "antd/es/table";
-import { Pagination } from "antd";
+import { Pagination, Button } from "antd";
+import { EyeOutlined } from "@ant-design/icons";
 import CustomSearch from "../../../generic/search/CustomSearch";
 import EditButton from "./EditButton";
 import DeleteButton from "./DeleteButton";
@@ -9,6 +10,7 @@ import { SessionService } from "../../../../services/session/session.service";
 // import { CourseService } from "../../../../services/course/course.service";
 import { formatDate } from "../../../../utils/helper";
 import { DisplaySessionResponse } from "../../../../models/api/responsive/session/session.response.model";
+import DetailModal from "./DetailModal";
 
 const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
   const [sessions, setSessions] = useState<DisplaySessionResponse[]>([]);
@@ -16,6 +18,8 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
+  const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
 
   const fetchSessions = useCallback(async (page: number, size: number, keyword: string) => {
     try {
@@ -96,9 +100,17 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
   ];
 
   const renderActions = (record: DisplaySessionResponse) => (
-    <div className="flex space-x-2">
+    <div className="flex space-x-3">
       <EditButton data={record.pageData} onSessionEdited={() => fetchSessions(pageNum, pageSize, searchKeyword)} fetchSessionDetails={fetchSessionDetails} />
       <DeleteButton data={record.pageData} onSessionDeleted={() => fetchSessions(pageNum, pageSize, searchKeyword)} />
+      <Button
+        onClick={() => {
+          setSelectedSessionId(record.pageData._id);
+          setIsDetailModalVisible(true);
+        }}  
+        className="bg-gradient-tone text-white"
+        icon={<EyeOutlined />}
+      />
     </div>
   );
 
@@ -134,6 +146,11 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
           className="bg-pagination"
         />
       </div>
+      <DetailModal
+        sessionId={selectedSessionId}
+        isVisible={isDetailModalVisible}
+        onClose={() => setIsDetailModalVisible(false)}
+      />
     </>
   );
 };

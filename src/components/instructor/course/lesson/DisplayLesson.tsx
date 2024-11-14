@@ -9,7 +9,7 @@ import DeleteButton from "./DeleteButton";
 import CreateButton from "./CreateButton";
 import { LessonService } from "../../../../services/lesson/lesson.service";
 import { Lesson } from "../../../../models/api/responsive/lesson/lesson.response.model";
-import ModalLessonDetail from "./ModalLessonDetail";
+import ModalLessonDetail from "./DetailModal";
 
 const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
   const [filteredLessons, setFilteredLessons] = useState<Lesson["pageData"]>([]);
@@ -123,10 +123,10 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
       key: "actions",
       dataIndex: "actions",
       render: (_: any, record: Lesson["pageData"][0]) => (
-        <div className="flex space-x-2">
+        <div className="flex space-x-3">
           <Button icon={<EditOutlined />} onClick={() => handleEditClick(record._id)} />
           <DeleteButton lessonId={record._id} onDeleteSuccess={handleLessonCreated} />
-          <Button icon={<EyeOutlined />} onClick={() => showLessonDetailModal(record._id)} />
+          <Button icon={<EyeOutlined />} onClick={() => showLessonDetailModal(record._id)} className="bg-gradient-tone text-white" />
         </div>
       )
     }

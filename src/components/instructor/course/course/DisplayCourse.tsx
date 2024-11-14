@@ -221,9 +221,11 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       dataIndex: "actions",
       render: (_, record) => (
         <>
-          <EditButton data={record} onEditSuccess={handleCourseCreated} fetchCourseDetails={fetchCourseDetails} />
-          <DeleteButton courseId={record._id} onDeleteSuccess={handleCourseCreated} />
-          <Button onClick={() => showCourseDetails(record._id)} icon={<EyeOutlined />} className="ml-3 bg-gradient-tone text-white hover:opacity-90"></Button>
+          <div className="flex space-x-3">
+            <EditButton data={record} onEditSuccess={handleCourseCreated} fetchCourseDetails={fetchCourseDetails} />
+            <DeleteButton courseId={record._id} onDeleteSuccess={handleCourseCreated} />
+            <Button onClick={() => showCourseDetails(record._id)} icon={<EyeOutlined />} className="bg-gradient-tone text-white hover:opacity-90" />
+          </div>
         </>
       )
     }
