@@ -101,7 +101,7 @@ const DetailModal: React.FC<DetailModalProps> = ({ courseId, isVisible, onClose 
           </div>
         </div>
       ) : (
-        <p className="text-center text-gray-500">Đang tải...</p>
+        <p className="text-center text-gray-500">Loading...</p>
       )}
     </Modal>
   );
