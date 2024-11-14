@@ -7,7 +7,7 @@ import { GetPublicCourseResponse } from "../../../../models/api/responsive/cours
 // import { User } from "../../../../models/api/responsive/users/users.model";
 // import { GetCategoryResponse } from "../../../../models/api/responsive/admin/category.responsive.model";
 import { CourseService } from "../../../../services/course/course.service";
-import { UserService } from "../../../../services/admin/user.service";
+// import { UserService } from "../../../../services/admin/user.service";
 import { helpers } from "../../../../utils";
 const { Title, Paragraph } = Typography;
 const { Meta } = Card;
@@ -38,28 +38,12 @@ const fetchCoursePublic = async (searchCondition = {}, pageInfo = { pageNum: 1, 
 
 const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
   const [courses, setCourses] = useState<GetPublicCourseResponse | null>(null);
-  const [users, setUsers] = useState<{ [key: string]: any }>({});
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         const coursesData = await fetchCoursePublic();
         setCourses(coursesData.data);
-
-        // Fetch user details for each course
-        const userPromises = coursesData.data.pageData.map(async (course) => {
-          const userData = await UserService.getUserDetails(course.instructor_id);
-          return { courseId: course._id, user: userData.data.data };
-        });
-
-        const usersData = await Promise.all(userPromises);
-        const usersMap = usersData.reduce((acc: { [key: string]: any }, { courseId, user }) => {
-          //debug
-          acc[courseId as string] = user;
-          return acc;
-        }, {});
-
-        setUsers(usersMap);
       } catch (error) {
         console.error("Failed to fetch courses:", error);
       }
@@ -82,8 +66,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
 
   return (
     <Row gutter={[32, 32]}>
-      {courses?.pageData.slice((pageNum - 1) * pageSize, pageNum * pageSize).map((course) => {
-        const user = users[course._id]; // Get user details for the course
+      {courses?.pageData.slice((pageNum - 1) * pageSize, pageNum * pageSize).map((course: any) => {
         return (
           <Col xs={24} sm={12} md={8} key={course._id} className="mx-auto h-full">
             <motion.div variants={itemVariants} className="h-full">
@@ -124,8 +107,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                   </div>
 
                   <Meta
-                    avatar={<Avatar src={user?.avatar_url} />}
-                    title={<span className="line-clamp-1 text-lg font-semibold text-gray-800">{user?.name}</span>}
+                    title={<span className="line-clamp-1 text-lg font-semibold text-gray-800">{course.instructor_name}</span>}
                     description={
                       <div className="h-25 mb-4 items-center text-sm">
                         <div>
