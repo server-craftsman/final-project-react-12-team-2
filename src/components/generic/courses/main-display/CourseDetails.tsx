@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useLocation, Link } from "react-router-dom";
 import { CourseService } from "../../../../services/course/course.service";
 import { HomeOutlined, InfoCircleOutlined, StarOutlined, BookOutlined } from "@ant-design/icons";
-import { Card, Row, Col, Tabs, Button } from "antd";
+import { Card, Row, Col, Tabs } from "antd";
+import { motion } from "framer-motion";
 // import { CartStatusEnum } from "../../../../app/enums";
 
 //==========connect components==========
@@ -17,14 +18,17 @@ import CourseSidebar from "../subs-course/CourseSidebar";
 import CourseVideoModal from "../subs-course/CourseVideoModal";
 import { GetPublicCourseDetailResponse } from "../../../../models/api/responsive/course/course.response.model";
 import { ReviewService } from "../../../../services/review/review.service";
-// import { CartService } from "../../../../services/cart/cart.service";
+import animationData from "../../../../data/courseAnimation.json";
+import Lottie from "lottie-react";
 //=====================================
 
 // Add this utility function to validate ObjectId
 const isValidObjectId = (id: string) => /^[a-f\d]{24}$/i.test(id);
 
 const CourseDetails: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
+  const location = useLocation();
+  const [isHovered, setIsHovered] = useState(location.state?.triggerHover || false);
 
   // Validate the id
   if (!id || !isValidObjectId(id)) {
@@ -124,6 +128,14 @@ const CourseDetails: React.FC = () => {
     }
   }, [activeTabKey, id]);
 
+  useEffect(() => {
+    if (isHovered) {
+      // Optionally, reset hover state after some time
+      const timer = setTimeout(() => setIsHovered(false), 3000); // 3 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [isHovered]);
+
   const showVideoModal = () => {
     if (videoId) {
       setIsModalVisible(true);
@@ -144,6 +156,12 @@ const CourseDetails: React.FC = () => {
 
   const handleTabChange = (key: string): void => {
     setActiveTabKey(key);
+  };
+
+  const handlePreviewClick = () => {
+    setIsHovered(true);
+    // Optionally, reset hover state after some time
+    setTimeout(() => setIsHovered(false), 3000); // 3 seconds
   };
 
   const tabItems = [
@@ -184,13 +202,20 @@ const CourseDetails: React.FC = () => {
       <div className="min-h-screen w-full bg-white py-12">
         <div className="container mx-auto">
           <Link to="/" className="mb-6 flex items-center text-[#1a237e] hover:text-[#1a237e]">
-            <Button type="text" icon={<HomeOutlined className="text-xl" />} className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1a237e] to-[#3949ab] px-6 py-3 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:transform hover:from-[#3949ab] hover:to-[#1a237e] hover:shadow-xl active:scale-95">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              type="button"
+              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1a237e] to-[#3949ab] px-6 py-3 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:transform hover:from-[#3949ab] hover:to-[#1a237e] hover:shadow-xl active:scale-95"
+              onClick={handlePreviewClick}
+            >
+              <HomeOutlined className="text-xl" />
               Back to Home
-            </Button>
+            </motion.button>
           </Link>
           <Row gutter={[32, 32]}>
             <Col xs={24} lg={16}>
-              <Card className="overflow-hidden rounded-lg text-left shadow-lg">
+              <Card className={`overflow-hidden rounded-lg text-left shadow-lg ${isHovered ? 'hover-effect-class' : ''}`}>
                 <CourseHeader course={course} category={category} instructor={instructor} showVideoModal={() => showVideoModal()} />
                 <div className="p-4 text-left">
                   <Tabs
@@ -217,7 +242,11 @@ const CourseDetails: React.FC = () => {
       </div>
     );
   } else {
-    return <div className="mt-8 text-center text-2xl">Course not found</div>;
+    return (
+      <div className="flex justify-center items-center h-full w-full">
+        <Lottie height={400} width={400} animationData={animationData} />
+      </div>
+    );
   }
 };
 

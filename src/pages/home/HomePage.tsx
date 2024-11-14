@@ -74,7 +74,11 @@ const HomePage: React.FC = () => {
           </motion.span>
           <div className="flex justify-center">
             <Link to="/courses/all">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <motion.div
+                whileHover={{ scale: 1.05, rotate: 2 }}
+                whileTap={{ scale: 0.95, rotate: -2, backgroundColor: "#4c51bf" }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
                 <Button type="primary" size="large" className="rounded-full bg-gradient-to-r from-indigo-600 to-indigo-800 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:from-indigo-700 hover:to-indigo-900 hover:shadow-xl">
                   View All Courses
                 </Button>
@@ -83,6 +87,7 @@ const HomePage: React.FC = () => {
           </div>
         </Title>
 
+      
         <AnimatePresence>
           {isVisible && (
             <motion.div variants={containerVariants} initial="hidden" animate="visible" exit="hidden">
