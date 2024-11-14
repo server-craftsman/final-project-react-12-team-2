@@ -78,9 +78,9 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
   }, [selectedRowKeys, setSelectedCourse]);
 
   const handleSearch = (searchText: string) => {
-    fetchCourses();
     setPageNum(1);
     onSearch(searchText);
+    setDataRefreshKey((prevKey) => prevKey + 1);
   };
 
   const fetchCourseDetails = async (courseId: string) => {
@@ -263,6 +263,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
   const handleStatusChange = (status: StatusType | "") => {
     setPageNum(1);
     onStatusChange(status);
+    setDataRefreshKey((prevKey) => prevKey + 1);
   };
 
   const sendToAdmin = useCallback(async () => {
