@@ -17,37 +17,41 @@ interface ViewPurchaseProps {
 const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, onSelectionChange, refreshKey }) => {
   const [selectedPurchases, setSelectedPurchases] = useState<Set<string>>(new Set());
   const [purchases, setPurchases] = useState<SearchForInstructorPurchaseResponseModel["pageData"]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [pageInfo, setPageInfo] = useState<any>({});
 
-    const fetchPurchases = async () => {
-      const params: SearchForInstructorPurchaseRequestModel = {
-        searchCondition: {
-          purchase_no: searchQuery,
-          cart_no: "",
-          course_id: "",
-          status: filterStatus as any, // Adjust type as necessary
-          is_delete: false
-        },
-        pageInfo: {
-          pageNum: 1,
-          pageSize: 10
-        }
-      };
-
-      try {
-        const response = await PurchaseService.searchForInstructorPurchase(params);
-        setPurchases(response.data.data.pageData);
-      } catch (error) {
-        console.error("Failed to fetch purchases", error);
+  const fetchPurchases = async () => {
+    const params: SearchForInstructorPurchaseRequestModel = {
+      searchCondition: {
+        purchase_no: searchQuery,
+        cart_no: "",
+        course_id: "",
+        status: filterStatus as any, // Adjust type as necessary
+        is_delete: false
+      },
+      pageInfo: {
+        pageNum: currentPage,
+        pageSize: pageSize
       }
     };
 
-    useEffect(() => {
+    try {
+      const response = await PurchaseService.searchForInstructorPurchase(params);
+      setPurchases(response.data.data.pageData);
+      setPageInfo(response.data.data.pageInfo);
+    } catch (error) {
+      console.error("Failed to fetch purchases", error);
+    }
+  };
+
+  useEffect(() => {
     fetchPurchases();
-  }, [searchQuery, filterStatus, refreshKey]);
+  }, [searchQuery, filterStatus, refreshKey, currentPage, pageSize]);
 
   const handleSelectAllChange = (checked: boolean) => {
-    setSelectedPurchases(checked ? new Set(purchases.map((fetchPurchases) => fetchPurchases._id)) : new Set());
-    onSelectionChange(checked ? new Set(purchases.map((fetchPurchases) => fetchPurchases._id)) : new Set());
+    setSelectedPurchases(checked ? new Set(purchases.map((purchase) => purchase._id)) : new Set());
+    onSelectionChange(checked ? new Set(purchases.map((purchase) => purchase._id)) : new Set());
   };
 
   const handleCheckboxChange = (id: string, checked: boolean) => {
@@ -138,7 +142,24 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
 
   return (
     <div>
-      <Table columns={columns} dataSource={purchases} rowKey="_id" />
+      <Table 
+        columns={columns} 
+        dataSource={purchases} 
+        rowKey="_id" 
+        pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          total: pageInfo.totalItems,
+          showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+          onChange: (page, pageSize) => {
+            setCurrentPage(page);
+            if (pageSize) setPageSize(pageSize);
+          },
+          showSizeChanger: true,
+          className: "bg-pagination",
+          position: ["bottomLeft"]
+        }}
+      />
     </div>
   );
 };
