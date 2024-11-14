@@ -40,6 +40,8 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
     setDescription("");
     setImagePreview("");
     setVideoPreview("");
+    form.setFieldValue("image_url", "");
+    form.setFieldValue("video_url", "");
   };
 
   const handleCancel = () => {

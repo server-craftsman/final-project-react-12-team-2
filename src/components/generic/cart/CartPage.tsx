@@ -42,17 +42,17 @@ const CartPage: React.FC = () => {
       label: "New"
     },
     {
-      key: String(CartStatusEnum.cancel),
-      label: "Cancel"
-    },
-    {
       key: String(CartStatusEnum.waiting_paid),
       label: "Waiting"
     },
     {
       key: String(CartStatusEnum.completed),
       label: "Completed"
-    }
+    },
+    {
+      key: String(CartStatusEnum.cancel),
+      label: "Cancel"
+    },
   ];
 
   const handleTabChange = (key: string) => {
@@ -230,7 +230,7 @@ const CartPage: React.FC = () => {
                     <List.Item key={item._id} className="transform py-10 transition-all duration-500 ease-in-out last:border-0 hover:-translate-y-2">
                       <Card className="w-full rounded-3xl border border-gray-100 bg-white/90 shadow-lg backdrop-blur-lg transition-all duration-700 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
                         <Row gutter={32} className="flex items-center p-8">
-                          <Col span={16}>
+                          <Col span={24}>
                             <Text strong className="bg-gradient-tone mb-4 block transform bg-clip-text text-3xl tracking-wide text-transparent transition-all duration-300 hover:scale-105">
                               {item?.course_name}
                             </Text>
@@ -251,13 +251,13 @@ const CartPage: React.FC = () => {
                                 <span className="bg-gradient-tone bg-clip-text font-bold text-transparent">{helpers.moneyFormat(item?.price - (item?.price * item?.discount) / 100)}</span>
                               </div>
                             </div>
-                          </Col>
-                          <Col span={8} className="space-y-6 text-right">
-                            <Link to={`/course/${item._id}/lesson/${item?._id}`}>
-                              <Button type="primary" className="bg-gradient-tone animate-shimmer h-auto w-full transform rounded-2xl border-0 px-10 py-6 font-serif text-lg text-white shadow-lg transition-all duration-700 hover:-translate-y-1 hover:scale-105 hover:shadow-xl">
-                                Learn More
-                              </Button>
-                            </Link>
+                            <div className="mt-6 flex justify-end">
+                              <Link to={`/course/${item.course_id}`}>
+                                <Button type="primary" className="bg-gradient-tone animate-shimmer h-auto transform rounded-2xl border-0 px-10 py-6 font-serif text-lg text-white shadow-lg transition-all duration-700 hover:-translate-y-1 hover:scale-105 hover:shadow-xl">
+                                  Learn More
+                                </Button>
+                              </Link>
+                            </div>
                           </Col>
                         </Row>
                       </Card>
