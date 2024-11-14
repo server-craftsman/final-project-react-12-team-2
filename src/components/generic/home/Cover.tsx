@@ -8,7 +8,7 @@ import mobileAnimation from "../../../data/mobileAnimation.json";
 const Cover: React.FC = () => {
   const controls = useAnimation();
   const ref = useRef(null);
-  const isInView = useInView(ref);
+  const isInView = useInView(ref, { once: true });
 
   useEffect(() => {
     if (isInView) {
@@ -17,10 +17,14 @@ const Cover: React.FC = () => {
   }, [controls, isInView]);
 
   const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: 0, y: 50 },
     visible: {
       opacity: 1,
+      y: 0,
       transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 20,
         staggerChildren: 0.2
       }
     }
