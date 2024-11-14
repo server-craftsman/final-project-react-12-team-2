@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { Table, Modal, message, Button, Avatar, Input, Pagination } from "antd";
+import { Table, Modal, message, Button, Avatar, Input } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { UserRoles } from "../../../app/enums";
 import { userStatusColor } from "../../../utils/userStatus";
@@ -27,8 +27,6 @@ interface SearchCondition {
 const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, refreshKey }) => {
   const [updatedUsers, setUpdatedUsers] = useState<string[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-  const [pageNum, setPageNum] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
   const [pageInfo, setPageInfo] = useState<any>({});
 
   const defaultParams = {
@@ -40,8 +38,8 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
       is_deleted: false
     },
     pageInfo: {
-      pageNum,
-      pageSize
+      pageNum: 1,
+      pageSize: 10
     }
   } as const;
 
@@ -58,12 +56,12 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
     [searchQuery, refreshKey]
   );
 
-  const fetchingUsers = useCallback(async () => {
+  const fetchingUsers = useCallback(async (pageNum: number = defaultParams.pageInfo.pageNum, pageSize: number = defaultParams.pageInfo.pageSize) => {
     try {
       const searchCondition = getSearchCondition(searchQuery);
       const params = {
         searchCondition,
-        pageInfo: defaultParams.pageInfo
+        pageInfo: { pageNum, pageSize },
       };
 
       const response = await UserService.getUsersAdmin(params as GetUsersAdminParams);
@@ -92,7 +90,7 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
         message.error("An unexpected error occurred.");
       }
     }
-  }, [searchQuery, getSearchCondition, pageNum, pageSize]);
+  }, [searchQuery, getSearchCondition]);
 
   useEffect(() => {
     fetchingUsers();
@@ -222,8 +220,25 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
 
   return (
     <div className="-mt-3 mb-64 p-4">
-      <Table<User> className="shadow-lg" columns={columns} dataSource={filteredUsers} rowKey="_id" pagination={false} />
-      <div className="mt-5 flex justify-start">
+      <Table<User> 
+      className="shadow-lg" 
+      columns={columns} 
+      dataSource={filteredUsers} 
+      rowKey="_id" 
+      pagination={{
+        current: pageInfo.pageNum,
+        pageSize: pageInfo.pageSize,
+        total: pageInfo.totalItems,
+        showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+        onChange: (page, pageSize) => {
+          fetchingUsers(page, pageSize);
+        },
+        showSizeChanger: true,
+        className: "bg-pagination", // Adjusted class for smaller text
+        position: ["bottomLeft"]
+      }} 
+      />
+      {/* <div className="mt-5 flex justify-start">
         <Pagination
           current={pageNum}
           pageSize={pageSize}
@@ -236,7 +251,7 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
           className="bg-pagination"
           showSizeChanger
         />
-      </div>
+      </div> */}
     </div>
   );
 };

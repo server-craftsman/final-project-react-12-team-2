@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Table, message, Modal, Pagination } from "antd";
+import { Table, message, Modal } from "antd";
 import { EyeOutlined, CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { PayoutStatus } from "../../../app/enums";
 import { formatDate, moneyFormat } from "../../../utils/helper";
@@ -19,9 +19,10 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
   const [payments, setPayments] = useState<any[]>([]);
   const [selectedPayoutDetails, setSelectedPayoutDetails] = useState<unknown[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [pageNum, setPageNum] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
+  // const [pageNum, setPageNum] = useState<number>(1);
+  // const [pageSize, setPageSize] = useState<number>(10);
   const [pageInfo, setPageInfo] = useState<any>({});
+
   useEffect(() => {
     let isMounted = true;
 
@@ -36,8 +37,8 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
     PayoutService.getPayout({
       searchCondition,
       pageInfo: {
-        pageNum,
-        pageSize
+        pageNum: 1,
+        pageSize: 10
       }
     })
       .then((response) => {
@@ -64,7 +65,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
     return () => {
       isMounted = false;
     };
-  }, [searchQuery, status, activeTabKey, refreshKey, pageNum, pageSize]);
+  }, [searchQuery, status, activeTabKey, refreshKey]);
 
   const handleViewDetails = (payoutId: string) => {
     const payout = payments.find((payment) => payment._id === payoutId);
@@ -137,6 +138,41 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
         }
       });
     }
+  };
+
+  const fetchPayments = (page: number, pageSize: number) => {
+    const searchCondition = {
+      payout_no: searchQuery || "",
+      instructor_id: "",
+      status: status || "",
+      is_delete: false,
+      is_instructor: true
+    };
+
+    PayoutService.getPayout({
+      searchCondition,
+      pageInfo: {
+        pageNum: page,
+        pageSize: pageSize
+      }
+    })
+      .then((response) => {
+        const pageData = Array.isArray(response.data.data.pageData) 
+          ? response.data.data.pageData 
+          : [];
+
+        const filteredPayments = pageData.map((payment: any) => ({
+          ...payment,
+          status: payment.status,
+          instructor_ratio: Number(payment.instructor_ratio)
+        }));
+
+        setPayments(filteredPayments);
+        setPageInfo(response.data.data.pageInfo);
+      })
+      .catch(() => {
+        message.error("Failed to fetch payments.");
+      });
   };
 
   const columns = [
@@ -230,10 +266,21 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
         columns={columns}
         dataSource={payments}
         rowKey={(record) => record._id || `row-${record.payout_no}`}
-        pagination={false}
         rowClassName={() => "align-middle"}
+        pagination={{
+          current: pageInfo.pageNum,
+          pageSize: pageInfo.pageSize,
+          total: pageInfo.totalItems,
+          showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+          onChange: (page, pageSize) => {
+            fetchPayments(page, pageSize);
+          },
+          showSizeChanger: true,
+          className: "bg-pagination",
+          position: ["bottomLeft"]
+        }}
       />
-      <div className="mt-5 flex justify-start">
+      {/* <div className="mt-5 flex justify-start">
         <Pagination
           current={pageNum}
           pageSize={pageSize}
@@ -246,7 +293,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
           className="bg-pagination"
           showSizeChanger
         />
-      </div>
+      </div> */}
       <ModalTransaction
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}

@@ -16,6 +16,7 @@ const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
   const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null);
+  const [pageInfo, setPageInfo] = useState<any>({});
 
   const defaultParams = {
     pageInfo: {
@@ -35,13 +36,14 @@ const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
     }
   };
 
-  const fetchBlogs = useCallback(async () => {
+  const fetchBlogs = useCallback(async (pageNum: number = defaultParams.pageInfo.pageNum, pageSize: number = defaultParams.pageInfo.pageSize) => {
     try {
       const response = await BlogService.getBlog({
-        pageInfo: { pageNum: 1, pageSize: 10 },
+        pageInfo: { pageNum, pageSize },
         searchCondition: { name: searchQuery, is_delete: false }
       });
       setBlogData(response.data.data);
+      setPageInfo(response.data.data.pageInfo);
     } catch (error) {
       message.error("An unexpected error occurred while fetching blogs");
     }
@@ -121,7 +123,20 @@ const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
 
   return (
     <>
-      <Table columns={columns} dataSource={filteredData || []} rowKey="_id" />
+      <Table columns={columns} dataSource={filteredData || []} rowKey="_id" 
+      pagination={{
+        current: pageInfo.pageNum,
+        pageSize: pageInfo.pageSize,
+        total: pageInfo.totalItems,
+        showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+        onChange: (page, pageSize) => {
+          fetchBlogs(page, pageSize);
+        },
+        showSizeChanger: true,
+        className: "bg-pagination",
+        position: ["bottomLeft"]
+        }}
+      />
 
       <EditBlogModal visible={isEditModalVisible} blog={selectedBlog} categories={categories} onClose={() => setEditModalVisible(false)} onSuccess={fetchBlogs} />
 

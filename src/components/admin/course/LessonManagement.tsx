@@ -1,7 +1,6 @@
 import Table from "antd/es/table";
 import { formatDate } from "../../../utils/helper";
 import { useEffect, useState } from "react";
-import { Pagination } from "antd";
 // import CustomSearch from "../../generic/search/CustomSearch";
 import { LessonService } from "../../../services/lesson/lesson.service";
 import { Lesson } from "../../../models/api/responsive/lesson/lesson.response.model";
@@ -14,9 +13,8 @@ interface LessonManagementProps {
 
 const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm, activeKey }) => {
   const [filteredLessons, setFilteredLessons] = useState<Lesson["pageData"]>([]);
-  const [pageNum, setPageNum] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
   const refreshLessons = useLessonStore((state) => state.refreshLessons);
 
   useEffect(() => {
@@ -29,7 +27,7 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm, activeK
           is_delete: false,
           is_position_order: false
         },
-        pageInfo: { pageNum, pageSize }
+        pageInfo: { pageNum: pagination.current, pageSize: pagination.pageSize }
       });
       if (response.data) {
         const lessonData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [response.data.data.pageData];
@@ -38,7 +36,7 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm, activeK
       }
     };
     fetchLessons();
-  }, [refreshLessons, searchTerm, activeKey, pageNum, pageSize]);
+  }, [refreshLessons, searchTerm, activeKey, pagination]);
 
   const columns = [
     {
@@ -71,21 +69,36 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm, activeK
 
   return (
     <>
-      <Table columns={columns} dataSource={filteredLessons} rowKey="id" pagination={false} />
-      <div className="mt-5 flex justify-start">
+      <Table 
+      columns={columns} 
+      dataSource={filteredLessons} 
+        rowKey="id"
+        pagination={{
+          current: pagination.current,
+          pageSize: pagination.pageSize,
+          total: totalItems,
+          showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+          onChange: (page, pageSize) => {
+            setPagination({ current: page, pageSize });
+          },
+          showSizeChanger: true,
+          className: "bg-pagination",
+          position: ["bottomLeft"]
+        }}
+      />
+      {/* <div className="mt-5 flex justify-start">
         <Pagination
-          current={pageNum}
-          pageSize={pageSize}
+          current={pagination.current}
+          pageSize={pagination.pageSize}
           total={totalItems}
           showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
           onChange={(page, pageSize) => {
-            setPageNum(page);
-            setPageSize(pageSize);
+            setPagination({ current: page, pageSize });
           }}
           showSizeChanger
           className="bg-pagination"
         />
-      </div>
+      </div> */}
     </>
   );
 };

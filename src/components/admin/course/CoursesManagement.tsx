@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { moneyFormat, formatDate } from "../../../utils/helper";
 import { courseStatusColor } from "../../../utils/courseStatus";
-import { message, Popconfirm, Table, Modal, Input, Button, Pagination } from "antd";
+import { message, Popconfirm, Table, Modal, Input, Button } from "antd";
 import { CheckOutlined, StopOutlined, CarryOutOutlined, ContainerOutlined, EyeOutlined } from "@ant-design/icons";
-// import { Courses } from "../../../models/prototype/Course"; // Import the Course model
 import { GetCourseParams } from "../../../models/api/request/course/course.request.model";
 import { CourseService } from "../../../services/course/course.service";
 import { LessonService } from "../../../services/lesson/lesson.service";
 import { Lesson } from "../../../models/api/responsive/lesson/lesson.response.model";
 import { SessionService } from "../../../services/session/session.service";
 import { StatusType } from "../../../app/enums";
-// import { GetCourseResponsePageData } from "../../../models/api/responsive/course/course.response.model";
-import ModalCourseDetail from "./ModalCourseDetail"; // Adjust the path as necessary
+import ModalCourseDetail from "./ModalCourseDetail";
 import { GetCourseByIdResponse } from "../../../models/api/responsive/course/course.response.model";
 const { confirm } = Modal;
+
+const defaultParams = {
+  pageInfo: {
+    pageNum: 1,
+    pageSize: 10
+  }
+};
 
 const CoursesManagement: React.FC<{
   searchTerm: string;
@@ -29,13 +34,11 @@ const CoursesManagement: React.FC<{
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [isSessionModalVisible, setIsSessionModalVisible] = useState(false);
   const [sessions, setSessions] = useState<any[]>([]);
-  const [pageNum, setPageNum] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
   const [pageInfo, setPageInfo] = useState<any>({});
   const [isCourseDetailModalVisible, setIsCourseDetailModalVisible] = useState(false);
   const [selectedCourseDetail, setSelectedCourseDetail] = useState<GetCourseByIdResponse | null>(null);
 
-  const fetchCourses = async () => {
+  const fetchCourses = async (pageNum: number = defaultParams.pageInfo.pageNum, pageSize: number = defaultParams.pageInfo.pageSize) => {
     try {
       const params: GetCourseParams = {
         searchCondition: {
@@ -44,10 +47,7 @@ const CoursesManagement: React.FC<{
           status: statusFilter,
           is_delete: false
         },
-        pageInfo: {
-          pageNum,
-          pageSize
-        }
+        pageInfo: { pageNum, pageSize },
       };
       const response = await CourseService.getCourse(params);
       setCourses(response.data.data.pageData);
@@ -59,7 +59,7 @@ const CoursesManagement: React.FC<{
 
   useEffect(() => {
     fetchCourses();
-  }, [searchTerm, statusFilter, refreshKey, activeKey, pageNum, pageSize]);
+  }, [searchTerm, statusFilter, refreshKey, activeKey]);
 
   const handleChangeStatus = async (id: string, newStatus: StatusType, comment: string = "") => {
     try {
@@ -167,14 +167,12 @@ const CoursesManagement: React.FC<{
       dataIndex: "category_name",
       key: "category_name",
     },
-    
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
       render: (status: StatusType) => <span className={`text-sm capitalize ${courseStatusColor[status]}`}>{status}</span>
     },
-    
     {
       title: "Price",
       dataIndex: "price",
@@ -231,17 +229,28 @@ const CoursesManagement: React.FC<{
     return matchesSearchTerm && matchesStatusFilter && isValidStatus;
   });
 
-  const paginatedCourses = filteredCourses.slice((pageNum - 1) * pageSize, pageNum * pageSize);
-  console.log(paginatedCourses);
+  // const paginatedCourses = filteredCourses.slice((pageInfo.pageNum - 1) * pageInfo.pageSize, pageInfo.pageNum * pageInfo.pageSize);
+  // console.log(paginatedCourses);
   return (
     <>
       <Table
         columns={columns}
-        dataSource={coursesData}
+        dataSource={filteredCourses}
         rowKey="_id"
-        pagination={false}
+        pagination={{
+          current: pageInfo.pageNum,
+          pageSize: pageInfo.pageSize,
+          total: pageInfo.totalItems,
+          showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+          onChange: (page, pageSize) => {
+            fetchCourses(page, pageSize);
+          },
+          showSizeChanger: true,
+          className: "bg-pagination",
+          position: ["bottomLeft"]
+        }}
       />
-      <div className="mt-5 flex justify-start">
+      {/* <div className="mt-5 flex justify-start">
         <Pagination
           current={pageNum}
           pageSize={pageSize}
@@ -254,7 +263,7 @@ const CoursesManagement: React.FC<{
           showSizeChanger
           className="bg-pagination"
         />
-      </div>
+      </div> */}
       <Modal title="Reject Course" open={isRejectModalVisible} onOk={handleRejectOk} onCancel={() => setIsRejectModalVisible(false)}>
         <p>Please provide a reason for rejecting this course:</p>
         <Input.TextArea value={rejectComment} onChange={(e) => setRejectComment(e.target.value)} rows={4} />
@@ -280,6 +289,13 @@ const CoursesManagement: React.FC<{
           ]}
           dataSource={lessons}
           rowKey="_id"
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} lessons`,
+            className: "bg-pagination",
+            position: ["bottomLeft"]
+          }}
         />
       </Modal>
       <Modal
@@ -301,6 +317,13 @@ const CoursesManagement: React.FC<{
           ]}
           dataSource={sessions}
           rowKey="_id"
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} sessions`,
+            className: "bg-pagination",
+            position: ["bottomLeft"]
+          }}
         />
       </Modal>
       <ModalCourseDetail

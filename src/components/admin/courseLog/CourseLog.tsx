@@ -13,14 +13,20 @@ const CourseLog: React.FC<{ searchQuery: string; statusFilter: string }> = ({ se
   const [courseLog, setCourseLog] = useState<CourseLogs[]>([]);
   const [isCourseLogModalVisible, setIsCourseLogModalVisible] = useState(false);
   const [courseName, setCourseName] = useState<string>(""); // Biến mới để lưu tên khóa học
+  const [pageInfo, setPageInfo] = useState<any>({});
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
+  const defaultParams = {
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 10
+    }
+  };
+  const fetchCourses = async (pageNum: number = defaultParams.pageInfo.pageNum, pageSize: number = defaultParams.pageInfo.pageSize) => {
+    try {
         const response = await CourseService.getCourse({
           pageInfo: {
-            pageNum: 1,
-            pageSize: 10
+            pageNum,
+            pageSize
           },
           searchCondition: {
             keyword: searchQuery || "",
@@ -32,6 +38,7 @@ const CourseLog: React.FC<{ searchQuery: string; statusFilter: string }> = ({ se
 
         if (response && response.data) {
           setCourses(response.data.data.pageData as GetCourseResponsePageData[]);
+          setPageInfo(response.data.data.pageInfo);
         }
       } catch (error) {
         message.error("Error loading course log");
@@ -39,6 +46,7 @@ const CourseLog: React.FC<{ searchQuery: string; statusFilter: string }> = ({ se
       }
     };
 
+  useEffect(() => {
     fetchCourses();
   }, [searchQuery, statusFilter]);
   console.log("aaaa", courses);
@@ -92,7 +100,23 @@ const CourseLog: React.FC<{ searchQuery: string; statusFilter: string }> = ({ se
 
   return (
     <>
-      <Table columns={columns} dataSource={courses} rowKey={(record) => record._id} />
+      <Table 
+      columns={columns} 
+      dataSource={courses} 
+      rowKey={(record) => record._id} 
+      pagination={{
+        current: pageInfo.pageNum,
+        pageSize: pageInfo.pageSize,
+        total: pageInfo.totalItems,
+        showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+        onChange: (page, pageSize) => {
+          fetchCourses(page, pageSize);
+        },
+        showSizeChanger: true,
+        className: "bg-pagination",
+        position: ["bottomLeft"]
+      }}
+      />
 
       <Modal
         width={1000}
