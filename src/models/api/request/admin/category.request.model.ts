@@ -25,7 +25,7 @@ export interface UpdateCategoryParams {
 export interface GetPublicCategoryParams {
   searchCondition: {
     keyword: string;
-    is_parent: boolean;
+    is_parent?: boolean;
     is_delete: boolean;
   };
   pageInfo: {

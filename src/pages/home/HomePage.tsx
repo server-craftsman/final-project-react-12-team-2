@@ -39,6 +39,7 @@ const HomePage: React.FC = () => {
             pageSize: 10
           }
         });
+        console.log("API Response:", response.data.data.pageData);
         const pageData = response.data.data.pageData;
         setCategoryList(pageData as unknown as GetCategoryResponsePublic[]);
       } catch (error) {
@@ -112,6 +113,14 @@ const HomePage: React.FC = () => {
         </h1>
 
         <Categories categoryList={categoryList} />
+
+        <div className="flex justify-center mt-8">
+          <Link to="/categories/all">
+            <Button type="primary" size="large" className="rounded-full bg-gradient-to-r from-indigo-600 to-indigo-800 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:from-indigo-700 hover:to-indigo-900 hover:shadow-xl">
+              View All Categories
+            </Button>
+          </Link>
+        </div>
       </motion.div>
     </div>
   );
