@@ -320,7 +320,6 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
 
   // Ensure that the statusFilter is a valid StatusType or an empty string
   const validStatusFilter = Object.values(StatusType).includes(statusFilter) ? statusFilter : "";
-  console.log("Valid Status Filter:", validStatusFilter);
 
   // const handlePageChange = (page: number, pageSize?: number) => {
   //   setPageNum(page);
