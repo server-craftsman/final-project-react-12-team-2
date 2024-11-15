@@ -27,3 +27,18 @@ export interface SearchForInstructorPurchaseRequestModel {
     pageSize: number;
   };
 }
+
+export interface SearchForAdminPurchasesRequestModel {
+  searchCondition: {
+    purchase_no: string;
+    cart_no: string;
+    course_id: string;
+    status: string;
+    is_delete: boolean;
+  };
+  pageInfo: {
+    pageNum: number;
+    pageSize: number;
+  };
+}
+

@@ -62,7 +62,7 @@ const AdminNavbar: React.FC = () => {
     {
       key: "9",
       icon: <ShoppingCartOutlined className="text-white" />,
-      label: "Purchases Log",
+      label: "Sales History",
       path: "/admin/purchases-log"
     },
     {
