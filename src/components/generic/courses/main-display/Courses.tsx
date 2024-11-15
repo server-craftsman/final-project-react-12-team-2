@@ -103,10 +103,10 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
     return [32, 32];
   };
 
-  const getResponsiveHeight = () => {
-    if (isMobile) return 'auto';
-    return '600px';
-  };
+  // const getResponsiveHeight = () => {
+  //   if (isMobile) return 'auto';
+  //   return '600px';
+  // };
 
   const getResponsiveImageHeight = () => {
     if (isMobile) return '200px';
