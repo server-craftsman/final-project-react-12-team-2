@@ -208,7 +208,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                         </div>
 
                         <Meta
-                          avatar={<Avatar size={isMobile ? 32 : 48} className="bg-blue-500 text-white">{course.instructor_name ? course.instructor_name[0] : "U"}</Avatar>}
+                          avatar={<Avatar size={isMobile ? 32 : 48} className="bg-blue-500 text-white uppercase">{course.instructor_name ? course.instructor_name[0] : "U"}</Avatar>}
                           title={<span className="line-clamp-1 text-lg font-semibold text-gray-800">{course.instructor_name}</span>}
                           description={
                             <motion.div 
