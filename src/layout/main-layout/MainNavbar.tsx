@@ -116,7 +116,13 @@ const Navbar = () => {
               <div className="group relative">
                 <div className="flex items-center space-x-4">
                   <div className="relative">
-                    <img src={userInfo.avatar_url} alt="User Avatar" className="border-gold h-10 w-10 rounded-full border-2 shadow-lg transition-all duration-300 hover:scale-105" />
+                    {userInfo.avatar_url ? (
+                      <img src={userInfo.avatar_url} alt="User Avatar" className="border-gold h-10 w-10 rounded-full border-2 shadow-lg transition-all duration-300 hover:scale-105" />
+                    ) : (
+                      <div className="border-gold h-10 w-10 rounded-full border-2 shadow-lg transition-all duration-300 hover:scale-105 bg-blue-500 text-white flex items-center justify-center">
+                        {userInfo.name ? userInfo.name[0].toUpperCase() : ''}
+                      </div>
+                    )}
                     <div className="from-gold absolute -inset-0.5 rounded-full bg-gradient-to-br to-amber-300 opacity-20"></div>
                   </div>
                   <div className="flex flex-col">
