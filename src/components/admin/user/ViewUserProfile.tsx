@@ -9,7 +9,7 @@ import { GetUsersAdminParams, ChangeStatusParams, ChangeRoleParams } from "../..
 import { GetUsersAdminResponse } from "../../../models/api/responsive/admin/user.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model";
 import { ROUTER_URL } from "../../../const/router.path";
-
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 // Utils
 import { helpers } from "../../../utils";
 
@@ -378,9 +378,10 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
     return baseColumns;
   }, [activeTab, handleViewDetails, handleChangeStatus, handleChangeRole, disableActions, selectedUserIds]);
 
-  return (
-    <div className="f -mt-3 mb-64 p-4">
-      {(activeTab === "blocked" || activeTab === "all") && ( // Show delete button only in "blocked" tab
+  if (users && users.pageData.length > 0) {
+    return (
+      <div className="f -mt-3 mb-64 p-4">
+        {(activeTab === "blocked" || activeTab === "all") && ( // Show delete button only in "blocked" tab
         <Button onClick={handleDeleteSelected} disabled={selectedUserIds.size === 0} className="mb-4 bg-red-500 text-white">
           <DeleteOutlined />
         </Button>
@@ -403,8 +404,11 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
           position: ["bottomLeft"]
         }}
       />
-    </div>
-  );
+      </div>
+    );
+  } else {
+    return <LoadingAnimation />;
+  }
 };
 
 export default React.memo(ViewUserProfile);

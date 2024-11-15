@@ -3,7 +3,7 @@ import { Card, Layout } from "antd";
 import { GetCategoryParams } from "../../../models/api/request/admin/category.request.model";
 import { CategoryService } from "../../../services/category/category.service";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
-
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 const AdminCategory = lazy(() => import("../../../components/admin/category/AdminCategory"));
 const CustomSearch = lazy(() => import("../../../components/generic/search/CustomSearch"));
 const CreateCategory = lazy(() => import("../../../components/admin/category/CreateCategory"));
@@ -56,9 +56,7 @@ function ManageCategory() {
     setSearchQuery(query);
   };
 
-  if (categories === null) {
-    return <div>Loading...</div>;
-  } else {
+  if (categories) {
     return (
       <Content>
         <Card
@@ -75,6 +73,8 @@ function ManageCategory() {
         </Card>
       </Content>
     );
+  } else {
+    return <LoadingAnimation />;
   }
 }
 

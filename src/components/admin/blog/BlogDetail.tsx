@@ -3,16 +3,16 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import coursesData from "../../../data/courses.json";
 import { Button, Col, Form, Input, Row } from "antd";
 import { ROUTER_URL } from "../../../const/router.path";
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
+
 const BlogDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
   const blog = coursesData.courses.find((blog: { id: string }) => blog.id === id);
 
-  if (!blog) {
-    return <div>Blog not found.</div>;
-  }
-  return (
+  if (blog) {
+    return (
     <div>
       <Col span={24}>
         <Form layout="vertical">
@@ -102,8 +102,11 @@ const BlogDetail: React.FC = () => {
       <Link to={ROUTER_URL.ADMIN.BLOG}>
         <Button className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">Back To Categories</Button>
       </Link>
-    </div>
-  );
+      </div>
+    );
+  } else {
+    return <LoadingAnimation />;
+  }
 };
 
 export default BlogDetail;

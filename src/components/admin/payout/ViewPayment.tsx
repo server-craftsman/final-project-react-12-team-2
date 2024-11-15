@@ -6,7 +6,7 @@ import { formatDate, moneyFormat } from "../../../utils/helper";
 import { payoutColorStatus } from "../../../utils/payoutStatus";
 import { PayoutService } from "../../../services/payout/payout.service";
 import ModalTransaction from "./ModalTransaction";
-
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 interface ViewPaymentProps {
   searchQuery: string;
   status: string;
@@ -259,8 +259,9 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
     }
   ];
 
-  return (
-    <div className="p-0">
+  if (payments && payments.length > 0) {
+    return (
+      <div className="p-0">
       <Table
         className="shadow-lg"
         columns={columns}
@@ -299,8 +300,11 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
         onClose={() => setIsModalVisible(false)}
         data={selectedPayoutDetails}
       />
-    </div>
-  );
+      </div>
+    );
+  } else {
+    return <LoadingAnimation />;
+  }
 };
 export default ViewPayment;
 

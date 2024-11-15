@@ -7,7 +7,7 @@ import { LessonService } from "../../../services/lesson/lesson.service";
 import { Lesson } from "../../../models/api/responsive/lesson/lesson.response.model";
 import ModalLessonDetail from "./ModalLessonDetail";
 import { useLessonStore } from "../../../hooks/useCallback";
-
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 interface LessonManagementProps {
   searchTerm: string;
   activeKey: string;
@@ -90,8 +90,9 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm, activeK
     }
   ];
 
-  return (
-    <>
+  if (filteredLessons && totalItems) {
+    return (
+      <>
       <Table 
       columns={columns} 
       dataSource={filteredLessons} 
@@ -124,13 +125,16 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm, activeK
       </div> */}
       {selectedLessonDetail && (
         <ModalLessonDetail 
-          lessonDetail={selectedLessonDetail} 
+          lessonDetail={selectedLessonDetail}   
           visible={isLessonDetailModalVisible} 
           onClose={() => setIsLessonDetailModalVisible(false)} 
-      />
+        />
       )}
-    </>
-  );
+      </>
+    );
+  } else {
+    return <LoadingAnimation />;
+  }
 };
 
 export default LessonManagement;

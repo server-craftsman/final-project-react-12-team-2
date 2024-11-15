@@ -1,5 +1,4 @@
 import { lazy, useState, Suspense } from "react";
-
 // Ensure that CustomSearch and ViewRequestAccount are default exports in the respective modules
 const CustomSearch = lazy(() => import("../../../components/generic/search/CustomSearch"));
 
@@ -23,9 +22,9 @@ const RequestAccountManagement: React.FC = () => {
   //   setTempSelectedStatus(status);
   // };
 
-  return (
-    <div className="items-center justify-center border-b border-gray-300">
-      <div className="flex flex-col items-center p-4 md:flex-row">
+    return (
+      <div className="items-center justify-center border-b border-gray-300">
+        <div className="flex flex-col items-center p-4 md:flex-row">
         {/* Search Input */}
         <Suspense fallback={<div>Loading search component...</div>}>
           <CustomSearch
@@ -47,9 +46,9 @@ const RequestAccountManagement: React.FC = () => {
           // selectedStatus={tempSelectedStatus} // You can update this if you need to handle different statuses
           refreshKey={refreshKey}
         />
-      </Suspense>
-    </div>
-  );
+        </Suspense>
+      </div>
+    );
 };
 
 export default RequestAccountManagement;

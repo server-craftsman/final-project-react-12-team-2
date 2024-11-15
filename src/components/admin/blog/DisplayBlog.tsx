@@ -9,7 +9,7 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
 import EditBlogModal from "./EditBlog";
 import DeleteBlogModal from "./DeleteBlog";
-
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
   const [blogData, setBlogData] = useState<GetBlogResponse | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -121,7 +121,8 @@ const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
     }
   ];
 
-  return (
+  if (blogData && pageInfo && columns) {
+    return (
     <>
       <Table columns={columns} dataSource={filteredData || []} rowKey="_id" 
       pagination={{
@@ -142,7 +143,10 @@ const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
 
       <DeleteBlogModal visible={isDeleteModalVisible} blogId={selectedBlog?._id || null} onClose={() => setDeleteModalVisible(false)} onSuccess={fetchBlogs} />
     </>
-  );
+    );
+  } else {
+    return <LoadingAnimation />;
+  }
 };
 
 export default DislayBlog;

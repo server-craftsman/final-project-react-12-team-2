@@ -6,7 +6,7 @@ import { SessionService } from "../../../services/session/session.service";
 import { SessionResponsePageData } from "../../../models/api/responsive/session/session.response.model";
 import { SessionRequestModel } from "../../../models/api/request/session/session.request.model";
 import ModalSessionModal from "./ModalSessionDetail";
-
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 interface SessionManagementProps {
   searchTerm: string;
   activeKey: string;
@@ -91,8 +91,9 @@ const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm, activ
     }
   ];
 
-  return (
-    <>
+  if (sessionData && totalItems) {
+    return (
+      <>
     <Table
       columns={columns}
       dataSource={sessionData}
@@ -111,12 +112,15 @@ const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm, activ
         }}
       />
       <ModalSessionModal
-        sessionDetail={selectedSessionDetail}
-        visible={isSessionDetailModalVisible}
-        onClose={() => setIsSessionDetailModalVisible(false)}
-      />
-    </>
-  );
+          sessionDetail={selectedSessionDetail}
+          visible={isSessionDetailModalVisible}
+          onClose={() => setIsSessionDetailModalVisible(false)}
+        />
+      </>
+    );
+  } else {
+    return <LoadingAnimation />;
+  }
 };
 
 export default SessionManagement;

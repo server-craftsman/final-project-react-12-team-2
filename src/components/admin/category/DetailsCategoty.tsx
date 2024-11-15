@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import categoriesData from "../../../data/categories.json";
 import { Button, Col, Form, Input, Row } from "antd";
 import { ROUTER_URL } from "../../../const/router.path";
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 const DetailsCategory = () => {
   const { id } = useParams();
   const navigate = useNavigate(); // Use useNavigate instead
@@ -10,11 +11,8 @@ const DetailsCategory = () => {
   // Fetch the category data based on the id
   const category = categoriesData.categories.find((cat: { id: string }) => cat.id === id);
 
-  if (!category) {
-    return <div>Category not found.</div>;
-  }
-
-  return (
+  if (category) {
+    return (
     <div>
       <Col span={24}>
         <Form layout="vertical">
@@ -75,7 +73,10 @@ const DetailsCategory = () => {
         <Button className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">Back To Categories</Button>
       </Link>
     </div>
-  );
+  ); 
+} else {
+  return <LoadingAnimation />;
+}
 };
 
 export default DetailsCategory;

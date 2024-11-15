@@ -7,7 +7,7 @@ import { CourseStatusEnum } from "../../../models/prototype/Course";
 import { courseStatusColor } from "../../../utils/courseStatus";
 import { CourseLogService } from "../../../services/courselog/courselog.service";
 import { CourseLogs } from "../../../models/api/responsive/admin/courselog.responsive";
-
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 const CourseLog: React.FC<{ searchQuery: string; statusFilter: string }> = ({ searchQuery, statusFilter }) => {
   const [courses, setCourses] = useState<GetCourseResponsePageData[]>([]);
   const [courseLog, setCourseLog] = useState<CourseLogs[]>([]);
@@ -98,8 +98,9 @@ const CourseLog: React.FC<{ searchQuery: string; statusFilter: string }> = ({ se
     }
   ];
 
-  return (
-    <>
+  if (courses && courses.length > 0) {
+    return (
+      <>
       <Table 
       columns={columns} 
       dataSource={courses} 
@@ -159,8 +160,11 @@ const CourseLog: React.FC<{ searchQuery: string; statusFilter: string }> = ({ se
           rowKey={(record) => record._id}
         />
       </Modal>
-    </>
-  );
+      </>
+    );
+  } else {
+    return <LoadingAnimation />;
+  }
 };
 
 export default CourseLog;

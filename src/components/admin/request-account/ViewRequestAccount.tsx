@@ -10,7 +10,7 @@ import { HTTP_STATUS } from "../../../app/enums";
 import { HttpException } from "../../../app/exceptions";
 import { helpers } from "../../../utils";
 import { userRoleColor } from "../../../utils/userRole";
-
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 interface ViewRequestAccountProps {
   searchQuery: string;
   refreshKey: number;
@@ -28,6 +28,7 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
   const [updatedUsers, setUpdatedUsers] = useState<string[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [pageInfo, setPageInfo] = useState<any>({});
+  const [loading, setLoading] = useState<boolean>(true);
 
   const defaultParams = {
     searchCondition: {
@@ -57,6 +58,7 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
   );
 
   const fetchingUsers = useCallback(async (pageNum: number = defaultParams.pageInfo.pageNum, pageSize: number = defaultParams.pageInfo.pageSize) => {
+    setLoading(true);
     try {
       const searchCondition = getSearchCondition(searchQuery);
       const params = {
@@ -89,6 +91,8 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
         console.error("Error message:", error.message);
         message.error("An unexpected error occurred.");
       }
+    } finally {
+      setLoading(false);
     }
   }, [searchQuery, getSearchCondition]);
 
@@ -218,42 +222,36 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
     [handleApprove, updatedUsers]
   );
 
-  return (
-    <div className="-mt-3 mb-64 p-4">
-      <Table<User> 
-      className="shadow-lg" 
-      columns={columns} 
-      dataSource={filteredUsers} 
-      rowKey="_id" 
-      pagination={{
-        current: pageInfo.pageNum,
-        pageSize: pageInfo.pageSize,
-        total: pageInfo.totalItems,
-        showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
-        onChange: (page, pageSize) => {
-          fetchingUsers(page, pageSize);
-        },
-        showSizeChanger: true,
-        className: "bg-pagination", // Adjusted class for smaller text
-        position: ["bottomLeft"]
-      }} 
-      />
-      {/* <div className="mt-5 flex justify-start">
-        <Pagination
-          current={pageNum}
-          pageSize={pageSize}
-          total={pageInfo.totalItems}
-          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
-          onChange={(page, pageSize) => {
-            setPageNum(page);
-            setPageSize(pageSize);
-          }}
-          className="bg-pagination"
-          showSizeChanger
+  if (loading) {
+    return <LoadingAnimation />;
+  }
+
+  if (filteredUsers && pageInfo && columns) {
+    return (
+      <div className="-mt-3 mb-64 p-4">
+        <Table<User> 
+          className="shadow-lg" 
+          columns={columns} 
+          dataSource={filteredUsers} 
+          rowKey="_id" 
+          pagination={{
+            current: pageInfo.pageNum,
+            pageSize: pageInfo.pageSize,
+            total: pageInfo.totalItems,
+            showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+            onChange: (page, pageSize) => {
+              fetchingUsers(page, pageSize);
+            },
+            showSizeChanger: true,
+            className: "bg-pagination", // Adjusted class for smaller text
+            position: ["bottomLeft"]
+          }} 
         />
-      </div> */}
-    </div>
-  );
+      </div>
+    );
+  } else {
+    return <LoadingAnimation />;
+  }
 };
 
 export default React.memo(ViewRequestAccount);

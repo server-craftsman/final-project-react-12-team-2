@@ -8,7 +8,7 @@ import { CategoryService } from "../../../services/category/category.service";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
 import parse from "html-react-parser";
 import { HttpException } from "../../../app/exceptions";
-
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 interface SearchCategoryCondition {
   keyword: string;
   is_parent: boolean;
@@ -125,7 +125,8 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
     }
   ];
 
-  return (
+  if (category) {
+    return (
     <>
       <Table 
       columns={columns} 
@@ -160,6 +161,9 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
       </div> */}
     </>
   );
+} else {
+  return <LoadingAnimation />;
+}
 };
 
 export default AdminCategory;

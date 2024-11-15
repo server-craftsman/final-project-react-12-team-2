@@ -12,7 +12,7 @@ import { StatusType } from "../../../app/enums";
 import ModalCourseDetail from "./ModalCourseDetail";
 import { GetCourseByIdResponse } from "../../../models/api/responsive/course/course.response.model";
 const { confirm } = Modal;
-
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 const defaultParams = {
   pageInfo: {
     pageNum: 1,
@@ -231,8 +231,9 @@ const CoursesManagement: React.FC<{
 
   // const paginatedCourses = filteredCourses.slice((pageInfo.pageNum - 1) * pageInfo.pageSize, pageInfo.pageNum * pageInfo.pageSize);
   // console.log(paginatedCourses);
-  return (
-    <>
+  if (filteredCourses && pageInfo.totalItems) {
+    return (
+      <>
       <Table
         columns={columns}
         dataSource={filteredCourses}
@@ -331,8 +332,11 @@ const CoursesManagement: React.FC<{
         onClose={() => setIsCourseDetailModalVisible(false)}
         courseDetail={selectedCourseDetail}
       />
-    </>
-  );
+      </>
+    );
+  } else {
+    return <LoadingAnimation />;
+  }
 };
 
 export default CoursesManagement;

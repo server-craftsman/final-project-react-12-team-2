@@ -6,7 +6,7 @@ import { GetUsersAdminParams } from "../../../models/api/request/admin/user.requ
 // import { GetUsersAdminResponse } from "../../../models/api/responsive/admin/user.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model"; // Ensure this import is correct
 import { UserRoles } from "../../../app/enums";
-
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 const ViewUserProfile = lazy(() => import("../../../components/admin/user/ViewUserProfile"));
 const CustomSearch = lazy(() => import("../../../components/generic/search/CustomSearch"));
 const FilterRole = lazy(() => import("../../../components/admin/user/FilterRole"));
@@ -129,7 +129,7 @@ const ManageUser = () => {
   ];
 
   if (users === null) {
-    return <div>Loading...</div>;
+    return <LoadingAnimation />;
   } else {
     return (
       <div className="items-center justify-center border-b border-gray-300">

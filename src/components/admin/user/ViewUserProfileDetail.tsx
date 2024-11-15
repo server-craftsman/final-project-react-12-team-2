@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useMemo, memo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Row, Col, Form, Input, Button, Modal, message } from "antd";
-import { HomeOutlined, DeleteOutlined, LockOutlined, UnlockOutlined, EditOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, DeleteOutlined, LockOutlined, UnlockOutlined, EditOutlined } from "@ant-design/icons";
 import { userStatusColor } from "../../../utils/userStatus";
 import { userRoleColor } from "../../../utils/userRole";
 import { helpers } from "../../../utils";
@@ -13,7 +13,7 @@ import { ROUTER_URL } from "../../../const/router.path";
 // import parse from "html-react-parser";
 import { HttpException } from "../../../app/exceptions";
 import { HTTP_STATUS, UserRoles } from "../../../app/enums";
-
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 const ViewUserProfileDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [user, setUser] = useState<User | null>(null);
@@ -124,7 +124,7 @@ const ViewUserProfileDetail = () => {
 
   const renderUserContent = useMemo(() => {
     if (!user) {
-      return <div className="text-center text-xl font-bold text-gray-500">User not found</div>;
+      return <LoadingAnimation />;
     } else {
       return (
         <div className="max-w-10xl mx-auto rounded-lg bg-white p-8 shadow-lg">
@@ -186,7 +186,7 @@ const ViewUserProfileDetail = () => {
               <DeleteOutlined />
             </Button>
             <Button onClick={() => navigate(ROUTER_URL.ADMIN.MANAGE_USER)} type="default">
-              <HomeOutlined />
+              <ArrowLeftOutlined />
             </Button>
           </div>
         </div>
