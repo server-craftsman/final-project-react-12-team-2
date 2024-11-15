@@ -153,7 +153,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                       }
                       className={`group relative flex flex-col overflow-hidden rounded-lg bg-white shadow-lg`}
                       style={{
-                        height: getResponsiveHeight(),
+                        height: isMobile ? 'auto' : '700px', // Increased height from 600px to 650px
                         display: "flex",
                         flexDirection: "column"
                       }}
@@ -171,7 +171,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                           {course.discount}% OFF
                         </motion.div>
                       )}
-                      <div className={`flex ${isMobile ? 'h-auto' : 'h-[450px]'} flex-col`}>
+                      <div className={`flex ${isMobile ? 'h-auto' : 'h-[500px]'} flex-col`}> {/* Increased height from 450px to 500px */}
                         <motion.div
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
@@ -184,7 +184,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                             {parse(course.description)}
                           </Paragraph>
                         </motion.div>
-                        <div className={`${isMobile ? 'h-auto' : 'h-[100px]'}`}>
+                        <div className={`${isMobile ? 'h-auto' : 'h-[120px]'}`}> {/* Increased height from 100px to 120px */}
                           <motion.div 
                             className="mb-4 flex items-center justify-between"
                             whileHover={{ scale: 1.02 }}
@@ -212,7 +212,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                           title={<span className="line-clamp-1 text-lg font-semibold text-gray-800">{course.instructor_name}</span>}
                           description={
                             <motion.div 
-                              className={`${isMobile ? 'h-auto' : 'h-25'} mb-4 items-center text-sm`}
+                              className={`${isMobile ? 'h-auto' : 'h-36'} mb-4 items-center text-sm`}
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
                               transition={{ delay: 0.3 }}
