@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { motion, useAnimation, useInView } from "framer-motion";
 import TextSlider from "./TextSlider";
 import Lottie from "lottie-react";
@@ -60,7 +61,9 @@ const Cover: React.FC = () => {
             Access thousands of high-quality courses from expert instructors.
           </motion.p>
           <motion.button variants={itemVariants} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="rounded-full bg-gradient-to-r from-[#ffd700] to-[#ffa500] px-8 py-3 font-bold text-indigo-900 shadow-lg transition duration-300 hover:from-[#ffcc00] hover:to-[#ff9500] hover:shadow-xl">
-            Explore Courses
+            <Link to="/courses/all">
+              Explore Courses
+            </Link>
           </motion.button>
 
           {/* Trust badges */}
