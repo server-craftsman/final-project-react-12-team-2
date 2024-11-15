@@ -88,13 +88,7 @@ const Navbar = () => {
                     <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                       <Link to="/courses/all" className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100 hover:text-indigo-900 transition-colors duration-200 ease-in-out" role="menuitem">
                         All Courses
-                      </Link>
-                      <Link to="/courses/my-courses" className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100 hover:text-indigo-900 transition-colors duration-200 ease-in-out" role="menuitem">
-                        My Courses
-                      </Link>
-                      <Link to="/courses/popular" className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100 hover:text-indigo-900 transition-colors duration-200 ease-in-out" role="menuitem">
-                        Popular Courses
-                      </Link>
+                      </Link>                    
                     </div>
                   </div>
                 </div>
