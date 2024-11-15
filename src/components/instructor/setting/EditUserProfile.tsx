@@ -13,6 +13,7 @@ import { ROUTER_URL } from "../../../const/router.path";
 // import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
 import { BaseService } from "../../../services/config/base.service";
 import Editor from "../../generic/tiny/Editor";
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 
 const EditUserProfile = () => {
   const { id } = useParams<{ id: string }>();
@@ -209,7 +210,7 @@ const EditUserProfile = () => {
   };
 
   if (!state.user) {
-    return <div>User not found</div>;
+    return <LoadingAnimation />;
   } else {
     return (
       <div className="max-w-10xl mx-auto rounded-xl bg-white p-8 shadow-2xl">
