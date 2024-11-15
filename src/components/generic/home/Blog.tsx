@@ -69,10 +69,12 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
       if (response && response.data && Array.isArray(response.data.data?.pageData)) {
         let data = response.data.data.pageData;
 
+        // Apply date filter if a date is selected
         if (date) {
           data = data.filter(blog => moment(blog.created_at).isSame(date, 'day'));
         }
 
+        // Apply search filter
         data = data.filter(blog => 
           (blog.name && blog.name.toLowerCase().includes(query.toLowerCase())) ||
           (blog.description && blog.description.toLowerCase().includes(query.toLowerCase()))
@@ -130,6 +132,7 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
       (!dateFilter || moment(blog.created_at).isSame(dateFilter, 'day'))
   );
 
+  // Fetch related blogs for the next page
   const fetchRelatedBlogs = useCallback(async () => {
     const nextPageNum = pageNum + 1;
     const params: GetBlogParams = {
@@ -164,7 +167,7 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
       >
         <div className="py-4 grid grid-cols-12 gap-4">
           {/* Left Content */}
-          <div className="col-span-12 lg:col-span-3 flex flex-col gap-4">
+          <div className="col-span-3 flex flex-col gap-4">
             <div className="flex flex-col gap-4">
               <CustomSearch onSearch={(query) => fetchBlogs(query, dateFilter)} placeholder="Search blogs..." className="w-full" />
               <DatePicker 
@@ -173,7 +176,7 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
                   setDateFilter(momentDate);
                   fetchBlogs(searchQuery, momentDate);
                 }} 
-                className="w-full lg:w-1/2" 
+                className="w-1/2" 
               />
             </div>
             <Button
@@ -184,8 +187,7 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
                 backgroundColor: "#1a237e",
                 borderRadius: "9999px",
                 fontSize: "16px",
-                width: "100%",
-                maxWidth: "200px"
+                width: "50%"
               }}
               onClick={() => navigate('/')}
             >
@@ -194,7 +196,7 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
           </div>
 
           {/* Center Content */}
-          <div className="col-span-12 lg:col-span-6">
+          <div className="col-span-6">
             {loading && (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -207,11 +209,12 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
             )}
             {error && <p className="error">{error}</p>}
 
+            {/* Card Grid with Single Column */}
             <div className="grid grid-cols-1 gap-6">
               {filteredData?.map((blog) => (
                 <Link to={`/blog-details/${blog._id}`} key={blog._id}>
                   <Card
-                    className="rounded-lg shadow-lg p-4 lg:p-6 bg-white flex transition-transform duration-300 transform hover:scale-105 hover:shadow-2xl"
+                    className="rounded-lg shadow-lg p-6 bg-white flex transition-transform duration-300 transform hover:scale-105 hover:shadow-2xl"
                     style={{
                       borderRadius: "15px",
                       overflow: "hidden",
@@ -219,18 +222,23 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
                       boxShadow: "0px 4px 15px rgba(0,0,0,0.15)",
                     }}
                   >
-                    <div className="flex flex-col lg:flex-row w-full">
-                      <div className="w-full lg:w-3/10 flex-shrink-0 mb-4 lg:mb-0">
+                    {/* 3/7 Split Layout */}
+                    <div className="flex w-full">
+                      {/* 3 Parts: Image Section with Fixed Size */}
+                      <div className="w-3/10 flex-shrink-0">
                         {blog.image_url && (
                           <img
                             alt={blog.name}
                             src={blog.image_url}
-                            className="object-cover rounded-lg w-full h-[200px] lg:w-[260px] lg:h-[260px]"
+                            className="object-cover rounded-lg"
+                            style={{ width: "260px", height: "260px" }}
                           />
                         )}
                       </div>
 
-                      <div className="w-full lg:w-7/10 lg:pl-6 flex flex-col justify-between">
+                      {/* 7 Parts: Content Section */}
+                      <div className="w-7/10 pl-6 flex flex-col justify-between">
+                        {/* Header with Avatar, Author's Name, and Date */}
                         <div className="flex items-center mb-4">
                           <Avatar 
                             src={userAvatars[blog.user_id]}
@@ -238,16 +246,17 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
                             icon={!userAvatars[blog.user_id] && <UserOutlined />}
                           />
                           <div className="ml-4">
-                            <p className="font-bold text-base lg:text-lg">{blog.user_name}</p>
-                            <p className="text-gray-500 text-xs lg:text-sm">
+                            <p className="font-bold text-lg">{blog.user_name}</p>
+                            <p className="text-gray-500 text-sm">
                               {formatDate(new Date(blog.created_at))}
                             </p>
                           </div>
                         </div>
 
+                        {/* Blog Content */}
                         <div className="flex-grow">
-                          <p className="font-semibold mb-3 text-xl lg:text-2xl uppercase">{blog.name}</p>
-                          <p className="text-gray-600 mb-2 text-sm lg:text-base">{blog.description}</p>
+                          <p className="font-semibold mb-3 text-2xl uppercase">{blog.name}</p>
+                          <p className="text-gray-600 mb-2">{blog.description}</p>
                           <p className="text-gray-600 italic font-medium">
                             <Tag className="bg-gradient-tone mr-2 rounded px-3 py-1 text-xs font-semibold uppercase text-white">{blog.category_name}</Tag>
                           </p>
@@ -261,15 +270,14 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
             <Pagination
               current={pageNum}
               pageSize={pageSize}
-              total={blogData?.pageInfo?.totalItems || 0}
+              total={blogData?.pageInfo?.totalItems || 0} // Assuming totalCount is available in the response
               onChange={handlePageChange}
               className="mt-4"
-              responsive
             />
           </div>
 
           {/* Right Content */}
-          <div className="col-span-12 lg:col-span-3">
+          <div className="col-span-3">
             <h2 className="text-lg font-semibold mb-4">Related Blogs</h2>
             <div className="grid grid-cols-1 gap-4">
               {relatedBlogs.map((blog) => (
@@ -278,15 +286,17 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
                     className="rounded-lg shadow-md p-4 bg-white hover:shadow-lg transition-shadow duration-300"
                     hoverable
                   >
-                    <div className="flex flex-col lg:flex-row items-center space-y-4 lg:space-y-0 lg:space-x-4">
+                    <div className="flex items-center space-x-4">
+                      {/* Blog Image */}
                       <div className="flex-shrink-0">
                         <img 
                           src={blog.image_url} 
                           alt={blog.name} 
-                          className="object-cover rounded-lg w-full h-[200px] lg:w-[100px] lg:h-[100px]"
+                          className="object-cover rounded-lg w-[100px] h-[100px]"
                         />
                       </div>
 
+                      {/* User Avatar */}
                       <div className="flex-shrink-0">
                         <Avatar
                           src={userAvatars[blog.user_id]}
@@ -296,7 +306,8 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
                         />
                       </div>
 
-                      <div className="flex-1 min-w-0 text-center lg:text-left">
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-lg text-gray-900 truncate">
                           {blog.name}
                         </h3>
