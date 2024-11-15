@@ -8,7 +8,7 @@ export interface CreatePayoutRequestModel {
 export interface GetPayoutRequestModel {
   searchCondition: {
     payout_no: string;
-    instructor_id: string;
+    instructor_id?: string;
     is_instructor: boolean;
     status: string;
     is_delete: boolean;
