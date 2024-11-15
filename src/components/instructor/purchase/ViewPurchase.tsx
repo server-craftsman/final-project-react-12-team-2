@@ -6,7 +6,7 @@ import PurchaseCheckbox from "./PurchaseCheckbox";
 import { PurchaseService } from "../../../services/purchase/purchase.service";
 import { SearchForInstructorPurchaseRequestModel } from "../../../models/api/request/purchase/purchase.request.model";
 import { SearchForInstructorPurchaseResponseModel } from "../../../models/api/responsive/purchase/purchase.reponse.model";
-
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 interface ViewPurchaseProps {
   searchQuery: string;
   filterStatus: string;
@@ -140,8 +140,9 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
     },
   ];
 
-  return (
-    <div>
+  if (purchases && pageInfo.totalItems) {
+    return (
+      <div>
       <Table 
         columns={columns} 
         dataSource={purchases} 
@@ -160,8 +161,11 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
           position: ["bottomLeft"]
         }}
       />
-    </div>
-  );
+      </div>
+    );
+  } else {
+    return <LoadingAnimation />;
+  }
 };
 
 export default ViewPurchase;

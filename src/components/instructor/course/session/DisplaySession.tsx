@@ -11,7 +11,7 @@ import { SessionService } from "../../../../services/session/session.service";
 import { formatDate } from "../../../../utils/helper";
 import { DisplaySessionResponse } from "../../../../models/api/responsive/session/session.response.model";
 import DetailModal from "./DetailModal";
-
+import LoadingAnimation from "../../../../app/UI/LoadingAnimation";
 const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
   const [sessions, setSessions] = useState<DisplaySessionResponse[]>([]);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -124,8 +124,9 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
     }
   };
 
-  return (
-    <>
+  if (sessions && totalItems) {
+    return (
+      <>
       <div className="mb-4 mt-4 flex justify-between">
         <CustomSearch onSearch={handleSearch} placeholder="Search by session name" className="w-1/5" />
         <CreateButton onSessionCreated={() => fetchSessions(pageNum, pageSize, searchKeyword)} />
@@ -151,8 +152,11 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
         isVisible={isDetailModalVisible}
         onClose={() => setIsDetailModalVisible(false)}
       />
-    </>
-  );
+      </>
+    );
+  } else {
+    return <LoadingAnimation />;
+  }
 };
 
 export default DisplaySession;

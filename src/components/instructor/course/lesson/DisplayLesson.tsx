@@ -10,7 +10,7 @@ import CreateButton from "./CreateButton";
 import { LessonService } from "../../../../services/lesson/lesson.service";
 import { Lesson } from "../../../../models/api/responsive/lesson/lesson.response.model";
 import ModalLessonDetail from "./DetailModal";
-
+import LoadingAnimation from "../../../../app/UI/LoadingAnimation";
 const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
   const [filteredLessons, setFilteredLessons] = useState<Lesson["pageData"]>([]);
   const [pageNum, setPageNum] = useState<number>(1);
@@ -137,8 +137,9 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
     fetchLessons();
   }, [fetchLessons]);
 
-  return (
-    <>
+  if (filteredLessons && totalItems) {
+    return (
+      <>
       <div className="mb-4 mt-4 flex justify-between">
         <CustomSearch onSearch={handleSearch} placeholder="Search by lesson name" className="w-1/5" />
         <CreateButton onLessonCreated={handleLessonCreated} />
@@ -164,8 +165,11 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
         onClose={() => setIsLessonDetailModalVisible(false)}
         lessonDetail={selectedLessonDetail}
       />
-    </>
-  );
+      </>
+    );
+  } else {
+    return <LoadingAnimation />;
+  }
 };
 
 export default DisplayLesson;

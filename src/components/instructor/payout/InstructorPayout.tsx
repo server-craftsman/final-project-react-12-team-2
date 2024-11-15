@@ -8,7 +8,7 @@ import { PayoutService } from "../../../services/payout/payout.service";
 import { GetPayoutResponseModel } from "../../../models/api/responsive/payout/payout.response.model";
 import { payoutColorStatus } from "../../../utils/payoutStatus";
 import { PayoutStatus } from "../../../app/enums/payout.status";
-
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 interface InstructorPayoutProps {
   refreshKey: number;
   searchQuery: string;
@@ -152,8 +152,9 @@ const InstructorPayout: React.FC<InstructorPayoutProps> = ({ refreshKey, searchQ
     }
   ];
 
-  return (
-    <div>
+  if (payouts && totalItems) {
+    return (
+      <div>
       <Table 
         columns={columns} 
         dataSource={payouts} 
@@ -174,7 +175,10 @@ const InstructorPayout: React.FC<InstructorPayoutProps> = ({ refreshKey, searchQ
       />
       <ViewTransactions isVisible={isModalVisible} onClose={() => setIsModalVisible(false)} transactions={selectedTransactions} />
     </div>
-  );
+    );
+  } else {
+    return <LoadingAnimation />;
+  }
 };
 
 export default InstructorPayout;

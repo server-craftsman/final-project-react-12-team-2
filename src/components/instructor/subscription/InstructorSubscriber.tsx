@@ -6,6 +6,7 @@ import { GetSubscribersParams } from "../../../models/api/request/subscriber/sub
 import { UserService } from "../../../services/instructor/user.service";
 import { Link } from "react-router-dom";
 import { GetSubscribersResponse } from "../../../models/api/responsive/subscriber/subscriber.response.model";
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 
 interface SearchSubscriberCondition {
   keyword: string;
@@ -114,8 +115,9 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
     if (newPageSize) setPageSize(newPageSize);
   }, []);
 
-  return (
-    <div style={{ backgroundColor: "#f0f2f5" }}>
+  if (subscriptions && subscriptions.pageData.length > 0) {
+    return (
+      <div style={{ backgroundColor: "#f0f2f5" }}>
       <Row gutter={[16, 16]}>
         {subscriptions?.pageData.map((subscription) => {
           const user = filteredUsers.find((user) => user._id === subscription.subscriber_id);
@@ -201,8 +203,11 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
           }}
         />
       </Row>
-    </div>
-  );
+      </div>
+    );
+  } else {
+    return <LoadingAnimation />;
+  }
 };
 
 export default InstructorSubscriber;

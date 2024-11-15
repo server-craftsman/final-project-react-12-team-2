@@ -17,6 +17,7 @@ import { GetCourseParams } from "../../../../models/api/request/course/course.re
 import { GetCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
 import { CourseService } from "../../../../services/course/course.service";
 import DetailModal from './DetailModal';
+import LoadingAnimation from "../../../../app/UI/LoadingAnimation";
 // import _ from "lodash";
 
 const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, refreshKey }: { searchTerm: string; statusFilter: StatusType; onSearch: (value: string) => void; onStatusChange: (status: StatusType | "") => void; refreshKey: number }) => {
@@ -340,8 +341,8 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
   //   setPageNum(page);
   //   if (pageSize) setPageSize(pageSize);
   // };
-
-  return (
+  if (courses) {
+    return (
     <>
       <div className="mb-4 mt-4 flex justify-between">
         <CustomSearch onSearch={handleSearch} placeholder="Search by course name" className="w-1/5" />
@@ -396,7 +397,10 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
         onClose={closeDetailModal}
       />
     </>
-  );
+    );
+  } else {
+    return <LoadingAnimation />;
+  }
 };
 
 export default DisplayCourse;

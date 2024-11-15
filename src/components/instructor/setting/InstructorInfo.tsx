@@ -6,7 +6,7 @@ import { helpers } from "../../../utils";
 import parse from "html-react-parser";
 import { ROUTER_URL } from "../../../const/router.path";
 import { EditOutlined } from "@ant-design/icons";
-
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 const InstructorInfo = () => {
   const navigate = useNavigate();
   const { getCurrentUser, userInfo } = useAuth();
@@ -20,11 +20,7 @@ const InstructorInfo = () => {
   };
 
   if (!userInfo) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="font-serif text-2xl italic text-[#1a237e]">No admin user found.</div>
-      </div>
-    );
+    return <LoadingAnimation />;
   } else {
     return (
       <div className="max-w-10xl animate-fade-in mx-auto rounded-2xl bg-white p-12 shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)]">
