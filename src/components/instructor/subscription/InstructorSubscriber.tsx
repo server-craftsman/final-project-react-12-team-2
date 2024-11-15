@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Card, Avatar, Row, Col, message, Pagination } from "antd";
 import { User } from "../../../models/api/responsive/users/users.model";
 import { SubscriberService } from "../../../services/subscriber/subscriber.service";
@@ -22,26 +22,27 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
-  const defaultParams = {
+  const defaultParams = useMemo(() => ({
     pageInfo: {
       pageNum: currentPage,
-      pageSize: 10
+      pageSize: pageSize
     },
     searchCondition: {
       keyword: "",
       is_delete: false
     }
-  } as const;
+  } as const), [currentPage, pageSize]);
 
-  const getSearchCondition = React.useCallback((): SearchSubscriberCondition => {
+  const getSearchCondition = useCallback((): SearchSubscriberCondition => {
     return {
       keyword: defaultParams.searchCondition.keyword,
       is_delete: false
     };
-  }, []);
+  }, [defaultParams.searchCondition.keyword]);
 
-  const fetchSubscriptions = React.useCallback(async () => {
+  const fetchSubscriptions = useCallback(async () => {
     setLoading(true);
     try {
       const searchCondition = getSearchCondition();
@@ -53,32 +54,43 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
         searchCondition
       };
       const response = await SubscriberService.getSubscribers(params);
-      setSubscriptions(response.data?.data ? response.data.data : null);
-      setTotalItems(response.data?.data?.pageInfo?.totalItems || 0);
+      if (response.data?.data) {
+        setSubscriptions(response.data.data);
+        setTotalItems(response.data.data.pageInfo?.totalItems || 0);
+      }
     } catch (error) {
       message.error("No subscriptions found");
     } finally {
       setLoading(false);
     }
-  }, [getSearchCondition, currentPage]);
+  }, [getSearchCondition, currentPage, defaultParams.pageInfo]);
 
-  const fetchUsers = React.useCallback(async () => {
+  const fetchUsers = useCallback(async () => {
+    if (!subscriptions?.pageData?.length) return;
+
     try {
-      if (subscriptions?.pageData) {
-        const subscriberIds = subscriptions.pageData.map((sub) => sub.subscriber_id);
-        const promises = subscriberIds.map((id) => UserService.getUserDetails(id));
-        const responses = await Promise.all(promises);
-        const validUsers = responses.filter((response) => response.data?.data).map((response) => response.data.data);
-        setUsers(validUsers);
-      }
+      const subscriberIds = subscriptions.pageData.map((sub) => sub.subscriber_id);
+      const uniqueIds = [...new Set(subscriberIds)]; // Remove duplicates
+      
+      const promises = uniqueIds.map((id) => UserService.getUserDetails(id));
+      const responses = await Promise.all(promises);
+      const validUsers = responses
+        .filter((response) => response.data?.data)
+        .map((response) => response.data.data);
+      
+      setUsers(validUsers);
     } catch (error) {
       message.error("Failed to fetch users");
     }
-  }, [subscriptions]);
+  }, [subscriptions?.pageData]);
 
   useEffect(() => {
-    fetchSubscriptions();
-  }, [fetchSubscriptions, currentPage]);
+    const debounceTimer = setTimeout(() => {
+      fetchSubscriptions();
+    }, 300);
+
+    return () => clearTimeout(debounceTimer);
+  }, [fetchSubscriptions]);
 
   useEffect(() => {
     if (subscriptions?.pageData && subscriptions.pageData.length > 0) {
@@ -86,24 +98,21 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
     }
   }, [subscriptions?.pageData, fetchUsers]);
 
-  const filterUsers = useCallback(() => {
+  const filteredUsers = useMemo(() => {
     if (!users || !subscriptions?.pageData) return [];
 
-    return users.filter(user => {
-      const searchLower = searchValue.toLowerCase();
-      return (
-        user.name?.toLowerCase().includes(searchLower) ||
-        user.email?.toLowerCase().includes(searchLower) ||
-        user.phone_number?.toLowerCase().includes(searchLower)
-      );
-    });
-  }, [users, searchValue]);
+    const searchLower = searchValue.toLowerCase();
+    return users.filter(user => 
+      user.name?.toLowerCase().includes(searchLower) ||
+      user.email?.toLowerCase().includes(searchLower) ||
+      user.phone_number?.toLowerCase().includes(searchLower)
+    );
+  }, [users, searchValue, subscriptions?.pageData]);
 
-  const filteredUsers = filterUsers();
-
-  const handlePageChange = (page: number) => {
+  const handlePageChange = useCallback((page: number, newPageSize?: number) => {
     setCurrentPage(page);
-  };
+    if (newPageSize) setPageSize(newPageSize);
+  }, []);
 
   return (
     <div style={{ backgroundColor: "#f0f2f5" }}>
@@ -130,36 +139,37 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
                   }
                   style={{
                     height: '100%',
-                    borderRadius: "12px",
+                    borderRadius: "12px", 
                     border: "1px solid #000",
                     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                     backgroundColor: "#f0f2f5",
                     cursor: "pointer",
                     textAlign: "center"
                   }}
-                  bodyStyle={{ padding: "12px", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
                 >
-                  <div>
-                    <p style={{
-                      fontSize: "14px",
-                      marginBottom: "8px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: "4px"
-                    }}>
-                      <strong>Email:</strong> {user?.email}
-                    </p>
-                    <p style={{
-                      fontSize: "14px",
-                      marginBottom: "16px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: "4px"
-                    }}>
-                      <strong>Phone:</strong> {user?.phone_number}
-                    </p>
+                  <div style={{ padding: "12px", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <div>
+                      <p style={{
+                        fontSize: "14px",
+                        marginBottom: "8px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: "4px"
+                      }}>
+                        <strong>Email:</strong> {user?.email}
+                      </p>
+                      <p style={{
+                        fontSize: "14px",
+                        marginBottom: "16px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: "4px"
+                      }}>
+                        <strong>Phone:</strong> {user?.phone_number}
+                      </p>
+                    </div>
                   </div>
                 </Card>
               </Link>
@@ -168,7 +178,7 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
         })}
       </Row>
       <Row
-        justify="center"
+        justify="start"
         style={{
           marginTop: '20px',
           marginBottom: '20px',
@@ -182,7 +192,13 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
           total={totalItems}
           pageSize={defaultParams.pageInfo.pageSize}
           onChange={handlePageChange}
-          showSizeChanger={false}
+          showSizeChanger={true}
+          showQuickJumper
+          className="bg-pagination"
+          style={{
+            bottom: 20,
+            zIndex: 1000,
+          }}
         />
       </Row>
     </div>
