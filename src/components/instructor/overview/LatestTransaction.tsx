@@ -4,7 +4,7 @@ import { PayoutService } from "../../../services/payout/payout.service";
 import { GetPayoutResponseModel } from "../../../models/api/responsive/payout/payout.response.model";
 // import { useAuth } from "../../../contexts/AuthContext";
 import { helpers } from "../../../utils";
-import { BarChart, Bar, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const LatestTransaction: React.FC = () => {
   // const { userInfo } = useAuth();
@@ -34,7 +34,6 @@ const LatestTransaction: React.FC = () => {
       key: "payout_no",
       render: (text: any) => `#${text}`,
       onCell: () => ({
-        // Add any cell-specific props here if needed
         style: {
           cursor: "pointer"
         }
@@ -48,7 +47,6 @@ const LatestTransaction: React.FC = () => {
       defaultSortOrder: "descend" as const,
       render: (created_at: any) => helpers.formatDate(created_at),
       onCell: () => ({
-        // Add any cell-specific props here if needed
         style: {
           cursor: "pointer"
         }
@@ -60,7 +58,6 @@ const LatestTransaction: React.FC = () => {
       key: "balance_origin",
       render: (balance_origin: any) => helpers.moneyFormat(balance_origin),
       onCell: () => ({
-        // Add any cell-specific props here if needed
         style: {
           cursor: "pointer"
         }
@@ -72,7 +69,6 @@ const LatestTransaction: React.FC = () => {
       key: "balance_instructor_received",
       render: (price: any) => price !== undefined ? helpers.moneyFormat(price) : "N/A",
       onCell: () => ({
-        // Add any cell-specific props here if needed
         style: {
           cursor: "pointer"
         }
@@ -84,7 +80,6 @@ const LatestTransaction: React.FC = () => {
       key: "balance_instructor_paid",
       render: (price_paid: any) => price_paid !== undefined ? helpers.moneyFormat(price_paid) : "N/A",
       onCell: () => ({
-        // Add any cell-specific props here if needed
         style: {
           cursor: "pointer"
         }
@@ -114,11 +109,12 @@ const LatestTransaction: React.FC = () => {
           Payout Chart
         </Typography.Text>
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={latestTransaction}>
+          <LineChart data={latestTransaction}>
             <CartesianGrid strokeDasharray="3 3" />
             <Tooltip />
-            <Bar dataKey="balance_instructor_received" fill="#8884d8" name="Balance Received" />
-          </BarChart>
+            <Legend />
+            <Line type="monotone" dataKey="balance_instructor_received" stroke="#8884d8" name="Balance Received" />
+          </LineChart>
         </ResponsiveContainer>
       </div>
     </div>
