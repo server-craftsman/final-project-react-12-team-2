@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Typography, Card, Row, Col, Button, Tag, Avatar } from "antd";
+import { Typography, Card, Row, Col, Button, Tag, Avatar, Rate } from "antd";
 import { BookOutlined, PercentageOutlined, VideoCameraOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { GetPublicCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
@@ -153,7 +153,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                       }
                       className={`group relative flex flex-col overflow-hidden rounded-lg bg-white shadow-lg`}
                       style={{
-                        height: isMobile ? 'auto' : '700px', // Increased height from 600px to 650px
+                        height: isMobile ? 'auto' : '720px', // Increased height from 600px to 650px
                         display: "flex",
                         flexDirection: "column"
                       }}
@@ -243,6 +243,24 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                                   <span className="bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">{course.full_time} min</span>
                                 </motion.span>
                               </div>
+                              <motion.div 
+                                className="mt-4 flex items-center"
+                                whileHover={{ scale: 1.05 }}
+                                transition={{ type: "spring", stiffness: 300 }}
+                              >
+                                <Rate 
+                                  value={course.average_rating} 
+                                  disabled 
+                                  className="custom-rate-stars"
+                                  style={{
+                                    fontSize: "18px",
+                                    filter: "drop-shadow(0 0 2px rgba(250, 204, 21, 0.4))"
+                                  }}
+                                />
+                                <span className="ml-2 bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-lg font-bold text-transparent">
+                                  {course.average_rating.toFixed(1)}
+                                </span>
+                              </motion.div>
                             </motion.div>
                           }
                           className="mb-4"
