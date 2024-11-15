@@ -39,7 +39,6 @@ const HomePage: React.FC = () => {
             pageSize: 10
           }
         });
-        console.log("API Response:", response.data.data.pageData);
         const pageData = response.data.data.pageData;
         setCategoryList(pageData as unknown as GetCategoryResponsePublic[]);
       } catch (error) {

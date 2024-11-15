@@ -187,7 +187,7 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
                 backgroundColor: "#1a237e",
                 borderRadius: "9999px",
                 fontSize: "16px",
-                width: "50%"
+                width: "60%"
               }}
               onClick={() => navigate('/')}
             >

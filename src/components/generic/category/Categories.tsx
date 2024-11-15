@@ -41,7 +41,13 @@ const Categories = ({ categoryList }: { categoryList: any[] }) => {
         <Card
           key={category._id || index}
           title={
-            <span className="text-2xl font-serif font-bold text-indigo-900">
+            <span 
+              className="text-2xl font-serif font-bold text-indigo-900"
+              style={{
+                borderBottom: "2px solid #e2e8f0",
+                padding: "20px"
+              }}
+            >
               {category.name || "Unnamed Category"}
             </span>
           }
@@ -49,13 +55,7 @@ const Categories = ({ categoryList }: { categoryList: any[] }) => {
           style={{
             background: "linear-gradient(135deg, #f6f8ff 0%, #ffffff 100%)",
             borderBottom: "4px solid #818cf8",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.1)"
-          }}
-          headStyle={{
-            borderBottom: "2px solid #e2e8f0",
-            padding: "20px"
-          }}
-          bodyStyle={{
+            boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
             padding: "24px",
             minHeight: "200px"
           }}
