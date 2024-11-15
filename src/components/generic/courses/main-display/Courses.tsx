@@ -4,22 +4,18 @@ import { Typography, Card, Row, Col, Button, Tag, Avatar } from "antd";
 import { BookOutlined, PercentageOutlined, VideoCameraOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { GetPublicCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
-// import { User } from "../../../../models/api/responsive/users/users.model";
-// import { GetCategoryResponse } from "../../../../models/api/responsive/admin/category.responsive.model";
 import { CourseService } from "../../../../services/course/course.service";
-// import { UserService } from "../../../../services/admin/user.service";
 import { helpers } from "../../../../utils";
 const { Title, Paragraph } = Typography;
 import animationData from "../../../../data/courseAnimation.json";
 import Lottie from "lottie-react";
 const { Meta } = Card;
 import parse from "html-react-parser";
+import { useMediaQuery } from 'react-responsive';
 
 interface CoursesProps {
   pageSize?: number;
   pageNum?: number;
-  // usersData: User[];
-  // categoriesData: GetCategoryResponse;
 }
 
 const fetchCoursePublic = async (searchCondition = {}, pageInfo = { pageNum: 1, pageSize: 10 }) => {
@@ -42,6 +38,11 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
   const navigate = useNavigate();
   const [courses, setCourses] = useState<GetPublicCourseResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+
+  // Responsive breakpoints
+  // const isDesktop = useMediaQuery({ minWidth: 1024 });
+  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1023 });
+  const isMobile = useMediaQuery({ maxWidth: 767 });
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -96,17 +97,34 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
     }
   };
 
+  const getResponsiveGutter = (): [number, number] => {
+    if (isMobile) return [16, 16];
+    if (isTablet) return [24, 24];
+    return [32, 32];
+  };
+
+  const getResponsiveHeight = () => {
+    if (isMobile) return 'auto';
+    return '600px';
+  };
+
+  const getResponsiveImageHeight = () => {
+    if (isMobile) return '200px';
+    if (isTablet) return '250px';
+    return '300px';
+  };
+
   return (
-    <Row gutter={[32, 32]}>
+    <Row gutter={getResponsiveGutter()}>
       <AnimatePresence>
         {loading ? (
           <div className="flex justify-center items-center h-full w-full">
-            <Lottie height={400} width={400} animationData={animationData} />
+            <Lottie height={isMobile ? 200 : 400} width={isMobile ? 200 : 400} animationData={animationData} />
           </div>
         ) : (
           courses?.pageData.slice((pageNum - 1) * pageSize, pageNum * pageSize).map((course: any, index) => {
             return (
-              <Col xs={24} sm={12} md={8} key={course._id} className="mx-auto h-full">
+              <Col xs={24} sm={12} lg={8} key={course._id} className="mx-auto h-full">
                 <motion.div
                   variants={itemVariants}
                   initial="hidden"
@@ -127,13 +145,15 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                         <motion.img 
                           alt={course.name} 
                           src={course.image_url} 
-                          className="h-48 w-full object-cover"
+                          className={`w-full object-cover`}
+                          style={{ height: getResponsiveImageHeight() }}
                           whileHover={{ scale: 1.05 }}
                           transition={{ duration: 0.3 }}
                         />
                       }
-                      className={`group relative flex h-[600px] flex-col overflow-hidden rounded-lg bg-white shadow-lg`}
+                      className={`group relative flex flex-col overflow-hidden rounded-lg bg-white shadow-lg`}
                       style={{
+                        height: getResponsiveHeight(),
                         display: "flex",
                         flexDirection: "column"
                       }}
@@ -151,20 +171,20 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                           {course.discount}% OFF
                         </motion.div>
                       )}
-                      <div className="flex h-[450px] flex-col">
+                      <div className={`flex ${isMobile ? 'h-auto' : 'h-[450px]'} flex-col`}>
                         <motion.div
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: 0.2 }}
                         >
-                          <Title level={3} className="mb-2 line-clamp-2 h-16 text-xl font-bold text-[#1a237e] transition duration-300 hover:text-indigo-900">
+                          <Title level={isMobile ? 4 : 3} className="mb-2 line-clamp-2 text-xl font-bold text-[#1a237e] transition duration-300 hover:text-indigo-900">
                             {course.name}
                           </Title>
-                          <Paragraph className="mb-4 line-clamp-2 h-11 text-gray-600" ellipsis={{ rows: 2 }}>
+                          <Paragraph className="mb-4 line-clamp-2 text-gray-600" ellipsis={{ rows: 2 }}>
                             {parse(course.description)}
                           </Paragraph>
                         </motion.div>
-                        <div className="h-[100px]">
+                        <div className={`${isMobile ? 'h-auto' : 'h-[100px]'}`}>
                           <motion.div 
                             className="mb-4 flex items-center justify-between"
                             whileHover={{ scale: 1.02 }}
@@ -188,11 +208,11 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                         </div>
 
                         <Meta
-                          avatar={<Avatar size={48} className="bg-blue-500 text-white">{course.instructor_name ? course.instructor_name[0] : "U"}</Avatar>}
+                          avatar={<Avatar size={isMobile ? 32 : 48} className="bg-blue-500 text-white">{course.instructor_name ? course.instructor_name[0] : "U"}</Avatar>}
                           title={<span className="line-clamp-1 text-lg font-semibold text-gray-800">{course.instructor_name}</span>}
                           description={
                             <motion.div 
-                              className="h-25 mb-4 items-center text-sm"
+                              className={`${isMobile ? 'h-auto' : 'h-25'} mb-4 items-center text-sm`}
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
                               transition={{ delay: 0.3 }}
@@ -200,7 +220,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                               <div>
                                 <Tag className="bg-gradient-tone mr-2 rounded px-2 py-1 text-xs font-semibold uppercase text-white">{course.category_name}</Tag>
                               </div>
-                              <div className="mt-4 flex items-center space-x-4">
+                              <div className={`mt-4 flex ${isMobile ? 'flex-col space-y-2' : 'flex-row space-x-4'} items-center`}>
                                 <motion.span 
                                   className="flex items-center font-medium text-gray-600"
                                   whileHover={{ scale: 1.1 }}
@@ -236,7 +256,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                         <Button 
                           type="primary" 
                           block 
-                          size="large" 
+                          size={isMobile ? "middle" : "large"}
                           className="bg-gradient-tone hover:bg-gradient-tone-hover border-none"
                           onClick={() => navigate(`/course/${course._id}`, { state: { triggerHover: true } })}
                         >
