@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Typography, Card, Row, Col, Button, Tag } from "antd";
+import { Typography, Card, Row, Col, Button, Tag, Avatar } from "antd";
 import { BookOutlined, PercentageOutlined, VideoCameraOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { GetPublicCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
@@ -188,6 +188,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                         </div>
 
                         <Meta
+                          avatar={<Avatar size={48} className="bg-blue-500 text-white">{course.instructor_name ? course.instructor_name[0] : "U"}</Avatar>}
                           title={<span className="line-clamp-1 text-lg font-semibold text-gray-800">{course.instructor_name}</span>}
                           description={
                             <motion.div 

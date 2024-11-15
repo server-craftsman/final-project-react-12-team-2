@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Card, Typography, Rate, Form, Input, Button, Modal, message, Avatar } from "antd";
+import { Card, Typography, Rate, Form, Input, Button, Modal, message, Avatar, Progress } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
-import { CourseReviewsProps } from "../../../../models/objects/course/CourseReviewsProps";
+// import { CourseReviewsProps } from "../../../../models/objects/course/CourseReviewsProps";
 const { Text, Paragraph } = Typography;
 import { ReviewService } from "../../../../services/review/review.service";
 import { GetPublicCourseDetailResponse } from "../../../../models/api/responsive/course/course.response.model";
 import { useAuth } from "../../../../contexts/AuthContext";
-
-const CourseReviews: React.FC<CourseReviewsProps & { courseId: string, course: any }> = ({ reviews, courseId, course }) => {
+import { helpers } from "../../../../utils";
+const CourseReviews: React.FC<any & { courseId: string, course: any, averageRating: number, reviewCount: number }> = ({ reviews, courseId, course, averageRating, reviewCount }) => {
   const [fetchedReviews, setFetchedReviews] = useState(reviews);
   const [form] = Form.useForm();
-  const [averageRating, setAverageRating] = useState(0);
 
   const [hasUserCommented, setHasUserCommented] = useState(false);
   const [editingReview, setEditingReview] = useState<any>(null);
@@ -19,11 +18,7 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string, course: a
 
   const { userInfo } = useAuth();
 
-  const calculateAverageRating = (reviews: any[]) => {
-    if (reviews.length === 0) return 0;
-    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-    return totalRating / reviews.length;
-  };
+  const [visibleReviews, setVisibleReviews] = useState(3);
 
   const fetchReviews = async () => {
     try {
@@ -42,7 +37,7 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string, course: a
       });
       const reviewsData = response.data.data.pageData;
       setFetchedReviews(reviewsData);
-      setAverageRating(calculateAverageRating(reviewsData));
+      // setAverageRating(calculateAverageRating(reviewsData));
       setHasUserCommented(reviewsData.some((review) => review.reviewer_id === userInfo?._id));
     } catch (error) {
       console.error("Failed to fetch reviews", error);
@@ -103,15 +98,68 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string, course: a
     return course?.is_purchased;
   };
   
+  // Calculate the number of reviews for each star rating
+  const starCounts = [0, 0, 0, 0, 0];
+  fetchedReviews.forEach((review: any) => {
+    if (review.rating >= 1 && review.rating <= 5) {
+      starCounts[review.rating - 1]++;
+    }
+  });
+
+  // Calculate the percentage for each star rating
+  const starPercentages = starCounts.map(count => (reviewCount ? (count / reviewCount * 100).toFixed(2) : 0));
+
+  // Function to handle loading more reviews
+  const handleViewMore = () => {
+    setVisibleReviews((prev) => prev + 3);
+  };
+
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
       <div className="mb-6">
-        <Typography.Title level={4}>Reviews and Ratings</Typography.Title>
-        <div className="flex flex-col sm:flex-row items-center">
-          <Rate disabled value={averageRating} />
-          <Text className="ml-2 text-sm text-gray-500">{averageRating.toFixed(1)} based on {fetchedReviews.length} ratings</Text>
-        </div>
+        <Typography.Title level={4}>Learner Reviews</Typography.Title>
+      
+          <div className="flex flex-col sm:flex-row items-center justify-between">
+            <div className="flex items-center">
+              <div className="flex items-center">
+                <span className="text-3xl font-bold text-indigo-900 mr-2">{averageRating?.toFixed(1) || '0.0'}</span>
+                <Rate disabled value={averageRating || 0} className="text-amber-400" />
+              </div>
+              <Text className="ml-2 text-sm text-gray-500">
+                {reviewCount?.toLocaleString() || 0} reviews
+              </Text>
+            </div>
+          </div>
+          <div className="mt-4 sm:mt-0">
+            <div className="flex items-center">
+              <Text className="block w-12">5 stars:</Text>
+              <Progress percent={parseFloat(starPercentages[4].toString())} showInfo={false} className="w-48" strokeColor="#1a237e" />
+              <Text className="ml-2">{starPercentages[4]}%</Text>
+            </div>
+            <div className="flex items-center">
+              <Text className="block w-12">4 stars:</Text>
+              <Progress percent={parseFloat(starPercentages[3].toString())} showInfo={false} className="w-48" strokeColor="#3949ab" />
+              <Text className="ml-2">{starPercentages[3]}%</Text>
+            </div>
+            <div className="flex items-center">
+              <Text className="block w-12">3 stars:</Text>
+              <Progress percent={parseFloat(starPercentages[2].toString())} showInfo={false} className="w-48" strokeColor="#5c6bc0" />
+              <Text className="ml-2">{starPercentages[2]}%</Text>
+            </div>
+            <div className="flex items-center">
+              <Text className="block w-12">2 stars:</Text>
+              <Progress percent={parseFloat(starPercentages[1].toString())} showInfo={false} className="w-48" strokeColor="#7986cb" />
+              <Text className="ml-2">{starPercentages[1]}%</Text>
+            </div>
+            <div className="flex items-center">
+              <Text className="block w-12">1 star:</Text>
+              <Progress percent={parseFloat(starPercentages[0].toString())} showInfo={false} className="w-48" strokeColor="#9fa8da" />
+              <Text className="ml-2">{starPercentages[0]}%</Text>
+            </div>
+          </div>
       </div>
+
+      <Text className="mb-4">Showing {Math.min(visibleReviews, reviewCount)} of {reviewCount} reviews</Text>
 
       {!hasUserCommented && checkUserInfo(course) && (
         <Form form={form} onFinish={handleSubmit} layout="vertical" className="mb-4">
@@ -128,23 +176,31 @@ const CourseReviews: React.FC<CourseReviewsProps & { courseId: string, course: a
           </Form.Item>
         </Form>
       )}
-      {fetchedReviews.length > 0
-        ? fetchedReviews.map((review, index) => (
-            <Card key={review._id || index} className="mb-6 rounded-2xl border-none bg-gradient-to-r from-white to-gray-50 p-6 shadow-xl transition-all duration-300 hover:shadow-2xl">
-              <div className="mb-4 flex flex-col sm:flex-row items-center space-x-4">
-                <Avatar src={userInfo?.avatar_url} size={48} className="border-2 border-indigo-100 shadow-md" />
-                <div className="flex flex-col">
-                  <Text strong className="text-lg font-semibold text-indigo-900">
-                    {review.reviewer_name || "Unknown User"}
-                  </Text>
-                  <Rate disabled value={review.rating} className="text-amber-400" />
-                </div>
-                {review.reviewer_id === userInfo?._id && <Button type="link" onClick={() => handleEdit(review)} icon={<EditOutlined className="text-xl" />} className="bg-gradient-tone ml-auto flex items-center gap-2 rounded-xl px-6 py-2 text-white shadow-lg transition-all duration-300 hover:scale-105 hover:from-indigo-700 hover:to-indigo-900 hover:shadow-xl active:scale-95" />}
-              </div>
-              <Paragraph className="text-base leading-relaxed text-gray-700">{review.comment}</Paragraph>
-            </Card>
-          ))
-        : null}
+
+      {fetchedReviews.slice(0, visibleReviews).map((review: any, index: number) => (
+        <Card key={review._id || index} className="mb-6 rounded-2xl border-none bg-gradient-to-r from-white to-gray-50 p-6 shadow-xl transition-all duration-300 hover:shadow-2xl">
+          <div className="mb-4 flex items-center space-x-4">
+            <Avatar size={48} src={userInfo?.avatar_url} />
+            <div className="flex flex-col">
+              <Text strong className="text-lg font-semibold text-indigo-900">
+                {review.reviewer_name || "Unknown User"}
+              </Text>
+              <Rate disabled value={review.rating} className="text-amber-400" />
+              <Text className="text-sm text-gray-500">Reviewed on {helpers.formatDate(review.created_at)}</Text>
+            </div>
+            {review.reviewer_id === userInfo?._id && (
+              <Button type="link" onClick={() => handleEdit(review)} icon={<EditOutlined className="text-xl" />} className="ml-auto" />
+            )}
+          </div>
+          <Paragraph className="text-base leading-relaxed text-gray-700">{review.comment}</Paragraph>
+        </Card>
+      ))}
+
+      {visibleReviews < reviewCount && (
+        <button onClick={handleViewMore} className="mt-4">
+          View More Reviews
+        </button>
+      )}
 
       <Modal 
         title={editingReview ? "Edit Review" : "Submit Review"} 

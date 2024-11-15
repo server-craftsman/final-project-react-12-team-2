@@ -42,6 +42,8 @@ const CourseDetails: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [reviews, setReviews] = useState<any[]>([]);
+  const [averageRating, setAverageRating] = useState<number | null>(null);
+  const [reviewCount, setReviewCount] = useState<number | null>(null);
   const [sessions, setSessions] = useState<any[]>([]);
   const [lessons, setLessons] = useState<any[]>([]);
   const [videoId, setVideoId] = useState<string | null>(null);
@@ -90,6 +92,10 @@ const CourseDetails: React.FC = () => {
 
         setVideoId(courseData.video_url);
         setReviews(courseData.session_list);
+
+        // Define averageRating and reviewCount here
+        setAverageRating(courseData.average_rating ?? 0);
+        setReviewCount(courseData.review_count ?? 0);
       } catch (error) {
         console.error("Failed to fetch course details:", error);
       }
@@ -193,7 +199,16 @@ const CourseDetails: React.FC = () => {
           <span className="font-semibold tracking-wide">Reviews</span>
         </span>
       ),
-      children: course ? <CourseReviews reviews={reviews} users={course.users} courseId={course._id} course={course} /> : null
+      children: course ? (
+        <CourseReviews
+          reviews={reviews}
+          users={course.users}
+          courseId={course._id}
+          course={course}
+          averageRating={averageRating}
+          reviewCount={reviewCount}
+        />
+      ) : null
     }
   ];
 

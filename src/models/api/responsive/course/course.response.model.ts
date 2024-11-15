@@ -86,6 +86,8 @@ export interface GetPublicCourseDetailResponse {
       full_time: number;
     }
   ];
+  average_rating?: number;
+  review_count?: number;
   is_in_cart: boolean;
   is_purchased: boolean;
 }
