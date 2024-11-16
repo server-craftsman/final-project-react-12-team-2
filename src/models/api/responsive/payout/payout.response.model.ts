@@ -26,6 +26,8 @@ export interface GetPayoutResponseModel {
     status: string;
     instructor_id: string;
     instructor_ratio: number;
+    instructor_name?: string;
+    instructor_email?: string;
     balance_origin: number;
     balance_instructor_paid: number;
     balance_instructor_received: number;
@@ -39,6 +41,9 @@ export interface GetPayoutResponseModel {
       updated_at: Date;
       is_deleted: boolean;
     }[];
+    created_at?: Date;
+    updated_at?: Date;
+    is_deleted?: boolean;
   };
   pageInfo: {
     pageNum: number;

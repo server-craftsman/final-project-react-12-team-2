@@ -48,10 +48,8 @@ const Introduction = () => {
       const pageData = courseResponse.data.data.pageData;
       allCourses = allCourses.concat(pageData);
 
-      // Cập nhật tổng số khóa học
       totalCoursesCount += pageData.length;
 
-      // Kiểm tra nếu đã lấy hết dữ liệu
       if (pageData.length < pageSize) break;
 
       pageNum++;
@@ -87,10 +85,8 @@ const Introduction = () => {
         }))
       );
 
-      // Update total subscribers count
       totalSubscribersCount += pageData.length;
 
-      // Break if all data is fetched
       if (pageData.length < pageSize) break;
 
       pageNum++;
@@ -116,7 +112,7 @@ const Introduction = () => {
       await fetchCourses();
       await fetchSubscribers();
       await fetchUserBalance();
-      setIsLoading(false); // Đặt trạng thái loading thành false sau khi dữ liệu được tải
+      setIsLoading(false);
     };
 
     fetchData();
