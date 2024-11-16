@@ -27,8 +27,8 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
 
   const handleShareCourse = async () => {
     const shareData = {
-      title: course.title,
-      text: `Check out this course: ${course.name} by ${course.instructor_name}\nDescription: ${course.description}\n ${course.image_url}`,
+      title: course.name || document.title,
+      text: `Check out this course: ${course.name} by ${course.instructor_name}\nDescription: ${course.description}`,
       url: window.location.href,
     };
 
