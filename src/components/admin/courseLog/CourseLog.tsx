@@ -49,7 +49,7 @@ const CourseLog: React.FC<{ searchQuery: string; statusFilter: string }> = ({ se
   useEffect(() => {
     fetchCourses();
   }, [searchQuery, statusFilter]);
-  console.log("aaaa", courses);
+  // console.log("aaaa", courses);
 
   // Cập nhật hàm handleShowModal để nhận thêm tham số courseName
   const handleShowModal = async (courseId: string) => {

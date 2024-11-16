@@ -28,7 +28,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
   const handleShareCourse = async () => {
     const shareData = {
       title: course.title,
-      text: `Check out this course: ${course.title}`,
+      text: `Check out this course: ${course.name} by ${course.instructor_name}\nDescription: ${course.description}\n ${course.image_url}`,
       url: window.location.href,
     };
 
@@ -36,8 +36,8 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
       if (navigator.share) {
         await navigator.share(shareData);
       } else {
-        await navigator.clipboard.writeText(shareData.url);
-        alert("Course link copied to clipboard!");
+        await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
+        alert("Course link and information copied to clipboard!");
       }
     } catch (error) {
       console.error("Error sharing:", error);
