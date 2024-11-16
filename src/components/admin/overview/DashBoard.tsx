@@ -8,7 +8,7 @@ const DashBoard = ({ settings, totalBlogs, totalUsers, totalCourses, totalCatego
     {
       icon: <UserOutlined className="text-2xl text-white" />,
       label: "Total Revenue",
-      value: `$${helpers.moneyFormat(settings?.balance_total || 0)}`,
+      value: helpers.moneyFormat(settings?.balance_total || 0),
       gradient: "from-blue-400 to-blue-600",
       hoverShadow: "hover:shadow-blue-200"
     },
@@ -44,7 +44,7 @@ const DashBoard = ({ settings, totalBlogs, totalUsers, totalCourses, totalCatego
   if(settings) {
     return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
         {boxes.map((box, index) => (
           <BoxWrapper key={index}>
             <div className={`flex h-14 w-14 cursor-pointer items-center justify-center rounded-2xl bg-gradient-to-r ${box.gradient} shadow-xl transition-all duration-300 hover:scale-110 ${box.hoverShadow}`}>
