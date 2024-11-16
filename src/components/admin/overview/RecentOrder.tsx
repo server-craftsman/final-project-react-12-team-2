@@ -142,127 +142,208 @@ const RecentOrder = ({ settings }: { settings: Setting }) => {
     return transactions;
   }, [settings?.transactions, search, dateRange]);
 
-  const ExportCSV = ({ transactions }: { transactions: any }) => {
-    const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-    const fileExtension = '.xlsx';
+  const ExportData = ({ transactions }: { transactions: any }) => {
+    const [fileType, setFileType] = useState<string>('csv');
 
-    const exportToCSV = (csvData: any, fileName: string) => {
-        const ws = XLSX.utils.json_to_sheet([]);
-
-        // Add title
-        const title = "Transactions Report";
-        XLSX.utils.sheet_add_aoa(ws, [[title]], { origin: 'A1' });
-
-        // Add creation date
-        const creationDate = `Created on: ${moment().format('DD-MM-YYYY')}`;
-        XLSX.utils.sheet_add_aoa(ws, [[creationDate]], { origin: 'A2' });
-
-        // Merge cells for title and date
-        ws['!merges'] = [
-            { s: { r: 0, c: 0 }, e: { r: 0, c: 9 } },
-            { s: { r: 1, c: 0 }, e: { r: 1, c: 9 } }
-        ];
-
-        // Apply title style
-        ws['A1'].s = {
-            font: { bold: true, sz: 16, color: { rgb: "FFFFFF" } },
-            fill: { fgColor: { rgb: "1F4E78" } },
-            alignment: { horizontal: "center" }
-        };
-
-        // Apply date style
-        ws['A2'].s = {
-            font: { italic: true, sz: 12, color: { rgb: "FFFFFF" } },
-            fill: { fgColor: { rgb: "1F4E78" } },
-            alignment: { horizontal: "center" }
-        };
-
-        // Add data starting from the third row
-        XLSX.utils.sheet_add_json(ws, csvData, { origin: 'A3', skipHeader: false });
-
-        // Apply styles to the header row
-        const headerStyle = {
-            font: { bold: true, color: { rgb: "FFFFFF" }, sz: 12 },
-            fill: { fgColor: { rgb: "4F81BD" } },
-            alignment: { horizontal: "center" },
-            border: {
-                top: { style: "medium", color: { rgb: "000000" } },
-                bottom: { style: "medium", color: { rgb: "000000" } },
-                left: { style: "medium", color: { rgb: "000000" } },
-                right: { style: "medium", color: { rgb: "000000" } }
-            }
-        };
-
-        // Apply styles to the entire sheet
-        const cellStyle = {
-            font: { color: { rgb: "333333" }, sz: 11 },
-            alignment: { vertical: "center", horizontal: "center" },
-            border: {
-                top: { style: "thin", color: { rgb: "CCCCCC" } },
-                bottom: { style: "thin", color: { rgb: "CCCCCC" } },
-                left: { style: "thin", color: { rgb: "CCCCCC" } },
-                right: { style: "thin", color: { rgb: "CCCCCC" } }
-            },
-            fill: { fgColor: { rgb: "F7F7F7" } }
-        };
-
-        const range = XLSX.utils.decode_range(ws['!ref'] || '');
-        for (let R = 2; R <= range.e.r; ++R) { // Start from row 2 to skip title and date
-            for (let C = range.s.c; C <= range.e.c; ++C) {
-                const cellAddress = XLSX.utils.encode_cell({ c: C, r: R });
-                if (!ws[cellAddress]) continue;
-                ws[cellAddress].s = R === 2 ? headerStyle : cellStyle;
-            }
-        }
-
-        // Set column widths
-        ws['!cols'] = [
-            { wch: 15 }, // type
-            { wch: 12 }, // amount
-            { wch: 15 }, // balance_old
-            { wch: 15 }, // balance_new
-            { wch: 30 }, // purchase_instructor
-            { wch: 30 }, // instructor
-            { wch: 20 }, // created_at
-            { wch: 30 },  // _id
-            { wch: 30 },  // payout_id
-            { wch: 30 }  // status
-        ];
-
-        // Create workbook and add the worksheet
-        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
-
-        // Generate Excel file buffer
-        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-
-        // Create a Blob from the buffer
-        const data = new Blob([excelBuffer], { type: fileType });
-
-        // Save the file
-        FileSaver.saveAs(data, fileName + fileExtension);
+    const handleExport = () => {
+      const fileName = "Transactions_Report";
+      if (fileType === 'xlsx') {
+        exportToXLSX(transactions, fileName);
+      } else if (fileType === 'csv') {
+        exportToCSV(transactions, fileName);
+      } else if (fileType === 'json') {
+        exportToJSON(transactions, fileName);
+      }
     };
 
+    const fileTypeCSV = 'text/csv;charset=UTF-8';
+    const fileTypeJSON = 'application/json;charset=UTF-8';
+    const fileTypeXLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    const fileExtensionCSV = '.csv';
+    const fileExtensionJSON = '.json';
+    const fileExtensionXLSX = '.xlsx';
+
+    const exportToXLSX = (csvData: any, fileName: string) => {
+      const ws = XLSX.utils.json_to_sheet([]);
+
+      // Add title
+      const title = "Transactions Report";
+      XLSX.utils.sheet_add_aoa(ws, [[title]], { origin: 'A1' });
+
+      // Add creation date
+      const creationDate = `Created on: ${moment().format('DD-MM-YYYY')}`;
+      XLSX.utils.sheet_add_aoa(ws, [[creationDate]], { origin: 'A2' });
+
+      // Merge cells for title and date
+      ws['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 9 } },
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 9 } }
+      ];
+
+      // Apply title style
+      ws['A1'].s = {
+        font: { bold: true, sz: 16, color: { rgb: "FFFFFF" } },
+        fill: { fgColor: { rgb: "1F4E78" } },
+        alignment: { horizontal: "center" }
+      };
+
+      // Apply date style
+      ws['A2'].s = {
+        font: { italic: true, sz: 12, color: { rgb: "FFFFFF" } },
+        fill: { fgColor: { rgb: "1F4E78" } },
+        alignment: { horizontal: "center" }
+      };
+
+      // Add data starting from the third row
+      XLSX.utils.sheet_add_json(ws, csvData, { origin: 'A3', skipHeader: false });
+
+      // Apply styles to the header row
+      const headerStyle = {
+        font: { bold: true, color: { rgb: "FFFFFF" }, sz: 12 },
+        fill: { fgColor: { rgb: "4F81BD" } },
+        alignment: { horizontal: "center" },
+        border: {
+          top: { style: "medium", color: { rgb: "000000" } },
+          bottom: { style: "medium", color: { rgb: "000000" } },
+          left: { style: "medium", color: { rgb: "000000" } },
+          right: { style: "medium", color: { rgb: "000000" } }
+        }
+      };
+
+      // Apply styles to the entire sheet
+      const cellStyle = {
+        font: { color: { rgb: "333333" }, sz: 11 },
+        alignment: { vertical: "center", horizontal: "center" },
+        border: {
+          top: { style: "thin", color: { rgb: "CCCCCC" } },
+          bottom: { style: "thin", color: { rgb: "CCCCCC" } },
+          left: { style: "thin", color: { rgb: "CCCCCC" } },
+          right: { style: "thin", color: { rgb: "CCCCCC" } }
+        },
+        fill: { fgColor: { rgb: "F7F7F7" } }
+      };
+
+      const range = XLSX.utils.decode_range(ws['!ref'] || '');
+      for (let R = 2; R <= range.e.r; ++R) { // Start from row 2 to skip title and date
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+          const cellAddress = XLSX.utils.encode_cell({ c: C, r: R });
+          if (!ws[cellAddress]) continue;
+          ws[cellAddress].s = R === 2 ? headerStyle : cellStyle;
+        }
+      }
+
+      // Set column widths
+      ws['!cols'] = [
+        { wch: 15 }, // type
+        { wch: 12 }, // amount
+        { wch: 15 }, // balance_old
+        { wch: 15 }, // balance_new
+        { wch: 30 }, // purchase_instructor
+        { wch: 30 }, // instructor
+        { wch: 20 }, // created_at
+        { wch: 30 },  // _id
+        { wch: 30 },  // payout_id
+        { wch: 30 }  // status
+      ];
+
+      // Create workbook and add the worksheet
+      const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+
+      // Generate Excel file buffer
+      const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+
+      // Create a Blob from the buffer
+      const data = new Blob([excelBuffer], { type: fileTypeXLSX });
+
+      // Save the file
+      FileSaver.saveAs(data, fileName + fileExtensionXLSX);
+    };
+
+    const exportToJSON = (jsonData: any, fileName: string) => {
+      const data = new Blob([JSON.stringify(jsonData, null, 2)], { type: fileTypeJSON });
+      FileSaver.saveAs(data, fileName + fileExtensionJSON);
+    };
+
+    const exportToCSV = (csvData: any, fileName: string) => {
+      if (!csvData || csvData.length === 0) {
+        console.error("No data available to export.");
+        return;
+      }
+
+      // Extract headers
+      const headers = Object.keys(csvData[0]);
+      const csvRows = [];
+
+      // Add headers row
+      csvRows.push(headers.map(header => `"${header}"`).join(','));
+
+      // Add data rows
+      csvData.forEach((row: any) => {
+        const values = headers.map(header => {
+          const value = row[header] !== null && row[header] !== undefined ? row[header] : '';
+          const escapedValue = (`${value}`).replace(/"/g, '""'); // Escape double quotes
+          return `"${escapedValue}"`; // Wrap each value in double quotes
+        });
+        csvRows.push(values.join(','));
+      });
+
+      // Split rows and columns before download
+      const csvString = csvRows.map(row => row.split(',').join(',')).join('\n');
+
+      // Create a Blob from the CSV string
+      const data = new Blob([csvString], { type: fileTypeCSV });
+
+      // Save the file
+      FileSaver.saveAs(data, fileName + fileExtensionCSV);
+    };
+    // const exportToXML = (xmlData: any, fileName: string) => {
+    //   const data = new Blob([xmlData], { type: fileTypeXML });
+    //   FileSaver.saveAs(data, fileName + fileExtensionXML);
+    // };
+
     return (
-        <button
-            onClick={() => exportToCSV(transactions, "Transactions_Report")}
-            className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:from-purple-500 hover:via-pink-600 hover:to-red-600 transition-all duration-300 ease-in-out flex items-center"
-        >
+      <div className="relative inline-block text-left">
+        <div className="flex items-center space-x-2">
+          <select
+            value={fileType}
+            onChange={(e) => setFileType(e.target.value)}
+            className="px-4 py-2 text-sm bg-white border border-gray-300 rounded-lg shadow-sm hover:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 transition-all duration-200 ease-in-out"
+          >
+            <option value="xlsx">
+              <span role="img" aria-label="xlsx">📊</span> XLSX
+            </option>
+            <option value="csv">
+              <span role="img" aria-label="csv">📄</span> CSV
+            </option>
+            <option value="json">
+              <span role="img" aria-label="json">🗂️</span> JSON
+            </option>
+          </select>
+        
+          <button
+            onClick={handleExport}
+            className="inline-flex items-center justify-center rounded-lg border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            id="menu-button"
+            aria-expanded="true"
+            aria-haspopup="true"
+          >
+            Export here
             <svg
-                className="w-5 h-5 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
+              className="ml-2 h-5 w-5"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
             >
-                <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 12h14M12 5l7 7-7 7"
-                ></path>
+              <path
+                fillRule="evenodd"
+                d="M10 3.75a.75.75 0 01.75.75v5.69l2.72-2.72a.75.75 0 111.06 1.06l-4 4a.75.75 0 01-1.06 0l-4-4a.75.75 0 111.06-1.06l2.72 2.72V4.5A.75.75 0 0110 3.75z"
+                clipRule="evenodd"
+              />
             </svg>
-            Export File
-        </button>
+          </button>
+        </div>
+      </div>
     );
   };
 
@@ -272,7 +353,7 @@ const RecentOrder = ({ settings }: { settings: Setting }) => {
         <Typography.Text strong className="text-2xl font-bold text-gray-800">
           Recent Transactions
         </Typography.Text>
-        <ExportCSV transactions={filteredTransactions} />
+        <ExportData transactions={filteredTransactions} />
       </div>
       <div className="flex justify-between items-center mb-6 gap-4">
         <Input 
