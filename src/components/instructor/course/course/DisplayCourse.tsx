@@ -72,9 +72,9 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
     setDataRefreshKey((prevKey) => prevKey + 1); //debug by new useState refreshKey
   }, [refreshKey]);
 
-  useEffect(() => {
-    setPageNum(1);
-  }, [statusFilter]);
+  // useEffect(() => {
+  //   setPageNum(1);
+  // }, [statusFilter]);
 
   useEffect(() => {
     setSelectedCourse(selectedRowKeys as unknown as any);
@@ -279,7 +279,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
   const handleStatusChange = (status: StatusType | "") => {
     setPageNum(1);
     onStatusChange(status);
-    setDataRefreshKey((prevKey) => prevKey + 1);
+    // setDataRefreshKey((prevKey) => prevKey + 1);
   };
 
   const sendToAdmin = useCallback(async () => {

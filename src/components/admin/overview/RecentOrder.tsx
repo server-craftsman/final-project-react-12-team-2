@@ -146,7 +146,7 @@ const RecentOrder = ({ settings }: { settings: Setting }) => {
     const [fileType, setFileType] = useState<string>('csv');
 
     const handleExport = () => {
-      const fileName = "Transactions_Report";
+      const fileName = "Transactions_Report_" + moment().format('DD-MM-YYYY');
       if (fileType === 'xlsx') {
         exportToXLSX(transactions, fileName);
       } else if (fileType === 'csv') {
