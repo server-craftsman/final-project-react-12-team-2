@@ -1,9 +1,10 @@
 import React from "react";
-import { Button, Card, Typography, Divider } from "antd";
-import { ShoppingCartOutlined, ShareAltOutlined, PlayCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import { Card, Typography, Divider } from "antd";
+import { ShoppingCartOutlined,PlayCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { CourseSidebarProps } from "../../../../models/objects/course/CourseSidebarProps";
 import { helpers } from "../../../../utils";
 import { CartService } from "../../../../services/cart/cart.service";
+import ShareButton from "./ShareButton";
 
 const { Title, Text } = Typography;
 
@@ -24,39 +25,6 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
       console.error("Error handling cart operation:", error);
     }
   };
-
-  const handleShareCourse = async () => {
-    const shareData = {
-      title: course.name || document.title,
-      text: `Check out this course: ${course.name} by ${course.instructor_name}\nDescription: ${course.description}`,
-      url: window.location.href,
-    };
-
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        await navigator.clipboard.writeText(`${shareData.text}\n${shareData.url}`);
-        alert("Course link and information copied to clipboard!");
-      }
-    } catch (error) {
-      console.error("Error sharing:", error);
-    }
-  };
-
-  // const handleShareOnFacebook = () => {
-  //   const url = window.location.href;
-  //   console.log("Facebook Share URL:", url);
-  //   const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-  //   window.open(facebookShareUrl, '_blank', 'noopener,noreferrer');
-  // };
-
-  // const handleShareOnLinkedIn = () => {
-  //   const url = window.location.href;
-  //   console.log("LinkedIn Share URL:", url);
-  //   const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
-  //   window.open(linkedInShareUrl, '_blank', 'noopener,noreferrer');
-  // };
 
   return (
     <Card className="sticky top-8 rounded-lg shadow-lg">
@@ -99,13 +67,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
           </div>
         </div>
       </div>
-      <Button icon={<ShareAltOutlined />} type="link" className="mt-4 p-0" onClick={handleShareCourse}>
-        Share this course
-      </Button>
-        {/* <Button icon={<FacebookOutlined />} type="link" className="mt-4 p-0" onClick={handleShareOnFacebook}>
-        </Button>
-        <Button icon={<LinkedinOutlined />} type="link" className="mt-4 p-0" onClick={handleShareOnLinkedIn}>
-        </Button> */}
+      <ShareButton text={course.name} url={window.location.href} image={course.image_url} />
     </Card>
   );
 };
