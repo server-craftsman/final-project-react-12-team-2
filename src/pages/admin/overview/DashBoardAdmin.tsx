@@ -7,6 +7,7 @@ import { UserService } from "../../../services/admin/user.service";
 import { CourseService } from "../../../services/course/course.service";
 import { CategoryService } from "../../../services/category/category.service";
 import { BlogService } from "../../../services/blog/blog.service";
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 
 import { Setting } from "../../../models/api/responsive/admin/setting.response.model";
 
@@ -53,7 +54,10 @@ const DashBoardAdmin = () => {
     fetchData();
   }, [fetchData]);
 
-  return (
+  if(!settings || !totalBlogs || !totalUsers || !totalCourses || !totalCategories) {
+    return <LoadingAnimation />
+  } else {
+    return (
     <div className="flex flex-col gap-4">
       {settings && totalBlogs && totalUsers && totalCourses && totalCategories && (
         <DashBoard
@@ -70,8 +74,9 @@ const DashBoardAdmin = () => {
       <div className="flex w-full flex-row gap-4 mt-10">
         {settings && <RecentOrder settings={settings} />}
       </div>
-    </div>
-  );
+      </div>
+    );
+  }
 };
 
 export default DashBoardAdmin;

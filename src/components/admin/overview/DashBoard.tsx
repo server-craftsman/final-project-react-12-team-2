@@ -1,6 +1,7 @@
 import { BankOutlined, ReadOutlined, UserOutlined, ShoppingOutlined, AppstoreOutlined } from "@ant-design/icons";
 import { Setting } from "../../../models/api/responsive/admin/setting.response.model";
 import { helpers } from "../../../utils";
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 
 const DashBoard = ({ settings, totalBlogs, totalUsers, totalCourses, totalCategories }: { settings: Setting, totalBlogs: number, totalUsers: number, totalCourses: number, totalCategories: number }) => {
   const boxes = [
@@ -40,8 +41,8 @@ const DashBoard = ({ settings, totalBlogs, totalUsers, totalCourses, totalCatego
       hoverShadow: "hover:shadow-rose-200" 
     }
   ];
-
-  return (
+  if(settings) {
+    return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 px-4">
         {boxes.map((box, index) => (
@@ -62,6 +63,9 @@ const DashBoard = ({ settings, totalBlogs, totalUsers, totalCourses, totalCatego
       </div>
     </>
   );
+  } else {
+    return <LoadingAnimation />
+  }
 };
 
 export default DashBoard;
