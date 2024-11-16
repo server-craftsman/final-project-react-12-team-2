@@ -12,7 +12,7 @@ import {
 
 const ShareButton = ({ text, url, image }: { text: string; url: string; image: string }) => {
   const [shareNow, setShareNow] = useState(false);
-  const message = encodeURIComponent(`${text} ${url} ${image}`);
+  const message = encodeURIComponent(`${text}\n${url}\n${image}`);
 
   useEffect(() => {
     const setMetaTag = (property: string, content: string) => {
