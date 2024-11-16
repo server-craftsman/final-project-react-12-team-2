@@ -1,4 +1,4 @@
-import { Card, Row, Col, Typography, Statistic } from "antd";
+import { Card, Row, Col, Typography, Statistic, Spin } from "antd";
 import { BookOutlined, UserOutlined, DollarOutlined, PlusOutlined } from "@ant-design/icons";
 import { CourseService } from "../../../services/course/course.service";
 import { SubscriberService } from "../../../services/subscriber/subscriber.service";
@@ -10,8 +10,6 @@ import { GetCourseResponsePageData } from "../../../models/api/responsive/course
 import { GetSubscribersResponse } from "../../../models/api/responsive/subscriber/subscriber.response.model";
 const { Title } = Typography;
 import { helpers } from "../../../utils";
-import Lottie from "lottie-react";
-import animationData from "../../../data/courseAnimation.json";
 
 const Introduction = () => {
   const [totalCourses, setTotalCourses] = useState<number>(0);
@@ -109,6 +107,7 @@ const Introduction = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       await fetchCourses();
       await fetchSubscribers();
       await fetchUserBalance();
@@ -118,76 +117,70 @@ const Introduction = () => {
     fetchData();
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="loading">
-        <Lottie animationData={animationData} />
-      </div>
-    );
-  }
-
   return (
-    <div className="pb-4">
-      <Title level={2} className="text-gold mb-6 text-4xl font-bold">
-        Dashboard
-      </Title>
-      <Row gutter={[16, 16]}>
-        <Col xs={24} sm={12} md={6}>
-          <Card onClick={() => setCourseModalVisible(true)}>
-            <Statistic
-              title="Total Courses"
-              value={totalCourses}
-              prefix={<BookOutlined className="mr-2" />}
-              suffix={<PlusOutlined className="ml-2 cursor-pointer text-blue-500" />}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={6}>
-          <Card onClick={() => setSubscriberModalVisible(true)}>
-            <Statistic
-              title="Total Subscribers"
-              value={totalSubscribers}
-              prefix={<UserOutlined className="mr-2" />}
-              suffix={<PlusOutlined className="ml-2 cursor-pointer text-blue-500" />}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={6}>
-          <Card>
-            <Statistic
-              title="Current Balance"
-              value={helpers.moneyFormat(balance)}
-              prefix={<DollarOutlined className="mr-2" />}
-              suffix={<PlusOutlined className="ml-2 cursor-pointer text-blue-500" />}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={6}>
-          <Card>
-            <Statistic
-              title="Total Balance"
-              value={helpers.moneyFormat(totalBalance)}
-              prefix={<DollarOutlined className="mr-2" />}
-              suffix={<PlusOutlined className="ml-2 cursor-pointer text-blue-500" />}
-            />
-          </Card>
-        </Col>
-      </Row>
+    <Spin spinning={isLoading} tip="Loading...">
+      <div className="pb-4">
+        <Title level={2} className="text-gold mb-6 text-4xl font-bold">
+          Dashboard
+        </Title>
+        <Row gutter={[16, 16]}>
+          <Col xs={24} sm={12} md={6}>
+            <Card onClick={() => setCourseModalVisible(true)}>
+              <Statistic
+                title="Total Courses"
+                value={totalCourses}
+                prefix={<BookOutlined className="mr-2" />}
+                suffix={<PlusOutlined className="ml-2 cursor-pointer text-blue-500" />}
+              />
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Card onClick={() => setSubscriberModalVisible(true)}>
+              <Statistic
+                title="Total Subscribers"
+                value={totalSubscribers}
+                prefix={<UserOutlined className="mr-2" />}
+                suffix={<PlusOutlined className="ml-2 cursor-pointer text-blue-500" />}
+              />
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Card>
+              <Statistic
+                title="Current Balance"
+                value={helpers.moneyFormat(balance)}
+                prefix={<DollarOutlined className="mr-2" />}
+                suffix={<PlusOutlined className="ml-2 cursor-pointer text-blue-500" />}
+              />
+            </Card>
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Card>
+              <Statistic
+                title="Total Balance"
+                value={helpers.moneyFormat(totalBalance)}
+                prefix={<DollarOutlined className="mr-2" />}
+                suffix={<PlusOutlined className="ml-2 cursor-pointer text-blue-500" />}
+              />
+            </Card>
+          </Col>
+        </Row>
 
-      {courses && (
-        <DetailCourseModal
-          visible={isCourseModalVisible}
-          onClose={() => setCourseModalVisible(false)}
-          courses={courses}
+        {courses && (
+          <DetailCourseModal
+            visible={isCourseModalVisible}
+            onClose={() => setCourseModalVisible(false)}
+            courses={courses}
+          />
+        )}
+
+        <DetailSubscribersModal
+          visible={isSubscriberModalVisible}
+          onClose={() => setSubscriberModalVisible(false)}
+          subscribers={subscribers}
         />
-      )}
-
-      <DetailSubscribersModal
-        visible={isSubscriberModalVisible}
-        onClose={() => setSubscriberModalVisible(false)}
-        subscribers={subscribers}
-      />
-    </div>
+      </div>
+    </Spin>
   );
 };
 
