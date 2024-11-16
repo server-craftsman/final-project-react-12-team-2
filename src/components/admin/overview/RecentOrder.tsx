@@ -1,4 +1,4 @@
-import { Table, Typography, Input, DatePicker } from "antd";
+import { Table, Typography, Input, DatePicker, Button } from "antd";
 import { ColumnType } from "antd/es/table";
 import { Setting } from "../../../models/api/responsive/admin/setting.response.model";
 import { helpers } from "../../../utils";
@@ -6,6 +6,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import { useState, useMemo } from "react";
 import moment from "moment";
 import dayjs from 'dayjs';
+import { saveAs } from 'file-saver';
 
 const { RangePicker } = DatePicker;
 
@@ -141,12 +142,29 @@ const RecentOrder = ({ settings }: { settings: Setting }) => {
     return transactions;
   }, [settings?.transactions, search, dateRange]);
 
+  const exportTransactions = () => {
+    const transactionsToExport = filteredTransactions.map(transaction => ({
+      id: transaction._id,
+      type: transaction.type,
+      amount: transaction.amount,
+      balance_old: transaction.balance_old,
+      balance_new: transaction.balance_new,
+      created_at: transaction.created_at,
+    }));
+
+    const blob = new Blob([JSON.stringify(transactionsToExport, null, 2)], { type: "application/json" });
+    saveAs(blob, "transactions.json");
+  };
+
   return (
     <div className="flex-1 rounded-xl border border-gray-200 bg-white px-6 pb-6 pt-5 shadow-lg">
       <div className="flex justify-between items-center mb-6">
         <Typography.Text strong className="text-2xl font-bold text-gray-800">
           Recent Transactions
         </Typography.Text>
+        <button onClick={exportTransactions} className="bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 text-white font-semibold py-2 px-4 rounded-lg shadow-lg hover:from-purple-500 hover:via-pink-600 hover:to-red-600 transition-all duration-300 ease-in-out">
+          Export File
+        </button>
       </div>
       <div className="flex justify-between items-center mb-6 gap-4">
         <Input 
