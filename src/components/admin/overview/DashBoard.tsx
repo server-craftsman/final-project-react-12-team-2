@@ -1,46 +1,64 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ReadOutlined, UserOutlined } from "@ant-design/icons";
+import { BankOutlined, ReadOutlined, UserOutlined, ShoppingOutlined, AppstoreOutlined } from "@ant-design/icons";
+import { Setting } from "../../../models/api/responsive/admin/setting.response.model";
+import { helpers } from "../../../utils";
 
-const DashBoard = () => {
+const DashBoard = ({ settings, totalBlogs, totalUsers, totalCourses, totalCategories }: { settings: Setting, totalBlogs: number, totalUsers: number, totalCourses: number, totalCategories: number }) => {
+  const boxes = [
+    {
+      icon: <UserOutlined className="text-2xl text-white" />,
+      label: "Total Revenue",
+      value: `$${helpers.moneyFormat(settings?.balance_total || 0)}`,
+      gradient: "from-blue-400 to-blue-600",
+      hoverShadow: "hover:shadow-blue-200"
+    },
+    {
+      icon: <ShoppingOutlined className="text-2xl text-white" />,
+      label: "Total Users", 
+      value: helpers.formatNumber(totalUsers),
+      gradient: "from-purple-400 to-purple-600",
+      hoverShadow: "hover:shadow-purple-200"
+    },
+    {
+      icon: <BankOutlined className="text-2xl text-white" />,
+      label: "Total Courses",
+      value: helpers.formatNumber(totalCourses),
+      gradient: "from-orange-400 to-orange-600", 
+      hoverShadow: "hover:shadow-orange-200"
+    },
+    {
+      icon: <AppstoreOutlined className="text-2xl text-white" />,
+      label: "Categories",
+      value: helpers.formatNumber(totalCategories),
+      gradient: "from-emerald-400 to-emerald-600",
+      hoverShadow: "hover:shadow-emerald-200"
+    },
+    {
+      icon: <ReadOutlined className="text-2xl text-white" />,
+      label: "Total Blogs",
+      value: helpers.formatNumber(totalBlogs),
+      gradient: "from-rose-400 to-rose-600",
+      hoverShadow: "hover:shadow-rose-200" 
+    }
+  ];
+
   return (
     <>
-      <div className="flex w-full gap-4">
-        <BoxWrapper>
-          <div className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-sky-500">
-            <UserOutlined className="text-2xl text-white" />
-          </div>
-          <div className="pl-4">
-            <span className="ml-2 font-medium text-black">User</span>
-            <div className="flex items-center">
-              <strong className="text-xl font-semibold text-gray-700">50,000</strong>
-              <span className="pl-2 text-sm text-green-500">+140</span>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 px-4">
+        {boxes.map((box, index) => (
+          <BoxWrapper key={index}>
+            <div className={`flex h-14 w-14 cursor-pointer items-center justify-center rounded-2xl bg-gradient-to-r ${box.gradient} shadow-xl transition-all duration-300 hover:scale-110 ${box.hoverShadow}`}>
+              {box.icon}
             </div>
-          </div>
-        </BoxWrapper>
-        <BoxWrapper>
-          <div className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-orange-500">
-            <ReadOutlined className="text-2xl text-white" />
-          </div>
-          <div className="pl-4">
-            <span className="ml-2 font-medium text-black">Course</span>
-            <div className="flex items-center">
-              <strong className="text-xl font-semibold text-gray-700">50,000</strong>
-              <span className="pl-2 text-sm text-green-500">+140</span>
+            <div className="pl-4">
+              <span className="text-sm font-medium uppercase tracking-wider text-gray-500">{box.label}</span>
+              <div className="flex items-center">
+                <strong className="text-2xl font-bold text-gray-800 drop-shadow-sm">
+                  {box.value}
+                </strong>
+              </div>
             </div>
-          </div>
-        </BoxWrapper>
-        <BoxWrapper>
-          <div className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-green-500">
-            <ReadOutlined className="text-2xl text-white" />
-          </div>
-          <div className="pl-4">
-            <span className="ml-2 font-medium text-black">Complete</span>
-            <div className="flex items-center">
-              <strong className="text-xl font-semibold text-gray-700">50,000</strong>
-              <span className="pl-2 text-sm text-green-500">+140</span>
-            </div>
-          </div>
-        </BoxWrapper>
+          </BoxWrapper>
+        ))}
       </div>
     </>
   );
@@ -49,5 +67,9 @@ const DashBoard = () => {
 export default DashBoard;
 
 function BoxWrapper({ children }: any) {
-  return <div className="flex flex-1 items-center rounded-sm border border-gray-200 bg-white p-4">{children}</div>;
+  return (
+    <div className="flex flex-1 items-center rounded-xl border border-gray-100 bg-white p-6 shadow-lg transition-all duration-300 hover:border-gray-200 hover:shadow-xl">
+      {children}
+    </div>
+  );
 }

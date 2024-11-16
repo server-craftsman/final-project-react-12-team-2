@@ -2,6 +2,7 @@ export type Setting = {
   _id: string;
   balance: number;
   balance_total: number;
+  instructor_ratio?: number;
   transactions: Transaction[];
   created_at: Date;
   updated_at: Date;

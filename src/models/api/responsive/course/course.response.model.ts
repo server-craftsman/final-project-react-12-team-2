@@ -33,6 +33,8 @@ export type GetCourseResponsePageData = {
 export type GetCourseResponsePageInfo = {
   pageNum: number;
   pageSize: number;
+  totalItems?: number;
+  totalPages?: number;
 };
 
 export interface GetCourseByIdResponse {

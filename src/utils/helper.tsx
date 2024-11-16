@@ -91,3 +91,7 @@ export const notification = (message: string) => {
     type: "success"
   });
 };
+
+export const formatNumber = (number: number) => {
+  return number.toLocaleString("en-US", { maximumFractionDigits: 2 });
+};
