@@ -29,6 +29,7 @@ const CourseDetails: React.FC = () => {
   const { id } = useParams();
   const location = useLocation();
   const [isHovered, setIsHovered] = useState(location.state?.triggerHover || false);
+  const reviewId = location.state?.reviewId;
 
   // Validate the id
   if (!id || !isValidObjectId(id)) {
@@ -141,6 +142,14 @@ const CourseDetails: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [isHovered]);
+
+  useEffect(() => {
+    // if (reviewId) {
+    //   // Logic to scroll to or highlight the specific review
+    //   // This could be a ref or a scrollIntoView call
+    //   console.log("Highlight review with ID:", reviewId);
+    // }
+  }, [reviewId]);
 
   const showVideoModal = () => {
     if (videoId) {
