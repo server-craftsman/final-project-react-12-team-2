@@ -93,16 +93,25 @@ const ShareButton = ({ text, url, image }: { text: string; url: string; image: s
         <section className="my-2">
           <div className="flex flex-col items-center justify-center bg-gray-100 py-2 ">
             <h1 className="text-2xl font-bold mb-4">Share this content</h1>
-            {/* Image Preview */}
-            {image && (
-              <img
-                src={image}
-                alt="Preview"
-                className="w-32 h-32 object-cover mb-4 rounded-md"
-              />
-            )}
-            <div className="flex space-x-4 py-3">
-              <button
+                <div className="flex flex-col items-center justify-center bg-white p-8 rounded-xl shadow-2xl">
+                {/* Image Preview */}
+                <div className="flex flex-col items-center justify-center">
+                {image && (
+                <img
+                    src={image}
+                    alt="Preview"
+                    className="w-40 h-40 object-cover mb-6 rounded-xl border-4 border-gray-300"
+                />
+                )}
+                </div>
+                <div className="flex flex-col items-center justify-center">
+                {text && ( 
+                    <p className="text-gray-800 text-xl font-semibold">{text}</p>
+                )}
+                </div>
+                </div>
+              <div className="flex space-x-4 py-3">
+                <button
                 onClick={handleShareOnFacebook}
                 className="flex items-center justify-center p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600"
               >

@@ -306,7 +306,7 @@ const CartPage: React.FC = () => {
                                     <Text className="block text-xs md:text-sm text-green-600">Sale {item.discount} %</Text>
                                   </>
                                 )}
-                                {item.status === CartStatusEnum.cancel && <Button icon={<DeleteOutlined />} onClick={() => handleDeleteCartItem(item._id)}></Button>}
+                                {(item.status === CartStatusEnum.cancel || item.status === CartStatusEnum.new) && <Button icon={<DeleteOutlined />} onClick={() => handleDeleteCartItem(item._id)}></Button>}
                               </div>
                             </Col>
                           </Row>
