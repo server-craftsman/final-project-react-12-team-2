@@ -1,4 +1,4 @@
-import { Table, Typography, Input, DatePicker, Button } from "antd";
+import { Table, Typography, Input, DatePicker } from "antd";
 import { ColumnType } from "antd/es/table";
 import { Setting } from "../../../models/api/responsive/admin/setting.response.model";
 import { helpers } from "../../../utils";
