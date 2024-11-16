@@ -25,6 +25,39 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
     }
   };
 
+  const handleShareCourse = async () => {
+    const shareData = {
+      title: course.title,
+      text: `Check out this course: ${course.title}`,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareData.url);
+        alert("Course link copied to clipboard!");
+      }
+    } catch (error) {
+      console.error("Error sharing:", error);
+    }
+  };
+
+  // const handleShareOnFacebook = () => {
+  //   const url = window.location.href;
+  //   console.log("Facebook Share URL:", url);
+  //   const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+  //   window.open(facebookShareUrl, '_blank', 'noopener,noreferrer');
+  // };
+
+  // const handleShareOnLinkedIn = () => {
+  //   const url = window.location.href;
+  //   console.log("LinkedIn Share URL:", url);
+  //   const linkedInShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+  //   window.open(linkedInShareUrl, '_blank', 'noopener,noreferrer');
+  // };
+
   return (
     <Card className="sticky top-8 rounded-lg shadow-lg">
       <div className="mb-6 text-center">
@@ -66,9 +99,13 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
           </div>
         </div>
       </div>
-      <Button icon={<ShareAltOutlined />} type="link" className="mt-4 p-0">
+      <Button icon={<ShareAltOutlined />} type="link" className="mt-4 p-0" onClick={handleShareCourse}>
         Share this course
       </Button>
+        {/* <Button icon={<FacebookOutlined />} type="link" className="mt-4 p-0" onClick={handleShareOnFacebook}>
+        </Button>
+        <Button icon={<LinkedinOutlined />} type="link" className="mt-4 p-0" onClick={handleShareOnLinkedIn}>
+        </Button> */}
     </Card>
   );
 };
