@@ -189,8 +189,8 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                             className="mb-4 flex items-center justify-between"
                             whileHover={{ scale: 1.02 }}
                           >
-                            <span className="text-2xl font-bold text-indigo-800">${helpers.moneyFormat(course.price * (1 - course.discount / 100))}</span>
-                            {course.discount > 0 && <span className="text-lg text-gray-500 line-through">${helpers.moneyFormat(course.price)}</span>}
+                            <span className="text-2xl font-bold text-indigo-800">{helpers.moneyFormat(course.price * (1 - course.discount / 100))}</span>
+                            {course.discount > 0 && <span className="text-lg text-gray-500 line-through">{helpers.moneyFormat(course.price)}</span>}
                           </motion.div>
                           <div className="mb-4 flex justify-start">
                             {course.is_purchased && (

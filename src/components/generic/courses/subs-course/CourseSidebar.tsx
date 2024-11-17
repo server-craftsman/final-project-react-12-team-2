@@ -29,8 +29,8 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
   return (
     <Card className="sticky top-8 rounded-lg shadow-lg">
       <div className="mb-6 text-center">
-        <Text className="text-3xl font-bold text-[#02005dc6]">${helpers.moneyFormat(course.price * (1 - course.discount / 100))}</Text>
-        {course.discount > 0 && <Text className="ml-2 text-lg text-gray-500 line-through">${helpers.moneyFormat(course.price)}</Text>}
+        <Text className="text-3xl font-bold text-[#02005dc6]">{helpers.moneyFormat(course.price * (1 - course.discount / 100))}</Text>
+        {course.discount > 0 && <Text className="ml-2 text-lg text-gray-500 line-through">{helpers.moneyFormat(course.price)}</Text>}
       </div>
       {course.is_purchased ? (
         <div className="mb-6 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 p-4 text-center shadow-inner">
