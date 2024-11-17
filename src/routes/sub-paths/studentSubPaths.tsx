@@ -9,7 +9,7 @@ const Setting = lazy(() => import("../../pages/student/setting/Setting"));
 const SubscriptionManagement = lazy(() => import("../../pages/student/subscription/SubscriptionManagement"));
 const OrderManagement = lazy(() => import("../../pages/student/order/OrderManagement"));
 const Purchase = lazy(() => import("../../pages/student/purchase/Purchase"));
-
+const StatisticalPage = lazy(() => import("../../pages/student/purchase/StatisticalPage"));
 export const studentSubPaths: Record<string, RouteObject[]> = {
   [ROUTER_URL.STUDENT.BASE]: [
     {
@@ -35,6 +35,10 @@ export const studentSubPaths: Record<string, RouteObject[]> = {
     {
       path: ROUTER_URL.STUDENT.PURCHASE,
       element: <Purchase />
+    },
+    {
+      path: ROUTER_URL.STUDENT.STATISTICAL,
+      element: <StatisticalPage />
     }
   ]
 };

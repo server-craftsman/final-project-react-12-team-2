@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { DashboardOutlined, UserOutlined, FileTextOutlined, StarOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import useResponsiveCollapse from "../../hooks/useResponsiveCollapse";
@@ -8,6 +8,8 @@ const InstructorNavbar: React.FC = () => {
   const [collapsed, setCollapsed] = useResponsiveCollapse();
   const [autoCollapsed] = useResponsiveCollapse();
   const isCollapsed = collapsed || autoCollapsed;
+
+  const [selectedKey, setSelectedKey] = useState<string>("1");
 
   const menuItems = [
     {
@@ -79,7 +81,15 @@ const InstructorNavbar: React.FC = () => {
 
       <div className="mt-6 flex flex-col space-y-2 px-4">
         {menuItems.map((item) => (
-          <Link key={item.key} to={item.path} className="group flex items-center space-x-3 rounded-lg p-3 text-white/90 transition-all duration-300 hover:bg-white/10 hover:text-white hover:shadow-lg" title={isCollapsed ? item.label : ""}>
+          <Link
+            key={item.key}
+            to={item.path}
+            className={`group flex items-center space-x-3 rounded-lg p-3 text-white/90 transition-all duration-300 hover:bg-white/10 hover:text-white hover:shadow-lg ${
+              selectedKey === item.key ? "bg-white/10 text-white shadow-lg" : ""
+            }`}
+            title={isCollapsed ? item.label : ""}
+            onClick={() => setSelectedKey(item.key)}
+          >
             <span className="transition-transform duration-300 group-hover:scale-110">{item.icon}</span>
             {!isCollapsed && <span className="font-medium">{item.label}</span>}
           </Link>

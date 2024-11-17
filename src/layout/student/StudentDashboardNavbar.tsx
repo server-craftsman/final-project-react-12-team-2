@@ -1,5 +1,5 @@
 import useResponsiveCollapse from "../../hooks/useResponsiveCollapse";
-import { BellOutlined, DashboardOutlined, FileTextOutlined, SettingOutlined } from "@ant-design/icons";
+import { BellOutlined , FileTextOutlined, SettingOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import logo1 from "../../assets/logo1.jpg";
 import { useState } from "react";
@@ -7,30 +7,31 @@ import { useState } from "react";
 const StudentDashboardNavbar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [autoCollapsed] = useResponsiveCollapse();
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
 
   const isCollapsed = collapsed || autoCollapsed;
 
   const menuItems = [
+    // {
+    //   key: "1",
+    //   icon: <DashboardOutlined />,
+    //   label: "Dashboard",
+    //   path: "/dashboard-student"
+    // },
     {
       key: "1",
-      icon: <DashboardOutlined />,
-      label: "Dashboard",
-      path: "/dashboard-student"
-    },
-    {
-      key: "2",
       icon: <BellOutlined />,
       label: "Purchase",
       path: "/dashboard-student/student-purchase"
     },
     {
-      key: "3",
+      key: "2",
       icon: <FileTextOutlined />,
       label: "Subscription",
       path: "/dashboard-student/student-subscription"
     },
     {
-      key: "4",
+      key: "3",
       icon: <SettingOutlined />,
       label: "Setting",
       path: "/dashboard-student/student-setting"
@@ -61,7 +62,15 @@ const StudentDashboardNavbar = () => {
 
       <div className="mt-6 flex flex-col space-y-2 px-4">
         {menuItems.map((item) => (
-          <Link key={item.key} to={item.path} className="group flex items-center space-x-3 rounded-lg p-3 text-white/90 transition-all duration-300 hover:bg-white/10 hover:text-white hover:shadow-lg" title={isCollapsed ? item.label : ""}>
+          <Link
+            key={item.key}
+            to={item.path}
+            className={`group flex items-center space-x-3 rounded-lg p-3 text-white/90 transition-all duration-300 hover:bg-white/10 hover:text-white hover:shadow-lg ${
+              selectedKey === item.key ? "bg-white/10 text-white shadow-lg" : ""
+            }`}
+            title={isCollapsed ? item.label : ""}
+            onClick={() => setSelectedKey(item.key)}
+          >
             <span className="transition-transform duration-300 group-hover:scale-110">{item.icon}</span>
             {!isCollapsed && <span className="font-medium">{item.label}</span>}
           </Link>

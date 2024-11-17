@@ -1,14 +1,16 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { PurchaseService } from "../../../services/purchase/purchase.service";
 import { PurchaseStatus } from "../../../app/enums";
-import { Table, Badge, Layout, Select, Input, Button } from "antd";
+import { ROUTER_URL } from "../../../const/router.path";
+import { Table, Badge, Layout, Select, Input, Button, DatePicker } from "antd";
 import { EyeOutlined, PrinterOutlined } from "@ant-design/icons";
 import { helpers } from "../../../utils";
 import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 import DetailModal from './DetailModal';
-import FileSaver from "file-saver";
-import * as XLSX from "xlsx";
 import moment from "moment";
+import { Link, useNavigate } from "react-router-dom";
+import dayjs from 'dayjs';
+import useExportFileXLSX from "../../../hooks/useExportFile";
 const { Content } = Layout;
 const { Option } = Select;
 const { Search } = Input;
@@ -33,24 +35,53 @@ const Purchase: React.FC = () => {
   const [filters, setFilters] = useState<any>(initialSearchCondition);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [selectedPurchase, setSelectedPurchase] = useState<any>(null);
-  const [selectedFilters, setSelectedFilters] = useState<any>({ initialSearchCondition });
+  const [selectedFilters, setSelectedFilters] = useState<any>({ ...initialSearchCondition, status: PurchaseStatus.ALL });
+  const [startDate, setStartDate] = useState<moment.Moment | null>(null);
+  const [endDate, setEndDate] = useState<moment.Moment | null>(null);
+  const navigate = useNavigate();
+  const { exportToXLSX } = useExportFileXLSX();
 
   useEffect(() => {
     fetchData(); // Fetch data with default input when the page loads
   }, []);
 
-  const fetchData = async () => {
+  useEffect(() => {
+    const fetchPurchases = async () => {
+      try {
+        const response = await PurchaseService.searchForStudentPurchase({
+          searchCondition: {
+            status: PurchaseStatus.NEW || "",
+            is_delete: false,
+            purchase_no: "",
+            cart_no: "",
+            course_id: ""
+          },
+          pageInfo: {
+            pageNum: 1,
+            pageSize: 1000
+          }
+        }); // Fetch purchases
+        setFilteredPurchases(response.data.data.pageData);
+      } catch (error) {
+        console.error("Error fetching purchases:", error);
+      }
+    };
+
+    fetchPurchases();
+  }, []);
+
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       const searchCondition = {
         ...filters,
-        status: filters.status.length > 0 ? filters.status : PurchaseStatus.ALL
+        status: filters.status.length > 0 ? filters.status : PurchaseStatus.ALL,
+        startDate: startDate ? startDate.format('YYYY-MM-DD') : undefined,
+        endDate: endDate ? endDate.format('YYYY-MM-DD') : undefined,
       };
 
       if (searchTerm) {
         searchCondition.purchase_no = searchTerm;
-        // searchCondition.cart_no = searchTerm;
-        // searchCondition.instructor_name = searchTerm;
       }
 
       const response = await PurchaseService.searchForStudentPurchase({
@@ -63,7 +94,12 @@ const Purchase: React.FC = () => {
 
       if (response.data.data) {
         const data = response.data.data.pageData as any[];
-        setFilteredPurchases(data.filter((purchase) => purchase.status !== ""));
+        setFilteredPurchases(data.filter((purchase) => {
+          const createdAt = moment(purchase.created_at);
+          return purchase.status !== "" &&
+            (!startDate || createdAt.isSameOrAfter(startDate, 'day')) &&
+            (!endDate || createdAt.isSameOrBefore(endDate, 'day'));
+        }));
         setTotalResults(response.data.data.pageInfo.totalItems);
       }
     } catch (error) { 
@@ -71,9 +107,9 @@ const Purchase: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters, searchTerm, startDate, endDate, currentPage, pageSize]);
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     setFilters((prevFilters: any) => {
       const updatedFilters = {
         ...prevFilters,
@@ -83,14 +119,16 @@ const Purchase: React.FC = () => {
       fetchDataWithFilters(updatedFilters);
       return updatedFilters;
     });
-  };
+  }, [searchTerm, selectedFilters.status]);
 
-  const fetchDataWithFilters = async (filters: any) => {
+  const fetchDataWithFilters = useCallback(async (filters: any) => {
     setLoading(true);
     try {
       const searchCondition = {
         ...filters,
-        status: filters.status.length > 0 ? filters.status : PurchaseStatus.ALL
+        status: filters.status.length > 0 ? filters.status : PurchaseStatus.ALL,
+        startDate: startDate ? startDate.format('YYYY-MM-DD') : undefined,
+        endDate: endDate ? endDate.format('YYYY-MM-DD') : undefined,
       };
 
       const response = await PurchaseService.searchForStudentPurchase({
@@ -103,7 +141,12 @@ const Purchase: React.FC = () => {
 
       if (response.data.data) {
         const data = response.data.data.pageData as any[];
-        setFilteredPurchases(data.filter((purchase) => purchase.status !== ""));
+        setFilteredPurchases(data.filter((purchase) => {
+          const createdAt = moment(purchase.created_at);
+          return purchase.status !== "" &&
+            (!startDate || createdAt.isSameOrAfter(startDate, 'day')) &&
+            (!endDate || createdAt.isSameOrBefore(endDate, 'day'));
+        }));
         setTotalResults(response.data.data.pageInfo.totalItems);
       }
     } catch (error) { 
@@ -111,130 +154,25 @@ const Purchase: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [startDate, endDate, currentPage, pageSize]);
 
-  const handleFilterChange = (value: string) => {
+  const handleFilterChange = useCallback((value: string) => {
     setSelectedFilters({ status: value });
-  };
+  }, []);
 
-  const handleActionClick = (record: any) => {
+  const handleActionClick = useCallback((record: any) => {
     setSelectedPurchase(record);
     setIsModalVisible(true);
-  };
+  }, []);
 
-  const handlePrint = () => {
+  const handlePrint = useCallback(() => {
     window.print();
-  };
+  }, []);
 
-  const ExportData = ({ transactions }: { transactions: any }) => {
+  const ExportData = useCallback(({ transactions }: { transactions: any }) => {
     const handleExport = () => {
       const fileName = "Purchase_Report_" + moment().format('DD-MM-YYYY');
       exportToXLSX(transactions, fileName);
-    };
-
-    const fileTypeXLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-    const fileExtensionXLSX = '.xlsx';
-
-    const exportToXLSX = (csvData: any, fileName: string) => {
-      const ws = XLSX.utils.json_to_sheet([]);
-
-      // Add title
-      const title = "Purchase Report";
-      XLSX.utils.sheet_add_aoa(ws, [[title]], { origin: 'A1' });
-
-      // Add creation date
-      const creationDate = `Created on: ${moment().format('DD-MM-YYYY')}`;
-      XLSX.utils.sheet_add_aoa(ws, [[creationDate]], { origin: 'A2' });
-
-      // Merge cells for title and date
-      ws['!merges'] = [
-        { s: { r: 0, c: 0 }, e: { r: 0, c: 9 } },
-        { s: { r: 1, c: 0 }, e: { r: 1, c: 9 } }
-      ];
-
-      // Apply title style
-      ws['A1'].s = {
-        font: { bold: true, sz: 16, color: { rgb: "FFFFFF" } },
-        fill: { fgColor: { rgb: "1F4E78" } },
-        alignment: { horizontal: "center" }
-      };
-
-      // Apply date style
-      ws['A2'].s = {
-        font: { italic: true, sz: 12, color: { rgb: "FFFFFF" } },
-        fill: { fgColor: { rgb: "1F4E78" } },
-        alignment: { horizontal: "center" }
-      };
-
-      // Add data starting from the third row
-      XLSX.utils.sheet_add_json(ws, csvData, { origin: 'A3', skipHeader: false });
-
-      // Apply styles to the header row
-      const headerStyle = {
-        font: { bold: true, color: { rgb: "FFFFFF" }, sz: 12 },
-        fill: { fgColor: { rgb: "4F81BD" } },
-        alignment: { horizontal: "center" },
-        border: {
-          top: { style: "medium", color: { rgb: "000000" } },
-          bottom: { style: "medium", color: { rgb: "000000" } },
-          left: { style: "medium", color: { rgb: "000000" } },
-          right: { style: "medium", color: { rgb: "000000" } }
-        }
-      };
-
-      // Apply styles to the entire sheet
-      const cellStyle = {
-        font: { color: { rgb: "333333" }, sz: 11 },
-        alignment: { vertical: "center", horizontal: "center" },
-        border: {
-          top: { style: "thin", color: { rgb: "CCCCCC" } },
-          bottom: { style: "thin", color: { rgb: "CCCCCC" } },
-          left: { style: "thin", color: { rgb: "CCCCCC" } },
-          right: { style: "thin", color: { rgb: "CCCCCC" } }
-        },
-        fill: { fgColor: { rgb: "F7F7F7" } }
-      };
-
-      const range = XLSX.utils.decode_range(ws['!ref'] || '');
-      for (let R = 2; R <= range.e.r; ++R) { // Start from row 2 to skip title and date
-        for (let C = range.s.c; C <= range.e.c; ++C) {
-          const cellAddress = XLSX.utils.encode_cell({ c: C, r: R });
-          if (!ws[cellAddress]) continue;
-          ws[cellAddress].s = R === 2 ? headerStyle : cellStyle;
-        }
-      }
-
-      // Set column widths
-      ws['!cols'] = [
-        { wch: 30 }, // _id
-        { wch: 30 }, // purchase_no
-        { wch: 30 }, // status
-        { wch: 15 }, // price_paid
-        { wch: 15 }, // price
-        { wch: 10 }, // discount
-        { wch: 30 }, // cart_id
-        { wch: 30 }, // course_id
-        { wch: 30 }, // student_id
-        { wch: 30 }, // instructor_id
-        { wch: 30 }, // created_at
-        { wch: 15 }, // is_deleted
-        { wch: 30 }, // cart_no
-        { wch: 30 }, // course_name
-        { wch: 30 }, // student_name
-        { wch: 30 }  // instructor_name
-      ];
-
-      // Create workbook and add the worksheet
-      const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
-
-      // Generate Excel file buffer
-      const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-
-      // Create a Blob from the buffer
-      const data = new Blob([excelBuffer], { type: fileTypeXLSX });
-
-      // Save the file
-      FileSaver.saveAs(data, fileName + fileExtensionXLSX);
     };
 
     return (
@@ -265,33 +203,45 @@ const Purchase: React.FC = () => {
         </div>
       </div>
     );
-  };
+  }, [exportToXLSX]);
 
+  const handleDateChange = useCallback((dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null) => {
+    setStartDate(dates ? moment(dates[0]?.toDate()) : null);
+    setEndDate(dates ? moment(dates[1]?.toDate()) : null);
+  }, []);
 
-  const columns = [
+  const totalCourses = useMemo(() => {
+    const courseIds = new Set(filteredPurchases.map(purchase => purchase.course_id));
+    return courseIds.size;
+  }, [filteredPurchases]);
+
+  const columns = useMemo(() => [
     {
       title: "Purchase No",
       dataIndex: "purchase_no",
-      key: "purchase_no"
-    },{
+      key: "purchase_no",
+      width: 100,
+    },
+    {
       title: "Course",
       dataIndex: "course_name",
-      key: "course_name"
+      key: "course_name",
+      width: 100,
+      render: (text: string, record: any) => (
+        <Link to={`/course/${record.course_id}`} className="hover:underline hover:text-gold" title={`Go to course: ${text}`}>{text}</Link>
+      ),
     },
     {
-      title: "Cart No",
-      dataIndex: "cart_no",
-      key: "cart_no"
-    },
-    {
-      title: 'Instructor',
+      title: "Instructor",
       dataIndex: "instructor_name",
-      key: "instructor_name"
+      key: "instructor_name",
+      width: 100,
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
+      width: 80,
       render: (status: string) => (
         <Badge
           status={
@@ -305,15 +255,23 @@ const Purchase: React.FC = () => {
       ),
     },
     {
+      title: "Cart No",
+      dataIndex: "cart_no",
+      key: "cart_no",
+      width: 100,
+    },
+    {
       title: 'Price Cost',
       dataIndex: 'price_paid',
       key: 'price_paid',
+      width: 100,
       render: (price: number) => helpers.moneyFormat(price),
     },
     {
       title: 'Created At',
       dataIndex: "created_at",
       key: "created_at",
+      width: 100,
       sorter: (a: any, b: any) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
       render: (date: string) => helpers.formatDate(new Date(date))
     },
@@ -321,77 +279,87 @@ const Purchase: React.FC = () => {
       title: "Action",
       dataIndex: "action",
       key: "action",
+      width: 80,
       render: (_: any, record: any) => (
         <Button type="link" onClick={() => handleActionClick(record)}>
           <EyeOutlined />
         </Button>
       )
     }
-  ];
+  ], [handleActionClick]);
 
-  return (
-    <Layout>
-      <Layout style={{ padding: '0 24px 24px' }}>
+  if (loading) {
+    return <LoadingAnimation />;
+  } else {
+    return (
+      <Layout>
+      <Layout>
         <Content
           style={{
-            padding: 24,
             margin: 0,
             minHeight: 280,
+            maxWidth: '100%',
+            overflowX: 'hidden',
           }}
         >
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-gold-500 font-sans text-4xl font-bold">Purchase Invoice</h1>
-            <div>
-              <Button icon={<PrinterOutlined />} onClick={handlePrint} style={{ marginRight: 8 }}>
+          <div className="flex flex-col md:flex-row items-center justify-between mb-4 flex-wrap">
+            <h1 className="text-gold-500 font-sans text-2xl md:text-4xl font-bold mb-2 md:mb-0">Purchase Invoice</h1>
+            <div className="flex items-center space-x-2 mt-2 md:mt-0">
+              <Button type="link" onClick={() => navigate(ROUTER_URL.STUDENT.STATISTICAL)}>
+                <EyeOutlined /> Statistical
+              </Button>
+              <Button icon={<PrinterOutlined />} onClick={handlePrint} className="mr-2">
                 Print
               </Button>
               <ExportData transactions={filteredPurchases} />
             </div>
           </div>
 
-          <hr className="mb-8" />
-
-          {loading ? <LoadingAnimation /> : null}
-
-          <div className="flex items-center justify-between mb-4">
+          <hr className="mb-8" />        
+          <div className="flex flex-col md:flex-row items-center justify-between mb-4 flex-wrap">
             <Search
               placeholder="Search by purchase number"
-              enterButton={<Button type="primary" onClick={handleSearch}>Search</Button>}
-              style={{ width: 300 }}
+              enterButton={<Button type="primary" onClick={handleSearch} style={{ backgroundColor: '#1a237e', borderColor: '#1a237e' }}>Search</Button>}
+              className="w-full md:w-1/3 mb-2 md:mb-0"
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <Select
               placeholder="Add Filters"
-              style={{ width: 200 }}
+              className="w-full md:w-1/4 mb-2 md:mb-0"
               onChange={handleFilterChange}
               options={[
                 { label: "All", value: "" },
-                // { label: "Approved", value: "Approved" },
-                // { label: "Rejected", value: "Rejected" },
                 { label: "Completed", value: "completed" },
                 { label: "New", value: "new" },
                 { label: "Request Paid", value: "request_paid" }
               ]}
             />
+            <DatePicker.RangePicker
+              className="w-full md:w-1/3"
+              onChange={handleDateChange}
+            />
           </div>
-
-          <div className="pagination-info flex items-center justify-between mb-4">
+          <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4">
+              <span className="text-lg font-semibold">Total Courses Purchased: {totalCourses}</span>
+          </div>
+          <hr className="mt-4" />  
+          <div className="pagination-info mt-4 flex flex-col md:flex-row items-center justify-between mb-4 flex-wrap">
             <span>
               Showing {(currentPage - 1) * pageSize + 1}-
               {Math.min(currentPage * pageSize, totalResults)} of {totalResults} results
             </span>
-            <span className="ml-4">
-              Results per page: 
+            <div className="flex items-center mt-2 md:mt-0">
+              <span className="mr-2">Results per page:</span>
               <Select
                 defaultValue={pageSize}
-                style={{ width: 80, marginLeft: 8 }}
+                className="w-20"
                 onChange={(value) => setPageSize(value)}
               >
                 <Option value={5}>5</Option>
                 <Option value={10}>10</Option>
                 <Option value={20}>20</Option>
               </Select>
-            </span>
+            </div>
           </div>
 
           <Table
@@ -421,8 +389,9 @@ const Purchase: React.FC = () => {
           )}
         </Content>
       </Layout>
-    </Layout>
-  );
+      </Layout>
+    );
+  }
 };
 
 export default Purchase;

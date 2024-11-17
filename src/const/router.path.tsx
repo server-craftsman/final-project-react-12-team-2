@@ -48,7 +48,8 @@ export const ROUTER_URL = {
     ORDERS: "/dashboard-student/student-orders",
     PURCHASE: "/dashboard-student/student-purchase",
     SUBSCRIPTION: "/dashboard-student/student-subscription",
-    EDIT_USER: "/dashboard-student/student/edit-user/:id"
+    EDIT_USER: "/dashboard-student/student/edit-user/:id",
+    STATISTICAL: "/dashboard-student/student-statistical"
   },
   COMMON: {
     HOME: "/",
