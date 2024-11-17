@@ -31,42 +31,49 @@ const AdminNavbar: React.FC = () => {
     },
     {
       key: "4",
-      icon: <FileTextOutlined className="text-white" />,
-      label: "Course Management",
-      path: "/admin/courses"
-    },
-    {
-      key: "5",
       icon: <BookOutlined className="text-white" />,
       label: "Category Management",
       path: "/admin/categories"
     },
     {
+      key: "5",
+      icon: <FileTextOutlined className="text-white" />,
+      label: "Course Management",
+      path: "/admin/courses"
+    },
+    {
       key: "6",
-      icon: <BankOutlined className="text-white" />,
-      label: "Payout Management",
-      path: "/admin/payout"
+      icon: <AuditOutlined className="text-white" />,
+      label: "Review Management",
+      path: "/admin/review"
     },
     {
       key: "7",
-      icon: <BookOutlined className="text-white" />,
-      label: "Blog Management",
-      path: "/admin/admin-blog"
-    },
-    {
-      key: "8",
-      icon: <AuditOutlined className="text-white" />,
-      label: "Course Log",
-      path: "/admin/course-log"
-    },
-    {
-      key: "9",
       icon: <ShoppingCartOutlined className="text-white" />,
       label: "Sales History",
       path: "/admin/purchases-log"
     },
     {
+      key: "8",
+      icon: <BankOutlined className="text-white" />,
+      label: "Payout Management",
+      path: "/admin/payout"
+    },
+    {
+      key: "9",
+      icon: <BookOutlined className="text-white" />,
+      label: "Blog Management",
+      path: "/admin/admin-blog"
+    },
+    {
       key: "10",
+      icon: <AuditOutlined className="text-white" />,
+      label: "Course Log",
+      path: "/admin/course-log"
+    },
+    
+    {
+      key: "11",
       icon: <SettingOutlined className="text-white" />,
       label: "Setting",
       path: "/admin/admin-info"
