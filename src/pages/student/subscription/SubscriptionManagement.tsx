@@ -9,7 +9,7 @@ import data from "../../../data/users.json";
 
 const SubscriptionManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [, setFilteredSubscriptions] = useState<Subscriptions[]>([]);
+  const [,setFilteredSubscriptions] = useState<Subscriptions[]>([]);
 
   useEffect(() => {
     const instructorSubscriptions = subscriptionData.filter((subscription: Subscriptions) => {

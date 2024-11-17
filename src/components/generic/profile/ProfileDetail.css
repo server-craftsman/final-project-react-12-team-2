@@ -4,6 +4,18 @@
   overflow: hidden;
 }
 
+/* Add this to your CSS file */
+
+.icon-info::before {
+  content: "\f05a"; /* FontAwesome info icon */
+  @apply mr-2;
+}
+
+.icon-content::before {
+  content: "\f15c"; /* FontAwesome file icon */
+  @apply mr-2;
+}
+
 .project-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);

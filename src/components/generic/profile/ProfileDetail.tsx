@@ -1,4 +1,4 @@
-import { Tabs, Card, Row, Col, Typography, Rate } from 'antd';
+import { Tabs, Card, Row, Col, Typography, Rate, Button } from 'antd';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { UserService } from "../../../services/admin/user.service";
@@ -6,8 +6,8 @@ import { CourseService } from "../../../services/course/course.service";
 import { GetCourseResponsePublic } from '../../../models/api/responsive/course/course.response.model';
 import parse from 'html-react-parser';
 import './ProfileDetail.css';
+import LoadingAnimation from '../../../app/UI/LoadingAnimation';
 
-const { TabPane } = Tabs;
 const { Text, Title } = Typography;
 
 interface UserData {
@@ -18,7 +18,6 @@ const ProfileDetail: React.FC = () => {
     const { id } = useParams();
     const [userData, setUserData] = useState<UserData | null>(null);
     const [courses, setCourses] = useState<GetCourseResponsePublic[]>([]);
-
     useEffect(() => {
         const fetchUserData = async () => {
             if (id) {
@@ -61,11 +60,15 @@ const ProfileDetail: React.FC = () => {
         fetchCourses();
     }, [id]);
 
-    return (
-        <div className="profile-detail">
-
-            <Tabs defaultActiveKey="work">
-                <TabPane tab="Courses" key="work">
+    const tabItems = [
+        {
+            key: 'courses',
+            label: 'Courses',
+            children: (
+                <>
+                    <Button type="default" shape="round" className="my-4">
+                        {courses.length} Courses
+                    </Button>
                     <Row gutter={[24, 24]}>
                         {courses.map((course, index) => (
                             <Col
@@ -77,7 +80,8 @@ const ProfileDetail: React.FC = () => {
                                 style={{
                                     animationDelay: `${index * 0.1}s`
                                 }}
-                            > <Link to={`/course/${course._id}`}>
+                            >
+                                <Link to={`/course/${course._id}`}>
                                     <Card
                                         hoverable
                                         className="project-card"
@@ -129,25 +133,47 @@ const ProfileDetail: React.FC = () => {
                             </Col>
                         ))}
                     </Row>
-                </TabPane>
-                <TabPane tab="About" key="about">
-                    <Card style={{ marginTop: 24 }}>
-                        <Title level={4}>About Me</Title>
-                        <div style={{
-                            backgroundColor: '#f5f5f5',
-                            padding: '24px',
-                            borderRadius: '8px',
-                            marginTop: '16px'
-                        }}>
-                            <Text>
-                                {parse(userData?.description || 'No description available')}
-                            </Text>
-                        </div>
-                    </Card>
-                </TabPane>
-            </Tabs>
-        </div>
-    );
+                </>
+            ),
+        },
+        {
+            key: 'about',
+            label: 'About',
+            children: (
+                <Card style={{ marginTop: 24 }}>
+                    <Title level={4}>About Me</Title>
+                    <div style={{
+                        backgroundColor: 'white',
+                        padding: '24px',
+                        borderRadius: '8px',
+                        marginTop: '16px'
+                    }}>
+                        <Text>
+                            {parse(userData?.description || 'No description available')}
+                        </Text>
+                    </div>
+                </Card>
+            ),
+        },
+    ];
+
+    if (userData === null && courses.length === 0) {
+        return <LoadingAnimation />;
+    } else {
+        return (
+            <div className="profile-detail">
+            <Tabs 
+                defaultActiveKey="work" 
+                items={tabItems} 
+                tabBarStyle={{
+                    color: '#333', // Example: change text color
+                    fontSize: '16px', // Example: change font size
+                    borderBottom: '2px solid #1890ff' // Example: add border
+                }}
+            />
+            </div>
+        );
+    }
 };
 
 export default ProfileDetail;
