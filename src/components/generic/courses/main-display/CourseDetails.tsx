@@ -114,7 +114,7 @@ const CourseDetails: React.FC = () => {
             rating: 0,
             is_instructor: false,
             is_rating_order: false,
-            is_delete: false
+            is_deleted: false
           },
           pageInfo: {
             pageNum: 1,

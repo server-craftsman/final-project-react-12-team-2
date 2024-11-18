@@ -25,7 +25,7 @@ const Reviews: React.FC<ReviewsProps> = ({ searchTerm }) => {
           rating: 0,
           is_instructor: false,
           is_rating_order: false,
-          is_delete: false,
+          is_deleted: false,
           ...(searchTerm ? { comment: searchTerm } : {}),
           ...(startDate ? { start_date: startDate.format("YYYY-MM-DD") } : {}),
           ...(endDate ? { end_date: endDate.format("YYYY-MM-DD") } : {})

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { message, Table, Button, Avatar } from 'antd';
+import { message, Table, Button, Avatar, Popconfirm } from 'antd';
 import { DeleteOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { ReviewService } from '../../../services/review/review.service';
 import LoadingAnimation from '../../../app/UI/LoadingAnimation';
@@ -26,14 +26,27 @@ const DisplayReview: React.FC<DisplayReviewProps> = ({ search, dateRange, isDele
     console.log('Fetching reviews with isDelete:', isDelete, 'activeTab:', activeTab);
     setLoading(true);
     try {
+      const searchCondition = {
+        course_id: "",
+        is_deleted: isDelete,
+        is_instructor: false,
+        is_rating_order: false,
+        rating: 0,
+      };
+
+      switch (activeTab) {
+        case "true":
+          searchCondition.is_deleted = true;
+          break;
+        case "false":
+          searchCondition.is_deleted = false;
+          break;
+        default:
+          break;
+      }
+
       const response = await ReviewService.searchForReview({
-        searchCondition: {
-          course_id: "",
-          is_delete: isDelete,
-          is_instructor: false,
-          is_rating_order: false,
-          rating: 0,
-        },
+        searchCondition,
         pageInfo: {
           pageNum,
           pageSize
@@ -82,63 +95,84 @@ const DisplayReview: React.FC<DisplayReviewProps> = ({ search, dateRange, isDele
     }
   }, []);
 
-  const columns = useMemo(() => [
-    {
-      title: 'Course Name',
-      dataIndex: 'course_name',
-      key: 'course_name',
-      render: (text: string, record: any) => (
-        <Link to={`/course/${record.course_id}`} className="hover:underline hover:text-gold" title={`Go to course: ${text}`}>{text}</Link>
-      ),
-    },
-    {
-      title: 'Reviewer',
-      dataIndex: 'reviewer_name',
-      key: 'reviewer_name',
-      render: (text: string) => (
-        <div className="flex items-center space-x-2">
-          <Avatar>{text.charAt(0)}</Avatar>
-          <span>{text}</span>
-        </div>
-      ),
-    },
-    {
-      title: 'Comment',
-      dataIndex: 'comment',
-      key: 'comment',
-    },
-    {
-      title: 'Rating',
-      dataIndex: 'rating',
-      key: 'rating',
-      render: (rating: number) => `${rating} ★`,
-    },
-    {
-      title: 'Created At',
-      dataIndex: 'created_at',
-      key: 'created_at',
-      render: (text: string) => helpers.formatDate(new Date(text))
-    },
-    {
-      title: 'Updated At',
-      dataIndex: 'updated_at',
-      key: 'updated_at',
-      render: (text: string) => helpers.formatDate(new Date(text))
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (record: any) => (
-        <Button type="link" onClick={() => handleDelete(record._id)} icon={<DeleteOutlined />} style={{ color: 'red' }}></Button>
-      )
+  const handleSearch  = useCallback(async (search: string) => {
+    setSearchTerm(search);
+    fetchReviews(1, 10);
+    setSelectedDateRange(dateRange); // Set date range when search button is clicked
+  }, [dateRange, fetchReviews]);
+
+  const columns = useMemo(() => {
+    const baseColumns = [
+      {
+        title: 'Course Name',
+        dataIndex: 'course_name',
+        key: 'course_name',
+        render: (text: string, record: any) => (
+          <Link to={`/course/${record.course_id}`} className="hover:underline hover:text-gold" title={`Go to course: ${text}`}>{text}</Link>
+        ),
+      },
+      {
+        title: 'Reviewer',
+        dataIndex: 'reviewer_name',
+        key: 'reviewer_name',
+        render: (text: string) => (
+          <div className="flex items-center space-x-2">
+            <Avatar>{text.charAt(0)}</Avatar>
+            <span>{text}</span>
+          </div>
+        ),
+      },
+      {
+        title: 'Comment',
+        dataIndex: 'comment',
+        key: 'comment',
+      },
+      {
+        title: 'Rating',
+        dataIndex: 'rating',
+        key: 'rating',
+        render: (rating: number) => `${rating} ★`,
+      },
+      {
+        title: 'Created At',
+        dataIndex: 'created_at',
+        key: 'created_at',
+        render: (text: string) => helpers.formatDate(new Date(text))
+      },
+      {
+        title: 'Updated At',
+        dataIndex: 'updated_at',
+        key: 'updated_at',
+        render: (text: string) => helpers.formatDate(new Date(text))
+      }
+    ];
+
+    if (!isDelete) {
+      baseColumns.push({
+        title: 'Action',
+        dataIndex: 'action',
+        key: 'action',
+        render: (_: any, record: any) => (
+          <Popconfirm
+            title="Are you sure you want to delete this review?"
+            onConfirm={() => handleDelete(record._id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button type="link" icon={<DeleteOutlined />} style={{ color: 'red' }}></Button>
+          </Popconfirm>
+        )
+      });
     }
-  ], [handleDelete]);
+
+    return baseColumns;
+  }, [handleDelete, isDelete]);
 
   return (
     <div>
       <div className='flex justify-between mb-4'>
         <CustomSearch 
-          onSearch={setSearchTerm}
+          onSearch={handleSearch}
           placeholder="Search by reviewer name..."
         />
         <FilterDate onDateChange={(dates: [any, any] | null) => {
