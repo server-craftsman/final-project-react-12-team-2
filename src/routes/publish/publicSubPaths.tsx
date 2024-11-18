@@ -17,6 +17,7 @@ const BlogDetails = lazy(() => import("../../components/generic/home/BlogDetails
 const VerifyEmail = lazy(() => import("../../pages/verify/VerifyEmail"));
 const ForgotPassword = lazy(() => import("../../pages/forgot.password/ForgotPassword"));
 const ProfileSubscribe = lazy(() => import("../../pages/profile/ProfileSubscribeManagement"));
+const AllCourses = lazy(() => import("../../components/generic/home/all-courses/AllCourses"));
 //======================================================
 //export public sub paths
 export const publicSubPaths: Record<string, RouteObject[]> = {
@@ -59,6 +60,10 @@ export const publicSubPaths: Record<string, RouteObject[]> = {
         {
           path: ROUTER_URL.PROFILE.GET_PROFILE_DETAILS,
           element: <ProfileSubscribe />
+        },
+        {
+          path: ROUTER_URL.COMMON.ALL_COURSES,
+          element: <AllCourses />
         }
       ]
     }
