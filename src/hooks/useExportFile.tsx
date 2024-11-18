@@ -44,7 +44,7 @@ const useExportFileXLSX = () => {
     const headerStyle = {
       font: { bold: true, color: { rgb: "FFFFFF" }, sz: 12 },
       fill: { fgColor: { rgb: "4F81BD" } },
-      alignment: { horizontal: "center" },
+      alignment: { horizontal: "center", vertical: "center" },
       border: {
         top: { style: "medium", color: { rgb: "000000" } },
         bottom: { style: "medium", color: { rgb: "000000" } },
@@ -94,6 +94,9 @@ const useExportFileXLSX = () => {
       { wch: 30 }, // student_name
       { wch: 30 }  // instructor_name
     ];
+
+     // Freeze the header row
+     ws['!freeze'] = { xSplit: 0, ySplit: 3 };
 
     // Create workbook and add the worksheet
     const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };

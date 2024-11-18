@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { PurchaseService } from "../../../services/purchase/purchase.service";
 import { PurchaseStatus } from "../../../app/enums";
 import { ROUTER_URL } from "../../../const/router.path";
-import { Table, Badge, Layout, Select, Input, Button, DatePicker } from "antd";
+import { Table, Layout, Select, Input, Button, DatePicker } from "antd";
 import { EyeOutlined, PrinterOutlined } from "@ant-design/icons";
 import { helpers } from "../../../utils";
 import LoadingAnimation from "../../../app/UI/LoadingAnimation";
@@ -172,7 +172,19 @@ const Purchase: React.FC = () => {
   const ExportData = useCallback(({ transactions }: { transactions: any }) => {
     const handleExport = () => {
       const fileName = "Purchase_Report_" + moment().format('DD-MM-YYYY');
-      exportToXLSX(transactions, fileName);
+      const filteredTransactions = transactions.map(({course_name, instructor_name, student_name, price_paid, price, discount, purchase_no, cart_no, status, created_at }: { purchase_no: string, cart_no: string, status: string, course_name: string, instructor_name: string, student_name: string, price_paid: number, price: number, discount: number, created_at: string }) => ({
+        course_name,
+        instructor_name,
+        student_name,
+        price_paid,
+        price,
+        discount,
+        purchase_no,
+        cart_no,
+        status,
+        created_at
+      }));
+      exportToXLSX(filteredTransactions, fileName);
     };
 
     return (
@@ -217,47 +229,19 @@ const Purchase: React.FC = () => {
 
   const columns = useMemo(() => [
     {
-      title: "Purchase No",
-      dataIndex: "purchase_no",
-      key: "purchase_no",
-      width: 100,
-    },
-    {
       title: "Course",
       dataIndex: "course_name",
       key: "course_name",
       width: 100,
       render: (text: string, record: any) => (
-        <Link to={`/course/${record.course_id}`} className="hover:underline hover:text-gold" title={`Go to course: ${text}`}>{text}</Link>
+        <Link to={`/course/${record.course_id}`} className="underline text-blue-500 hover:underline hover:text-gold" title={`Go to course: ${text}`}>{text}</Link>
       ),
     },
+    
     {
       title: "Instructor",
       dataIndex: "instructor_name",
       key: "instructor_name",
-      width: 100,
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      width: 80,
-      render: (status: string) => (
-        <Badge
-          status={
-            status === "Approved" ? "success" :
-            status === "Rejected" ? "error" :
-            status === "new" ? "processing" :
-            "default"
-          }
-          text={status}
-        />
-      ),
-    },
-    {
-      title: "Cart No",
-      dataIndex: "cart_no",
-      key: "cart_no",
       width: 100,
     },
     {
@@ -266,6 +250,53 @@ const Purchase: React.FC = () => {
       key: 'price_paid',
       width: 100,
       render: (price: number) => helpers.moneyFormat(price),
+    },
+    // {
+    //   title: "Status",
+    //   dataIndex: "status",
+    //   key: "status",
+    //   width: 80,
+    //   render: (status: string) => (
+    //     <Badge
+    //       status={
+    //         status === "Approved" ? "success" :
+    //         status === "Rejected" ? "error" :
+    //         status === "new" ? "processing" :
+    //         "default"
+    //       }
+    //       text={status}
+    //     />
+    //   ),
+    // },
+    // {
+    //   title: "Purchase No",
+    //   dataIndex: "purchase_no",
+    //   key: "purchase_no",
+    //   width: 100,
+    // },
+    // {
+    //   title: "Cart No",
+    //   dataIndex: "cart_no",
+    //   key: "cart_no",
+    //   width: 100,
+    // },
+    {
+      title: "Price Original",
+      dataIndex: "price",
+      key: "price",
+      width: 100,
+      render: (price: number, record: any) => (
+        <div>
+          <span style={{ textDecoration: 'line-through', marginRight: '8px' }}>
+            {helpers.moneyFormat(price)}
+          </span>
+          {record.discount > 0 && (
+            <span style={{ color: 'red' }}>
+              {record.discount}% OFF
+            </span>
+          )}
+        </div>
+      ),
     },
     {
       title: 'Created At',

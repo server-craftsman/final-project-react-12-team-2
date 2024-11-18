@@ -67,9 +67,14 @@ const DetailModal: React.FC<DetailModalProps> = ({ visible, onClose, details }) 
               {helpers.moneyFormat(details.price_paid)}
             </Text>
             {details.discount > 0 && (
-              <Text strong style={{ fontSize: '18px', color: '#1a237e', textDecoration: 'line-through' }}>
-                {helpers.moneyFormat(details.price)}
-              </Text>
+              <>
+                <Text strong style={{ fontSize: '18px', color: '#1a237e', textDecoration: 'line-through' }}>
+                  {helpers.moneyFormat(details.price)}
+                </Text>
+                <Text strong style={{ fontSize: '16px', color: '#3e2723', marginTop: '4px' }}>
+                  {details.discount}% OFF
+                </Text>
+              </>
             )}
           </Col>
         </Row>
