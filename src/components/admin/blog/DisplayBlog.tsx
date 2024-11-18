@@ -73,9 +73,18 @@ const DisplayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
 
   const columns = [
     {
+      title: "No",
+      key: "index",
+      render: (_: any, __: Blog, index: number) => index + 1,
+    },
+    {
       title: "Blog Name",
-      dataIndex: "name",
-      render: (text: string, record: Blog) => <Link to={`/admin/blog/${record._id}`}>{text}</Link>
+      dataIndex: "name",  
+      render: (name: string, record: Blog) => (
+        <Link to={`/admin/admin-blog/${record._id}`}>
+          {name}
+        </Link>
+      )
     },
     {
       title: "Category Name",
