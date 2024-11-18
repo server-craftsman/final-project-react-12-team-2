@@ -8,6 +8,8 @@ import { ColorPurchaseStatusEnum } from "../../../utils/purchasesStatus";
 import { PurchaseStatus } from "../../../app/enums/purchase.status";
 import PurchaseCheckbox from "../../instructor/purchase/PurchaseCheckbox";
 import LoadingAnimation from "../../../app/UI/LoadingAnimation";
+import moment from "moment";
+
 interface PurchasesLogProps {
   onSelectionChange: (selected: Set<string>) => void;
   onInstructorIdChange: (id: string) => void;
@@ -15,9 +17,11 @@ interface PurchasesLogProps {
   statusFilter: string;
   refreshKey: number;
   instructorId: string;
+  startDate: moment.Moment | null;
+  endDate: moment.Moment | null;
 }
 
-const PurchasesLog: React.FC<PurchasesLogProps> = ({ onSelectionChange, onInstructorIdChange, searchQuery, statusFilter, refreshKey, instructorId }) => {
+const PurchasesLog: React.FC<PurchasesLogProps> = ({ onSelectionChange, onInstructorIdChange, searchQuery, statusFilter, refreshKey, instructorId, startDate, endDate }) => {
   const [filteredPurchases, setFilteredPurchases] = useState<SearchForAdminPurchasesResponseModel["pageData"]>([]);
   const [selectedPurchases, setSelectedPurchases] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,6 +45,12 @@ const PurchasesLog: React.FC<PurchasesLogProps> = ({ onSelectionChange, onInstru
 
     try {
       const response = await PurchaseService.searchForAdminPurchases(params);
+      if (startDate && endDate) {
+        response.data.data.pageData = response.data.data.pageData.filter((purchase) => {
+          const purchaseDate = moment(purchase.created_at);
+          return purchaseDate >= startDate && purchaseDate <= endDate;
+        });
+      }
       setFilteredPurchases(response.data.data.pageData);
       setPageInfo(response.data.data.pageInfo);
     } catch (error) {
@@ -50,7 +60,7 @@ const PurchasesLog: React.FC<PurchasesLogProps> = ({ onSelectionChange, onInstru
 
   useEffect(() => {
     fetchPurchases();
-  }, [searchQuery, statusFilter, refreshKey, currentPage, pageSize, instructorId]);
+  }, [searchQuery, statusFilter, refreshKey, currentPage, pageSize, instructorId, startDate, endDate]);
 
   const handleSelectAllChange = (checked: boolean) => {
     setSelectedPurchases(checked ? new Set(filteredPurchases.map((purchase) => purchase._id)) : new Set());
@@ -153,6 +163,11 @@ const PurchasesLog: React.FC<PurchasesLogProps> = ({ onSelectionChange, onInstru
             className: "bg-pagination",
             position: ["bottomLeft"]
           }}
+          summary={() => (
+            <Table.Summary.Row>
+              <Table.Summary.Cell index={0} colSpan={10} className="font-bold">Total: {pageInfo.totalItems} purchases</Table.Summary.Cell>
+            </Table.Summary.Row>
+          )}
         />
       </div>
     );
