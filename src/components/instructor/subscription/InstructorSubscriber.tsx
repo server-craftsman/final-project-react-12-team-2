@@ -72,13 +72,13 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
     try {
       const subscriberIds = subscriptions.pageData.map((sub) => sub.subscriber_id);
       const uniqueIds = [...new Set(subscriberIds)]; // Remove duplicates
-      
+
       const promises = uniqueIds.map((id) => UserService.getUserDetails(id));
       const responses = await Promise.all(promises);
       const validUsers = responses
         .filter((response) => response.data?.data)
         .map((response) => response.data.data);
-      
+
       setUsers(validUsers);
     } catch (error) {
       message.error("Failed to fetch users");
@@ -103,7 +103,7 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
     if (!users || !subscriptions?.pageData) return [];
 
     const searchLower = searchValue.toLowerCase();
-    return users.filter(user => 
+    return users.filter(user =>
       user.name?.toLowerCase().includes(searchLower) ||
       user.email?.toLowerCase().includes(searchLower) ||
       user.phone_number?.toLowerCase().includes(searchLower)
@@ -118,91 +118,90 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
   if (subscriptions && subscriptions.pageData.length > 0) {
     return (
       <div style={{ backgroundColor: "#f0f2f5" }}>
-      <Row gutter={[16, 16]}>
-        {subscriptions?.pageData.map((subscription) => {
-          const user = filteredUsers.find((user) => user._id === subscription.subscriber_id);
-          if (!user) return null;
-          return (
-            <Col xs={24} sm={12} md={8} lg={6} key={subscription._id}>
-              <Link to={`/profile/${subscription.subscriber_id}`} style={{ textDecoration: "none" }}>
-                <Card
-                  hoverable
-                  loading={loading}
-                  title={
-                    <div style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
+        <Row gutter={[16, 16]}>
+          {subscriptions?.pageData.map((subscription) => {
+            const user = filteredUsers.find((user) => user._id === subscription.subscriber_id);
+            if (!user) return null;
+            return (
+              <Col xs={24} sm={12} md={8} lg={6} key={subscription._id}>
+                <Link to={`/profile/${subscription.subscriber_id}`} style={{ textDecoration: "none" }}>
+                  <Card
+                    hoverable
+                    loading={loading}
+                    title={
+                      <div style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        textAlign: "center"
+                      }}>
+                        <Avatar src={user?.avatar_url} size={64} style={{ marginBottom: "8px" }} />
+                        <span style={{ fontSize: "16px", fontWeight: "bold" }}>{user?.name}</span>
+                      </div>
+                    }
+                    style={{
+                      height: '100%',
+                      borderRadius: "12px",
+                      border: "1px solid #000",
+                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                      backgroundColor: "#f0f2f5",
+                      cursor: "pointer",
                       textAlign: "center"
-                    }}>
-                      <Avatar src={user?.avatar_url} size={64} style={{ marginBottom: "8px" }} />
-                      <span style={{ fontSize: "16px", fontWeight: "bold" }}>{user?.name}</span>
+                    }}
+                  >
+                    <div style={{ padding: "12px", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                      <div>
+                        <p style={{
+                          fontSize: "14px",
+                          marginBottom: "8px",
+                          display: "flex",
+
+
+                          gap: "4px"
+                        }}>
+                          <strong>Email:</strong> {user?.email}
+                        </p>
+                        <p style={{
+                          fontSize: "14px",
+                          marginBottom: "16px",
+                          display: "flex",
+
+                          gap: "4px"
+                        }}>
+                          <strong>Phone:</strong> {user?.phone_number}
+                        </p>
+                      </div>
                     </div>
-                  }
-                  style={{
-                    height: '100%',
-                    borderRadius: "12px", 
-                    border: "1px solid #000",
-                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                    backgroundColor: "#f0f2f5",
-                    cursor: "pointer",
-                    textAlign: "center"
-                  }}
-                >
-                  <div style={{ padding: "12px", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                    <div>
-                      <p style={{
-                        fontSize: "14px",
-                        marginBottom: "8px",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: "4px"
-                      }}>
-                        <strong>Email:</strong> {user?.email}
-                      </p>
-                      <p style={{
-                        fontSize: "14px",
-                        marginBottom: "16px",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: "4px"
-                      }}>
-                        <strong>Phone:</strong> {user?.phone_number}
-                      </p>
-                    </div>
-                  </div>
-                </Card>
-              </Link>
-            </Col>
-          );
-        })}
-      </Row>
-      <Row
-        justify="start"
-        style={{
-          marginTop: '20px',
-          marginBottom: '20px',
-          position: 'sticky',
-          bottom: 20,
-          zIndex: 1000
-        }}
-      >
-        <Pagination
-          current={currentPage}
-          total={totalItems}
-          pageSize={defaultParams.pageInfo.pageSize}
-          onChange={handlePageChange}
-          showSizeChanger={true}
-          showQuickJumper
-          className="bg-pagination"
+                  </Card>
+                </Link>
+              </Col>
+            );
+          })}
+        </Row>
+        <Row
+          justify="start"
           style={{
+            marginTop: '20px',
+            marginBottom: '20px',
+            position: 'sticky',
             bottom: 20,
-            zIndex: 1000,
+            zIndex: 1000
           }}
-        />
-      </Row>
+        >
+          <Pagination
+            current={currentPage}
+            total={totalItems}
+            pageSize={defaultParams.pageInfo.pageSize}
+            onChange={handlePageChange}
+            showSizeChanger={true}
+            showQuickJumper
+            className="bg-pagination"
+            style={{
+              bottom: 20,
+              zIndex: 1000,
+            }}
+          />
+        </Row>
       </div>
     );
   } else {

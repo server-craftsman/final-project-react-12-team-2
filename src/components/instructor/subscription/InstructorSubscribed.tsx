@@ -156,9 +156,10 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
                       fontSize: "14px",
                       marginBottom: "8px",
                       display: "flex",
-                      justifyContent: "center",
+                      justifyContent: "flex-start",
                       alignItems: "center",
-                      gap: "4px"
+                      gap: "4px",
+                      paddingLeft: "16px"
                     }}>
                       <strong>Email:</strong> {user?.email}
                     </p>
@@ -166,9 +167,10 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
                       fontSize: "14px",
                       marginBottom: "16px",
                       display: "flex",
-                      justifyContent: "center",
+                      justifyContent: "flex-start",
                       alignItems: "center",
-                      gap: "4px"
+                      gap: "4px",
+                      paddingLeft: "16px"
                     }}>
                       <strong>Phone:</strong> {user?.phone_number}
                     </p>

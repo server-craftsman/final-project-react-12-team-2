@@ -115,8 +115,7 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery }
                       fontSize: "14px",
                       marginBottom: "8px",
                       display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
+
                       gap: "4px"
                     }}
                   >
@@ -127,8 +126,7 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery }
                       fontSize: "14px",
                       marginBottom: "16px",
                       display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
+
                       gap: "4px"
                     }}
                   >
