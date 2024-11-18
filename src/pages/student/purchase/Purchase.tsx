@@ -58,7 +58,7 @@ const Purchase: React.FC = () => {
           },
           pageInfo: {
             pageNum: 1,
-            pageSize: 1000
+            pageSize: 10
           }
         }); // Fetch purchases
         setFilteredPurchases(response.data.data.pageData);
