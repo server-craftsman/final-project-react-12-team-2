@@ -1,4 +1,4 @@
-// DislayBlog.tsx
+// DisplayBlog.tsx
 import React, { useEffect, useState, useCallback } from "react";
 import { Table, Space, message } from "antd";
 import { Blog, GetBlogResponse } from "../../../models/api/responsive/admin/blog.responsive.model";
@@ -11,7 +11,7 @@ import EditBlogModal from "./EditBlog";
 import DeleteBlogModal from "./DeleteBlog";
 import CreateBlog from './CreateBlog';
 
-const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
+const DisplayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
   const [blogData, setBlogData] = useState<GetBlogResponse | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isEditModalVisible, setEditModalVisible] = useState(false);
@@ -138,4 +138,4 @@ const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
   );
 };
 
-export default DislayBlog;
+export default DisplayBlog;

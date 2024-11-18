@@ -5,10 +5,13 @@ import { useForm } from "antd/lib/form/Form";
 import { BlogService } from "../../../services/blog/blog.service";
 import { customUploadHandler } from "../../../utils/upload";
 import { CategoryService } from "../../../services/category/category.service";
-import { BaseService } from "../../../services/config/base.service";
+//import { BaseService } from "../../../services/config/base.service";
 import Editor from "../../generic/tiny/Editor";
 
-const CreateBlog = () => {
+const CreateBlog: React.FC<{ 
+  onSuccess: () => void;
+  className?: string;
+}> = ({ onSuccess, className }) => {
   const [form] = useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -58,13 +61,23 @@ const CreateBlog = () => {
     if (!imageFile) return "";
     setUploading(true);
     try {
-      const uploadedUrl = await BaseService.uploadFile(imageFile, "image", true);
-      return uploadedUrl;
+      return new Promise<string>((resolve, reject) => {
+        customUploadHandler(
+          {
+            file: imageFile,
+            onSuccess: (url: string) => resolve(url),
+            onError: () => reject(new Error("Upload failed")),
+          },
+          "image",
+          setUploading,
+          (type: string, url: string) => {
+            console.log(`Upload ${type}: ${url}`);
+          }
+        );
+      });
     } catch (error) {
       message.error("Failed to upload image");
       return "";
-    } finally {
-      setUploading(false);
     }
   }, [imageFile]);
 
@@ -82,14 +95,14 @@ const CreateBlog = () => {
 
         message.success("Blog post created successfully!");
         handleModalToggle();
-        window.location.reload();
+        onSuccess();
       } catch (error: any) {
         message.error(error.message || "Failed to create blog post");
       } finally {
         setUploading(false);
       }
     },
-    [handleModalToggle, uploadImage]
+    [handleModalToggle, uploadImage, onSuccess]
   );
 
   // Render upload component
@@ -120,7 +133,7 @@ const CreateBlog = () => {
 
   return (
     <div>
-      <Button className="bg-gradient-tone px-4 py-2 text-white" onClick={handleModalToggle}>
+      <Button className={className} onClick={handleModalToggle}>
         Create Blog Post
       </Button>
 
@@ -150,7 +163,7 @@ const CreateBlog = () => {
           <Form.Item label="Image">{renderUpload()}</Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={uploading}>
+            <Button className="bg-gradient-tone px-4 py-2 text-white" htmlType="submit" loading={uploading}>
               Create Post
             </Button>
           </Form.Item>
