@@ -73,7 +73,7 @@ const Statistical: React.FC<StatisticalProps> = ({ purchases }) => {
         <h2 className="text-2xl md:text-3xl font-bold text-brown-900 mb-4 md:mb-0">Monthly Statistics</h2>
         <Button
           type="primary"
-          onClick={() => navigate(ROUTER_URL.STUDENT.PURCHASE)}
+          onClick={() => navigate(ROUTER_URL.STUDENT.BASE)}
           className="bg-indigo-900 border-indigo-900 text-white"
           icon={<ArrowLeftOutlined />}
         >
