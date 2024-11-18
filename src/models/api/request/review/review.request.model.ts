@@ -4,7 +4,7 @@ export interface SearchForReviewRequestModel {
     rating: number;
     is_instructor: boolean;
     is_rating_order: boolean;
-    is_delete: boolean;
+    is_deleted: boolean;
   };
   pageInfo: {
     pageNum: number;
