@@ -1,22 +1,40 @@
 import React from "react";
-import { Card, Typography, Divider } from "antd";
+import { Card, Typography, Divider, message } from "antd";
 import { ShoppingCartOutlined,PlayCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { CourseSidebarProps } from "../../../../models/objects/course/CourseSidebarProps";
 import { helpers } from "../../../../utils";
+import { useNavigate } from "react-router-dom";
 import { CartService } from "../../../../services/cart/cart.service";
 import ShareButton from "./ShareButton";
+import { useCart } from "../../../../contexts/CartContext";
 
 const { Title, Text } = Typography;
 
 const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
+  const navigate = useNavigate();
+  const { updateCartItems } = useCart();
+
+  const userInfo = localStorage.getItem("userInfo");
+  const userId = userInfo ? JSON.parse(userInfo)._id : null;
+
   const handleAddToCart = async () => {
     try {
+      const token = localStorage.getItem("token");
+      const userInfo = localStorage.getItem("userInfo");
+
+      if (!token || !userInfo) {
+        message.error("Please log in to add items to your cart.");
+        navigate("/login");
+        return;
+      }
+
       if (course.is_in_cart) {
-        window.location.href = `/cart`;
+        navigate("/cart");
       } else {
         const response = await CartService.createCart(course._id);
         if (response.data.data && response.data.data._id) {
-          window.location.href = `/cart`;
+          await updateCartItems();
+          navigate("/cart");
         } else {
           console.error("Failed to add to cart");
         }
@@ -41,6 +59,8 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
             Enjoy unlimited access to all course materials
           </p>
         </div>
+      ) : course.instructor_id === userId ? (
+        <p className="mb-4 text-center text-lg font-semibold text-gray-600">You are the instructor of this course</p>
       ) : (
         <button className="mb-4 h-12 w-full rounded-lg bg-gradient-to-r from-[#1a237e] to-[#3949ab] text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:from-[#3949ab] hover:to-[#1a237e] hover:shadow-xl active:scale-95" onClick={handleAddToCart}>
           <ShoppingCartOutlined className="mr-2 text-xl" />

@@ -12,6 +12,7 @@ export interface Carts {
   is_deleted: boolean;
 }
 export enum CartStatusEnum {
+  all = "",
   new = "new",
   waiting_paid = "waiting_paid",
   completed = "completed",

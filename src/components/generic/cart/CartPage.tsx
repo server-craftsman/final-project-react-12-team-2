@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Typography, List, Card, Button, Row, Col, Divider, Checkbox, Tabs, Image } from "antd";
+import React, { useCallback, useState } from "react";
+import { Typography, List, Card, Button, Row, Col, Divider, Checkbox, Tabs, Image, Table } from "antd";
 import { ShoppingCartOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
@@ -7,6 +7,7 @@ import { CartStatusEnum } from "../../../models/prototype/Carts";
 import { useCart } from "../../../contexts/CartContext"; // Import useCart
 import { helpers } from "../../../utils";
 const { Title, Text } = Typography;
+import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 
 const CartPage: React.FC = () => {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const CartPage: React.FC = () => {
   // const initialTab = queryParams.get("tab") || String(CartStatusEnum.new);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState<CartStatusEnum>(CartStatusEnum.new);
+  const [activeTab, setActiveTab] = useState<CartStatusEnum>(CartStatusEnum.all);
   const { cartItems, updateCartStatus, deleteCartItem, updateCartItems } = useCart(); // Use cartItems, updateCartStatus, and deleteCartItem from context
 
   const handleBackToHome = () => {
@@ -55,27 +56,34 @@ const CartPage: React.FC = () => {
     },
   ];
 
-  const handleTabChange = (key: string) => {
-    const status = key as CartStatusEnum;
-    if (Object.values(CartStatusEnum).includes(status)) {
-      setActiveTab(status);
-      updateCartItemsByStatus(status);
-    } else {
-      console.error("Invalid tab status:", status);
-    }
-  };
+// ... existing code ...
 
-  const updateCartItemsByStatus = async (status: CartStatusEnum) => {
-    try {
-      await updateCartItems(status); // Pass the status to updateCartItems
-    } catch (error) {
-      console.error("Error fetching cart items by status:", error);
-    }
-  };
+const handleTabChange = useCallback((key: string) => {
+  const status = key as CartStatusEnum;
+  if (Object.values(CartStatusEnum).includes(status)) {
+    setActiveTab(status); // Set the activeTab state
+    updateCartItems(status); // Fetch data for the new tab
+  } else {
+    console.error("Invalid tab status:", status);
+  }
+}, [updateCartItems]);
+
+// Ensure that updateCartItems is correctly implemented to fetch data based on the status
+
+  // ... existing code ...
+
+  // const updateCartItemsByStatus = async (status: CartStatusEnum) => {
+  //   try {
+  //     await updateCartItems(status); // Pass the status to updateCartItems
+  //     // updateCartItems(status);
+  //   } catch (error) {
+  //     console.error("Error fetching cart items by status:", error);
+  //   }
+  // };
 
   const handleDeleteCartItem = async (cartId: string) => {
     await deleteCartItem(cartId);
-    updateCartItemsByStatus(activeTab);
+    // updateCartItemsByStatus(activeTab);
     updateCartItems(activeTab);
   };
 
@@ -85,7 +93,7 @@ const CartPage: React.FC = () => {
         await updateCartStatus(itemId, CartStatusEnum.waiting_paid);
       }
       setActiveTab(CartStatusEnum.waiting_paid); // Ensure the "Waiting" tab is active
-      updateCartItemsByStatus(CartStatusEnum.waiting_paid); // Fetch items for the "Waiting" status
+      // updateCartItemsByStatus(CartStatusEnum.waiting_paid); // Fetch items for the "Waiting" status
       updateCartItems(CartStatusEnum.waiting_paid);
     } catch (error) {
       console.error("Error during checkout:", error);
@@ -111,7 +119,7 @@ const CartPage: React.FC = () => {
     try {
       await updateCartStatus(cartId, CartStatusEnum.completed);
       setActiveTab(CartStatusEnum.completed);
-      updateCartItemsByStatus(CartStatusEnum.completed);
+      // updateCartItemsByStatus(CartStatusEnum.completed);
       updateCartItems(CartStatusEnum.completed);
     } catch (error) {
       console.error("Error during confirm payment:", error);
@@ -122,12 +130,13 @@ const CartPage: React.FC = () => {
     try {
       await updateCartStatus(cartId, CartStatusEnum.cancel);
       setActiveTab(CartStatusEnum.cancel); // Ensure the "Cancel" tab is active
-      updateCartItemsByStatus(CartStatusEnum.cancel); // Fetch items for the "Cancel" status
+      // updateCartItemsByStatus(CartStatusEnum.cancel); // Fetch items for the "Cancel" status
       updateCartItems(CartStatusEnum.cancel);
     } catch (error) {
       console.error("Error during cancel order:", error);
     }
   };
+
 
   return (
     <div className="container mx-auto min-h-screen bg-gradient-to-b from-white to-gray-50 p-4 md:p-8">
@@ -171,9 +180,10 @@ const CartPage: React.FC = () => {
 
       <Row gutter={[16, 16]}>
         <Col xs={24} lg={16}>
-          <Card className="overflow-hidden rounded-xl border-0 bg-white shadow-xl">
-            {activeTab === CartStatusEnum.waiting_paid ? (
-              <div className="waiting-tab-ui rounded-lg md:rounded-[2rem] bg-gradient-to-br from-gray-50 via-white to-gray-50 p-4 md:p-12 shadow-inner transition-all duration-500 hover:shadow-lg">
+        <Card className="overflow-hidden rounded-xl border-0 bg-white shadow-xl">
+            {activeTab.length === 0 && cartItems.length === 0 && updateCartItems.length === 0 ? (
+              <LoadingAnimation />
+            ) : activeTab === CartStatusEnum.waiting_paid ? (              <div className="waiting-tab-ui rounded-lg md:rounded-[2rem] bg-gradient-to-br from-gray-50 via-white to-gray-50 p-4 md:p-12 shadow-inner transition-all duration-500 hover:shadow-lg">
                 <Title level={3} className="mb-8 md:mb-12 transform text-center text-2xl md:text-3xl tracking-wider text-gray-900 transition-transform duration-300 hover:scale-105">
                   Pending Orders
                 </Title>
@@ -220,49 +230,72 @@ const CartPage: React.FC = () => {
                 />
               </div>
             ) : activeTab === CartStatusEnum.completed ? (
-              <div className="completed-tab-ui transform rounded-lg md:rounded-[2rem] bg-gradient-to-br from-gray-50 via-white to-gray-50 p-4 md:p-12 shadow-inner transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl">
-                <Title level={3} className="bg-gradient-tone mb-8 md:mb-12 transform bg-clip-text text-center text-2xl md:text-3xl font-extrabold tracking-wider text-transparent transition-transform duration-500 hover:scale-105">
+              <div className="completed-tab-ui transform md:rounded-[10px] bg-gradient-to-br from-gray-50 via-white to-gray-50 transition-all duration-500 w-full">
+                <Title level={3} className="bg-gradient-tone mt-5 mb-8 md:mb-12 transform bg-clip-text text-center text-2xl md:text-3xl font-extrabold tracking-wider text-transparent transition-transform duration-500">
                   Completed Orders
                 </Title>
-                <List
-                  dataSource={cartItems.filter((item) => item.status === CartStatusEnum.completed)}
-                  renderItem={(item) => (
-                    <List.Item key={item._id} className="transform py-6 md:py-10 transition-all duration-500 ease-in-out last:border-0 hover:-translate-y-2">
-                      <Card className="w-full rounded-2xl md:rounded-3xl border border-gray-100 bg-white/90 shadow-lg backdrop-blur-lg transition-all duration-700 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
-                        <Row gutter={[16, 16]} className="flex items-center p-4 md:p-8">
-                          <Col xs={24}>
-                            <Text strong className="bg-gradient-tone mb-4 block transform bg-clip-text text-2xl md:text-3xl tracking-wide text-transparent transition-all duration-300 hover:scale-105">
-                              {item?.course_name}
-                            </Text>
-                            <Text className="mt-2 md:mt-4 block text-base md:text-lg font-light italic text-gray-600">
-                              Instructor: <span className="bg-gradient-tone inline-block transform bg-clip-text font-medium text-transparent transition-all duration-300 hover:scale-105">{item?.instructor_name}</span>
-                            </Text>
-                            <div className="mt-6 md:mt-8 space-y-4 border-t border-gray-100 pt-4 md:pt-6">
-                              <div className="flex justify-between text-base md:text-lg text-gray-700 transition-colors duration-300 hover:text-gray-900">
-                                <span className="font-serif">Original Price</span>
-                                <span className="font-medium">{helpers.moneyFormat(item?.price)}</span>
-                              </div>
-                              <div className="flex justify-between text-base md:text-lg text-green-600 transition-colors duration-300 hover:text-green-700">
-                                <span className="font-serif">Savings</span>
-                                <span className="animate-pulse font-medium">{item?.discount}% OFF</span>
-                              </div>
-                              <div className="flex justify-between text-lg md:text-xl">
-                                <span className="font-serif">Final Price</span>
-                                <span className="bg-gradient-tone bg-clip-text font-bold text-transparent">{helpers.moneyFormat(item?.price - (item?.price * item?.discount) / 100)}</span>
-                              </div>
-                            </div>
-                            <div className="mt-6 flex justify-end">
-                              <Link to={`/course/${item.course_id}`}>
-                                <Button type="primary" className="bg-gradient-tone animate-shimmer h-auto transform rounded-xl md:rounded-2xl border-0 px-6 md:px-10 py-4 md:py-6 font-serif text-base md:text-lg text-white shadow-lg transition-all duration-700 hover:-translate-y-1 hover:scale-105 hover:shadow-xl">
-                                  Learn More
-                                </Button>
-                              </Link>
-                            </div>
-                          </Col>
-                        </Row>
-                      </Card>
-                    </List.Item>
-                  )}
+              <Table
+                dataSource={cartItems.filter((item) => item.status === CartStatusEnum.completed)}
+                columns={[
+                  {
+                    title: 'Course Name',
+                    dataIndex: 'course_name',
+                    key: 'course_name',
+                    render: (text) => (
+                      <Text strong className="bg-gradient-tone block w-full transform bg-clip-text md:text-xl tracking-wide text-transparent transition-all duration-300">
+                        {text}
+                      </Text>
+                    ),
+                    width: '300px',
+                  },
+                  // {
+                  //   title: 'Instructor',
+                  //   dataIndex: 'instructor_name',
+                  //   key: 'instructor_name',
+                  //   render: (text) => (
+                  //     <Text className="mt-2 md:mt-4 block text-base md:text-lg font-light italic text-gray-600">
+                  //       <span className="bg-gradient-tone inline-block transform bg-clip-text font-light text-transparent transition-all duration-300">{text}</span>
+                  //     </Text>
+                  //   ),
+                  // },
+                  {
+                    title: 'Original Price',
+                    dataIndex: 'price',
+                    key: 'price',
+                    render: (price) => (
+                      <span className="font-medium">{helpers.moneyFormat(price)}</span>
+                    ),
+                  },
+                  {
+                    title: 'Savings',
+                    dataIndex: 'discount',
+                    key: 'discount',
+                    render: (discount) => (
+                      <span className="animate-pulse font-medium">{discount}% OFF</span>
+                    ),
+                  },
+                  {
+                    title: 'Final Price',
+                    key: 'final_price',
+                    render: (_, item) => (
+                      <span className="bg-gradient-tone bg-clip-text font-bold text-transparent">{helpers.moneyFormat(item.price - (item.price * item.discount) / 100)}</span>
+                    ),
+                  },
+                  {
+                    title: 'Action',
+                    key: 'action',
+                    render: (_, item) => (
+                      <Link to={`/course/${item.course_id}`}>
+                        <Button type="primary" className="bg-gradient-tone animate-shimmer h-10 md:h-12 transform rounded-xl md:rounded-2xl border-0 px-6 md:px-10 py-4 md:py-6 font-serif md:text-lg text-white shadow-lg transition-all duration-700 hover:shadow-xl">
+                          Learn More
+                        </Button>
+                      </Link>
+                    ),
+                  },
+                ]}
+                rowKey="_id"
+                pagination={false}
+                className="transition-all duration-500 ease-in-out"
                 />
               </div>
             ) : (
@@ -320,7 +353,7 @@ const CartPage: React.FC = () => {
           </Card>
         </Col>
 
-        {activeTab !== CartStatusEnum.waiting_paid && activeTab !== CartStatusEnum.completed && (
+        {activeTab !== CartStatusEnum.waiting_paid && activeTab !== CartStatusEnum.completed && cartItems.length > 0 && (
           <Col xs={24} lg={8}>
             <Card className="sticky top-8 rounded-xl border-0 bg-white p-4 md:p-6 shadow-xl">
               <Title level={3} className="mb-6 md:mb-8 text-center text-xl md:text-2xl font-bold tracking-wide text-gray-800">
