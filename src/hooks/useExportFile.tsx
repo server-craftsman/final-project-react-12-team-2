@@ -40,38 +40,26 @@ const useExportFileXLSX = () => {
     // Add data starting from the third row
     XLSX.utils.sheet_add_json(ws, csvData, { origin: 'A3', skipHeader: false });
 
-    // Apply styles to the header row
-    const headerStyle = {
-      font: { bold: true, color: { rgb: "FFFFFF" }, sz: 12 },
-      fill: { fgColor: { rgb: "4F81BD" } },
-      alignment: { horizontal: "center", vertical: "center" },
-      border: {
-        top: { style: "medium", color: { rgb: "000000" } },
-        bottom: { style: "medium", color: { rgb: "000000" } },
-        left: { style: "medium", color: { rgb: "000000" } },
-        right: { style: "medium", color: { rgb: "000000" } }
-      }
+    // Define a consistent border style
+    const borderStyle = {
+      top: { style: "thin", color: { hex: "#ff00f3" } },
+      bottom: { style: "thin", color: { hex: "#ff00f3" } },
+      left: { style: "thin", color: { hex: "#ff00f3" } },
+      right: { style: "thin", color: { hex: "#ff00f3" } }
     };
 
     // Apply styles to the entire sheet
-    const cellStyle = {
-      font: { color: { rgb: "333333" }, sz: 11 },
-      alignment: { vertical: "center", horizontal: "center" },
-      border: {
-        top: { style: "thin", color: { rgb: "CCCCCC" } },
-        bottom: { style: "thin", color: { rgb: "CCCCCC" } },
-        left: { style: "thin", color: { rgb: "CCCCCC" } },
-        right: { style: "thin", color: { rgb: "CCCCCC" } }
-      },
-      fill: { fgColor: { rgb: "F7F7F7" } }
-    };
-
     const range = XLSX.utils.decode_range(ws['!ref'] || '');
-    for (let R = 2; R <= range.e.r; ++R) { // Start from row 2 to skip title and date
+    for (let R = 0; R <= range.e.r; ++R) { // Start from row 0 to include title and date
       for (let C = range.s.c; C <= range.e.c; ++C) {
         const cellAddress = XLSX.utils.encode_cell({ c: C, r: R });
-        if (!ws[cellAddress]) continue;
-        ws[cellAddress].s = R === 2 ? headerStyle : cellStyle;
+        if (!ws[cellAddress]) ws[cellAddress] = {}; // Ensure the cell exists
+        ws[cellAddress].s = {
+          font: { color: { rgb: "333333" }, sz: 11 },
+          alignment: { vertical: "center", horizontal: "center" },
+          border: borderStyle,
+          fill: { fgColor: { rgb: "F7F7F7" } }
+        };
       }
     }
 
@@ -111,7 +99,42 @@ const useExportFileXLSX = () => {
     FileSaver.saveAs(data, fileName + fileExtensionXLSX);
   };
 
-  return { exportToXLSX };
+  const exportToCSV = (csvData: any, fileName: string) => {
+    const fileTypeCSV = 'text/csv;charset=UTF-8';
+    const fileExtensionCSV = '.csv';
+
+    if (!csvData || csvData.length === 0) {
+      console.error("No data available to export.");
+      return;
+    }
+
+    const headers = Object.keys(csvData[0]);
+    const csvRows = [];
+
+    csvRows.push(headers.map(header => `"${header}"`).join(','));
+
+    csvData.forEach((row: any) => {
+      const values = headers.map(header => {
+        const value = row[header] !== null && row[header] !== undefined ? row[header] : '';
+        const escapedValue = (`${value}`).replace(/"/g, '""');
+        return `"${escapedValue}"`;
+      });
+      csvRows.push(values.join(','));
+    });
+
+    const csvString = csvRows.map(row => row.split(',').join(',')).join('\n');
+    const data = new Blob([csvString], { type: fileTypeCSV });
+    FileSaver.saveAs(data, fileName + fileExtensionCSV);
+  };
+
+  const exportToJSON = (jsonData: any, fileName: string) => {
+    const fileTypeJSON = 'application/json;charset=UTF-8';
+    const fileExtensionJSON = '.json';
+    const data = new Blob([JSON.stringify(jsonData, null, 2)], { type: fileTypeJSON });
+    FileSaver.saveAs(data, fileName + fileExtensionJSON);
+  };
+
+  return { exportToXLSX, exportToCSV, exportToJSON };
 };
 
 export default useExportFileXLSX;

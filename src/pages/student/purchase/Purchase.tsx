@@ -182,7 +182,7 @@ const Purchase: React.FC = () => {
         purchase_no,
         cart_no,
         status,
-        created_at
+        created_at: helpers.formatDate(new Date(created_at)),
       }));
       exportToXLSX(filteredTransactions, fileName);
     };
