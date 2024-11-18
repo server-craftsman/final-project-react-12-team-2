@@ -50,7 +50,7 @@ const Purchase: React.FC = () => {
       try {
         const response = await PurchaseService.searchForStudentPurchase({
           searchCondition: {
-            status: PurchaseStatus.NEW || "",
+            status: PurchaseStatus.ALL,
             is_delete: false,
             purchase_no: "",
             cart_no: "",
