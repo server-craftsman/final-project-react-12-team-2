@@ -5,40 +5,40 @@ import { LessonService } from "../services/lesson/lesson.service";
 import { SessionRequestModel } from "../models/api/request/session/session.request.model";
 import { GetCourseParams } from "../models/api/request/course/course.request.model";
 import { GetLessonParams } from "../models/api/request/lesson/lesson.request.model";
-import { create } from "zustand";
+// import { create } from "zustand";
 
 // Add course store
-interface CourseStore {
-  refreshCourses: () => Promise<void>;
-  setRefreshCourses: (refresh: () => Promise<void>) => void;
-}
+// interface CourseStore {
+//   refreshCourses: () => Promise<void>;
+//   setRefreshCourses: (refresh: () => Promise<void>) => void;
+// }
 
-// Add session store
-interface SessionStore {
-  refreshSessions: () => Promise<void>;
-  setRefreshSessions: (refresh: () => Promise<void>) => void;
-}
+// // Add session store
+// interface SessionStore {
+//   refreshSessions: () => Promise<void>;
+//   setRefreshSessions: (refresh: () => Promise<void>) => void;
+// }
 
-// Add lesson store
-interface LessonStore {
-  refreshLessons: () => Promise<void>;
-  setRefreshLessons: (refresh: () => Promise<void>) => void;
-}
+// // Add lesson store
+// interface LessonStore {
+//   refreshLessons: () => Promise<void>;
+//   setRefreshLessons: (refresh: () => Promise<void>) => void;
+// }
 
-export const useCourseStore = create<CourseStore>((set) => ({
-  refreshCourses: async () => {},
-  setRefreshCourses: (refresh) => set({ refreshCourses: refresh })
-}));
+// export const useCourseStore = create<CourseStore>((set) => ({
+//   refreshCourses: async () => {},
+//   setRefreshCourses: (refresh) => set({ refreshCourses: refresh })
+// }));
 
-export const useSessionStore = create<SessionStore>((set) => ({
-  refreshSessions: async () => {},
-  setRefreshSessions: (refresh) => set({ refreshSessions: refresh })
-}));
+// export const useSessionStore = create<SessionStore>((set) => ({
+//   refreshSessions: async () => {},
+//   setRefreshSessions: (refresh) => set({ refreshSessions: refresh })
+// }));
 
-export const useLessonStore = create<LessonStore>((set) => ({
-  refreshLessons: async () => {},
-  setRefreshLessons: (refresh) => set({ refreshLessons: refresh })
-}));
+// export const useLessonStore = create<LessonStore>((set) => ({
+//   refreshLessons: async () => {},
+//   setRefreshLessons: (refresh) => set({ refreshLessons: refresh })
+// }));
 
 //optimize to call api one time
 export const useCallbackCourse = () => {

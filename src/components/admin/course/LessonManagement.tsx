@@ -6,7 +6,7 @@ import { EyeOutlined } from "@ant-design/icons";
 import { LessonService } from "../../../services/lesson/lesson.service";
 import { Lesson } from "../../../models/api/responsive/lesson/lesson.response.model";
 import ModalLessonDetail from "./ModalLessonDetail";
-import { useLessonStore } from "../../../hooks/useCallback";
+// import { useLessonStore } from "../../../hooks/useCallback";
 import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 interface LessonManagementProps {
   searchTerm: string;
@@ -17,12 +17,12 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm, activeK
   const [filteredLessons, setFilteredLessons] = useState<Lesson["pageData"]>([]);
   const [totalItems, setTotalItems] = useState<number>(0);
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
-  const refreshLessons = useLessonStore((state) => state.refreshLessons);
+  // const refreshLessons = useLessonStore((state) => state.refreshLessons);
   const [selectedLessonDetail, setSelectedLessonDetail] = useState<Lesson["pageData"][0] | null>(null);
   const [isLessonDetailModalVisible, setIsLessonDetailModalVisible] = useState(false);
 
   useEffect(() => {
-    refreshLessons();
+    // refreshLessons();
     const fetchLessons = async () => {
       const response = await LessonService.getLesson({
         searchCondition: {
@@ -40,7 +40,7 @@ const LessonManagement: React.FC<LessonManagementProps> = ({ searchTerm, activeK
       }
     };
     fetchLessons();
-  }, [refreshLessons, searchTerm, activeKey, pagination]);
+  }, [searchTerm, activeKey, pagination]);
 
   const showLessonDetailModal = async (lessonId: string) => {
     try {

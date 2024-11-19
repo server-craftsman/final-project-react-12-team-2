@@ -60,11 +60,11 @@ const DashBoard = ({ settings, totalBlogs, totalUsers, totalCourses, totalCatego
             </div>
           </BoxWrapper>
         ))}
-      </div>
-    </>
-  );
+        </div>
+      </>
+    );
   } else {
-    return <LoadingAnimation />
+    return settings ? <LoadingAnimation /> : <p>No data</p>;
   }
 };
 

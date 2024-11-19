@@ -15,15 +15,23 @@ export const checkValidUrl = (url: string): boolean => {
   return true;
 };
 
-export const checkValidLength = (value: string, min: number, max: number) => {
-  if (min < 0 || max < min) {
-    throw new Error("Invalid min/max length parameters");
-  }
-  if (!z.string().min(min).max(max).safeParse(value).success) {
-    throw new Error(`Length must be between ${min} and ${max} characters`);
+export const checkValidDate = (date: string): boolean => {
+  const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+  if (!datePattern.test(date)) {
+    throw new Error("Invalid date format. Date must be in YYYY-MM-DD format");
   }
   return true;
 };
+
+// export const checkValidLength = (value: string, min: number, max: number) => {
+//   if (min < 0 || max < min) {
+//     throw new Error("Invalid min/max length parameters");
+//   }
+//   if (!z.string().min(min).max(max).safeParse(value).success) {
+//     throw new Error(`Length must be between ${min} and ${max} characters`);
+//   }
+//   return true;
+// };
 
 // export const checkValidPhoneNumber = (phoneNumber: string): string => {
 //   const phonePattern = /^\+?[\d\s-]{10,15}$/;

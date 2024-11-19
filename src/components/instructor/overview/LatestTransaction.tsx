@@ -5,7 +5,7 @@ import { GetPayoutResponseModel } from "../../../models/api/responsive/payout/pa
 import { helpers } from "../../../utils";
 import { LineChart, Line, CartesianGrid, Tooltip, ResponsiveContainer, Legend, XAxis, YAxis } from 'recharts';
 // import DatePicker from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
+// import "react-datepicker/dist/react-datepicker.css";
 
 // const filterTransactionsByDate = (transactions: GetPayoutResponseModel[]) => {
 //   const currentDate = new Date();

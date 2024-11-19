@@ -150,32 +150,32 @@ const RecentOrder = ({ settings }: { settings: Setting }) => {
       const fileName = "Transactions_Report_" + moment().format('DD-MM-YYYY');
       if (fileType === 'xlsx') {
         const filteredTransactions = transactions.map(({type, amount, balance_old, balance_new, instructor_ratio, created_at }: { type: string, amount: number, balance_old: number, balance_new: number, instructor_ratio: number, created_at: string }) => ({
-          type,
-          amount,
-          balance_old,
-          balance_new,
-          instructor_ratio,
-          created_at: helpers.formatDate(new Date(created_at)),
+          "Type": type,
+          "Amount": amount,
+          "Balance Old": balance_old,
+          "Balance New": balance_new,
+          "Instructor Ratio": instructor_ratio,
+          "Created At": helpers.formatDate(new Date(created_at)),
         }))
         exportToXLSX(filteredTransactions, fileName);
       } else if (fileType === 'csv') {
         const filteredTransactions = transactions.map(({type, amount, balance_old, balance_new, instructor_ratio, created_at }: { type: string, amount: number, balance_old: number, balance_new: number, instructor_ratio: number, created_at: string }) => ({
-          type,
-          amount,
-          balance_old,
-          balance_new,
-          instructor_ratio,
-          created_at: helpers.formatDate(new Date(created_at)),
+          "Type": type,
+          "Amount": amount,
+          "Balance Old": balance_old,
+          "Balance New": balance_new,
+          "Instructor Ratio": instructor_ratio,
+          "Created At": helpers.formatDate(new Date(created_at)),
         }))
         exportToCSV(filteredTransactions, fileName);
       } else if (fileType === 'json') {
         const filteredTransactions = transactions.map(({type, amount, balance_old, balance_new, instructor_ratio, created_at }: { type: string, amount: number, balance_old: number, balance_new: number, instructor_ratio: number, created_at: string }) => ({
-          type,
-          amount,
-          balance_old,
-          balance_new,
-          instructor_ratio,
-          created_at: helpers.formatDate(new Date(created_at)),
+          "Type": type,
+          "Amount": amount,
+          "Balance Old": balance_old,
+          "Balance New": balance_new,
+          "Instructor Ratio": instructor_ratio,
+          "Created At": helpers.formatDate(new Date(created_at)),
         }))
         exportToJSON(filteredTransactions, fileName);
       }

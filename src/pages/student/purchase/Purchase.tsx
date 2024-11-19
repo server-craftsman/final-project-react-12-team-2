@@ -173,16 +173,16 @@ const Purchase: React.FC = () => {
     const handleExport = () => {
       const fileName = "Purchase_Report_" + moment().format('DD-MM-YYYY');
       const filteredTransactions = transactions.map(({course_name, instructor_name, student_name, price_paid, price, discount, purchase_no, cart_no, status, created_at }: { purchase_no: string, cart_no: string, status: string, course_name: string, instructor_name: string, student_name: string, price_paid: number, price: number, discount: number, created_at: string }) => ({
-        course_name,
-        instructor_name,
-        student_name,
-        price_paid,
-        price,
-        discount,
-        purchase_no,
-        cart_no,
-        status,
-        created_at: helpers.formatDate(new Date(created_at)),
+        "Course": course_name,
+        "Instructor": instructor_name,
+        "Student": student_name,
+        "Price Cost": price_paid,
+        "Price Original": price,
+        "Discount": discount,
+        "Purchase No": purchase_no,
+        "Cart No": cart_no,
+        "Status": status,
+        "Created At": helpers.formatDate(new Date(created_at)),
       }));
       exportToXLSX(filteredTransactions, fileName);
     };
