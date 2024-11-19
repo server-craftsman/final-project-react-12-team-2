@@ -1,5 +1,5 @@
-export const DOMAIN_ADMIN = "https://api-team2-final-project.vercel.app/";
+export const DOMAIN_ADMIN = import.meta.env.VITE_DOMAIN_ADMIN || "";
 export const LOCAL_STORAGE = {
-  ACCOUNT_ADMIN: "team2fsoft@gmail.com",
-  ACCOUNT_PASSWORD: "team2fsoft@fall24"
+  ACCOUNT_ADMIN: import.meta.env.VITE_ACCOUNT_ADMIN || "",
+  ACCOUNT_PASSWORD: import.meta.env.VITE_ACCOUNT_PASSWORD || ""
 };
