@@ -14,7 +14,7 @@ const ManagePayout = lazy(() => import("../../pages/instructor/payout/ManagePayo
 
 const Purchases = lazy(() => import("../../pages/instructor/purchase/PurchasesManagement"));
 const CourseManagement = lazy(() => import("../../pages/instructor/course/CourseManagement"));
-
+const ManagementCategory = lazy(() => import("../../pages/instructor/category/ManagementCategory"));
 export const instructorSubPaths: Record<string, RouteObject[]> = {
   [ROUTER_URL.INSTRUCTOR.BASE]: [
     {
@@ -56,6 +56,10 @@ export const instructorSubPaths: Record<string, RouteObject[]> = {
     {
       path: ROUTER_URL.INSTRUCTOR.COURSES,
       element: <CourseManagement />
+    },
+    {
+      path: ROUTER_URL.INSTRUCTOR.CATEGORY,
+      element: <ManagementCategory />
     }
   ]
 };

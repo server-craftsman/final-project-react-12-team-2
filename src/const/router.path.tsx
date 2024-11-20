@@ -40,7 +40,8 @@ export const ROUTER_URL = {
     VIEW_TRANSACTIONS: "/instructor/payout/view-transactions/:id",
     ORDERS: "/instructor/orders",
     COURSES: "/instructor/courses",
-    SUBSCRIPTION: "/instructor/subscription"
+    SUBSCRIPTION: "/instructor/subscription",
+    CATEGORY: "/instructor/category"
   },
   STUDENT: {
     BASE: "/dashboard-student",
