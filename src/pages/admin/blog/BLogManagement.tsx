@@ -19,7 +19,7 @@ const BlogManagement: React.FC = () => {
       <Card>
         <div className="mb-4 flex justify-between">
           <CustomSearch className="search-input" placeholder="Search by blog name" onSearch={handleSearch} />
-          <CreateBlog refreshKey={refreshKey} />
+          <CreateBlog />
         </div>
         <DislayBlog searchQuery={searchTerm} refreshKey={refreshKey} />
       </Card>
