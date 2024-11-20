@@ -11,7 +11,6 @@ import Editor from "../../generic/tiny/Editor";
 const CreateBlog = () => {
   const [form] = useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>();
   const [categories, setCategories] = useState<{ value: string; label: string }[]>([]);
@@ -56,7 +55,6 @@ const CreateBlog = () => {
   // Upload image
   const uploadImage = useCallback(async () => {
     if (!imageFile) return "";
-    setUploading(true);
     try {
       const uploadedUrl = await BaseService.uploadFile(imageFile, "image", true);
       return uploadedUrl;
@@ -64,7 +62,7 @@ const CreateBlog = () => {
       message.error("Failed to upload image");
       return "";
     } finally {
-      setUploading(false);
+      console.log('Success');
     }
   }, [imageFile]);
 
@@ -72,7 +70,6 @@ const CreateBlog = () => {
   const onFinish = useCallback(
     async (values: any) => {
       try {
-        setUploading(true);
         const imageUrl = await uploadImage();
 
         await BlogService.createBlog({
@@ -86,7 +83,7 @@ const CreateBlog = () => {
       } catch (error: any) {
         message.error(error.message || "Failed to create blog post");
       } finally {
-        setUploading(false);
+        console.log('Success');
       }
     },
     [handleModalToggle, uploadImage]
@@ -150,7 +147,7 @@ const CreateBlog = () => {
           <Form.Item label="Image">{renderUpload()}</Form.Item>
 
           <Form.Item>
-            <Button className="bg-gradient-tone px-4 py-2 text-white" htmlType="submit" loading={uploading}>
+            <Button className="bg-gradient-tone px-4 py-2 text-white" htmlType="submit">
               Create Post
             </Button>
           </Form.Item>
