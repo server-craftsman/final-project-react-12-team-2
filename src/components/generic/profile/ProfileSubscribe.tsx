@@ -8,7 +8,6 @@ import ButtonSubscribe from "./CreateSubscribe";
 import { SubscriptionService } from "../../../services/subscription/subscription.service";
 import ProfileDetail from "./ProfileDetail";
 import { BackwardFilled } from "@ant-design/icons";
-import parse from "html-react-parser";
 import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 const ProfileSubscribe: React.FC = () => {
 
@@ -94,13 +93,18 @@ const ProfileSubscribe: React.FC = () => {
           <Typography.Title level={4}>
             {userData?.name || "Loading..."} <CheckCircleOutlined style={{ color: '#1890ff' }} />
           </Typography.Title>
-          <Typography.Text type="secondary">{userData?.email || "Loading..."}</Typography.Text>
-          <Typography.Paragraph style={{ margin: '8px 0' }}>
+          <Typography.Text type="secondary" className="flex items-center gap-2 mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+</svg>
+
+            {userData?.email || "Loading..."}</Typography.Text>
+          {/* <Typography.Paragraph style={{ margin: '8px 0' }}>
             {parse(userData?.description || "Loading...")}
-          </Typography.Paragraph>
+          </Typography.Paragraph> */}
           <Space direction="horizontal" style={{ justifyContent: 'space-between', width: '100%' }}>
             <ButtonSubscribe isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} instructorId={id as string} isSubscribed={isSubscribed} setIsSubscribed={setIsSubscribed} />
-            <Typography.Text style={{ fontWeight: 'bold', fontSize: '18px', color: 'black' }}>
+            <Typography.Text style={{ fontWeight: 'bold', fontSize: '18px', color: 'black', marginLeft: "8px" }}>
               {subscriberCount} subscribers
             </Typography.Text>
           </Space>

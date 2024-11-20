@@ -27,7 +27,7 @@ export const handleUploadFile = async (file: File, type: "video" | "image") => {
     }
 
     const data = await response.json();
-    return data.secure_url || ""; // Ensure we return empty string if secure_url is undefined
+    return data.url;
   } catch (error) {
     console.error("Upload error:", error);
     message.error(`Failed to upload ${type}. Please try again.`);
