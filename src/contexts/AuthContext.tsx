@@ -2,12 +2,15 @@ import { createContext, useContext, ReactNode, useState, useEffect } from "react
 import { UserRole } from "../models/prototype/User";
 import { AuthService } from "../services/authentication/auth.service";
 import { UserService } from "../services/admin/user.service";
+import { useNavigate } from "react-router-dom";
 import { RegisterStudentPublicParams, RegisterInstructorPublicParams, RegisterParams } from "../models/api/request/authentication/auth.request.model";
 import { ChangePasswordParams } from "../models/api/request/admin/user.request.model";
 import { HTTP_STATUS } from "../app/enums";
 import { HttpException } from "../app/exceptions";
 import { User } from "../models/api/responsive/users/users.model";
 import { ResponseSuccess } from "../app/interface";
+import { message } from "antd";
+import { toast } from "react-toastify";
 
 interface AuthContextType {
   role: UserRole | null;
@@ -52,6 +55,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return storedUserInfo ? JSON.parse(storedUserInfo) : null;
   });
 
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -116,8 +120,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     localStorage.removeItem("userInfo");
-    window.location.href = "/login";
-  };
+    navigate("/login");
+    toast.success("Logout successfully!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      style: { backgroundColor: "#1a237e" }
+    });  };
 
   //handle login
   const handleLogin = async (token: string) => {
