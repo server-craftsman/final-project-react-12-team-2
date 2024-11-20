@@ -8,6 +8,7 @@ import { UserService } from "../../../services/student/user.service";
 import { formatDate } from "../../../utils/helper";
 import { UserOutlined } from "@ant-design/icons";
 import { useCallback } from "react";
+import {  AnimatePresence } from "framer-motion";
 
 const BlogDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -81,7 +82,7 @@ const BlogDetails: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [id]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <AnimatePresence></AnimatePresence>;
   if (error) return <p className="error">{error}</p>;
 
   const BlogCard = ({ blog }: { blog: getPublicBlogsDetails }) => (

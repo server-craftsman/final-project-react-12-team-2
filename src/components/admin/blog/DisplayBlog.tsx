@@ -76,6 +76,11 @@ const DisplayBlog: React.FC<{ searchQuery: string, refreshKey: number }> = ({ se
 
   const columns = [
     {
+      title: "No",
+      key: "index",
+      render: (_: any, __: Blog, index: number) => index + 1,
+    },
+    {
       title: "Blog Name",
       dataIndex: "name",
       render: (text: string, record: Blog) => {
