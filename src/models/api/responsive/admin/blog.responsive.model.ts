@@ -51,3 +51,19 @@ export interface getPublicBlogsDetails {
   updated_at: Date;
   is_deleted: boolean;
 }
+
+export interface GetBlogDetailsResponse {
+  _id: string;
+  name: string;
+  user_id: string;
+  user_name: string;
+  category_id: string;
+  category_name: string;
+  image_url: string;
+  description: string;
+  content: string;
+  created_at: Date;
+  updated_at: Date;
+  is_deleted: boolean;
+}
+
