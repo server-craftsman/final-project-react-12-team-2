@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { DashboardOutlined, UserOutlined, FileTextOutlined, StarOutlined } from "@ant-design/icons";
+import { DashboardOutlined, UserOutlined, FileTextOutlined, StarOutlined, BookOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import useResponsiveCollapse from "../../hooks/useResponsiveCollapse";
 import logo1 from "../../assets/logo1.jpg";
@@ -18,21 +18,26 @@ const InstructorNavbar: React.FC = () => {
       label: "Dashboard",
       path: "/instructor/"
     },
-
     {
       key: "2",
+      icon: <BookOutlined className="text-white" />,
+      label: "Manage Category",
+      path: "/instructor/category"
+    },
+    {
+      key: "3",
       icon: <FileTextOutlined className="text-white" />,
       label: "Manage Courses",
       path: "/instructor/courses"
     },
     {
-      key: "3",
+      key: "4",
       icon: <FileTextOutlined className="text-white" />,
       label: "Sales History",
       path: "/instructor/purchases"
     },
     {
-      key: "4",
+      key: "5",
       icon: <FileTextOutlined className="text-white" />,
       label: "Manage Payout",
       path: "/instructor/payout"
