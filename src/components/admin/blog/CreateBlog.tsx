@@ -3,8 +3,10 @@ import { Form, Input, Button, Modal, Select, Upload, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useForm } from "antd/lib/form/Form";
 import { BlogService } from "../../../services/blog/blog.service";
-import { customUploadHandler } from "../../../utils/upload";
+// import { customUploadHandler } from "../../../utils/upload";
 import { CategoryService } from "../../../services/category/category.service";
+import { BaseService } from "../../../services/config/base.service";
+import Editor from "../../generic/tiny/Editor";
 
 const CreateBlog = () => {
   const [form] = useForm();
@@ -54,24 +56,16 @@ const CreateBlog = () => {
   // Upload image
   const uploadImage = useCallback(async () => {
     if (!imageFile) return "";
-    let imageUrl = "";
-    await customUploadHandler(
-      {
-        file: imageFile,
-        onSuccess: (url) => {
-          imageUrl = url;
-        },
-        onError: () => {
-          message.error("Failed to upload image");
-        }
-      },
-      "image",
-      setUploading,
-      (type, url) => {
-        console.log(`${type} uploaded to ${url}`);
-      }
-    );
-    return imageUrl;
+    setUploading(true);
+    try {
+      const uploadedUrl = await BaseService.uploadFile(imageFile, "image", true);
+      return uploadedUrl;
+    } catch (error) {
+      message.error("Failed to upload image");
+      return "";
+    } finally {
+      setUploading(false);
+    }
   }, [imageFile]);
 
   // Form submission
@@ -88,6 +82,7 @@ const CreateBlog = () => {
 
         message.success("Blog post created successfully!");
         handleModalToggle();
+        window.location.reload();
       } catch (error: any) {
         message.error(error.message || "Failed to create blog post");
       } finally {
@@ -140,7 +135,12 @@ const CreateBlog = () => {
           </Form.Item>
 
           <Form.Item name="content" label="Content" rules={[{ required: true, message: "Please input the content!" }]}>
-            <Input.TextArea />
+              <Editor
+                initialValue={form.getFieldValue('content') || ""} 
+                onEditorChange={(content: string) => {
+                  form.setFieldsValue({ content }); 
+                }}
+              />
           </Form.Item>
 
           <Form.Item name="category_id" label="Category" rules={[{ required: true, message: "Please select a category!" }]}>

@@ -9,7 +9,7 @@ import { HTTP_STATUS } from "../app/enums";
 import { HttpException } from "../app/exceptions";
 import { User } from "../models/api/responsive/users/users.model";
 import { ResponseSuccess } from "../app/interface";
-import { message } from "antd";
+
 import { toast } from "react-toastify";
 
 interface AuthContextType {
