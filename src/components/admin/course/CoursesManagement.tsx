@@ -195,27 +195,68 @@ const CoursesManagement: React.FC<{
       title: "Action",
       key: "action",
       render: (record: any) => {
-        const commonButtons = (
-          <div>
-            <Button icon={<CarryOutOutlined />} onClick={() => showLessonModal(record._id)} className="mr-2 bg-white text-orange-500 hover:opacity-80" title="View Lessons" />
-            <Button icon={<ContainerOutlined />} onClick={() => showSessionModal(record._id)} className="mr-2 bg-white text-yellow-500 hover:opacity-80" title="View Sessions" />
-            <Button icon={<EyeOutlined />} onClick={() => showCourseDetailModal(record._id)} className="mr-2 bg-white text-blue-500 hover:opacity-80" title="View Details" />
-          </div>
+        const viewDetailsButton = (
+          <Button
+            icon={<EyeOutlined />}
+            onClick={() => showCourseDetailModal(record._id)}
+            className="mr-2 bg-white text-blue-500 hover:opacity-80"
+            title="View Details"
+          />
+        );
+
+        const lessonAndSessionButtons = (
+          <>
+            <Button
+              icon={<CarryOutOutlined />}
+              onClick={() => showLessonModal(record._id)}
+              className="mr-2 bg-white text-orange-500 hover:opacity-80"
+              title="View Lessons"
+            />
+            <Button
+              icon={<ContainerOutlined />}
+              onClick={() => showSessionModal(record._id)}
+              className="mr-2 bg-white text-yellow-500 hover:opacity-80"
+              title="View Sessions"
+            />
+          </>
         );
 
         if (record.status === StatusType.WAITING_APPROVE) {
           return (
             <div>
-              <Popconfirm title="Confirm the course?" description="Are you sure to confirm this course?" onConfirm={() => handleChangeStatus(record._id, StatusType.APPROVE)} okText="Yes" cancelText="No">
-                <Button icon={<CheckOutlined />} className="mr-2 bg-white text-green-500 hover:opacity-80" title="Confirm" />
+              {lessonAndSessionButtons}
+              <Popconfirm
+                title="Confirm the course?"
+                description="Are you sure to confirm this course?"
+                onConfirm={() => handleChangeStatus(record._id, StatusType.APPROVE)}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  icon={<CheckOutlined />}
+                  className="mr-2 bg-white text-green-500 hover:opacity-80"
+                  title="Confirm"
+                />
               </Popconfirm>
-              <Button icon={<StopOutlined />} className="mr-2 bg-white text-red-500 hover:opacity-80" onClick={() => showRejectModal(record._id)} title="Reject" />
-              {commonButtons}
+              <Button
+                icon={<StopOutlined />}
+                className="mr-2 bg-white text-red-500 hover:opacity-80"
+                onClick={() => showRejectModal(record._id)}
+                title="Reject"
+              />
+              {viewDetailsButton}
+            </div>
+          );
+        } else if (record.lesson_count > 0 || record.session_count > 0) {
+          return (
+            <div>
+              {lessonAndSessionButtons}
+              {viewDetailsButton}
             </div>
           );
         }
 
-        return commonButtons;
+        return <div>{viewDetailsButton}</div>;
       }
     }
   ];
