@@ -150,7 +150,7 @@ const CreateBlog = () => {
           <Form.Item label="Image">{renderUpload()}</Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={uploading}>
+            <Button className="bg-gradient-tone px-4 py-2 text-white" htmlType="submit" loading={uploading}>
               Create Post
             </Button>
           </Form.Item>
