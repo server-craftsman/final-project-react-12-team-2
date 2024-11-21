@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Avatar, Button, Card } from "antd";
+import { Button, Card } from "antd";
 import { BackwardFilled  } from "@ant-design/icons"; 
 import { BlogService } from "../../../services/blog/blog.service";
 import { GetBlogResponse, getPublicBlogsDetails } from "../../../models/api/responsive/admin/blog.responsive.model";
-import { UserService } from "../../../services/student/user.service";
+// import { UserService } from "../../../services/student/user.service";
 import { formatDate } from "../../../utils/helper";
-import { UserOutlined } from "@ant-design/icons";
-import { useCallback } from "react";
+// import { useCallback } from "react";
 import {  AnimatePresence } from "framer-motion";
 
 const BlogDetails: React.FC = () => {
@@ -17,31 +16,31 @@ const BlogDetails: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingRelated, setLoadingRelated] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [userAvatars, setUserAvatars] = useState<Record<string, string>>({});
+  // const [userAvatars, setUserAvatars] = useState<Record<string, string>>({});
 
-  const fetchUserAvatar = useCallback(async (userId: string) => {
-    try {
-      const response = await UserService.getUserDetails(userId);
-      if (response.data?.data?.avatar_url) {
-        setUserAvatars(prev => ({
-          ...prev,
-          [userId]: response.data.data.avatar_url
-        }));
-      }
-    } catch (error) {
-      console.error('Error fetching user avatar:', error);
-    }
-  }, []);
+  // const fetchUserAvatar = useCallback(async (userId: string) => {
+  //   try {
+  //     const response = await UserService.getUserDetails(userId);
+  //     if (response.data?.data?.avatar_url) {
+  //       setUserAvatars(prev => ({
+  //         ...prev,
+  //         [userId]: response.data.data.avatar_url
+  //       }));
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching user avatar:', error);
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    if (relatedBlogs?.pageData) {
-      relatedBlogs.pageData.forEach(blog => {
-        if (blog.user_id && !userAvatars[blog.user_id]) {
-          fetchUserAvatar(blog.user_id);
-        }
-      });
-    }
-  }, [relatedBlogs, fetchUserAvatar]);
+  // useEffect(() => {
+  //   if (relatedBlogs?.pageData) {
+  //     relatedBlogs.pageData.forEach(blog => {
+  //       if (blog.user_id && !userAvatars[blog.user_id]) {
+  //         fetchUserAvatar(blog.user_id);
+  //       }
+  //     });
+  //   }
+  // }, [relatedBlogs, fetchUserAvatar]);
 
   const fetchData = async () => {
     if (!id) {
@@ -92,10 +91,7 @@ const BlogDetails: React.FC = () => {
       </div>
       <div className="p-4">
         <div className="flex items-center mb-3">
-          <Avatar 
-            src={userAvatars[blog.user_id]} 
-            icon={!userAvatars[blog.user_id] && <UserOutlined />}
-          />
+        <img src={`https://ui-avatars.com/api/?name=${blog.user_name[0]}`} alt={blog.user_name} className="w-12 h-12 rounded-full mr-4" />
           <div className="ml-2">
             <p className="text-sm font-medium">{blog.user_name}</p>
             <p className="text-xs text-gray-500">{formatDate(new Date(blog.created_at || ''))}</p>

@@ -7,8 +7,6 @@ import { GetPublicCourseResponse } from "../../../../models/api/responsive/cours
 import { CourseService } from "../../../../services/course/course.service";
 import { helpers } from "../../../../utils";
 const { Title, Paragraph } = Typography;
-import animationData from "../../../../data/courseAnimation.json";
-import Lottie from "lottie-react";
 const { Meta } = Card;
 import parse from "html-react-parser";
 import { useMediaQuery } from 'react-responsive';
@@ -118,11 +116,11 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
     <Row gutter={getResponsiveGutter()}>
       <AnimatePresence>
         {loading ? (
-          <div className="flex justify-center items-center h-full w-full">
-            <Lottie height={isMobile ? 200 : 400} width={isMobile ? 200 : 400} animationData={animationData} />
-          </div>
+          <Col span={24}>
+            <Card loading={true} />
+          </Col>
         ) : (
-          courses?.pageData.slice((pageNum - 1) * pageSize, pageNum * pageSize).map((course: any, index) => {
+          courses?.pageData.slice((pageNum - 1) * pageSize, pageNum * pageSize).map((course: any, index: number) => {
             return (
               <Col xs={24} sm={12} lg={8} key={course._id} className="mx-auto h-full">
                 <motion.div
@@ -140,6 +138,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                     whileTap={{ scale: 0.98 }}
                   >
                     <Card
+                      loading={loading}
                       hoverable
                       cover={
                         <motion.img 
@@ -153,7 +152,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                       }
                       className={`group relative flex flex-col overflow-hidden rounded-lg bg-white shadow-lg`}
                       style={{
-                        height: isMobile ? 'auto' : '720px', // Increased height from 600px to 650px
+                        height: isMobile ? 'auto' : '720px',
                         display: "flex",
                         flexDirection: "column"
                       }}

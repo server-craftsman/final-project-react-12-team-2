@@ -4,9 +4,9 @@ import { Course } from "../../../models/prototype/Course";
 import { GetBlogResponse } from "../../../models/api/responsive/admin/blog.responsive.model";
 import { GetBlogParams } from "../../../models/api/request/admin/blog.request.model";
 import { BlogService } from "../../../services/blog/blog.service";
-import { Avatar, Card, DatePicker, Button, Tag, Pagination } from "antd";
-import { UserOutlined, BackwardFilled } from "@ant-design/icons";
-import { UserService } from "../../../services/student/user.service";
+import { Card, DatePicker, Button, Tag, Pagination } from "antd";
+import { BackwardFilled } from "@ant-design/icons";
+// import { UserService } from "../../../services/student/user.service";
 import { formatDate } from "../../../utils/helper";
 import CustomSearch from "../../generic/search/CustomSearch";
 import moment from "moment";
@@ -28,7 +28,7 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
   const [blogData, setBlogData] = useState<GetBlogResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [userAvatars, setUserAvatars] = useState<Record<string, string>>({});
+  // const [userAvatars, setUserAvatars] = useState<Record<string, string>>({});
   const [dateFilter, setDateFilter] = useState<moment.Moment | null>(null);
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -101,29 +101,29 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
     if (pageSize) setPageSize(pageSize);
   };
 
-  const fetchUserAvatar = useCallback(async (userId: string) => {
-    try {
-      const response = await UserService.getUserDetails(userId);
-      if (response.data?.data?.avatar_url) {
-        setUserAvatars(prev => ({
-          ...prev,
-          [userId]: response.data.data.avatar_url
-        }));
-      }
-    } catch (error) {
-      console.error('Error fetching user avatar:', error);
-    }
-  }, []);
+  // const fetchUserAvatar = useCallback(async (userId: string) => {
+  //   try {
+  //     const response = await UserService.getUserDetails(userId);
+  //     if (response.data?.data?.avatar_url) {
+  //       setUserAvatars(prev => ({
+  //         ...prev,
+  //         [userId]: response.data.data.avatar_url
+  //       }));
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching user avatar:', error);
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    if (blogData?.pageData) {
-      blogData.pageData.forEach(blog => {
-        if (blog.user_id && !userAvatars[blog.user_id]) {
-          fetchUserAvatar(blog.user_id);
-        }
-      });
-    }
-  }, [blogData, fetchUserAvatar]);
+  // useEffect(() => {
+  //   if (blogData?.pageData) {
+  //     blogData.pageData.forEach(blog => {
+  //       if (blog.user_id && !userAvatars[blog.user_id]) {
+  //         fetchUserAvatar(blog.user_id);
+  //       }
+  //     });
+  //   }
+  // }, [blogData, fetchUserAvatar]);
 
   const filteredData = blogData?.pageData?.filter(
     (blog) =>
@@ -240,11 +240,7 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
                       <div className="w-7/10 pl-6 flex flex-col justify-between">
                         {/* Header with Avatar, Author's Name, and Date */}
                         <div className="flex items-center mb-4">
-                          <Avatar 
-                            src={userAvatars[blog.user_id]}
-                            size="large"
-                            icon={!userAvatars[blog.user_id] && <UserOutlined />}
-                          />
+                        <img src={`https://ui-avatars.com/api/?name=${blog.user_name[0]}`} alt={blog.user_name} className="w-12 h-12 rounded-full mr-4" />
                           <div className="ml-4">
                             <p className="font-bold text-lg">{blog.user_name}</p>
                             <p className="text-gray-500 text-sm">
@@ -298,12 +294,7 @@ const Blog: React.FC<PublicBlogProps> = ({ searchQuery }) => {
 
                       {/* User Avatar */}
                       <div className="flex-shrink-0">
-                        <Avatar
-                          src={userAvatars[blog.user_id]}
-                          size="large"
-                          icon={!userAvatars[blog.user_id] && <UserOutlined />}
-                          className="border-2 border-indigo-100"
-                        />
+                      <img src={`https://ui-avatars.com/api/?name=${blog.user_name[0]}`} alt={blog.user_name} className="w-12 h-12 rounded-full mr-4" />
                       </div>
 
                       {/* Content */}
