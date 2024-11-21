@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import CustomSearch from "../../../components/generic/search/CustomSearch";
 import { Content } from "antd/es/layout/layout";
 import { Card } from "antd";
@@ -14,12 +14,17 @@ const BlogManagement: React.FC = () => {
     setSearchTerm(searchTerm);
   };
 
+  // Function to refresh the blog list
+  const refreshBlogList = useCallback(() => {
+    setRefreshKey(prevKey => prevKey + 1);
+  }, []);
+
   return (
     <Content>
       <Card>
         <div className="mb-4 flex justify-between">
           <CustomSearch className="search-input" placeholder="Search by blog name" onSearch={handleSearch} />
-          <CreateBlog />
+          <CreateBlog onBlogCreated={refreshBlogList} />
         </div>
         <DislayBlog searchQuery={searchTerm} refreshKey={refreshKey} />
       </Card>

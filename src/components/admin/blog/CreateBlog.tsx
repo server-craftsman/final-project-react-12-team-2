@@ -8,7 +8,11 @@ import { CategoryService } from "../../../services/category/category.service";
 import { BaseService } from "../../../services/config/base.service";
 import Editor from "../../generic/tiny/Editor";
 
-const CreateBlog = () => {
+interface CreateBlogProps {
+  onBlogCreated: () => void;
+}
+
+const CreateBlog: React.FC<CreateBlogProps> = ({ onBlogCreated }) => {
   const [form] = useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -79,14 +83,14 @@ const CreateBlog = () => {
 
         message.success("Blog post created successfully!");
         handleModalToggle();
-        window.location.reload();
+        onBlogCreated();
       } catch (error: any) {
         message.error(error.message || "Failed to create blog post");
       } finally {
         console.log('Success');
       }
     },
-    [handleModalToggle, uploadImage]
+    [handleModalToggle, uploadImage, onBlogCreated]
   );
 
   // Render upload component
