@@ -8,7 +8,6 @@ import { PayoutService } from "../../../services/payout/payout.service";
 import { GetPayoutResponseModel } from "../../../models/api/responsive/payout/payout.response.model";
 import { payoutColorStatus } from "../../../utils/payoutStatus";
 import { PayoutStatus } from "../../../app/enums/payout.status";
-import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 interface InstructorPayoutProps {
   refreshKey: number;
   searchQuery: string;
@@ -24,9 +23,11 @@ const InstructorPayout: React.FC<InstructorPayoutProps> = ({ refreshKey, searchQ
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalItems, setTotalItems] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const fetchPayouts = async () => {
     try {
+      setLoading(true);
       const response = await PayoutService.getPayout({
         searchCondition: {
           payout_no: searchQuery,
@@ -46,6 +47,8 @@ const InstructorPayout: React.FC<InstructorPayoutProps> = ({ refreshKey, searchQ
       setTotalItems(response.data.data.pageInfo.totalItems);
     } catch (error) {
       message.error("Failed to fetch payouts.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -152,10 +155,10 @@ const InstructorPayout: React.FC<InstructorPayoutProps> = ({ refreshKey, searchQ
     }
   ];
 
-  if (payouts && totalItems) {
     return (
       <div>
-      <Table 
+      <Table
+        loading={loading}
         columns={columns} 
         dataSource={payouts} 
         rowKey="_id" 
@@ -176,9 +179,7 @@ const InstructorPayout: React.FC<InstructorPayoutProps> = ({ refreshKey, searchQ
       <ViewTransactions isVisible={isModalVisible} onClose={() => setIsModalVisible(false)} transactions={selectedTransactions} />
     </div>
     );
-  } else {
-    return <LoadingAnimation />;
-  }
+
 };
 
 export default InstructorPayout;

@@ -151,7 +151,7 @@ const EditUserProfile = () => {
         setState((prev) => ({ ...prev, uploading: false }));
       }
     },
-    [id, navigate, state.user?.data.avatar_url, state.selectedFile, form]
+    [id, navigate, state.user?.data.avatar_url, state.user?.data.video_url, state.selectedFile, form]
   );
 
   const handleUpload = useCallback(async (file: File) => {
@@ -193,10 +193,7 @@ const EditUserProfile = () => {
                 }
               }
             : null
-        }));
-        setTimeout(() => {
-          message.success("File uploaded successfully");
-        }, 3000);
+        }));     
       }
     } catch (error) {
       message.error("Failed to upload file. Please try again.");

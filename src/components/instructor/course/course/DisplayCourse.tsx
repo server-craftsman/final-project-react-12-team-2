@@ -17,7 +17,6 @@ import { GetCourseParams } from "../../../../models/api/request/course/course.re
 import { GetCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
 import { CourseService } from "../../../../services/course/course.service";
 import DetailModal from './DetailModal';
-import LoadingAnimation from "../../../../app/UI/LoadingAnimation";
 // import _ from "lodash";
 
 const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, refreshKey }: { searchTerm: string; statusFilter: StatusType; onSearch: (value: string) => void; onStatusChange: (status: StatusType | "") => void; refreshKey: number }) => {
@@ -26,7 +25,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
   const [courses, setCourses] = useState<GetCourseResponse["pageData"]>();
   const [pageInfo, setPageInfo] = useState<any>({});
   const [dataRefreshKey, setDataRefreshKey] = useState<number>(0);
-
+  const [loading, setLoading] = useState(false);
   const fetchCourses = useCallback(async () => {
     const params: GetCourseParams = {
       searchCondition: {
@@ -42,6 +41,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
     };
 
     try {
+      setLoading(true);
       const response = await CourseService.getCourse(params);
 
       if (response.status === 200 && response.data) {
@@ -50,6 +50,8 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       }
     } catch (error) {
       console.error("Error fetching courses:", error);
+    } finally {
+      setLoading(false);
     }
   }, [searchTerm, statusFilter, pageNum, pageSize]);
 
@@ -341,7 +343,6 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
   //   setPageNum(page);
   //   if (pageSize) setPageSize(pageSize);
   // };
-  if (courses) {
     return (
     <>
       <div className="mb-4 mt-4 flex justify-between">
@@ -362,6 +363,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
         <span>{selectedRowKeys.length} course(s) selected</span>
       </div> */}
       <Table
+        loading={loading}
         rowSelection={{
           type: "radio",
           selectedRowKeys,
@@ -398,9 +400,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       />
     </>
     );
-  } else {
-    return <LoadingAnimation />;
-  }
+ 
 };
 
 export default DisplayCourse;

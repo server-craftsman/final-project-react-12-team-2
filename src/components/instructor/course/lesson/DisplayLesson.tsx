@@ -10,7 +10,7 @@ import CreateButton from "./CreateButton";
 import { LessonService } from "../../../../services/lesson/lesson.service";
 import { Lesson } from "../../../../models/api/responsive/lesson/lesson.response.model";
 import ModalLessonDetail from "./DetailModal";
-import LoadingAnimation from "../../../../app/UI/LoadingAnimation";
+
 const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
   const [filteredLessons, setFilteredLessons] = useState<Lesson["pageData"]>([]);
   const [pageNum, setPageNum] = useState<number>(1);
@@ -20,21 +20,29 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [isLessonDetailModalVisible, setIsLessonDetailModalVisible] = useState<boolean>(false);
   const [selectedLessonDetail, setSelectedLessonDetail] = useState<Lesson["pageData"][0] | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const fetchLessons = useCallback(async () => {
-    const response = await LessonService.getLesson({
-      searchCondition: {
-        keyword: "",
-        course_id: "",
-        is_delete: false,
-        is_position_order: false
-      },
-      pageInfo: { pageNum, pageSize }
-    });
-    if (response.data) {
-      const lessonData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [response.data.data.pageData];
-      setFilteredLessons(lessonData);
-      setTotalItems(response.data.data.pageInfo.totalItems);
+    setLoading(true);
+    try {
+      const response = await LessonService.getLesson({
+        searchCondition: {
+          keyword: "",
+          course_id: "",
+          is_delete: false,
+          is_position_order: false
+        },
+        pageInfo: { pageNum, pageSize }
+      });
+      if (response.data) {
+        const lessonData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [response.data.data.pageData];
+        setFilteredLessons(lessonData);
+        setTotalItems(response.data.data.pageInfo.totalItems);
+      }
+    } catch (error) {
+      console.error("Failed to fetch lessons", error);
+    } finally {
+      setLoading(false);
     }
   }, [pageNum, pageSize]);
 
@@ -137,14 +145,13 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
     fetchLessons();
   }, [fetchLessons]);
 
-  if (filteredLessons && totalItems) {
     return (
       <>
       <div className="mb-4 mt-4 flex justify-between">
         <CustomSearch onSearch={handleSearch} placeholder="Search by lesson name" className="w-1/5" />
         <CreateButton onLessonCreated={handleLessonCreated} />
       </div>
-      <Table columns={columns} dataSource={filteredLessons} rowKey="id" pagination={false} />
+      <Table loading={loading} columns={columns} dataSource={filteredLessons} rowKey="id" pagination={false} />
       <div className="mt-5 flex justify-start">
         <Pagination
           current={pageNum}
@@ -167,9 +174,6 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
       />
       </>
     );
-  } else {
-    return <LoadingAnimation />;
-  }
 };
 
 export default DisplayLesson;

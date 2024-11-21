@@ -4,7 +4,7 @@ import ViewCategory from "../../../components/instructor/category/ViewCategory";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
 import { GetCategoryParams } from "../../../models/api/request/admin/category.request.model";
 import { CategoryService } from "../../../services/category/category.service";
-import LoadingAnimation from "../../../app/UI/LoadingAnimation";
+
 const ManagementCategory = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
@@ -51,15 +51,13 @@ const ManagementCategory = () => {
     fetchCategoriesData();
   };
   
-  if (categories) {
+  if(categories) {
   return (
     <div>
       <CustomSearch onSearch={handleSearch} placeholder="Search Payout" className="search-input" />
       <ViewCategory searchQuery={searchQuery} />
     </div>
   )
-} else {
-  return <LoadingAnimation />;
 }
 }
 export default ManagementCategory;

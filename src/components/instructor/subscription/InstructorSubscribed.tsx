@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Card, Avatar, Row, Col, message, Pagination } from "antd";
+import { Card, Row, Col, message, Pagination } from "antd";
 import { GetSubscriptionsResponse } from "../../../models/api/responsive/subscription/sub.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model";
 import { Link } from "react-router-dom";
@@ -124,7 +124,7 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
           const user = filteredUsers.find((user) => user._id === subscription.instructor_id);
           if (!user) return null;
           return (
-            <Col xs={24} sm={12} md={8} lg={6} key={subscription._id}>
+            <Col xs={24} sm={12} md={8} lg={8} key={subscription._id}>
               <Link to={`/profile/${subscription.instructor_id}`} style={{ textDecoration: "none" }}>
                 <Card
                   hoverable
@@ -136,8 +136,10 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
                       alignItems: "center",
                       textAlign: "center"
                     }}>
-                      <Avatar src={user?.avatar_url} size={64} style={{ marginBottom: "8px" }} />
-                      <span style={{ fontSize: "16px", fontWeight: "bold" }}>{user?.name}</span>
+                      {/* <Avatar src={user?.avatar_url} size={64} style={{ marginBottom: "8px" }} /> */}
+                      <img src={`https://ui-avatars.com/api/?name=${subscription.instructor_name[0]}`} alt={subscription.instructor_name} className="w-12 h-12 rounded-full mr-4" />
+
+                      <span style={{ fontSize: "18px", fontWeight: "bold", color: "#333", textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)" }}>{subscription.instructor_name}</span>
                     </div>
                   }
                   style={{
@@ -151,7 +153,7 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
                   }}
                   bodyStyle={{ padding: "12px", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
                 >
-                  <div>
+                  {/* <div>
                     <p style={{
                       fontSize: "14px",
                       marginBottom: "8px",
@@ -161,7 +163,7 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
                       gap: "4px",
                       paddingLeft: "16px"
                     }}>
-                      <strong>Email:</strong> {user?.email}
+                      <strong>Email:</strong> {subscription.}
                     </p>
                     <p style={{
                       fontSize: "14px",
@@ -174,7 +176,7 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
                     }}>
                       <strong>Phone:</strong> {user?.phone_number}
                     </p>
-                  </div>
+                  </div> */}
                   <div
                     onClick={(e) => e.preventDefault()}
                     style={{

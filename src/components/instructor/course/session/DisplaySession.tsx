@@ -11,7 +11,6 @@ import { SessionService } from "../../../../services/session/session.service";
 import { formatDate } from "../../../../utils/helper";
 import { DisplaySessionResponse } from "../../../../models/api/responsive/session/session.response.model";
 import DetailModal from "./DetailModal";
-import LoadingAnimation from "../../../../app/UI/LoadingAnimation";
 const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
   const [sessions, setSessions] = useState<DisplaySessionResponse[]>([]);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -20,9 +19,11 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
   const [totalItems, setTotalItems] = useState<number>(0);
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const fetchSessions = useCallback(async (page: number, size: number, keyword: string) => {
     try {
+      setLoading(true);
       const sessionResponse = await SessionService.getSession({
         searchCondition: {
           keyword: keyword,
@@ -61,6 +62,8 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
       setTotalItems(sessionResponse.data?.data?.pageInfo?.totalItems || 0);
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -124,7 +127,6 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
     }
   };
 
-  if (sessions && totalItems) {
     return (
       <>
       <div className="mb-4 mt-4 flex justify-between">
@@ -132,7 +134,7 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
         <CreateButton onSessionCreated={() => fetchSessions(pageNum, pageSize, searchKeyword)} />
       </div>
 
-      <Table columns={columns} dataSource={sessions} rowKey={(record) => record.pageData._id} pagination={false} locale={{ emptyText: "No data available" }} />
+      <Table loading={loading} columns={columns} dataSource={sessions} rowKey={(record) => record.pageData._id} pagination={false} locale={{ emptyText: "No data available" }} />
       <div className="mt-5 flex justify-start">
         <Pagination
           current={pageNum}
@@ -154,9 +156,7 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
       />
       </>
     );
-  } else {
-    return <LoadingAnimation />;
-  }
+ 
 };
 
 export default DisplaySession;

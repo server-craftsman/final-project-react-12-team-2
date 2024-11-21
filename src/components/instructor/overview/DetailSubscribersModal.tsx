@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, List, Typography, Space, Avatar, Pagination } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { Modal, List, Typography, Space, Pagination } from 'antd';
 import { helpers } from '../../../utils';
 
 interface DetailSubscribersModalProps {
@@ -42,11 +41,8 @@ const DetailSubscribersModal: React.FC<DetailSubscribersModalProps> = ({ visible
             className="p-4 hover:bg-gray-50 transition-colors duration-200"
           >
             <Space size={16} align="center">
-              <Avatar 
-                size={48} 
-                icon={<UserOutlined />}
-                className="bg-blue-500"
-              />
+            <img src={`https://ui-avatars.com/api/?name=${subscriber.name[0]}`} alt={subscriber.name} className="w-12 h-12 rounded-full mr-4" />
+
               <Space direction="vertical">
                 <Typography.Text strong className="text-lg">
                   {subscriber.name || 'Unknown Subscriber'}

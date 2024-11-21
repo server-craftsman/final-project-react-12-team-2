@@ -105,7 +105,14 @@ const Reviews: React.FC<ReviewsProps> = ({ searchTerm }) => {
                     <p className="text-sm text-gray-500">{formatDate(new Date(review.created_at))}</p>
                   </div>
                 </div>
-                <p className="mb-4 text-gray-600">{review.comment}</p>
+                <p className="mb-4 text-gray-600">
+                  <span className="mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 inline-block text-gray-600" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M18 10c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8zm-8 3a1 1 0 100-2 1 1 0 000 2zm1-7a1 1 0 00-2 0v4a1 1 0 002 0V6z" clipRule="evenodd" />
+                    </svg>
+                  </span>
+                  {review.comment}
+                </p>
                 <div className="mb-3 flex items-center gap-2">Rating: {renderStars(review.rating)}</div>
                 <button
                   onClick={() => handleViewOriginalComment(review.course_id, review._id)}

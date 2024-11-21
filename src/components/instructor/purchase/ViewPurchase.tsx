@@ -6,7 +6,6 @@ import PurchaseCheckbox from "./PurchaseCheckbox";
 import { PurchaseService } from "../../../services/purchase/purchase.service";
 import { SearchForInstructorPurchaseRequestModel } from "../../../models/api/request/purchase/purchase.request.model";
 import { SearchForInstructorPurchaseResponseModel } from "../../../models/api/responsive/purchase/purchase.reponse.model";
-import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 interface ViewPurchaseProps {
   searchQuery: string;
   filterStatus: string;
@@ -20,6 +19,7 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [pageInfo, setPageInfo] = useState<any>({});
+  const [loading, setLoading] = useState(false);
 
   const fetchPurchases = async () => {
     const params: SearchForInstructorPurchaseRequestModel = {
@@ -37,11 +37,14 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
     };
 
     try {
+      setLoading(true);
       const response = await PurchaseService.searchForInstructorPurchase(params);
       setPurchases(response.data.data.pageData);
       setPageInfo(response.data.data.pageInfo);
     } catch (error) {
       console.error("Failed to fetch purchases", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -139,11 +142,10 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
       render: (date: Date) => formatDate(date)
     },
   ];
-
-  if (purchases && pageInfo.totalItems) {
     return (
       <div>
       <Table 
+        loading={loading}
         columns={columns} 
         dataSource={purchases} 
         rowKey="_id" 
@@ -163,9 +165,6 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
       />
       </div>
     );
-  } else {
-    return <LoadingAnimation />;
-  }
 };
 
 export default ViewPurchase;

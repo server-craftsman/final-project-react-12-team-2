@@ -9,7 +9,7 @@ import { courseStatusColor } from "../../../utils/courseStatus";
 import { StatusType } from "../../../app/enums";
 
 const CourseManagement = () => {
-  const [activeTabKey, setActiveTabKey] = useState("");
+  const [activeTabKey, setActiveTabKey] = useState("course");
   const [refreshKey, setRefreshKey] = useState(0);
 
   const statusLabelList = [
@@ -95,7 +95,7 @@ const CourseManagement = () => {
   const handleTabChange = (key: string) => {
     setActiveTabKey(key);
     setRefreshKey((prevKey) => prevKey + 1);
-      
+
   };
 
   return (

@@ -4,7 +4,6 @@ import { CategoryService } from '../../../services/category/category.service';
 import { message, Table } from 'antd';
 import { GetCategoryParams } from '../../../models/api/request/admin/category.request.model';
 import parse from 'html-react-parser';
-import LoadingAnimation from '../../../app/UI/LoadingAnimation';
 
 interface SearchCategoryCondition {
   keyword: string;
@@ -109,8 +108,6 @@ if (category) {
        />
     </>
   );
-} else {
-  return <LoadingAnimation />;
 }
 }
 

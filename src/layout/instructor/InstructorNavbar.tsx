@@ -43,19 +43,19 @@ const InstructorNavbar: React.FC = () => {
       path: "/instructor/payout"
     },
     {
-      key: "5",
+      key: "6",
       icon: <StarOutlined className="text-white" />,
       label: "Reviews",
       path: "/instructor/reviews"
     },
     {
-      key: "6",
+      key: "7",
       icon: <FileTextOutlined className="text-white" />,
       label: "Subscription",
       path: "/instructor/subscription"
     },
     {
-      key: "7",
+      key: "8",
       icon: <UserOutlined className="text-white" />,
       label: "Setting",
       path: "/instructor/setting"

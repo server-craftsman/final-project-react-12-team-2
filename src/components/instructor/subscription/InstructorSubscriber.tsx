@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { Card, Avatar, Row, Col, message, Pagination } from "antd";
-import { User } from "../../../models/api/responsive/users/users.model";
+import { Card, Row, Col, message, Pagination } from "antd";
+// import { User } from "../../../models/api/responsive/users/users.model";
 import { SubscriberService } from "../../../services/subscriber/subscriber.service";
 import { GetSubscribersParams } from "../../../models/api/request/subscriber/subscriber.request.model";
-import { UserService } from "../../../services/instructor/user.service";
+// import { UserService } from "../../../services/instructor/user.service";
 import { Link } from "react-router-dom";
 import { GetSubscribersResponse } from "../../../models/api/responsive/subscriber/subscriber.response.model";
-import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 
 interface SearchSubscriberCondition {
   keyword: string;
@@ -19,7 +18,7 @@ interface InstructorSubscriberProps {
 
 const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue }) => {
   const [subscriptions, setSubscriptions] = useState<GetSubscribersResponse | null>(null);
-  const [users, setUsers] = useState<User[]>([]);
+  // const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
@@ -66,24 +65,24 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
     }
   }, [getSearchCondition, currentPage, defaultParams.pageInfo]);
 
-  const fetchUsers = useCallback(async () => {
-    if (!subscriptions?.pageData?.length) return;
+  // const fetchUsers = useCallback(async () => {
+  //   if (!subscriptions?.pageData?.length) return;
 
-    try {
-      const subscriberIds = subscriptions.pageData.map((sub) => sub.subscriber_id);
-      const uniqueIds = [...new Set(subscriberIds)]; // Remove duplicates
+  //   try {
+  //     const subscriberIds = subscriptions.pageData.map((sub) => sub.subscriber_id);
+  //     const uniqueIds = [...new Set(subscriberIds)]; // Remove duplicates
 
-      const promises = uniqueIds.map((id) => UserService.getUserDetails(id));
-      const responses = await Promise.all(promises);
-      const validUsers = responses
-        .filter((response) => response.data?.data)
-        .map((response) => response.data.data);
+  //     const promises = uniqueIds.map((id) => UserService.getUserDetails(id));
+  //     const responses = await Promise.all(promises);
+  //     const validUsers = responses
+  //       .filter((response) => response.data?.data)
+  //       .map((response) => response.data.data);
 
-      setUsers(validUsers);
-    } catch (error) {
-      message.error("Failed to fetch users");
-    }
-  }, [subscriptions?.pageData]);
+  //     setUsers(validUsers);
+  //   } catch (error) {
+  //     message.error("Failed to fetch users");
+  //   }
+  // }, [subscriptions?.pageData]);
 
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
@@ -93,86 +92,63 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
     return () => clearTimeout(debounceTimer);
   }, [fetchSubscriptions]);
 
-  useEffect(() => {
-    if (subscriptions?.pageData && subscriptions.pageData.length > 0) {
-      fetchUsers();
-    }
-  }, [subscriptions?.pageData, fetchUsers]);
+  // useEffect(() => {
+  //   if (subscriptions?.pageData && subscriptions.pageData.length > 0) {
+  //     fetchUsers();
+  //   }
+  // }, [subscriptions?.pageData, fetchUsers]);
 
-  const filteredUsers = useMemo(() => {
-    if (!users || !subscriptions?.pageData) return [];
-
+  const filteredSubscriptions = useMemo(() => {
+    if (!subscriptions?.pageData) return [];
+    
     const searchLower = searchValue.toLowerCase();
-    return users.filter(user =>
-      user.name?.toLowerCase().includes(searchLower) ||
-      user.email?.toLowerCase().includes(searchLower) ||
-      user.phone_number?.toLowerCase().includes(searchLower)
+    return subscriptions.pageData.filter(subscription =>
+      subscription.subscriber_name.toLowerCase().includes(searchLower)
     );
-  }, [users, searchValue, subscriptions?.pageData]);
+  }, [searchValue, subscriptions?.pageData]);
+
+  // const filteredUsers = useMemo(() => {
+  //   if (!subscriptions?.pageData) return [];
+
+  //   const searchLower = searchValue.toLowerCase();
+  //   return users.filter(user =>
+  //     user.name?.toLowerCase().includes(searchLower) ||
+  //     user.email?.toLowerCase().includes(searchLower) ||
+  //     user.phone_number?.toLowerCase().includes(searchLower)
+  //   );
+  // }, [searchValue, subscriptions?.pageData, users]);
 
   const handlePageChange = useCallback((page: number, newPageSize?: number) => {
     setCurrentPage(page);
     if (newPageSize) setPageSize(newPageSize);
   }, []);
 
-  if (subscriptions && subscriptions.pageData.length > 0) {
     return (
       <div style={{ backgroundColor: "#f0f2f5" }}>
         <Row gutter={[16, 16]}>
-          {subscriptions?.pageData.map((subscription) => {
-            const user = filteredUsers.find((user) => user._id === subscription.subscriber_id);
-            if (!user) return null;
+          {filteredSubscriptions.map((subscription) => {
+           
             return (
-              <Col xs={24} sm={12} md={8} lg={6} key={subscription._id}>
+              <Col xs={24} sm={12} md={8} lg={8} key={subscription._id}>
                 <Link to={`/profile/${subscription.subscriber_id}`} style={{ textDecoration: "none" }}>
                   <Card
                     hoverable
                     loading={loading}
                     title={
-                      <div style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        textAlign: "center"
-                      }}>
-                        <Avatar src={user?.avatar_url} size={64} style={{ marginBottom: "8px" }} />
-                        <span style={{ fontSize: "16px", fontWeight: "bold" }}>{user?.name}</span>
+                      <div style={{ display: "flex", flexDirection: "row", alignItems: "center", textAlign: "center", gap: "10px" }}>
+                        <img 
+                          src={`https://ui-avatars.com/api/?name=${subscription.instructor_name[0]}`} 
+                          alt={subscription.instructor_name} 
+                          className="w-16 h-16 rounded-full mb-4 shadow-lg border-2 border-gray-300" 
+                        />
+                        <span style={{ fontSize: "18px", fontWeight: "bold", color: "#333", textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)" }}>
+                          {subscription.subscriber_name}
+                        </span>
                       </div>
                     }
-                    style={{
-                      height: '100%',
-                      borderRadius: "12px",
-                      border: "1px solid #000",
-                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                      backgroundColor: "#f0f2f5",
-                      cursor: "pointer",
-                      textAlign: "center"
-                    }}
-                  >
-                    <div style={{ padding: "12px", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                      <div>
-                        <p style={{
-                          fontSize: "14px",
-                          marginBottom: "8px",
-                          display: "flex",
-
-
-                          gap: "4px"
-                        }}>
-                          <strong>Email:</strong> {user?.email}
-                        </p>
-                        <p style={{
-                          fontSize: "14px",
-                          marginBottom: "16px",
-                          display: "flex",
-
-                          gap: "4px"
-                        }}>
-                          <strong>Phone:</strong> {user?.phone_number}
-                        </p>
-                      </div>
-                    </div>
-                  </Card>
+                    className="flex items-center bg-white rounded-lg shadow-md transition-transform transform hover:scale-105"
+                    style={{ border: "1px solid #e0e0e0", padding: "16px" }}
+                  />
                 </Link>
               </Col>
             );
@@ -204,9 +180,6 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
         </Row>
       </div>
     );
-  } else {
-    return <LoadingAnimation />;
-  }
 };
 
 export default InstructorSubscriber;
