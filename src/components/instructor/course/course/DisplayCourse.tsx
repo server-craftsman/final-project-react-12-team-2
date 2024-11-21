@@ -55,7 +55,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
 
   useEffect(() => {
     fetchCourses();
-  }, [searchTerm, statusFilter, dataRefreshKey, fetchCourses]);
+  }, [searchTerm, statusFilter, dataRefreshKey, fetchCourses, refreshKey]);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<number[]>([]);
