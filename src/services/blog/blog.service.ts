@@ -2,7 +2,7 @@
 import { ResponseSuccess } from "../../app/interface";
 import { API } from "../../const/api.path";
 import { CreateBlogBody, GetBlogParams } from "../../models/api/request/admin/blog.request.model";
-import { GetBlogResponse, getPublicBlogsDetails, UpdateBlogParams } from "../../models/api/responsive/admin/blog.responsive.model";
+import { GetBlogDetailsResponse, GetBlogResponse, getPublicBlogsDetails, UpdateBlogParams } from "../../models/api/responsive/admin/blog.responsive.model";
 import { BaseService } from "../config/base.service";
 
 export const BlogService = {
@@ -30,7 +30,11 @@ export const BlogService = {
       url: API.ADMIN.DELETE_BLOG.replace(":id", id)
     });
   },
-
+  getBlogDetails(id: string) {
+    return BaseService.get<ResponseSuccess<GetBlogDetailsResponse>>({
+      url: API.ADMIN.GET_BLOG_DETAILS.replace(":id", id)
+    });
+  },
   // Public
   getPublicBlogs(params: GetBlogParams) {
     return BaseService.post<ResponseSuccess<GetBlogResponse>>({

@@ -7,8 +7,10 @@ import DislayBlog from "../../../components/admin/blog/DisplayBlog";
 
 const BlogManagement: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const handleSearch = (searchTerm: string) => {
+    setRefreshKey(prevKey => prevKey + 1);
     setSearchTerm(searchTerm);
   };
 
@@ -19,7 +21,7 @@ const BlogManagement: React.FC = () => {
           <CustomSearch className="search-input" placeholder="Search by blog name" onSearch={handleSearch} />
           <CreateBlog />
         </div>
-        <DislayBlog searchQuery={searchTerm} />
+        <DislayBlog searchQuery={searchTerm} refreshKey={refreshKey} />
       </Card>
     </Content>
   );

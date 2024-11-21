@@ -1,20 +1,22 @@
-// DislayBlog.tsx
+// DisplayBlog.tsx
 import React, { useEffect, useState, useCallback } from "react";
 import { Table, Space, message, Button } from "antd";
 import { Blog, GetBlogResponse } from "../../../models/api/responsive/admin/blog.responsive.model";
 import { BlogService } from "../../../services/blog/blog.service";
 import { CategoryService } from "../../../services/category/category.service";
-import { Link } from "react-router-dom";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined} from "@ant-design/icons";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
 import EditBlogModal from "./EditBlog";
 import DeleteBlogModal from "./DeleteBlog";
 import LoadingAnimation from "../../../app/UI/LoadingAnimation";
-const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
+import BlogDetail from "./BlogDetail";
+import { helpers } from "../../../utils";
+const DisplayBlog: React.FC<{ searchQuery: string, refreshKey: number }> = ({ searchQuery, refreshKey }) => {
   const [blogData, setBlogData] = useState<GetBlogResponse | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isEditModalVisible, setEditModalVisible] = useState(false);
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [isDetailModalVisible, setDetailModalVisible] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null);
   const [pageInfo, setPageInfo] = useState<any>({});
 
@@ -47,7 +49,7 @@ const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
     } catch (error) {
       message.error("An unexpected error occurred while fetching blogs");
     }
-  }, [searchQuery]);
+  }, [searchQuery, refreshKey]);
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -68,15 +70,25 @@ const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
   useEffect(() => {
     fetchBlogs();
     fetchCategories();
-  }, [searchQuery, fetchBlogs, fetchCategories]);
+  }, [searchQuery, refreshKey, fetchBlogs, fetchCategories]);
 
   const filteredData = blogData?.pageData?.filter((blog: Blog) => (blog.name && blog.name.toLowerCase().includes(searchQuery.toLowerCase())) || (blog.description && blog.description.toLowerCase().includes(searchQuery.toLowerCase())));
 
   const columns = [
     {
+      title: "No",
+      key: "index",
+      render: (_: any, __: Blog, index: number) => index + 1,
+    },
+    {
       title: "Blog Name",
       dataIndex: "name",
-      render: (text: string, record: Blog) => <Link to={`/admin/blog/${record._id}`}>{text}</Link>
+      render: (text: string, record: Blog) => {
+        return <a onClick={() => {
+          setSelectedBlog(record);
+          setDetailModalVisible(true);
+        }}>{text}</a>
+      }
     },
     {
       title: "Category Name",
@@ -89,7 +101,7 @@ const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
     {
       title: "Created At",
       dataIndex: "created_at",
-      render: (date: string) => new Date(date).toLocaleDateString()
+      render: (date: string) => helpers.formatDate(new Date(date))
     },
     {
       title: "Description",
@@ -142,6 +154,8 @@ const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
       <EditBlogModal visible={isEditModalVisible} blog={selectedBlog} categories={categories} onClose={() => setEditModalVisible(false)} onSuccess={fetchBlogs} />
 
       <DeleteBlogModal visible={isDeleteModalVisible} blogId={selectedBlog?._id || null} onClose={() => setDeleteModalVisible(false)} onSuccess={fetchBlogs} />
+
+      <BlogDetail visible={isDetailModalVisible} onClose={() => setDetailModalVisible(false)} blogId={selectedBlog?._id || null} />
     </>
     );
   } else {
@@ -149,4 +163,4 @@ const DislayBlog: React.FC<{ searchQuery: string }> = ({ searchQuery }) => {
   }
 };
 
-export default DislayBlog;
+export default DisplayBlog;

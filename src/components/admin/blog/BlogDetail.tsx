@@ -1,112 +1,71 @@
-import React from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import coursesData from "../../../data/courses.json";
-import { Button, Col, Form, Input, Row } from "antd";
-import { ROUTER_URL } from "../../../const/router.path";
+import React, { useEffect, useState } from "react";
+import { Col, Form, message, Modal, Row, Typography } from "antd";
 import LoadingAnimation from "../../../app/UI/LoadingAnimation";
+import { BlogService } from "../../../services/blog/blog.service";
+import { GetBlogDetailsResponse } from "../../../models/api/responsive/admin/blog.responsive.model";
+import parse from "html-react-parser";
+import { helpers } from "../../../utils";
+const BlogDetail: React.FC<{ visible: boolean; onClose: () => void; blogId: string | null }> = ({ visible, onClose, blogId }) => {
+  const [blog, setBlog] = useState<GetBlogDetailsResponse | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-const BlogDetail: React.FC = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
+  useEffect(() => { 
+    const fetchBlogDetails = async () => {
+      try {
+        const response = await BlogService.getBlogDetails(blogId!);
+        setBlog(response.data.data);
+      } catch (error) {
+        message.error("Failed to fetch blog details");
+        console.error("Failed to fetch blog details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const blog = coursesData.courses.find((blog: { id: string }) => blog.id === id);
-
-  if (blog) {
-    return (
-    <div>
-      <Col span={24}>
-        <Form layout="vertical">
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item label="ID">
-                <Input value={blog.id.split(" ")} readOnly />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="CategoryID">
-                <Input value={blog.category_id.split(" ")} readOnly />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="UserID">
-                <Input value={blog.user_id.split(" ")} readOnly />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item label="Name">
-                <Input value={blog.name} readOnly />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="Description">
-                <Input value={blog.description} readOnly />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item label="Content">
-                <Input value={blog.content} readOnly />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="Status">
-                <Input value={blog.status} readOnly />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="Video_URL">
-                <Input value={blog.video_url} readOnly />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="Image_URL">
-                <Input value={blog.image_url} readOnly />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="Price">
-                <Input value={blog.price} readOnly />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item label="Discount">
-                <Input value={blog.discount} readOnly />
-              </Form.Item>
-            </Col>
-            <Col>
-              <Form.Item label="Created At">
-                <Input value={blog.created_at} readOnly />
-              </Form.Item>
-            </Col>
-            <Col>
-              <Form.Item label="Updated At">
-                <Input value={blog.updated_at} readOnly />
-              </Form.Item>
-            </Col>
-            <Col>
-              <Form.Item label="IsDeleted">
-                <Input value={blog.is_deleted ? "Yes" : "No"} readOnly />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
-      </Col>
-
-      <Button onClick={() => navigate(`/admin/edit-courses-log/${id}`)} className="mr-3 bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">
-        Edit
-      </Button>
-      <Button className="mr-3 bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">Delete</Button>
-      <Link to={ROUTER_URL.ADMIN.BLOG}>
-        <Button className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">Back To Categories</Button>
-      </Link>
-      </div>
-    );
-  } else {
-    return <LoadingAnimation />;
-  }
+    if (visible) {
+      fetchBlogDetails();
+    }
+  }, [blogId, visible]);
+  return (
+    <Modal 
+    width={1000}
+    open={visible} 
+      onCancel={onClose}
+      footer={null}
+      title="Blogs Details"
+    >
+      {loading ? (
+        <LoadingAnimation />
+      ) : (
+        blog && (
+          <Form layout="vertical">
+            <Row gutter={24}>
+              <Col span={12} style={{ borderRight: '1px solid #d9d9d9', boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.1)' }}>
+                  <Typography.Text> <b>Category Name:</b> {blog.category_name}</Typography.Text>
+                  <br />
+                  <Typography.Text> <b>User Name:</b> {blog.user_name}</Typography.Text>
+                  <br />
+                  <Typography.Text> <b>Name:</b> {blog.name}</Typography.Text>
+                  <br />
+                  <Typography.Text> <b>Description:</b> {blog.description}</Typography.Text>
+                  <br />
+                  <Typography.Text> <b>Created At:</b> {helpers.formatDate(blog.created_at)}</Typography.Text>
+                  <br />
+                  <Typography.Text> <b>Updated At:</b> {helpers.formatDate(blog.updated_at)}</Typography.Text>
+                  <br />
+                  <Typography.Text> <b>Image:</b> <img src={blog.image_url} alt="Blog Image" style={{ width: '100%' }} /></Typography.Text>
+             </Col>
+              <Col span={12} style={{ paddingLeft: '16px', boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.1)' }}>
+                <Form.Item label="Content">
+                  <div>{parse(blog.content)}</div>
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        )
+      )}
+    </Modal>
+  );
 };
 
 export default BlogDetail;
