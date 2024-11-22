@@ -96,19 +96,12 @@ const Navbar = () => {
           <div className="hidden items-center space-x-4 lg:flex">
             <div className="hidden lg:block">
               <div className="flex items-baseline space-x-4 lg:space-x-6">
-                <Link to="/" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 transition-all duration-200 ease-in-out hover:bg-[#161d66] hover:text-[#161d66]">
+                <Link to="/" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 transition-all duration-200 ease-in-out hover:bg-indigo-700 hover:text-white">
                   Home
                 </Link>
-                <div className="group relative">
-                  <button className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 transition-all duration-200 ease-in-out hover:bg-indigo-700 hover:text-white">Courses</button>
-                  <div className="invisible absolute left-0 mt-2 w-48 rounded-md bg-white opacity-0 shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-200 ease-in-out group-hover:visible group-hover:opacity-100">
-                    <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                      <Link to="/courses/all" className="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-100 hover:text-indigo-900 transition-colors duration-200 ease-in-out" role="menuitem">
-                        All Courses
-                      </Link>                    
-                    </div>
-                  </div>
-                </div>
+                <Link to="/courses/all" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 transition-all duration-200 ease-in-out hover:bg-indigo-700 hover:text-white">
+                  Courses
+                </Link>
                 <Link to="/about" className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 transition-all duration-200 ease-in-out hover:bg-indigo-700 hover:text-white">
                   About
                 </Link>
@@ -192,13 +185,7 @@ const Navbar = () => {
               Home
             </Link>
             <Link to="/courses/all" className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">
-              All Courses
-            </Link>
-            <Link to="/courses/my-courses" className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">
-              My Courses
-            </Link>
-            <Link to="/courses/popular" className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">
-              Popular Courses
+              Courses
             </Link>
             <Link to="/about" className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-indigo-700 hover:text-white">
               About

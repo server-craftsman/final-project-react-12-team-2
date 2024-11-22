@@ -1,7 +1,7 @@
 import React from "react";
 import { Typography, Collapse, List, Button, message } from "antd";
 import { PlayCircleOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CourseContentProps } from "../../../../models/objects/course/CourseContentProps";
 import { GetPublicCourseDetailResponse } from "../../../../models/api/responsive/course/course.response.model";
@@ -13,6 +13,7 @@ const checkUserInfo = (course: GetPublicCourseDetailResponse) => {
 };
 
 const CourseContent: React.FC<CourseContentProps & { course: GetPublicCourseDetailResponse }> = ({ course, sessions, lessons, courseId, activeSessionId, setActiveSessionId }) => {
+  const navigate = useNavigate();
   return (
     <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
       {sessions.map((session) => (
@@ -47,7 +48,7 @@ const CourseContent: React.FC<CourseContentProps & { course: GetPublicCourseDeta
                               e.preventDefault();
                               message.warning("Please purchase this course to access the lessons");
                               setTimeout(() => {
-                                window.location.href = `/courses/all`;
+                                navigate(`/courses/all`);
                               }, 2000);
                             }
                           }}
