@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { moneyFormat, formatDate } from "../../../utils/helper";
 import { courseStatusColor } from "../../../utils/courseStatus";
-import { message, Popconfirm, Table, Modal, Input, Button } from "antd";
-import { CheckOutlined, StopOutlined, CarryOutOutlined, ContainerOutlined, EyeOutlined } from "@ant-design/icons";
+import { message, Table, Modal, Input, Button, Select } from "antd";
+import {  CarryOutOutlined, ContainerOutlined, EyeOutlined } from "@ant-design/icons";
 import { GetCourseParams } from "../../../models/api/request/course/course.request.model";
 import { CourseService } from "../../../services/course/course.service";
 import { LessonService } from "../../../services/lesson/lesson.service";
@@ -11,6 +11,7 @@ import { SessionService } from "../../../services/session/session.service";
 import { StatusType } from "../../../app/enums";
 import ModalCourseDetail from "./ModalCourseDetail";
 import { GetCourseByIdResponse } from "../../../models/api/responsive/course/course.response.model";
+import { TableRowSelection } from "antd/es/table/interface";
 const { confirm } = Modal;
 import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 const defaultParams = {
@@ -37,7 +38,8 @@ const CoursesManagement: React.FC<{
   const [pageInfo, setPageInfo] = useState<any>({});
   const [isCourseDetailModalVisible, setIsCourseDetailModalVisible] = useState(false);
   const [selectedCourseDetail, setSelectedCourseDetail] = useState<GetCourseByIdResponse | null>(null);
-
+  const [selectedRowKeys, setSelectedRowKeysState] = useState<number[]>([]);
+  const [isStatusModalVisible, setIsStatusModalVisible] = useState(false);
   const fetchCourses = async (pageNum: number = defaultParams.pageInfo.pageNum, pageSize: number = defaultParams.pageInfo.pageSize) => {
     try {
       const params: GetCourseParams = {
@@ -59,6 +61,7 @@ const CoursesManagement: React.FC<{
 
   useEffect(() => {
     fetchCourses();
+    setSelectedRowKeysState([]); // Reset row selection when tab changes
   }, [searchTerm, statusFilter, refreshKey, activeKey]);
 
   const handleChangeStatus = async (id: string, newStatus: StatusType, comment: string = "") => {
@@ -71,6 +74,7 @@ const CoursesManagement: React.FC<{
         return course;
       });
       setCourses(updatedCourses);
+      setSelectedRowKeysState([]); // Clear all selected checkboxes
       message.success(`Course status changed to ${newStatus} successfully`);
       setRejectComment("");
     } catch (error) {
@@ -102,6 +106,7 @@ const CoursesManagement: React.FC<{
       },
       onCancel: () => {
         setIsRejectModalVisible(false);
+        setRejectComment("");
       },
       okText: "Yes",
       cancelText: "No"
@@ -148,6 +153,15 @@ const CoursesManagement: React.FC<{
     } catch (error) {
       message.error("Failed to fetch sessions");
     }
+  };
+
+  const rowSelection: TableRowSelection<any> = {
+    type: "checkbox",
+    selectedRowKeys,
+    onChange: (selectedKeys: React.Key[]) => setSelectedRowKeysState(selectedKeys as number[]),
+    getCheckboxProps: (record: any) => ({
+      disabled: record.status !== StatusType.WAITING_APPROVE,
+    }),
   };
 
   const columns = [
@@ -206,57 +220,31 @@ const CoursesManagement: React.FC<{
 
         const lessonAndSessionButtons = (
           <>
-            <Button
-              icon={<CarryOutOutlined />}
-              onClick={() => showLessonModal(record._id)}
-              className="mr-2 bg-white text-orange-500 hover:opacity-80"
-              title="View Lessons"
-            />
-            <Button
-              icon={<ContainerOutlined />}
-              onClick={() => showSessionModal(record._id)}
-              className="mr-2 bg-white text-yellow-500 hover:opacity-80"
-              title="View Sessions"
-            />
+            {record.lesson_count > 0 && (
+              <Button
+                icon={<CarryOutOutlined />}
+                onClick={() => showLessonModal(record._id)}
+                className="mr-2 bg-white text-orange-500 hover:opacity-80"
+                title="View Lessons"
+              />
+            )}
+            {record.session_count > 0 && (
+              <Button
+                icon={<ContainerOutlined />}
+                onClick={() => showSessionModal(record._id)}
+                className="mr-2 bg-white text-yellow-500 hover:opacity-80"
+                title="View Sessions"
+              />
+            )}
           </>
         );
 
-        if (record.status === StatusType.WAITING_APPROVE) {
-          return (
-            <div>
-              {lessonAndSessionButtons}
-              <Popconfirm
-                title="Confirm the course?"
-                description="Are you sure to confirm this course?"
-                onConfirm={() => handleChangeStatus(record._id, StatusType.APPROVE)}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Button
-                  icon={<CheckOutlined />}
-                  className="mr-2 bg-white text-green-500 hover:opacity-80"
-                  title="Confirm"
-                />
-              </Popconfirm>
-              <Button
-                icon={<StopOutlined />}
-                className="mr-2 bg-white text-red-500 hover:opacity-80"
-                onClick={() => showRejectModal(record._id)}
-                title="Reject"
-              />
-              {viewDetailsButton}
-            </div>
-          );
-        } else if (record.lesson_count > 0 || record.session_count > 0) {
-          return (
-            <div>
-              {lessonAndSessionButtons}
-              {viewDetailsButton}
-            </div>
-          );
-        }
-
-        return <div>{viewDetailsButton}</div>;
+        return (
+          <div>
+            {lessonAndSessionButtons}
+            {viewDetailsButton}
+           </div>
+        );
       }
     }
   ];
@@ -270,12 +258,55 @@ const CoursesManagement: React.FC<{
     return matchesSearchTerm && matchesStatusFilter && isValidStatus;
   });
 
-  // const paginatedCourses = filteredCourses.slice((pageInfo.pageNum - 1) * pageInfo.pageSize, pageInfo.pageNum * pageInfo.pageSize);
-  // console.log(paginatedCourses);
   if (filteredCourses && pageInfo.totalItems) {
     return (
       <>
+      <div className="flex justify-end mb-4 gap-2 w-full">
+        <Button
+          onClick={() => setIsStatusModalVisible(true)}
+          className="bg-gradient-tone text-white hover:opacity-90"
+          disabled={selectedRowKeys.length === 0}
+        >
+          Change Status
+        </Button>
+        <Modal
+          title="Change Course Status"
+          open={isStatusModalVisible}
+          onCancel={() => setIsStatusModalVisible(false)}
+          footer={[
+            <Button
+              key="ok"
+              type="primary"
+              onClick={() => {
+                const courseId = String(selectedRowKeys[0]);
+                const selectedStatus = document.querySelector('.ant-select-selection-item')?.textContent;
+                if (selectedStatus === "Approve") {
+                  handleChangeStatus(courseId, StatusType.APPROVE);
+                } else if (selectedStatus === "Reject") {
+                  showRejectModal(courseId);
+                }
+                setIsStatusModalVisible(false);
+              }}
+            >
+              OK
+            </Button>,
+            <Button key="cancel" onClick={() => setIsStatusModalVisible(false)}>
+              Cancel
+            </Button>
+          ]}
+        >
+          <Select
+            defaultValue="Approve"
+            className="w-full text-sm"
+            placeholder="Select status"
+          >
+            <Select.Option value="Approve">Approve</Select.Option>
+            <Select.Option value="Reject">Reject</Select.Option>
+          </Select>
+        </Modal>
+      </div>
       <Table
+        rowSelection={rowSelection}
         columns={columns}
         dataSource={filteredCourses}
         rowKey="_id"
@@ -292,20 +323,6 @@ const CoursesManagement: React.FC<{
           position: ["bottomLeft"]
         }}
       />
-      {/* <div className="mt-5 flex justify-start">
-        <Pagination
-          current={pageNum}
-          pageSize={pageSize}
-          total={pageInfo.totalItems}
-          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
-          onChange={(page, pageSize) => {
-            setPageNum(page);
-            setPageSize(pageSize);
-          }}
-          showSizeChanger
-          className="bg-pagination"
-        />
-      </div> */}
       <Modal title="Reject Course" open={isRejectModalVisible} onOk={handleRejectOk} onCancel={() => setIsRejectModalVisible(false)}>
         <p>Please provide a reason for rejecting this course:</p>
         <Input.TextArea value={rejectComment} onChange={(e) => setRejectComment(e.target.value)} rows={4} />
