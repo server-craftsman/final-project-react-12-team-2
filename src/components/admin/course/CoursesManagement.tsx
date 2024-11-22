@@ -274,31 +274,27 @@ const CoursesManagement: React.FC<{
           open={isStatusModalVisible}
           onCancel={() => setIsStatusModalVisible(false)}
           footer={[
-            <Button
-              key="ok"
-              type="primary"
-              onClick={() => {
-                const courseId = String(selectedRowKeys[0]);
-                const selectedStatus = document.querySelector('.ant-select-selection-item')?.textContent;
-                if (selectedStatus === "Approve") {
-                  handleChangeStatus(courseId, StatusType.APPROVE);
-                } else if (selectedStatus === "Reject") {
-                  showRejectModal(courseId);
-                }
-                setIsStatusModalVisible(false);
-              }}
-            >
-              OK
-            </Button>,
             <Button key="cancel" onClick={() => setIsStatusModalVisible(false)}>
               Cancel
+            </Button>,
+            <Button key="ok" type="primary" onClick={() => setIsStatusModalVisible(false)}>
+              OK
             </Button>
           ]}
         >
           <Select
-            defaultValue="Approve"
+            defaultValue=""
             className="w-full text-sm"
             placeholder="Select status"
+            onChange={(value) => {
+              const courseId = String(selectedRowKeys[0]);
+              if (value === "Approve") {
+                handleChangeStatus(courseId, StatusType.APPROVE);
+              } else if (value === "Reject") {
+                showRejectModal(courseId);
+              }
+              setIsStatusModalVisible(false);
+            }}
           >
             <Select.Option value="Approve">Approve</Select.Option>
             <Select.Option value="Reject">Reject</Select.Option>
