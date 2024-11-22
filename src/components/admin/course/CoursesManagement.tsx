@@ -40,6 +40,7 @@ const CoursesManagement: React.FC<{
   const [selectedCourseDetail, setSelectedCourseDetail] = useState<GetCourseByIdResponse | null>(null);
   const [selectedRowKeys, setSelectedRowKeysState] = useState<number[]>([]);
   const [isStatusModalVisible, setIsStatusModalVisible] = useState(false);
+  const [selectedStatusValue, setSelectedStatusValue] = useState<string>("");
   const fetchCourses = async (pageNum: number = defaultParams.pageInfo.pageNum, pageSize: number = defaultParams.pageInfo.pageSize) => {
     try {
       const params: GetCourseParams = {
@@ -277,27 +278,34 @@ const CoursesManagement: React.FC<{
             <Button key="cancel" onClick={() => setIsStatusModalVisible(false)}>
               Cancel
             </Button>,
-            <Button key="ok" type="primary" onClick={() => setIsStatusModalVisible(false)}>
+            <Button
+              key="ok"
+              type="primary"
+              onClick={() => {
+                const courseId = String(selectedRowKeys[0]);
+                const selectedStatus = selectedStatusValue;
+                if (selectedStatus === StatusType.APPROVE) {
+                  handleChangeStatus(courseId, StatusType.APPROVE);
+                } else if (selectedStatus === StatusType.REJECT) {
+                  showRejectModal(courseId);
+                }
+                setIsStatusModalVisible(false);
+              }}
+            >
               OK
             </Button>
           ]}
         >
           <Select
-            defaultValue=""
+            defaultValue={StatusType.APPROVE}
             className="w-full text-sm"
             placeholder="Select status"
             onChange={(value) => {
-              const courseId = String(selectedRowKeys[0]);
-              if (value === "Approve") {
-                handleChangeStatus(courseId, StatusType.APPROVE);
-              } else if (value === "Reject") {
-                showRejectModal(courseId);
-              }
-              setIsStatusModalVisible(false);
+              setSelectedStatusValue(value);
             }}
           >
-            <Select.Option value="Approve">Approve</Select.Option>
-            <Select.Option value="Reject">Reject</Select.Option>
+            <Select.Option value={StatusType.APPROVE}>Approve</Select.Option>
+            <Select.Option value={StatusType.REJECT}>Reject</Select.Option>
           </Select>
         </Modal>
       </div>
