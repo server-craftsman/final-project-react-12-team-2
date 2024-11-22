@@ -1,16 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo1 from "../../assets/logo1.jpg";
 import { FaSearch, FaBars } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { ROUTER_URL } from "../../const/router.path";
-import { CartStatusEnum, UserRoles } from "../../app/enums";
+import { UserRoles } from "../../app/enums";
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { cartItems } = useCart();
+  const { countNewCartItems, updateCartItems } = useCart();
   const { userInfo, logout } = useAuth();
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024 && isMenuOpen) {
@@ -24,6 +26,14 @@ const Navbar = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, [isMenuOpen]);
+
+  useEffect(() => {
+    const updateCartCount = () => {
+      countNewCartItems();
+    };
+
+    updateCartCount();
+  }, [countNewCartItems]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -62,6 +72,13 @@ const Navbar = () => {
         return ROUTER_URL.COMMON.HOME;
     }
   };
+
+  const handleDisplayCart = () => {
+    navigate("/cart");
+    // console.log("New Cart Items Count:", newCartItemsCount);
+    updateCartItems();
+    countNewCartItems();
+  }
 
   return (
     <nav className="bg-gradient-tone fixed left-0 right-0 top-0 z-50 shadow-lg">
@@ -105,12 +122,16 @@ const Navbar = () => {
               <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400" />
             </div>
             {userInfo && (
-              <Link to="/cart" className="relative hidden text-gray-300 hover:text-white lg:block">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+              <button onClick={handleDisplayCart} className="relative flex items-center justify-center p-2 bg-indigo-600 rounded-full hover:bg-indigo-700 transition duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-6 w-6 text-white">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                 </svg>
-                {cartItems.length > 0 && CartStatusEnum.NEW && <span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">{cartItems.length}</span>}
-              </Link>
+                {countNewCartItems() > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                    {countNewCartItems()}
+                  </span>
+                )}
+              </button>
             )}
             {userInfo ? (
               <div className="group relative">

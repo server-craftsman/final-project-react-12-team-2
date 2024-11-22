@@ -3,6 +3,12 @@ import cloudinaryConfig from "../services/config/cloudinaryConfig";
 // import { useCallback } from "react";
 
 export const handleUploadFile = async (file: File, type: "video" | "image") => {
+  // Check file size for images
+  if (type === "image" && file.size > 5 * 1024 * 1024) {
+    message.error("Maximum image attachment size is 5MB.");
+    return ""; // Return early if the file size exceeds the limit
+  }
+
   // Create FormData object for multipart/form-data upload
   const formData = new FormData();
   formData.append("file", file);

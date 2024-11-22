@@ -1,13 +1,12 @@
 import React, { useCallback, useState } from "react";
-import { Typography, List, Card, Button, Row, Col, Divider, Checkbox, Tabs, Image, Table } from "antd";
+import { Typography, List, Card, Button, Row, Col, Divider, Checkbox, Tabs, Image, Table, Modal } from "antd";
 import { ShoppingCartOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate,  } from "react-router-dom";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
 import { CartStatusEnum } from "../../../models/prototype/Carts";
 import { useCart } from "../../../contexts/CartContext"; // Import useCart
 import { helpers } from "../../../utils";
 const { Title, Text } = Typography;
-import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 
 const CartPage: React.FC = () => {
   const navigate = useNavigate();
@@ -16,8 +15,8 @@ const CartPage: React.FC = () => {
   // const initialTab = queryParams.get("tab") || String(CartStatusEnum.new);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState<CartStatusEnum>(CartStatusEnum.all);
-  const { cartItems, updateCartStatus, deleteCartItem, updateCartItems } = useCart(); // Use cartItems, updateCartStatus, and deleteCartItem from context
+  const [activeTab, setActiveTab] = useState<CartStatusEnum>(CartStatusEnum.new);
+  const { cartItems, updateCartStatus, deleteCartItem, updateCartItems, countNewCartItems } = useCart(); // Use cartItems, updateCartStatus, and deleteCartItem from context
 
   const handleBackToHome = () => {
     navigate("/");
@@ -40,33 +39,53 @@ const CartPage: React.FC = () => {
   const tabItems = [
     {
       key: String(CartStatusEnum.new),
-      label: "New"
+      label: "New",
     },
     {
       key: String(CartStatusEnum.waiting_paid),
-      label: "Waiting"
+      label: "Waiting",
     },
     {
       key: String(CartStatusEnum.completed),
-      label: "Completed"
+      label: "Completed",
     },
     {
       key: String(CartStatusEnum.cancel),
-      label: "Cancel"
+      label: "Cancel",
     },
   ];
 
 // ... existing code ...
 
-const handleTabChange = useCallback((key: string) => {
-  const status = key as CartStatusEnum;
-  if (Object.values(CartStatusEnum).includes(status)) {
-    setActiveTab(status); // Set the activeTab state
-    updateCartItems(status); // Fetch data for the new tab
-  } else {
-    console.error("Invalid tab status:", status);
-  }
-}, [updateCartItems]);
+  // const handleTabChange = useCallback((key: string) => {
+  //   const status = key as CartStatusEnum;
+  //   if (Object.values(CartStatusEnum).includes(status)) {
+  //     setActiveTab(status);
+  //     updateCartItems(status).then(() => {
+  //       if (status === CartStatusEnum.new) {
+  //         countNewCartItems(status);
+  //       }
+  //     });
+  //   } else {
+  //     console.error("Invalid tab status:", status);
+  //   }
+  // }, [updateCartItems, countNewCartItems]);
+
+  const handleTabChange = useCallback(async (key: string) => {
+    const status = key as CartStatusEnum;
+    if (Object.values(CartStatusEnum).includes(status)) {
+      setActiveTab(status);
+      try {
+        await updateCartItems(status);
+        console.log("Counting new cart items for status:", status);
+        countNewCartItems();
+      } catch (error) {
+        console.error("Error updating cart items on tab change:", error);
+      }
+    } else {
+      console.error("Invalid tab status:", status);
+    }
+  }, [updateCartItems, countNewCartItems]);
 
 // Ensure that updateCartItems is correctly implemented to fetch data based on the status
 
@@ -82,9 +101,17 @@ const handleTabChange = useCallback((key: string) => {
   // };
 
   const handleDeleteCartItem = async (cartId: string) => {
-    await deleteCartItem(cartId);
-    // updateCartItemsByStatus(activeTab);
-    updateCartItems(activeTab);
+    Modal.confirm({
+      title: 'Are you sure you want to delete this item?',
+      content: 'This action cannot be undone.',
+      okText: 'Yes, delete it',
+      okType: 'danger',
+      cancelText: 'Cancel',
+      onOk: async () => {
+        await deleteCartItem(cartId);
+        updateCartItems(activeTab); // Ensure it fetches items for the current active tab
+      },
+    });
   };
 
   const handleCheckout = async () => {
@@ -93,8 +120,7 @@ const handleTabChange = useCallback((key: string) => {
         await updateCartStatus(itemId, CartStatusEnum.waiting_paid);
       }
       setActiveTab(CartStatusEnum.waiting_paid); // Ensure the "Waiting" tab is active
-      // updateCartItemsByStatus(CartStatusEnum.waiting_paid); // Fetch items for the "Waiting" status
-      updateCartItems(CartStatusEnum.waiting_paid);
+      updateCartItems(CartStatusEnum.waiting_paid); // Fetch items for the "Waiting" status
     } catch (error) {
       console.error("Error during checkout:", error);
     }
@@ -119,7 +145,6 @@ const handleTabChange = useCallback((key: string) => {
     try {
       await updateCartStatus(cartId, CartStatusEnum.completed);
       setActiveTab(CartStatusEnum.completed);
-      // updateCartItemsByStatus(CartStatusEnum.completed);
       updateCartItems(CartStatusEnum.completed);
     } catch (error) {
       console.error("Error during confirm payment:", error);
@@ -130,7 +155,6 @@ const handleTabChange = useCallback((key: string) => {
     try {
       await updateCartStatus(cartId, CartStatusEnum.cancel);
       setActiveTab(CartStatusEnum.cancel); // Ensure the "Cancel" tab is active
-      // updateCartItemsByStatus(CartStatusEnum.cancel); // Fetch items for the "Cancel" status
       updateCartItems(CartStatusEnum.cancel);
     } catch (error) {
       console.error("Error during cancel order:", error);
@@ -139,7 +163,7 @@ const handleTabChange = useCallback((key: string) => {
 
 
   return (
-    <div className="container mx-auto min-h-screen bg-gradient-to-b from-white to-gray-50 p-4 md:p-8">
+    <div className="container mx-auto min-h-screen bg-gradient-to-b from-white to-gray-50 p-2 md:p-8">
       <Title level={2} className="mb-8 md:mb-12 transform bg-gradient-to-r from-[#1a237e] to-[#3949ab] bg-clip-text text-center text-2xl md:text-4xl font-bold tracking-wide text-transparent drop-shadow-lg transition-all duration-300 hover:scale-105">
         Shopping Cart
       </Title>
@@ -148,11 +172,11 @@ const handleTabChange = useCallback((key: string) => {
         activeKey={String(activeTab)}
         onChange={handleTabChange}
         items={tabItems}
-        className="custom-tabs mb-6 md:mb-8 transform transition-all duration-500 hover:scale-[1.02]"
+        className="md:mb-8 transform transition-all duration-500"
         type="line"
         size="large"
         tabBarStyle={{
-          marginBottom: "2rem",
+          // marginBottom: "2rem",
           borderBottom: "4px solid",
           borderImage: "linear-gradient(to right, #1a237e, #3949ab, #1a237e) 1",
           background: "linear-gradient(to bottom, #fff, #fafafa)",
@@ -179,49 +203,54 @@ const handleTabChange = useCallback((key: string) => {
       />
 
       <Row gutter={[16, 16]}>
-        <Col xs={24} lg={16}>
-        <Card className="overflow-hidden rounded-xl border-0 bg-white shadow-xl">
-            {activeTab.length === 0 && cartItems.length === 0 && updateCartItems.length === 0 ? (
-              <LoadingAnimation />
-            ) : activeTab === CartStatusEnum.waiting_paid ? (              <div className="waiting-tab-ui rounded-lg md:rounded-[2rem] bg-gradient-to-br from-gray-50 via-white to-gray-50 p-4 md:p-12 shadow-inner transition-all duration-500 hover:shadow-lg">
-                <Title level={3} className="mb-8 md:mb-12 transform text-center text-2xl md:text-3xl tracking-wider text-gray-900 transition-transform duration-300 hover:scale-105">
+        <Col xs={24} lg={activeTab === CartStatusEnum.completed || activeTab === CartStatusEnum.waiting_paid ? 24 : 16}>
+          <Card className="overflow-hidden rounded-xl border-0 bg-white shadow-xl">
+            {activeTab === CartStatusEnum.waiting_paid ? (
+              <div className="waiting-tab-ui md:p-6">
+                <Title level={3} className="mb-6 md:mb-8 transform text-center text-3xl md:text-4xl font-extrabold tracking-wider text-gray-900 uppercase">
                   Pending Orders
                 </Title>
                 <List
                   dataSource={cartItems}
                   renderItem={(item) => (
                     <List.Item key={item._id} className="transform py-6 md:py-10 transition-all duration-300 last:border-0 hover:-translate-y-1">
-                      <Card className="w-full rounded-2xl md:rounded-3xl border border-gray-100 bg-white shadow-xl backdrop-blur-sm transition-all duration-500 hover:shadow-2xl">
-                        <Row gutter={[16, 16]} className="flex flex-col md:flex-row items-center p-4 md:p-8">
+                      <Card className="w-full rounded-3xl border border-gray-200 bg-white shadow-2xl backdrop-blur-md transition-all duration-500 hover:shadow-3xl">
+                        <Row gutter={[32, 32]} className="flex flex-col md:flex-row items-center p-4 md:p-8">
                           <Col xs={24} md={16}>
-                            <Text strong className="mb-4 block text-2xl md:text-3xl tracking-wide text-gray-900 transition-colors duration-300 hover:text-[#02005dc6]">
+                            <Text strong className="mb-4 block text-3xl md:text-4xl tracking-wide text-gray-900 transition-colors duration-300 hover:text-[#02005dc6]">
                               {item?.course_name}
                             </Text>
-                            <Text className="mt-2 md:mt-4 block text-base md:text-lg font-light italic text-gray-600">
+                            <Text className="mt-2 md:mt-4 block text-lg md:text-xl font-light italic text-gray-600">
                               Instructor: <span className="font-medium text-gray-800 transition-colors duration-300 hover:text-[#02005dc6]">{item?.instructor_name}</span>
                             </Text>
-                            <div className="mt-6 md:mt-8 space-y-4 border-t border-gray-100 pt-4 md:pt-6">
-                              <div className="flex justify-between text-base md:text-lg text-gray-700 transition-colors duration-300 hover:text-gray-900">
+                            <div className="mt-6 md:mt-8 space-y-4 border-t border-gray-200 pt-4 md:pt-6">
+                              <div className="flex justify-between text-lg md:text-xl text-gray-700 transition-colors duration-300 hover:text-gray-900">
                                 <span className="font-serif">Original Price</span>
                                 <span className="font-medium">{helpers.moneyFormat(item?.price)}</span>
                               </div>
-                              <div className="flex justify-between text-base md:text-lg text-emerald-600 transition-colors duration-300 hover:text-emerald-700">
+                              <div className="flex justify-between text-lg md:text-xl text-emerald-600 transition-colors duration-300 hover:text-emerald-700">
                                 <span className="font-serif">Savings</span>
                                 <span className="animate-pulse font-medium">{item?.discount}% OFF</span>
                               </div>
-                              <div className="flex justify-between text-lg md:text-xl text-gray-900">
+                              <div className="flex justify-between text-xl md:text-2xl text-gray-900">
                                 <span>Final Price</span>
                                 <span className="bg-gradient-to-r from-indigo-900 to-blue-900 bg-clip-text text-transparent">{helpers.moneyFormat(item?.price - (item?.price * item?.discount) / 100)}</span>
                               </div>
+                              <Button 
+                                type="primary" 
+                                onClick={() => handleConfirmPayment(item._id)} 
+                                className="w-full rounded-xl border-0 px-8 py-5 text-lg text-white shadow-lg transition-transform duration-300 hover:scale-105"
+                              >
+                                Complete Payment
+                              </Button>
+                              <Button 
+                                type="default" 
+                                onClick={() => handleCancelOrder(item._id)} 
+                                className="w-full rounded-xl border-0 bg-red-600 px-8 py-5 text-lg text-white shadow-lg transition-transform duration-300 hover:scale-105"
+                              >
+                                Cancel Order
+                              </Button>
                             </div>
-                          </Col>
-                          <Col xs={24} md={8} className="space-y-4 md:space-y-6 text-center md:text-right">
-                            <Button type="primary" onClick={() => handleConfirmPayment(item._id)} className="bg-gradient-tone animate-shimmer h-auto w-full transform rounded-xl md:rounded-2xl border-0 px-6 md:px-10 py-4 md:py-6 font-serif text-base md:text-lg text-white shadow-lg transition-all duration-700 hover:-translate-y-1 hover:scale-105 hover:shadow-xl">
-                              Complete Payment
-                            </Button>
-                            <Button type="default" onClick={() => handleCancelOrder(item._id)} className="animate-shimmer h-auto w-full transform rounded-xl md:rounded-2xl border-0 bg-gradient-to-r from-red-600 to-red-800 px-6 md:px-10 py-4 md:py-6 font-serif text-base md:text-lg text-white shadow-lg transition-all duration-700 hover:-translate-y-1 hover:scale-105 hover:shadow-xl">
-                              Cancel Order
-                            </Button>
                           </Col>
                         </Row>
                       </Card>
@@ -234,68 +263,68 @@ const handleTabChange = useCallback((key: string) => {
                 <Title level={3} className="bg-gradient-tone mt-5 mb-8 md:mb-12 transform bg-clip-text text-center text-2xl md:text-3xl font-extrabold tracking-wider text-transparent transition-transform duration-500">
                   Completed Orders
                 </Title>
-              <Table
-                dataSource={cartItems.filter((item) => item.status === CartStatusEnum.completed)}
-                columns={[
-                  {
-                    title: 'Course Name',
-                    dataIndex: 'course_name',
-                    key: 'course_name',
-                    render: (text) => (
-                      <Text strong className="bg-gradient-tone block w-full transform bg-clip-text md:text-xl tracking-wide text-transparent transition-all duration-300">
-                        {text}
-                      </Text>
-                    ),
-                    width: '300px',
-                  },
-                  // {
-                  //   title: 'Instructor',
-                  //   dataIndex: 'instructor_name',
-                  //   key: 'instructor_name',
-                  //   render: (text) => (
-                  //     <Text className="mt-2 md:mt-4 block text-base md:text-lg font-light italic text-gray-600">
-                  //       <span className="bg-gradient-tone inline-block transform bg-clip-text font-light text-transparent transition-all duration-300">{text}</span>
-                  //     </Text>
-                  //   ),
-                  // },
-                  {
-                    title: 'Original Price',
-                    dataIndex: 'price',
-                    key: 'price',
-                    render: (price) => (
-                      <span className="font-medium">{helpers.moneyFormat(price)}</span>
-                    ),
-                  },
-                  {
-                    title: 'Savings',
-                    dataIndex: 'discount',
-                    key: 'discount',
-                    render: (discount) => (
-                      <span className="animate-pulse font-medium">{discount}% OFF</span>
-                    ),
-                  },
-                  {
-                    title: 'Final Price',
-                    key: 'final_price',
-                    render: (_, item) => (
-                      <span className="bg-gradient-tone bg-clip-text font-bold text-transparent">{helpers.moneyFormat(item.price - (item.price * item.discount) / 100)}</span>
-                    ),
-                  },
-                  {
-                    title: 'Action',
-                    key: 'action',
-                    render: (_, item) => (
-                      <Link to={`/course/${item.course_id}`}>
-                        <Button type="primary" className="bg-gradient-tone animate-shimmer h-10 md:h-12 transform rounded-xl md:rounded-2xl border-0 px-6 md:px-10 py-4 md:py-6 font-serif md:text-lg text-white shadow-lg transition-all duration-700 hover:shadow-xl">
-                          Learn More
-                        </Button>
-                      </Link>
-                    ),
-                  },
-                ]}
-                rowKey="_id"
-                pagination={false}
-                className="transition-all duration-500 ease-in-out"
+                <Table
+                  dataSource={cartItems.filter((item) => item.status === CartStatusEnum.completed)}
+                  columns={[
+                    {
+                      title: 'Course Name',
+                      dataIndex: 'course_name',
+                      key: 'course_name',
+                      render: (text) => (
+                        <Text strong className="bg-gradient-tone block w-full transform bg-clip-text md:text-xl tracking-wide text-transparent transition-all duration-300">
+                          {text}
+                        </Text>
+                      ),
+                      width: '300px',
+                    },
+                    // {
+                    //   title: 'Instructor',
+                    //   dataIndex: 'instructor_name',
+                    //   key: 'instructor_name',
+                    //   render: (text) => (
+                    //     <Text className="mt-2 md:mt-4 block text-base md:text-lg font-light italic text-gray-600">
+                    //       <span className="bg-gradient-tone inline-block transform bg-clip-text font-light text-transparent transition-all duration-300">{text}</span>
+                    //     </Text>
+                    //   ),
+                    // },
+                    {
+                      title: 'Original Price',
+                      dataIndex: 'price',
+                      key: 'price',
+                      render: (price) => (
+                        <span className="font-medium">{helpers.moneyFormat(price)}</span>
+                      ),
+                    },
+                    {
+                      title: 'Savings',
+                      dataIndex: 'discount',
+                      key: 'discount',
+                      render: (discount) => (
+                        <span className="animate-pulse font-medium">{discount}% OFF</span>
+                      ),
+                    },
+                    {
+                      title: 'Final Price',
+                      key: 'final_price',
+                      render: (_, item) => (
+                        <span className="bg-gradient-tone bg-clip-text font-bold text-transparent">{helpers.moneyFormat(item.price - (item.price * item.discount) / 100)}</span>
+                      ),
+                    },
+                    {
+                      title: 'Action',
+                      key: 'action',
+                      render: (_, item) => (
+                        <Link to={`/course/${item.course_id}`}>
+                          <Button type="primary" className="bg-gradient-tone animate-shimmer h-10 md:h-12 transform rounded-xl md:rounded-2xl border-0 px-6 md:px-10 py-4 md:py-6 font-serif md:text-lg text-white shadow-lg transition-all duration-700 hover:shadow-xl">
+                            Learn More
+                          </Button>
+                        </Link>
+                      ),
+                    },
+                  ]}
+                  rowKey="_id"
+                  pagination={false}
+                  className="transition-all duration-500 ease-in-out"
                 />
               </div>
             ) : (
@@ -380,7 +409,15 @@ const handleTabChange = useCallback((key: string) => {
               </div>
 
               <div className="mt-6 md:mt-8 space-y-4">
-                <Button type="primary" size="large" block className="h-10 md:h-12 bg-[#1a237e] text-base md:text-lg font-bold tracking-wide shadow-lg transition-all hover:scale-[1.02] hover:bg-[#6a1bff] hover:shadow-xl" icon={<ShoppingCartOutlined />} onClick={handleCheckout}>
+                <Button 
+                  type="primary" 
+                  size="large" 
+                  block 
+                  className="h-10 md:h-12 bg-[#1a237e] text-base md:text-lg font-bold tracking-wide shadow-lg transition-all hover:scale-[1.02] hover:bg-[#6a1bff] hover:shadow-xl" 
+                  icon={<ShoppingCartOutlined />} 
+                  onClick={handleCheckout}
+                  disabled={selectedItems.length === 0} // Disable if no items are selected
+                >
                   Checkout
                 </Button>
 
