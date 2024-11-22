@@ -180,7 +180,7 @@ const CourseReviews: React.FC<any & { courseId: string, course: any, averageRati
       {fetchedReviews.slice(0, visibleReviews).map((review: any, index: number) => (
         <Card key={review._id || index} className="mb-6 rounded-2xl border-none bg-gradient-to-r from-white to-gray-50 p-6 shadow-xl transition-all duration-300 hover:shadow-2xl">
           <div className="mb-4 flex items-center space-x-4">
-            <Avatar size={48} src={userInfo?.avatar_url} />
+          <img src={`https://ui-avatars.com/api/?name=${review.reviewer_name[0]}`} alt={review.reviewer_name} className="w-12 h-12 rounded-full mr-4" />
             <div className="flex flex-col">
               <Text strong className="text-lg font-semibold text-indigo-900">
                 {review.reviewer_name || "Unknown User"}
