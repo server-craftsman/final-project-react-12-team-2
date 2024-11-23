@@ -82,7 +82,11 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ searchQuery }) => {
         title: "Description",
         dataIndex: "description",
         key: "description",
-        render: (description: string) => <div className="prose max-w-none">{parse(description)}</div>
+        render: (description: string) => {
+          const maxLength = 100;
+          const truncatedDescription = description.length > maxLength ? description.substring(0, maxLength) + "..." : description;
+          return <div className="prose max-w-none">{parse(truncatedDescription)}</div>;
+        }
       }
     ];
 

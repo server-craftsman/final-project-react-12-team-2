@@ -58,10 +58,15 @@ const LatestTransaction: React.FC = () => {
       title: "Balance Origin",
       dataIndex: "balance_origin",
       key: "balance_origin",
-      render: (balance_origin: any) => helpers.moneyFormat(balance_origin),
+      render: (balance_origin: any) => (
+        <span style={{ color: balance_origin > 0 ? 'green' : 'red' }}>
+          {helpers.moneyFormat(balance_origin)}
+        </span>
+      ),
       onCell: () => ({
         style: {
-          cursor: "pointer"
+          cursor: "pointer",
+          textAlign: "right"
         }
       })
     },
@@ -69,10 +74,15 @@ const LatestTransaction: React.FC = () => {
       title: "Balance Received",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
-      render: (price: any) => price !== undefined ? helpers.moneyFormat(price) : "N/A",
+      render: (price: any) => (
+        <span style={{ color: price > 0 ? 'blue' : 'gray' }}>
+          {price !== undefined ? helpers.moneyFormat(price) : "N/A"}
+        </span>
+      ),
       onCell: () => ({
         style: {
-          cursor: "pointer"
+          cursor: "pointer",
+          textAlign: "right"
         }
       })
     },
@@ -80,10 +90,15 @@ const LatestTransaction: React.FC = () => {
       title: "Balance Paid",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
-      render: (price_paid: any) => price_paid !== undefined ? helpers.moneyFormat(price_paid) : "N/A",
+      render: (price_paid: any) => (
+        <span style={{ color: price_paid > 0 ? 'purple' : 'orange' }}>
+          {price_paid !== undefined ? helpers.moneyFormat(price_paid) : "N/A"}
+        </span>
+      ),
       onCell: () => ({
         style: {
-          cursor: "pointer"
+          cursor: "pointer",
+          textAlign: "right"
         }
       })
     },
@@ -134,7 +149,7 @@ const LatestTransaction: React.FC = () => {
         </Typography.Text>
         <div className="mt-3">
           <Table 
-            columns={columns} 
+            columns={columns as any} 
             dataSource={latestTransaction} 
             rowKey={(record) => {
               const id = record.pageData?._id;

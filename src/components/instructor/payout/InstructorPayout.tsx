@@ -133,19 +133,19 @@ const InstructorPayout: React.FC<InstructorPayoutProps> = ({ refreshKey, searchQ
       title: "Balance Origin",
       dataIndex: "balance_origin",
       key: "balance_origin",
-      render: (money: number | undefined) => (money !== undefined ? moneyFormat(money) : "N/A")
+      render: (money: number | undefined) => <div className="flex justify-end">{money !== undefined ? moneyFormat(money) : "N/A"}</div>
     },
     {
       title: "Instructor Paid",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
-      render: (money: number | undefined) => (money !== undefined ? moneyFormat(money) : "N/A")
+      render: (money: number | undefined) => <div className="flex justify-end">{money !== undefined ? moneyFormat(money) : "N/A"}</div>
     },
     {
       title: "Instructor Received",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
-      render: (money: number | undefined) => (money !== undefined ? moneyFormat(money) : "N/A")
+      render: (money: number | undefined) => <div className="flex justify-end">{money !== undefined ? moneyFormat(money) : "N/A"}</div>
     },
     {
       title: "Created At",

@@ -137,9 +137,9 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
                       textAlign: "center"
                     }}>
                       {/* <Avatar src={user?.avatar_url} size={64} style={{ marginBottom: "8px" }} /> */}
-                      <img src={`https://ui-avatars.com/api/?name=${subscription.instructor_name[0]}`} alt={subscription.instructor_name} className="w-12 h-12 rounded-full mr-4" />
+                      <img src={`https://ui-avatars.com/api/?name=${subscription.instructor_name[0]}`} alt={subscription.instructor_name} className="w-12 h-12 rounded-full mr-4 mt-3" />
 
-                      <span style={{ fontSize: "18px", fontWeight: "bold", color: "#333", textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)" }}>{subscription.instructor_name}</span>
+                      <span style={{ textAlign: "center", fontSize: "18px", fontWeight: "bold", color: "#333", textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)", marginTop: "10px" }}>{subscription.instructor_name}</span>
                     </div>
                   }
                   style={{
@@ -151,8 +151,8 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
                     cursor: "pointer",
                     textAlign: "center"
                   }}
-                  bodyStyle={{ padding: "12px", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
                 >
+                  <div style={{ padding: "10px", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                   {/* <div>
                     <p style={{
                       fontSize: "14px",
@@ -187,6 +187,7 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
                   >
                     <ButtonSubscribe isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} instructorId={user?._id || ""} isSubscribed={isSubscribed} setIsSubscribed={setIsSubscribed} />
                   </div>
+                </div>
                 </Card>
               </Link>
             </Col>

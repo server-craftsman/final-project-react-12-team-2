@@ -1,5 +1,5 @@
 import { Card, Row, Col, Typography, Statistic, Spin } from "antd";
-import { BookOutlined, UserOutlined, DollarOutlined, PlusOutlined } from "@ant-design/icons";
+import { BookOutlined, UserOutlined, DollarOutlined } from "@ant-design/icons";
 import { CourseService } from "../../../services/course/course.service";
 import { SubscriberService } from "../../../services/subscriber/subscriber.service";
 import { useAuth } from "../../../contexts/AuthContext";
@@ -125,22 +125,28 @@ const Introduction = () => {
         </Title>
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={12} md={6}>
-            <Card onClick={() => setCourseModalVisible(true)}>
+            <Card 
+              onClick={() => setCourseModalVisible(true)} 
+              className="cursor-pointer hover:underline transition-all duration-300 hover:shadow-lg hover:bg-blue-100"
+            >
               <Statistic
                 title="Total Courses"
+                valueStyle={{ color: '#1a237e' }} // Set color to blue
                 value={totalCourses}
                 prefix={<BookOutlined className="mr-2" />}
-                suffix={<PlusOutlined className="ml-2 cursor-pointer text-blue-500" />}
               />
             </Card>
           </Col>
           <Col xs={24} sm={12} md={6}>
-            <Card onClick={() => setSubscriberModalVisible(true)}>
+            <Card 
+              onClick={() => setSubscriberModalVisible(true)} 
+              className="cursor-pointer hover:underline transition-all duration-300 hover:shadow-lg hover:bg-blue-100"
+            >
               <Statistic
                 title="Total Subscribers"
+                valueStyle={{ color: '#1a237e' }} // Set color to blue
                 value={totalSubscribers}
                 prefix={<UserOutlined className="mr-2" />}
-                suffix={<PlusOutlined className="ml-2 cursor-pointer text-blue-500" />}
               />
             </Card>
           </Col>
@@ -148,9 +154,9 @@ const Introduction = () => {
             <Card>
               <Statistic
                 title="Current Balance"
+                valueStyle={{ color: '#1a237e' }} // Set color to blue
                 value={helpers.moneyFormat(balance)}
                 prefix={<DollarOutlined className="mr-2" />}
-                suffix={<PlusOutlined className="ml-2 cursor-pointer text-blue-500" />}
               />
             </Card>
           </Col>
@@ -158,9 +164,9 @@ const Introduction = () => {
             <Card>
               <Statistic
                 title="Total Balance"
+                valueStyle={{ color: '#1a237e' }} // Set color to blue
                 value={helpers.moneyFormat(totalBalance)}
                 prefix={<DollarOutlined className="mr-2" />}
-                suffix={<PlusOutlined className="ml-2 cursor-pointer text-blue-500" />}
               />
             </Card>
           </Col>

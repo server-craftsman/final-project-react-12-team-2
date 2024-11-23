@@ -23,7 +23,7 @@ const Reviews: React.FC<ReviewsProps> = ({ searchTerm }) => {
         const searchCondition = {
           course_id: "",
           rating: 0,
-          is_instructor: false,
+          is_instructor: true, //check token
           is_rating_order: false,
           is_deleted: false,
           ...(searchTerm ? { comment: searchTerm } : {}),
