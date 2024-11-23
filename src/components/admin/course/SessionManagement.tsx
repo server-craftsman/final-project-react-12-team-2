@@ -6,7 +6,6 @@ import { SessionService } from "../../../services/session/session.service";
 import { SessionResponsePageData } from "../../../models/api/responsive/session/session.response.model";
 import { SessionRequestModel } from "../../../models/api/request/session/session.request.model";
 import ModalSessionModal from "./ModalSessionDetail";
-import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 interface SessionManagementProps {
   searchTerm: string;
   activeKey: string;
@@ -118,9 +117,7 @@ const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm, activ
         />
       </>
     );
-  } else {
-    return <LoadingAnimation />;
-  }
+  } 
 };
 
 export default SessionManagement;

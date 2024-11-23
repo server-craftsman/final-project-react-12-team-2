@@ -13,7 +13,6 @@ import ModalCourseDetail from "./ModalCourseDetail";
 import { GetCourseByIdResponse } from "../../../models/api/responsive/course/course.response.model";
 import { TableRowSelection } from "antd/es/table/interface";
 const { confirm } = Modal;
-import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 const defaultParams = {
   pageInfo: {
     pageNum: 1,
@@ -192,13 +191,13 @@ const CoursesManagement: React.FC<{
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (money: number) => moneyFormat(money)
+      render: (money: number) => <div style={{ textAlign: "right" }}>{moneyFormat(money)}</div>
     },
     {
       title: "Discount",
       dataIndex: "discount",
       key: "discount",
-      render: (discount: string) => `${discount}%`
+      render: (discount: string) => <div style={{ textAlign: "right" }}>{`${discount}% OFF`}</div>
     },
     {
       title: "Created At",
@@ -396,8 +395,6 @@ const CoursesManagement: React.FC<{
       />
       </>
     );
-  } else {
-    return <LoadingAnimation />;
   }
 };
 

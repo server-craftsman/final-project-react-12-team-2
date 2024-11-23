@@ -4,7 +4,7 @@ import { lazy, useState } from "react";
 const SearchPurchase = lazy(() => import("../../../components/admin/purchases/SearchPurchase"));
 // const AmountPurchase = lazy(() => import('../../../components/admin/purchases/AmountPurchase'));
 const ViewPurchase = lazy(() => import("../../../components/admin/purchases/ViewPurschase"));
-const ViewPurchaseDetails = lazy(() => import("../../../components/admin/purchases/ViewPurchaseDetails")); // Lazy load ViewPurchaseDetails
+// const ViewPurchaseDetails = lazy(() => import("../../../components/admin/purchases/ViewPurchaseDetails")); // Lazy load ViewPurchaseDetails
 
 const ManagePurchase = () => {
   const [searchQuery, setSearchQuery] = useState(""); // State để lưu trữ kết quả tìm kiếm
@@ -19,7 +19,6 @@ const ManagePurchase = () => {
       <SearchPurchase onSearch={handleSearch} /> {/* Ô tìm kiếm purchase */}
       {/* <AmountPurchase /> Thành tiền purchase */}
       <ViewPurchase searchQuery={searchQuery} /> {/* Hiển thị danh sách purchase dựa trên tìm kiếm */}
-      <ViewPurchaseDetails></ViewPurchaseDetails>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useMemo, memo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Row, Col, Form, Input, Button, Modal, message } from "antd";
+import { Row, Col, Form, Input, Button, Modal, message, Spin } from "antd";
 import { ArrowLeftOutlined, DeleteOutlined, LockOutlined, UnlockOutlined, EditOutlined } from "@ant-design/icons";
 import { userStatusColor } from "../../../utils/userStatus";
 import { userRoleColor } from "../../../utils/userRole";
@@ -13,7 +13,7 @@ import { ROUTER_URL } from "../../../const/router.path";
 // import parse from "html-react-parser";
 import { HttpException } from "../../../app/exceptions";
 import { HTTP_STATUS, UserRoles } from "../../../app/enums";
-import LoadingAnimation from "../../../app/UI/LoadingAnimation";
+
 const ViewUserProfileDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [user, setUser] = useState<User | null>(null);
@@ -124,13 +124,20 @@ const ViewUserProfileDetail = () => {
 
   const renderUserContent = useMemo(() => {
     if (!user) {
-      return <LoadingAnimation />;
+      return <Spin size="large" style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }} />;
     } else {
       return (
         <div className="max-w-10xl mx-auto rounded-lg bg-white p-8 shadow-lg">
           <Row gutter={[24, 24]} align="top">
             <Col xs={24} lg={8} className="text-center">
-              <img src={user.avatar_url || ""} alt={`${user.name}'s avatar`} className="mx-auto h-40 w-40 rounded-full border-4 border-gray-300 shadow-md" />
+              <img
+                src={user.avatar_url || `https://ui-avatars.com/api/?name=${user.name[0]}`}
+                alt="Avatar"
+                className="mx-auto justify-center h-40 w-40 rounded-full border-4 border-gray-300 shadow-md"
+                onError={(e) => {
+                e.currentTarget.src = `https://ui-avatars.com/api/?name=${user.name[0]}`;
+                }}
+              />
               <h2 className="mt-4 text-2xl font-bold text-gray-800">{user.name}</h2>
               <p className="text-gray-600">{user.email}</p>
               <p className="text-gray-600">{helpers.formatPhoneNumber(user.phone_number as string)}</p>

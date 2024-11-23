@@ -6,6 +6,7 @@ import SessionManagement from "../../../components/admin/course/SessionManagemen
 import CustomSearch from "../../../components/generic/search/CustomSearch";
 import FilterStatus from "../../../components/admin/course/FilterStatus";
 import { StatusType } from "../../../app/enums";
+
 const ManageCourses = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeKey, setActiveKey] = useState("1");

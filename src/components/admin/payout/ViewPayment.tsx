@@ -6,7 +6,8 @@ import { formatDate, moneyFormat } from "../../../utils/helper";
 import { payoutColorStatus } from "../../../utils/payoutStatus";
 import { PayoutService } from "../../../services/payout/payout.service";
 import ModalTransaction from "./ModalTransaction";
-import LoadingAnimation from "../../../app/UI/LoadingAnimation";
+import { Payout } from "../../../models/prototype/Payout";
+import { ColumnType } from "antd/es/table";
 interface ViewPaymentProps {
   searchQuery: string;
   status: string;
@@ -22,8 +23,10 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
   // const [pageNum, setPageNum] = useState<number>(1);
   // const [pageSize, setPageSize] = useState<number>(10);
   const [pageInfo, setPageInfo] = useState<any>({});
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+
     let isMounted = true;
 
     const searchCondition = {
@@ -141,6 +144,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
   };
 
   const fetchPayments = (page: number, pageSize: number) => {
+    setIsLoading(true);
     const searchCondition = {
       payout_no: searchQuery || "",
       instructor_id: "",
@@ -172,6 +176,9 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
       })
       .catch(() => {
         message.error("Failed to fetch payments.");
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -184,7 +191,20 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
     {
       title: "Instructor Name",
       dataIndex: "instructor_name",
-      key: "instructor_name"
+      key: "instructor_name",
+      render: (instructor_name: string) => (
+        <div className="flex items-center">
+          <img
+            src={`https://ui-avatars.com/api/?name=${instructor_name[0]}`}
+            alt="Avatar"
+            className="h-10 w-10 rounded-full"
+            onError={(e) => {
+              e.currentTarget.src = `https://ui-avatars.com/api/?name=${instructor_name[0]}`;
+            }}
+          />
+          <span className="ml-2">{instructor_name}</span>
+        </div>
+      )
     },
     {
       title: "Transaction",
@@ -200,30 +220,30 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
       )
     },
     {
-      title: "Balance Origin",
-      dataIndex: "balance_origin",
-      key: "balance_origin",
-      render: (money: number) => moneyFormat(money)
-    },
-    {
-      title: "Balance Instructor Paid",
-      dataIndex: "balance_instructor_paid",
-      key: "balance_instructor_paid",
-      render: (money: number) => moneyFormat(money)
-    },
-    {
-      title: "Balance Instructor Received",
-      dataIndex: "balance_instructor_received",
-      key: "balance_instructor_received",
-      render: (money: number) => moneyFormat(money)
-    },
-    {
       title: "Status",
       dataIndex: "status",
       key: "status",
       render: (status: string, record: any) => {
         return payoutColorStatus(status, record.status || "") || "Unknown Status";
       }
+    },
+    {
+      title: "Balance Origin",
+      dataIndex: "balance_origin",
+      key: "balance_origin",
+      render: (money: number) => <div style={{ textAlign: "right" }}>{moneyFormat(money)}</div>
+    },
+    {
+      title: "Balance Instructor Paid",
+      dataIndex: "balance_instructor_paid",
+      key: "balance_instructor_paid",
+      render: (money: number) => <div style={{ textAlign: "right" }}>{moneyFormat(money)}</div>
+    },
+    {
+      title: "Balance Instructor Received",
+      dataIndex: "balance_instructor_received",
+      key: "balance_instructor_received",
+      render: (money: number) => <div style={{ textAlign: "right" }}>{moneyFormat(money)}</div>
     },
     {
       title: "Date Created",
@@ -255,16 +275,20 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
             </>
           )}
         </div>
-      )
+      ),
+      shouldDisplay: status === PayoutStatus.REQUEST_PAYOUT
     }
   ];
 
-  if (payments && payments.length > 0) {
-    return (
-      <div className="p-0">
+  // Filter columns based on shouldDisplay property
+  const filteredColumns = columns.filter(column => column.shouldDisplay !== false);
+
+  return (
+    <div className="p-0">
       <Table
+        loading={isLoading}
         className="shadow-lg"
-        columns={columns}
+        columns={filteredColumns as ColumnType<Payout>[]}
         dataSource={payments}
         rowKey={(record) => record._id || `row-${record.payout_no}`}
         rowClassName={() => "align-middle"}
@@ -281,30 +305,13 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
           position: ["bottomLeft"]
         }}
       />
-      {/* <div className="mt-5 flex justify-start">
-        <Pagination
-          current={pageNum}
-          pageSize={pageSize}
-          total={pageInfo.totalItems}
-          showTotal={(total, range) => `${range[0]}-${range[1]} of ${total} items`}
-          onChange={(page, pageSize) => {
-            setPageNum(page);
-            setPageSize(pageSize);
-          }}
-          className="bg-pagination"
-          showSizeChanger
-        />
-      </div> */}
       <ModalTransaction
         isVisible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
         data={selectedPayoutDetails}
       />
-      </div>
-    );
-  } else {
-    return <LoadingAnimation />;
-  }
+    </div>
+  );
 };
 export default ViewPayment;
 

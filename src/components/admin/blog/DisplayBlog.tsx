@@ -8,9 +8,10 @@ import { EditOutlined, DeleteOutlined} from "@ant-design/icons";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
 import EditBlogModal from "./EditBlog";
 import DeleteBlogModal from "./DeleteBlog";
-import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 import BlogDetail from "./BlogDetail";
 import { helpers } from "../../../utils";
+import { ColumnType } from "antd/es/table";
+
 const DisplayBlog: React.FC<{ searchQuery: string, refreshKey: number }> = ({ searchQuery, refreshKey }) => {
   const [blogData, setBlogData] = useState<GetBlogResponse | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -84,10 +85,17 @@ const DisplayBlog: React.FC<{ searchQuery: string, refreshKey: number }> = ({ se
       title: "Blog Name",
       dataIndex: "name",
       render: (text: string, record: Blog) => {
-        return <a onClick={() => {
-          setSelectedBlog(record);
-          setDetailModalVisible(true);
-        }}>{text}</a>
+        return (
+          <a onClick={() => {
+            setSelectedBlog(record);
+            setDetailModalVisible(true);
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <img src={record.image_url} alt={text} style={{ width: 100, height: 100, marginRight: 10 }} />
+              {text}
+            </div>
+          </a>
+        );
       }
     },
     {
@@ -96,16 +104,29 @@ const DisplayBlog: React.FC<{ searchQuery: string, refreshKey: number }> = ({ se
     },
     {
       title: "Author",
-      dataIndex: "user_name"
+      dataIndex: "user_name",
+      render: (text: string, record: Blog) => {
+        const avatarUrl = record.user_name[0] || "U";
+        return (
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <img src={`https://ui-avatars.com/api/?name=${avatarUrl}`} alt={avatarUrl} className="w-12 h-12 rounded-full mr-4" />
+            {text}
+          </div>
+        );
+      }
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
+      render: (text: string) => {
+        const limitedText = text.length > 80 ? text.substring(0, 80) + "..." : text;
+        return <div style={{ textAlign: "left" }} dangerouslySetInnerHTML={{ __html: limitedText }} />;
+      }
     },
     {
       title: "Created At",
       dataIndex: "created_at",
       render: (date: string) => helpers.formatDate(new Date(date))
-    },
-    {
-      title: "Description",
-      dataIndex: "description"
     },
     {
       title: "Action",
@@ -133,10 +154,9 @@ const DisplayBlog: React.FC<{ searchQuery: string, refreshKey: number }> = ({ se
     }
   ];
 
-  if (blogData && pageInfo && columns) {
     return (
     <>
-      <Table columns={columns} dataSource={filteredData || []} rowKey="_id" 
+      <Table columns={columns as ColumnType<any>[]} dataSource={filteredData || []} rowKey="_id" 
       pagination={{
         current: pageInfo.pageNum,
         pageSize: pageInfo.pageSize,
@@ -158,9 +178,6 @@ const DisplayBlog: React.FC<{ searchQuery: string, refreshKey: number }> = ({ se
       <BlogDetail visible={isDetailModalVisible} onClose={() => setDetailModalVisible(false)} blogId={selectedBlog?._id || null} />
     </>
     );
-  } else {
-    return <LoadingAnimation />;
-  }
 };
 
 export default DisplayBlog;

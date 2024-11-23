@@ -1,9 +1,8 @@
 import { Link, useParams } from "react-router-dom"; // Remove useHistory
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import categoriesData from "../../../data/categories.json";
-import { Button, Col, Form, Input, Row } from "antd";
+import { Button, Col, Form, Input, Row, Spin } from "antd";
 import { ROUTER_URL } from "../../../const/router.path";
-import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 const DetailsCategory = () => {
   const { id } = useParams();
   const navigate = useNavigate(); // Use useNavigate instead
@@ -73,10 +72,11 @@ const DetailsCategory = () => {
         <Button className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white">Back To Categories</Button>
       </Link>
     </div>
-  ); 
-} else {
-  return <LoadingAnimation />;
-}
+    ); 
+  } else {
+    return <Spin size="large" style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }} />;
+  }
+
 };
 
 export default DetailsCategory;

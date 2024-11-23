@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import purchasesData from "../../../data/purchases.json";
 import { Purchases, PurchaseStatusEnum } from "../../../models/prototype/Purchases";
 import { Key } from "react";
-import LoadingAnimation from "../../../app/UI/LoadingAnimation";
+import { ColumnType } from "antd/es/table";
+
 const ViewPurchase = ({ searchQuery }: { searchQuery: string }) => {
   const navigate = useNavigate();
-
   const handleViewDetails = (purchaseId: string) => {
     navigate(`/admin/view-purchase/${purchaseId}`); // Điều hướng tới trang chi tiết với ID
   };
@@ -117,15 +117,11 @@ const ViewPurchase = ({ searchQuery }: { searchQuery: string }) => {
     }
   ];
 
-  if (filteredPurchases && filteredPurchases.length > 0) {
-    return (
-      <div className="p-4">
-      <Table<Purchases> className="shadow-lg" columns={columns} dataSource={filteredPurchases} rowKey="id" pagination={{ pageSize: 10 }} />
+  return (
+    <div className="p-4">
+      <Table<Purchases> className="shadow-lg" columns={columns as ColumnType<Purchases>[]} dataSource={filteredPurchases} rowKey="id" pagination={{ pageSize: 10 }} />
     </div>
-    );
-  } else {
-    return <LoadingAnimation />;
-  }
+  );
 };
 
 export default ViewPurchase;

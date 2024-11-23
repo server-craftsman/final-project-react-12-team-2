@@ -32,7 +32,7 @@ const columns = [
     dataIndex: "amount",
     key: "amount",
     render: (amount: number) => (
-      <span className="font-semibold text-emerald-600">
+      <span className="font-semibold text-emerald-600 flex justify-end">
         {helpers.moneyFormat(amount)}
       </span>
     )
@@ -42,7 +42,7 @@ const columns = [
     dataIndex: "balance_old",
     key: "balance_old",
     render: (balance: number) => (
-      <span className="text-gray-600">
+      <span className="text-gray-600 flex justify-end">
         {helpers.moneyFormat(balance)}
       </span>
     )
@@ -52,7 +52,7 @@ const columns = [
     dataIndex: "balance_new",
     key: "balance_new",
     render: (balance: number) => (
-      <span className="font-medium text-indigo-600">
+      <span className="font-medium text-indigo-600 flex justify-end">
         {helpers.moneyFormat(balance)}
       </span>
     )

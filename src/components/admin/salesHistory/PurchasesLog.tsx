@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { Table, Tag } from "antd";
-import { formatDate } from "../../../utils/helper";
+import { formatDate, moneyFormat } from "../../../utils/helper";
 import { SearchForAdminPurchasesRequestModel } from "../../../models/api/request/purchase/purchase.request.model";
 import { SearchForAdminPurchasesResponseModel } from "../../../models/api/responsive/purchase/purchase.reponse.model";
 import { PurchaseService } from "../../../services/purchase/purchase.service";
 import { ColorPurchaseStatusEnum } from "../../../utils/purchasesStatus";
 import { PurchaseStatus } from "../../../app/enums/purchase.status";
 import PurchaseCheckbox from "../../instructor/purchase/PurchaseCheckbox";
-import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 import moment from "moment";
+import { ColumnType } from "antd/es/table";
 
 interface PurchasesLogProps {
   onSelectionChange: (selected: Set<string>) => void;
@@ -115,16 +115,6 @@ const PurchasesLog: React.FC<PurchasesLogProps> = ({ onSelectionChange, onInstru
       }
     },
     {
-      title: "Price Paid",
-      dataIndex: "price_paid",
-      key: "price_paid"
-    },
-    {
-      title: "Discount",
-      dataIndex: "discount",
-      key: "discount"
-    },
-    {
       title: "Student Name",
       dataIndex: "student_name",
       key: "student_name"
@@ -132,7 +122,34 @@ const PurchasesLog: React.FC<PurchasesLogProps> = ({ onSelectionChange, onInstru
     {
       title: "Instructor Name",
       dataIndex: "instructor_name",
-      key: "instructor_name"
+      key: "instructor_name",
+      render: (instructor_name: string) => (
+        <div className="flex items-center">
+          <img
+            src={`https://ui-avatars.com/api/?name=${instructor_name[0]}`}
+            alt="Avatar"
+            className="h-10 w-10 rounded-full"
+            onError={(e) => {
+              e.currentTarget.src = `https://ui-avatars.com/api/?name=${instructor_name[0]}`;
+            }}
+          />
+          <span className="ml-2">{instructor_name}</span>
+        </div>
+      )
+    },
+    {
+      title: "Price Paid",
+      dataIndex: "price_paid",
+      key: "price_paid",
+      render: (price_paid: number) => <div style={{ textAlign: "right" }}>{moneyFormat(price_paid)}</div>
+    },
+    {
+      title: "Discount",
+      dataIndex: "discount",
+      key: "discount",
+      render: (discount: number) => {
+        return <div style={{ textAlign: "right" }}>{`${discount}% OFF`}</div>;
+      },
     },
     {
       title: "Created At",
@@ -143,11 +160,10 @@ const PurchasesLog: React.FC<PurchasesLogProps> = ({ onSelectionChange, onInstru
       }
     }
   ];
-  if (filteredPurchases && pageInfo.totalItems) {
     return (
       <div>
         <Table 
-          columns={columns} 
+          columns={columns as ColumnType<any>[]} 
           dataSource={filteredPurchases} 
           rowKey="_id" 
           pagination={{
@@ -165,15 +181,12 @@ const PurchasesLog: React.FC<PurchasesLogProps> = ({ onSelectionChange, onInstru
           }}
           summary={() => (
             <Table.Summary.Row>
-              <Table.Summary.Cell index={0} colSpan={10} className="font-bold">Total: {pageInfo.totalItems} purchases</Table.Summary.Cell>
+              <Table.Summary.Cell index={0} colSpan={10}>Total: {pageInfo.totalItems} purchases</Table.Summary.Cell>
             </Table.Summary.Row>
           )}
         />
       </div>
     );
-  } else {
-    return <LoadingAnimation />;
-  }
 };
 
 export default PurchasesLog;

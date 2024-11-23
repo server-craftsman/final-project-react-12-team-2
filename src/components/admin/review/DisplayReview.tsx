@@ -2,11 +2,12 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { message, Table, Button, Avatar, Popconfirm } from 'antd';
 import { DeleteOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { ReviewService } from '../../../services/review/review.service';
-import LoadingAnimation from '../../../app/UI/LoadingAnimation';
 import { helpers } from '../../../utils';
 import FilterDate from './FilterDate';
 import CustomSearch from '../../../components/generic/search/CustomSearch';
 import { Link } from 'react-router-dom';
+import { Review } from '../../../models/prototype/Review';
+import { ColumnType } from 'antd/es/table';
 
 interface DisplayReviewProps {
   search: string;
@@ -179,12 +180,12 @@ const DisplayReview: React.FC<DisplayReviewProps> = ({ search, dateRange, isDele
           setSelectedDateRange(dates);
         }} />
       </div>
-      {loading ? (
-        <LoadingAnimation />
-      ) : (
+
         <Table 
+          loading={loading}
+          className="shadow-lg" 
           dataSource={filteredReviews} 
-          columns={columns} 
+          columns={columns as ColumnType<Review>[]} 
           rowKey="_id" 
           pagination={{
             pageSize: pageInfo.pageSize,
@@ -212,7 +213,6 @@ const DisplayReview: React.FC<DisplayReviewProps> = ({ search, dateRange, isDele
             },
           }} 
         />
-      )}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { Table, Modal, message, Button, Avatar, Input } from "antd";
+import { Table, Modal, message, Button, Input } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { UserRoles } from "../../../app/enums";
 import { userStatusColor } from "../../../utils/userStatus";
@@ -10,7 +10,7 @@ import { HTTP_STATUS } from "../../../app/enums";
 import { HttpException } from "../../../app/exceptions";
 import { helpers } from "../../../utils";
 import { userRoleColor } from "../../../utils/userRole";
-import LoadingAnimation from "../../../app/UI/LoadingAnimation";
+import { ColumnType } from "antd/es/table";
 interface ViewRequestAccountProps {
   searchQuery: string;
   refreshKey: number;
@@ -150,7 +150,19 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
         title: "Avatar",
         dataIndex: "avatar_url",
         key: "avatar_url",
-        render: (avatar_url: string) => <Avatar src={avatar_url} />
+        render: (avatar_url: string, record: User) => {
+          const initial = record.name && typeof record.name === 'string' ? record.name[0] : 'U'; // Use first character of name if valid
+          return (
+            <img
+              src={avatar_url || `https://ui-avatars.com/api/?name=${initial}`}
+              alt="Avatar"
+              className="h-10 w-10 rounded-full"
+              onError={(e) => {
+                e.currentTarget.src = `https://ui-avatars.com/api/?name=${initial}`;
+              }}
+            />
+          );
+        }
       },
       {
         title: "Name",
@@ -222,16 +234,14 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
     [handleApprove, updatedUsers]
   );
 
-  if (loading) {
-    return <LoadingAnimation />;
-  }
 
   if (filteredUsers && pageInfo && columns) {
     return (
       <div className="-mt-3 mb-64 p-4">
-        <Table<User> 
+        <Table<User>
+          loading={loading}
           className="shadow-lg" 
-          columns={columns} 
+          columns={columns as ColumnType<User>[]} 
           dataSource={filteredUsers} 
           rowKey="_id" 
           pagination={{
@@ -247,11 +257,9 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
             position: ["bottomLeft"]
           }} 
         />
-      </div>
+      </div>  
     );
-  } else {
-    return <LoadingAnimation />;
-  }
+    } 
 };
 
 export default React.memo(ViewRequestAccount);

@@ -1,8 +1,8 @@
 import React, { lazy, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { Layout } from "antd";
-import { Avatar, Dropdown } from "antd";
-import { UserOutlined, LogoutOutlined, DownOutlined, HomeOutlined } from "@ant-design/icons";
+import { Dropdown } from "antd";
+import { LogoutOutlined, DownOutlined, HomeOutlined } from "@ant-design/icons";
 const AdminNavbar = lazy(() => import("./AdminNavbar"));
 const StudentFooter = lazy(() => import("../main-layout/MainFooter"));
 const { Content } = Layout;
@@ -55,7 +55,14 @@ const Admin: React.FC = () => {
           <header className="bg-gradient-tone mb-4 rounded-lg border-b border-indigo-700 p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <Avatar size={48} src={userInfo?.avatar_url} icon={!userInfo?.avatar_url && <UserOutlined />} />
+                <img
+                  src={userInfo?.avatar_url || `https://ui-avatars.com/api/?name=${userInfo?.name[0]}`}
+                  alt="Avatar"
+                  className="h-10 w-10 rounded-full"
+                  onError={(e) => {
+                    e.currentTarget.src = `https://ui-avatars.com/api/?name=${userInfo?.name[0]}`;
+                  }}
+                />
                 <div className="text-white">
                   <h2 className="text-xl font-bold">Welcome, {userInfo?.name || "Admin"}</h2>
                 </div>
@@ -69,7 +76,14 @@ const Admin: React.FC = () => {
                       label: (
                         <div className="p-2">
                           <div className="mb-2 flex items-center space-x-3">
-                            <Avatar size={40} src={userInfo?.avatar_url} icon={!userInfo?.avatar_url && <UserOutlined />} />
+                            <img
+                              src={userInfo?.avatar_url || `https://ui-avatars.com/api/?name=${userInfo?.name[0]}`}
+                              alt="Avatar"
+                              className="h-10 w-10 rounded-full"
+                              onError={(e) => {
+                                e.currentTarget.src = `https://ui-avatars.com/api/?name=${userInfo?.name[0]}`;
+                              }}
+                            />
                             <div>
                               <div className="font-semibold">{userInfo?.name || "Admin"}</div>
                               <div className="text-sm text-gray-500">{userInfo?.email}</div>

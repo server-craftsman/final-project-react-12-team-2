@@ -7,7 +7,7 @@ import { CourseStatusEnum } from "../../../models/prototype/Course";
 import { courseStatusColor } from "../../../utils/courseStatus";
 import { CourseLogService } from "../../../services/courselog/courselog.service";
 import { CourseLogs } from "../../../models/api/responsive/admin/courselog.responsive";
-import LoadingAnimation from "../../../app/UI/LoadingAnimation";
+
 const CourseLog: React.FC<{ searchQuery: string; statusFilter: string }> = ({ searchQuery, statusFilter }) => {
   const [courses, setCourses] = useState<GetCourseResponsePageData[]>([]);
   const [courseLog, setCourseLog] = useState<CourseLogs[]>([]);
@@ -82,7 +82,7 @@ const CourseLog: React.FC<{ searchQuery: string; statusFilter: string }> = ({ se
       title: "Course Name",
       dataIndex: "name",
       key: "name",
-      render: (name: string, record: GetCourseResponsePageData) => <a onClick={() => handleShowModal(record._id)}>{name}</a>
+      render: (name: string, record: GetCourseResponsePageData) => <a onClick={() => handleShowModal(record._id)} className="text-blue-500 hover:underline">{name}</a>
     },
     {
       title: "Status",
@@ -162,8 +162,6 @@ const CourseLog: React.FC<{ searchQuery: string; statusFilter: string }> = ({ se
       </Modal>
       </>
     );
-  } else {
-    return <LoadingAnimation />;
   }
 };
 

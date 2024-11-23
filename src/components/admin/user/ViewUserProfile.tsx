@@ -9,12 +9,12 @@ import { GetUsersAdminParams, ChangeStatusParams, ChangeRoleParams } from "../..
 import { GetUsersAdminResponse } from "../../../models/api/responsive/admin/user.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model";
 import { ROUTER_URL } from "../../../const/router.path";
-import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 // Utils
 import { helpers } from "../../../utils";
 
 // handle request - response
 import { UserRoles } from "../../../app/enums";
+import { ColumnType } from "antd/es/table";
 // import { HttpException } from "../../../app/exceptions";
 
 interface SearchCondition {
@@ -288,7 +288,19 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
         title: "Avatar",
         dataIndex: "avatar_url",
         key: "avatar_url",
-        render: (avatar_url: string) => <img src={avatar_url} alt="Avatar" className="h-10 w-10 rounded-full" />
+        render: (avatar_url: string, record: User) => {
+          const initial = record.name && typeof record.name === 'string' ? record.name[0] : 'U'; // Use first character of name if valid
+          return (
+            <img
+              src={avatar_url || `https://ui-avatars.com/api/?name=${initial}`}
+              alt="Avatar"
+              className="h-10 w-10 rounded-full"
+              onError={(e) => {
+                e.currentTarget.src = `https://ui-avatars.com/api/?name=${initial}`;
+              }}
+            />
+          );
+        }
       },
       {
         title: "Name",
@@ -388,7 +400,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
       )}
       <Table<User>
         className="shadow-lg"
-        columns={columns}
+        columns={columns as ColumnType<User>[]}
         dataSource={users?.pageData || []}
         rowKey="_id"
         pagination={{
@@ -406,9 +418,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
       />
       </div>
     );
-  } else {
-    return <LoadingAnimation />;
-  }
+  } 
 };
 
 export default React.memo(ViewUserProfile);
