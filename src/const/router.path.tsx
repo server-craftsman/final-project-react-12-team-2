@@ -6,7 +6,7 @@ export const ROUTER_URL = {
   VERIFY_EMAIL: "/verify-email/:token",
   FORGOT_PASSWORD: "/forgot-password",
   // ADMIN_PATH: "/admin",
-  ADMIN: {
+   ADMIN: {
     BASE: "/admin",
     INFO: "/admin/admin-info",
     MANAGE_USER: "/admin/manage-user",
@@ -65,7 +65,8 @@ export const ROUTER_URL = {
     ABOUT: "/about",
     BLOG: "/blog",
     BLOG_DETAILS_ID: "/blog-details/:id",
-    ALL_COURSES: "/courses/all"
+    ALL_COURSES: "/courses/all",
+    SEARCH_COURSES: "/courses/search-courses"
   },
   UNAUTHORIZED: "/unauthorized",
   PROFILE: {

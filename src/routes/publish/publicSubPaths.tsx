@@ -18,6 +18,7 @@ const VerifyEmail = lazy(() => import("../../pages/verify/VerifyEmail"));
 const ForgotPassword = lazy(() => import("../../pages/forgot.password/ForgotPassword"));
 const ProfileSubscribe = lazy(() => import("../../pages/profile/ProfileSubscribeManagement"));
 const AllCourses = lazy(() => import("../../components/generic/home/all-courses/AllCourses"));
+const SearchCourses = lazy(() => import("../../components/generic/home/search-courses/SearchCourses"));
 //======================================================
 //export public sub paths
 export const publicSubPaths: Record<string, RouteObject[]> = {
@@ -64,6 +65,10 @@ export const publicSubPaths: Record<string, RouteObject[]> = {
         {
           path: ROUTER_URL.COMMON.ALL_COURSES,
           element: <AllCourses />
+        },
+        {
+          path: ROUTER_URL.COMMON.SEARCH_COURSES,
+          element: <SearchCourses />
         }
       ]
     }

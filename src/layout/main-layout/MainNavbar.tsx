@@ -1,18 +1,40 @@
 import { Link, useNavigate } from "react-router-dom";
 import logo1 from "../../assets/logo1.jpg";
 import { FaSearch, FaBars } from "react-icons/fa";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { ROUTER_URL } from "../../const/router.path";
 import { UserRoles } from "../../app/enums";
+import { CartStatusEnum } from "../../app/enums";
+import { Input, AutoComplete } from 'antd';
+import { CourseService } from "../../services/course/course.service";
+import { GetPublicCourseParams } from "../../models/api/request/course/course.request.model";
+
+const debounce = <T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): ((...args: Parameters<T>) => void) => {
+  let timeout: NodeJS.Timeout;
+  
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+};
+
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { countNewCartItems, updateCartItems } = useCart();
   const { userInfo, logout } = useAuth();
+
+  const [searchKeyword, setSearchKeyword] = useState("");
   const navigate = useNavigate();
-  
+  const [suggestions, setSuggestions] = useState<{ value: string, label: string }[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024 && isMenuOpen) {
@@ -73,12 +95,93 @@ const Navbar = () => {
     }
   };
 
+
   const handleDisplayCart = () => {
     navigate("/cart");
     // console.log("New Cart Items Count:", newCartItemsCount);
     updateCartItems();
     countNewCartItems();
   }
+
+  const fetchSuggestions = useCallback(
+    debounce(async (value: string) => {
+      if (!value.trim()) {
+        setSuggestions([]);
+        return;
+      }
+
+      setIsSearching(true);
+      try {
+        const params: GetPublicCourseParams = {
+          pageInfo: {
+              pageNum: 1,
+              pageSize: 5,
+          },
+          searchCondition: {
+              keyword: value,
+              category_id : "",
+              status: undefined,
+              is_delete: false,
+          }
+      };
+        const response = await CourseService.getPublicCourse(params);
+        console.log("response", response);
+        if (response.data?.data?.pageData) {
+          const defaultOption = {
+            value: `${value}`,
+            label: `Search with key "${value}"`,
+            searchValue: value
+          };
+
+          const courseSuggestions = response.data.data.pageData.map(course => ({
+            value: course.name,
+            label: course.name,
+            searchValue: course.name,
+            customLabel: (
+              <div className="flex items-center gap-2 p-2">
+                <img 
+                  src={course.image_url} 
+                  alt={course.name} 
+                  className="h-8 w-8 rounded object-cover"
+                />
+                <div>
+                  <div className="font-medium">{course.name}</div>
+                  <div className="text-xs text-gray-500">{course.instructor_name}</div>
+                </div>
+              </div>
+            )
+          }));
+
+          setSuggestions([defaultOption, ...courseSuggestions]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch suggestions:', error);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 300),
+    []
+  );
+
+  const handleSearchChange = (value: string) => {
+    setSearchKeyword(value);
+    fetchSuggestions(value);
+  };
+
+  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    navigate(`/courses/search-courses?keyword=${searchKeyword}`);
+  };
+
+  const onSelect = (value: string, option: any) => {
+    setSearchKeyword(option.searchValue);
+    if (value === 'search-all') {
+      navigate(`/courses/search-courses?keyword=${encodeURIComponent(option.searchValue)}`);
+    } else {
+      navigate(`/courses/search-courses?keyword=${encodeURIComponent(option.searchValue)}`);
+    }
+  };
+
 
   return (
     <nav className="bg-gradient-tone fixed left-0 right-0 top-0 z-50 shadow-lg">
@@ -111,8 +214,29 @@ const Navbar = () => {
               </div>
             </div>
             <div className="relative hidden lg:block">
-              <input type="text" placeholder="Search..." className="w-40 rounded-full bg-[#161d66] px-4 py-2 pl-10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#161d66] lg:w-64" />
-              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400" />
+              <form onSubmit={handleSearchSubmit}>
+                <AutoComplete
+                  value={searchKeyword}
+                  options={suggestions}
+                  onSelect={onSelect}
+                  onChange={handleSearchChange}
+                  onSearch={handleSearchChange}
+                  className="w-40 lg:w-64"
+                  dropdownClassName="search-dropdown"
+                  notFoundContent={isSearching ? "Searching..." : "No results found"}
+                  optionRender={(option) => option.data.customLabel || option.label}
+                >
+                  <Input
+                    placeholder="Search..."
+                    prefix={<FaSearch className="text-gray-400" />}
+                    className="rounded-full bg-[#161d66] px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#161d66] focus:bg-white focus:text-black"
+                    style={{ 
+                      backgroundColor: '#161d66',
+                      color: 'white'
+                    }}
+                  />
+                </AutoComplete>
+              </form>
             </div>
             {userInfo && (
               <button onClick={handleDisplayCart} className="relative flex items-center justify-center p-2 bg-indigo-600 rounded-full hover:bg-indigo-700 transition duration-300">
