@@ -1,21 +1,21 @@
 import { useState, useEffect, useCallback } from "react";
 import { GetPublicCourseParams } from "../../../../models/api/request/course/course.request.model";
-import { GetPublicCategoryParams } from "../../../../models/api/request/admin/category.request.model";
+// import { GetPublicCategoryParams } from "../../../../models/api/request/admin/category.request.model";
 import { CourseService } from "../../../../services/course/course.service";
 import { GetCourseResponsePublic } from "../../../../models/api/responsive/course/course.response.model";
-import { Card, Typography , Button,  Tag , Rate, Avatar, Col, Row, Empty } from "antd";
+import { Card, Typography , Button,  Tag , Rate, Avatar, Col, Row, Spin } from "antd";
 import { helpers } from "../../../../utils";
 import {  BookOutlined, VideoCameraOutlined, PercentageOutlined, ClockCircleOutlined, HomeOutlined } from "@ant-design/icons";
 import { motion, AnimatePresence } from "framer-motion";
-import { CategoryService } from '../../../../services/category/category.service';
+// import { CategoryService } from '../../../../services/category/category.service';
 import { useMediaQuery } from "react-responsive";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import FilteredAllCourses, { SortOption, CategoryOption } from './FilteredAllCourses';
+// import FilteredAllCourses, { SortOption, CategoryOption } from './FilteredAllCourses';
 import parse from "html-react-parser";
 import Pagination from "antd/es/pagination";
-import LoadingAnimation from "../../../../app/UI/LoadingAnimation";
-import Lottie from "lottie-react";
-import animationData from "../../../../data/courseAnimation.json";
+// import LoadingAnimation from "../../../../app/UI/LoadingAnimation";
+// import Lottie from "lottie-react";
+// import animationData from "../../../../data/courseAnimation.json";
 
 const { Title, Paragraph } = Typography;
 const { Meta } = Card;
@@ -24,36 +24,34 @@ const SearchCourses = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const initialKeyword = queryParams.get('keyword') || '';
-    const [courses, setCourses] = useState<GetCourseResponsePublic[]>([]);
-    const [categories, setCategories] = useState<{ _id: string; name: string }[]>([]);
-    const [selectedSort, setSelectedSort] = useState<SortOption>('');
-    const [selectedCategory, setSelectedCategory] = useState<CategoryOption>('');
     const [keyword, setKeyword] = useState<string>(initialKeyword);
+    const [courses, setCourses] = useState<GetCourseResponsePublic[]>([]);
+    // const [categories, setCategories] = useState<{ _id: string; name: string }[]>([]);
+    // const [selectedSort, setSelectedSort] = useState<SortOption>('');
+    // const [selectedCategory, setSelectedCategory] = useState<CategoryOption>('');
     const [pageSize ] = useState<number>(6);
     const [pageNum, setPageNum] = useState<number>(1);
     const [totalItems, setTotalItems] = useState<number>(0);
-    const [loading, setLoading] = useState<boolean>(true);  
+    // const [loading, setLoading] = useState<boolean>(false);  
     const [isHovered, setIsHovered] = useState(location.state?.triggerHover || false);
     const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1023 });
     const isMobile = useMediaQuery({ maxWidth: 767 }); 
     const navigate = useNavigate();
-    const [categoryParams,] = useState<GetPublicCategoryParams>({
-        searchCondition: {
-            keyword: "",
-            is_parent: false,
-            is_delete: false
-        },
-        pageInfo: {
-            pageNum: 1,
-            pageSize: 100
-        }
-    });
+    // const [categoryParams,] = useState<GetPublicCategoryParams>({
+    //     searchCondition: {
+    //         keyword: "",
+    //         is_parent: false,
+    //         is_delete: false
+    //     },
+    //     pageInfo: {
+    //         pageNum: 1,
+    //         pageSize: 100
+    //     }
+    // });
 
 
     const fetchCourses = useCallback(async () => {
-        console.log("keyword", keyword);
-        console.log("page", pageNum);
-        setLoading(true);
+        // setLoading(true);
         try {
             const params: GetPublicCourseParams = {
                 pageInfo: {
@@ -61,8 +59,8 @@ const SearchCourses = () => {
                     pageSize: pageSize,
                 },
                 searchCondition: {
-                    keyword: keyword,
-                    category_id: selectedCategory,
+                    keyword: keyword || '',
+                    category_id: "",
                     status: undefined,
                     is_delete: false,
                 }
@@ -74,52 +72,60 @@ const SearchCourses = () => {
                 // Set the totalItems from the response
                 setTotalItems(response.data.data.pageInfo.totalItems);
 
-                switch (selectedSort) {
-                    case 'price_asc':
-                        sortedCourses.sort((a, b) => a.price - b.price);
-                        break;
-                    case 'price_desc':
-                        sortedCourses.sort((a, b) => b.price - a.price);
-                        break;
-                }
+                // switch (selectedSort) {
+                //     case 'price_asc':
+                //         sortedCourses.sort((a, b) => a.price - b.price);
+                //         break;
+                // case 'price_desc':
+                //     sortedCourses.sort((a, b) => b.price - a.price);
+                //     break;
+                // }
 
                 setCourses(sortedCourses);
             }
         } catch (err) {
             console.error(err);
-        } finally {
-            setLoading(false);
         }
-    }, [selectedSort, selectedCategory, keyword, pageNum, pageSize]);
+    }, [keyword, pageNum, pageSize]);
+
+    // useEffect(() => {
+    //     setKeyword(initialKeyword);
+    //     setPageNum(1);
+
+    //     const fetchCategories = async () => {
+    //         try {
+    //             const response = await CategoryService.getPublicCategory(categoryParams);
+    //             if (response.data?.data?.pageData) {
+    //                 const categoriesData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [response.data.data.pageData];
+    //                 // setCategories(categoriesData);
+    //             }
+    //         } catch (error) {
+    //             console.error('Failed to fetch categories:', error);
+    //         }
+    //     };
+
+    //     fetchCategories();
+    // }, [initialKeyword, categoryParams]);
 
     useEffect(() => {
         setKeyword(initialKeyword);
         setPageNum(1);
-
-        const fetchCategories = async () => {
-            try {
-                const response = await CategoryService.getPublicCategory(categoryParams);
-                if (response.data?.data?.pageData) {
-                    const categoriesData = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [response.data.data.pageData];
-                    setCategories(categoriesData);
-                }
-            } catch (error) {
-                console.error('Failed to fetch categories:', error);
-            }
-        };
-
-        fetchCategories();
-    }, [initialKeyword, categoryParams]);
+    }, [initialKeyword]);
 
     useEffect(() => {
         fetchCourses();
-    }, [keyword, selectedSort, selectedCategory, pageNum, pageSize, fetchCourses]);
+    }, [keyword, pageNum, pageSize, fetchCourses]);
 
-    const handleSearch = (sort: SortOption, category: CategoryOption) => {
-        setSelectedSort(sort);
-        setSelectedCategory(category);
-        setPageNum(1);
-    };
+    // const handleSearch = (sort: SortOption, category: CategoryOption) => {
+    //     setSelectedSort(sort);
+    //     setSelectedCategory(category);
+    //     setPageNum(1);
+    // };
+
+    // const handleSearchChange = (newKeyword: string) => {
+    //     setKeyword(newKeyword);
+    //     setPageNum(1);
+    // };
 
     const handlePreviewClick = () => {
         setIsHovered(true);
@@ -180,10 +186,6 @@ const SearchCourses = () => {
         if (isTablet) return '250px';
         return '300px';
     };
-    
- if (loading) {
-        return <LoadingAnimation />;
-    }
 
     if (courses.length === 0) {
         return (
@@ -201,25 +203,19 @@ const SearchCourses = () => {
                         </motion.button>
                     </Link>
                 </div>
-                <FilteredAllCourses
+                {/* <FilteredAllCourses
                 onSearch={handleSearch}
                 categories={categories}
                 selectedSort={selectedSort}
                 selectedCategory={selectedCategory}
-            />  
+            />   */}
                 <motion.div
                     className="flex justify-center items-center h-full"
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <Empty
-                        description={
-                            <Typography.Title level={4}>
-                                Không tìm thấy kết quả
-                            </Typography.Title>
-                        }
-                    />
+                   <Spin size="large" className="text-center" />
                 </motion.div>
             </div>
         );
@@ -241,24 +237,15 @@ const SearchCourses = () => {
             </motion.button>
           </Link>
           </div>
-            <FilteredAllCourses
+            {/* <FilteredAllCourses
                 onSearch={handleSearch}
                 categories={categories}
                 selectedSort={selectedSort}
                 selectedCategory={selectedCategory}
-            />       
+            />        */}
             <Row gutter={getResponsiveGutter()}>
-                <AnimatePresence>
-                 {loading ? (
-                   <div className="flex h-full w-full items-center justify-center">
-                     <Lottie 
-                        height={isMobile ? 200 : 400} 
-                        width={isMobile ? 200 : 400} 
-                        animationData={animationData} 
-                    />
-                    </div>
-                  ) : (
-                  courses.map((course, index) => (
+                <AnimatePresence mode="wait" initial={false}>
+                  {courses.map((course, index) => (
                     <Col xs={24} sm={12} lg={8} key={course._id} className="mx-auto h-full">
                         <motion.div
                             variants={itemVariants}
@@ -425,7 +412,7 @@ const SearchCourses = () => {
                         </motion.div>
                             </Col>
                         ))
-                    )}
+                    }
                 </AnimatePresence>
             </Row>
             <div className="mt-5 flex justify-start">
