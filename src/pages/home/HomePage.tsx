@@ -16,7 +16,8 @@ const HomePage: React.FC = () => {
   const pageSize = 6;
   const [isVisible, setIsVisible] = useState(false);
   const [categoryList, setCategoryList] = useState<GetCategoryResponsePublic[]>([]);
-  const totalCourses = categoryList.length;
+  // const totalCourses = categoryList.length;
+  const [totalCourses, setTotalCourses] = useState(0);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -41,6 +42,7 @@ const HomePage: React.FC = () => {
         });
         const pageData = response.data.data.pageData;
         setCategoryList(pageData as unknown as GetCategoryResponsePublic[]);
+        setTotalCourses(response.data.data.pageInfo.totalItems);
       } catch (error) {
         console.error("Failed to fetch categories", error);
       }
