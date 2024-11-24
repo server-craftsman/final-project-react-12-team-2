@@ -97,7 +97,7 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery }
                         textAlign: "center"
                       }}
                     >
-                      <Avatar src={user?.avatar_url} size={64} style={{ marginBottom: "8px" }} />
+                      <Avatar src={user?.avatar_url} size={64} style={{ marginBottom: "8px", marginTop: "8px" }} />
                       <span style={{ fontSize: "20px", fontWeight: "bold" }}>{user?.name}</span>
                     </div>
                   }
