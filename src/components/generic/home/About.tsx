@@ -4,9 +4,10 @@ import logo1 from "../../../assets/logo1.jpg";
 import { Link } from "react-router-dom";
 const About: React.FC = () => {
   return (
-    <div className="min-h-screen w-full bg-gradient-to-r from-blue-500 via-green-500 to-yellow-500 p-8 text-white">
-      <div className="mt-3 flex justify-center">
-        <img src={logo1} alt="Intro Image" className="h-auto w-1/4 transform rounded-full shadow-lg transition duration-500 hover:rotate-3 hover:skew-x-3 hover:skew-y-3 hover:scale-105" />
+    <div className="min-h-screen w-full p-8 text-white">
+      <div className="mt-3 flex flex-col items-center justify-center space-y-6">
+        <img src={logo1} alt="Intro Image" className="h-auto w-1/4 transform rounded-full shadow-2xl transition duration-500 hover:rotate-3 hover:skew-x-3 hover:skew-y-3 hover:scale-105 border-4 border-gold" />
+        <p className="text-5xl font-extrabold text-gold text-black">Edu Learn</p>
       </div>
       <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
         <div className="flex transform flex-col items-start justify-center rounded-lg bg-gray-900 bg-opacity-75 p-6 shadow-lg transition duration-500 hover:translate-x-2 hover:translate-y-2 hover:rotate-1 hover:scale-105 hover:bg-gray-800">
@@ -67,9 +68,9 @@ const About: React.FC = () => {
           <p className="mt-2">Complete the course and receive prestigious certificates from us.</p>
         </div>
       </div>
-      <div className="mt-8">
+      {/* <div className="mt-8">
         <iframe width="100%" height="500" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Intro Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen className="transform rounded-lg shadow-lg transition duration-500 hover:translate-x-2 hover:translate-y-2 hover:rotate-1 hover:scale-105"></iframe>
-      </div>
+      </div> */}
       <Link to="/register" className="mt-8 flex justify-center">
         <button className="bg-gradient-tone transform rounded-full px-6 py-3 font-bold text-white shadow-lg transition duration-500 hover:translate-x-2 hover:translate-y-2 hover:rotate-1 hover:scale-110 hover:animate-pulse hover:bg-yellow-600 hover:shadow-2xl">Register Now</button>
       </Link>
