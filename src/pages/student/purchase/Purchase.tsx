@@ -5,7 +5,6 @@ import { ROUTER_URL } from "../../../const/router.path";
 import { Table, Layout, Select, Input, Button, DatePicker } from "antd";
 import { EyeOutlined, PrinterOutlined } from "@ant-design/icons";
 import { helpers } from "../../../utils";
-import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 import DetailModal from './DetailModal';
 import moment from "moment";
 import { Link, useNavigate } from "react-router-dom";
@@ -319,14 +318,9 @@ const Purchase: React.FC = () => {
     }
   ], [handleActionClick]);
 
-  if (loading) {
-    return <LoadingAnimation />;
-  } else {
     return (
-      <Layout>
-      <Layout>
-        <Content
-          style={{
+      <Content
+        style={{
             margin: 0,
             minHeight: 280,
             maxWidth: '100%',
@@ -394,11 +388,12 @@ const Purchase: React.FC = () => {
           </div>
 
           <Table
+            loading={loading}
             dataSource={filteredPurchases}
             columns={columns}
             rowKey="_id"
             pagination={{
-              current: currentPage,
+              current: currentPage, 
               pageSize: pageSize,
               total: totalResults,
               onChange: (page, pageSize) => {
@@ -419,10 +414,7 @@ const Purchase: React.FC = () => {
             />
           )}
         </Content>
-      </Layout>
-      </Layout>
     );
-  }
-};
+  };
 
 export default Purchase;
