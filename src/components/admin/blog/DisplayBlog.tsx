@@ -12,9 +12,7 @@ import BlogDetail from "./BlogDetail";
 import { helpers } from "../../../utils";
 import { ColumnType } from "antd/es/table";
 
-import BlogDetail from "./BlogDetail";
-import { helpers } from "../../../utils";
-const DispplayBlog: React.FC<{ searchQuery: string, refreshKey: number, refreshKey: number }> = ({ searchQuery, refreshKey, refreshKey }) => {
+const DisplayBlog: React.FC<{ searchQuery: string, refreshKey: number }> = ({ searchQuery, refreshKey }) => {
   const [blogData, setBlogData] = useState<GetBlogResponse | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isEditModalVisible, setEditModalVisible] = useState(false);
@@ -78,11 +76,6 @@ const DispplayBlog: React.FC<{ searchQuery: string, refreshKey: number, refreshK
   const filteredData = blogData?.pageData?.filter((blog: Blog) => (blog.name && blog.name.toLowerCase().includes(searchQuery.toLowerCase())) || (blog.description && blog.description.toLowerCase().includes(searchQuery.toLowerCase())));
 
   const columns = [
-    {
-      title: "No",
-      key: "index",
-      render: (_: any, __: Blog, index: number) => index + 1,
-    },
     {
       title: "No",
       key: "index",

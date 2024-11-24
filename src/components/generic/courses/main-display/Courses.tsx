@@ -14,9 +14,10 @@ import { useMediaQuery } from 'react-responsive';
 interface CoursesProps {
   pageSize?: number;
   pageNum?: number;
+  onTotalPagesChange?: (totalPages: number) => void;
 }
 
-const fetchCoursePublic = async (searchCondition = {}, pageInfo = { pageNum: 1, pageSize: 10 }) => {
+const fetchCoursePublic = async (searchCondition = {}, pageInfo = { pageNum: 1, pageSize: 6 }) => {
   const response = await CourseService.getPublicCourse({
     searchCondition: {
       keyword: "",
@@ -32,21 +33,26 @@ const fetchCoursePublic = async (searchCondition = {}, pageInfo = { pageNum: 1, 
   return response.data;
 };
 
-const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
+const Courses: React.FC<CoursesProps> = ({ pageSize = 6, pageNum = 1, onTotalPagesChange }) => {
   const navigate = useNavigate();
   const [courses, setCourses] = useState<GetPublicCourseResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-
+  // const [totalPages, setTotalPages] = useState<number>(0);
   // Responsive breakpoints
-  // const isDesktop = useMediaQuery({ minWidth: 1024 });
   const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1023 });
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
   useEffect(() => {
     const fetchCourses = async () => {
+      setLoading(true);
       try {
-        const coursesData = await fetchCoursePublic();
+        const coursesData = await fetchCoursePublic({}, { pageNum, pageSize });
+        console.log("Fetched courses data:", coursesData);
         setCourses(coursesData.data);
+        // setTotalPages(coursesData.data.pageInfo.totalPages || 0);
+        if (onTotalPagesChange) {
+          onTotalPagesChange(coursesData.data.pageInfo.totalPages || 0);
+        }
       } catch (error) {
         console.error("Failed to fetch courses:", error);
       } finally {
@@ -55,7 +61,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
     };
 
     fetchCourses();
-  }, []);
+  }, [pageNum, pageSize, onTotalPagesChange]);
 
   const itemVariants = {
     hidden: { y: 50, opacity: 0 },
@@ -101,11 +107,6 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
     return [32, 32];
   };
 
-  // const getResponsiveHeight = () => {
-  //   if (isMobile) return 'auto';
-  //   return '600px';
-  // };
-
   const getResponsiveImageHeight = () => {
     if (isMobile) return '200px';
     if (isTablet) return '250px';
@@ -120,7 +121,8 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
             <Card loading={true} />
           </Col>
         ) : (
-          courses?.pageData.slice((pageNum - 1) * pageSize, pageNum * pageSize).map((course: any, index: number) => {
+          courses?.pageData.map((course: any, index: number) => {
+            console.log("Rendering course:", course);
             return (
               <Col xs={24} sm={12} lg={8} key={course._id} className="mx-auto h-full">
                 <motion.div
@@ -170,7 +172,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                           {course.discount}% OFF
                         </motion.div>
                       )}
-                      <div className={`flex ${isMobile ? 'h-auto' : 'h-[500px]'} flex-col`}> {/* Increased height from 450px to 500px */}
+                      <div className={`flex ${isMobile ? 'h-auto' : 'h-[500px]'} flex-col`}>
                         <motion.div
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
@@ -183,7 +185,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 10, pageNum = 1 }) => {
                             {parse(course.description)}
                           </Paragraph>
                         </motion.div>
-                        <div className={`${isMobile ? 'h-auto' : 'h-[120px]'}`}> {/* Increased height from 100px to 120px */}
+                        <div className={`${isMobile ? 'h-auto' : 'h-[120px]'}`}>
                           <motion.div 
                             className="mb-4 flex items-center justify-between"
                             whileHover={{ scale: 1.02 }}

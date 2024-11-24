@@ -6,7 +6,6 @@ import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { ROUTER_URL } from "../../const/router.path";
 import { UserRoles } from "../../app/enums";
-import { CartStatusEnum } from "../../app/enums";
 import { Input, AutoComplete } from 'antd';
 import { CourseService } from "../../services/course/course.service";
 import { GetPublicCourseParams } from "../../models/api/request/course/course.request.model";
@@ -224,7 +223,7 @@ const Navbar = () => {
                   className="w-40 lg:w-64"
                   dropdownClassName="search-dropdown"
                   notFoundContent={isSearching ? "Searching..." : "No results found"}
-                  optionRender={(option) => option.data.customLabel || option.label}
+                  optionRender={(option: any) => option.customLabel || option.label}
                 >
                   <Input
                     placeholder="Search..."
