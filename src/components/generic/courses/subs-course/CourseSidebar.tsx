@@ -1,16 +1,16 @@
 import React from "react";
-import { Card, Typography, Divider, message } from "antd";
+import { Card, Typography, Divider, message, Button } from "antd";
 import { ShoppingCartOutlined,PlayCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { CourseSidebarProps } from "../../../../models/objects/course/CourseSidebarProps";
 import { helpers } from "../../../../utils";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CartService } from "../../../../services/cart/cart.service";
 import ShareButton from "./ShareButton";
 import { useCart } from "../../../../contexts/CartContext";
 
 const { Title, Text } = Typography;
 
-const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
+const CourseSidebar: React.FC<CourseSidebarProps> = ({ course, lessons }) => {
   const navigate = useNavigate();
   const { updateCartItems } = useCart();
 
@@ -46,7 +46,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
 
   return (
     <Card className="sticky top-8 rounded-lg shadow-lg">
-      {course.is_purchased > 0 ? (
+      {course.is_purchased ? (
        null
       ) : (
         <div className="mb-6 text-center">
@@ -91,7 +91,17 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course }) => {
           </div>
         </div>
       </div>
-      <ShareButton text={course.name} url={window.location.href} image={course.image_url} />
+      <div className="mb-4 mt-4 flex justify-between">
+      {lessons && lessons.length > 0 && course.is_purchased && (
+        <Link to={`/course/${course._id}/lesson/${lessons[0]._id}`}>
+          <Button type="primary" className="px-3 py-1 text-white rounded-md flex gap-1 bg-gradient-tone font-semibold mx-auto">
+            Start Learning
+          </Button>
+        </Link>
+      )}
+
+        <ShareButton text={course.name} url={window.location.href} image={course.image_url} />
+      </div>
     </Card>
   );
 };

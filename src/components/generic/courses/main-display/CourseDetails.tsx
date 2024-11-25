@@ -262,7 +262,7 @@ const CourseDetails: React.FC = () => {
               </Card>
             </Col>
             <Col xs={24} lg={8}>
-              <CourseSidebar course={course} discountedPrice={discountedPrice} courseStatus={courseStatus} />
+              <CourseSidebar course={course} lessons={lessons} discountedPrice={discountedPrice} courseStatus={courseStatus} />
             </Col>
           </Row>
         </div>
