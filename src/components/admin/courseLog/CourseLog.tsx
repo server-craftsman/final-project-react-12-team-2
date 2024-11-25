@@ -8,7 +8,7 @@ import { courseStatusColor } from "../../../utils/courseStatus";
 import { CourseLogService } from "../../../services/courselog/courselog.service";
 import { CourseLogs } from "../../../models/api/responsive/admin/courselog.responsive";
 
-const CourseLog: React.FC<{ searchQuery: string; statusFilter: string }> = ({ searchQuery, statusFilter }) => {
+const CourseLog: React.FC<{ searchQuery: string; statusFilter: string; refreshKey: number }> = ({ searchQuery, statusFilter, refreshKey }) => {
   const [courses, setCourses] = useState<GetCourseResponsePageData[]>([]);
   const [courseLog, setCourseLog] = useState<CourseLogs[]>([]);
   const [isCourseLogModalVisible, setIsCourseLogModalVisible] = useState(false);
@@ -48,7 +48,7 @@ const CourseLog: React.FC<{ searchQuery: string; statusFilter: string }> = ({ se
 
   useEffect(() => {
     fetchCourses();
-  }, [searchQuery, statusFilter]);
+  }, [searchQuery, statusFilter, refreshKey]);
   // console.log("aaaa", courses);
 
   // Cập nhật hàm handleShowModal để nhận thêm tham số courseName

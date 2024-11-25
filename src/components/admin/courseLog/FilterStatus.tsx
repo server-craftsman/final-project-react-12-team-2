@@ -22,11 +22,11 @@ const renameStatus = (status: string) => {
 };
 const FilterStatus: React.FC<{
   status: string;
-  setStatus: (status: string) => void;
-}> = ({ status, setStatus }) => {
+  onStatusChange: (status: string) => void;
+}> = ({ status, onStatusChange }) => {
   return (
     <div className="flex items-center">
-      <Select value={status} onChange={(value) => setStatus(value)} style={{ width: 120 }}>
+      <Select value={status} onChange={(value) => onStatusChange(value)} style={{ width: 200 }}>
         <Select.Option value="all">All</Select.Option>
         {Object.values(CourseStatusEnum).map((statusOption) => (
           <Select.Option key={statusOption} value={statusOption}>
