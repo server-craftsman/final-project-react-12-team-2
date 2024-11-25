@@ -51,7 +51,6 @@ const CourseDetails: React.FC = () => {
   const [courseStatus, setCourseStatus] = useState({ is_in_cart: false, is_purchased: false });
   const [activeTabKey, setActiveTabKey] = useState<string>("1");
 
-  useEffect(() => {
     const fetchCourseDetails = async () => {
       if (!id) {
         console.error("Course ID is undefined");
@@ -101,7 +100,7 @@ const CourseDetails: React.FC = () => {
         console.error("Failed to fetch course details:", error);
       }
     };
-
+  useEffect(() => {
     fetchCourseDetails();
   }, [id]);
 
@@ -179,6 +178,10 @@ const CourseDetails: React.FC = () => {
     setTimeout(() => setIsHovered(false), 3000); // 3 seconds
   };
 
+  const handleReviewUpdate = async () => {
+    await fetchCourseDetails();
+  };
+
   const tabItems = [
     {
       key: "1",
@@ -216,6 +219,7 @@ const CourseDetails: React.FC = () => {
           course={course}
           averageRating={averageRating}
           reviewCount={reviewCount}
+          onReviewUpdate={handleReviewUpdate} // Pass the callback function
         />
       ) : null
     }

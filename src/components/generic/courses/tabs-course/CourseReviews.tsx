@@ -8,7 +8,7 @@ import { ReviewService } from "../../../../services/review/review.service";
 import { GetPublicCourseDetailResponse } from "../../../../models/api/responsive/course/course.response.model";
 import { useAuth } from "../../../../contexts/AuthContext";
 import { helpers } from "../../../../utils";
-const CourseReviews: React.FC<any & { courseId: string, course: any, averageRating: number, reviewCount: number }> = ({ reviews, courseId, course, averageRating, reviewCount }) => {
+const CourseReviews: React.FC<any & { courseId: string, course: any, averageRating: number, reviewCount: number, onReviewUpdate: () => void }> = ({ reviews, courseId, course, averageRating, reviewCount, onReviewUpdate }) => {
   const [fetchedReviews, setFetchedReviews] = useState(reviews);
   const [form] = Form.useForm();
 
@@ -88,6 +88,9 @@ const CourseReviews: React.FC<any & { courseId: string, course: any, averageRati
       await fetchReviews();
       form.resetFields();
       setIsModalVisible(false);
+
+      // Call the callback to update course details
+      onReviewUpdate();
     } catch (error) {
       console.error("Failed to submit review", error);
       message.error("Failed to submit review. Please try again.");
