@@ -90,7 +90,7 @@ const DisplayBlog: React.FC<{ searchQuery: string, refreshKey: number }> = ({ se
             setSelectedBlog(record);
             setDetailModalVisible(true);
           }}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', color: '#0080ff', textDecoration: 'underline' }}>
               <img src={record.image_url} alt={text} style={{ width: 100, height: 100, marginRight: 10 }} />
               {text}
             </div>

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import {
   FaWhatsapp,
-  FaFacebookMessenger,
   FaTwitter,
   FaLinkedin,
   FaRegClipboard,
@@ -44,12 +43,12 @@ const ShareButton = ({ text, url, image }: { text: string; url: string; image: s
     window.open(`https://wa.me/?text=${message}`, "_blank");
   };
 
-  const handleMessengerShare = () => {
-    window.open(
-      `fb-messenger://share/?link=${encodeURIComponent(url)}&app_id=435899319314263`,
-      "_blank"
-    );
-  };
+  // const handleMessengerShare = () => {
+  //   window.open(
+  //     `fb-messenger://share/?link=${encodeURIComponent(url)}&app_id=435899319314263`,
+  //     "_blank"
+  //   );
+  // };
 
   const handleTwitterShare = () => {
     window.open(`https://twitter.com/intent/tweet?text=${message}`, "_blank");
@@ -123,12 +122,12 @@ const ShareButton = ({ text, url, image }: { text: string; url: string; image: s
               >
                 <FaWhatsapp size={24} />
               </button>
-              <button
+              {/* <button
                 onClick={handleMessengerShare}
                 className="flex items-center justify-center p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600"
               >
                 <FaFacebookMessenger size={24} />
-              </button>
+              </button> */}
               <button
                 onClick={handleTwitterShare}
                 className="flex items-center justify-center p-2 bg-blue-400 text-white rounded-full hover:bg-blue-500"

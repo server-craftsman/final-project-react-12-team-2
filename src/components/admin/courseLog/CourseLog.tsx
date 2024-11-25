@@ -82,7 +82,7 @@ const CourseLog: React.FC<{ searchQuery: string; statusFilter: string }> = ({ se
       title: "Course Name",
       dataIndex: "name",
       key: "name",
-      render: (name: string, record: GetCourseResponsePageData) => <a onClick={() => handleShowModal(record._id)} className="text-blue-500 hover:underline">{name}</a>
+      render: (name: string, record: GetCourseResponsePageData) => <a onClick={() => handleShowModal(record._id)} className="text-blue-500 underline hover:underline">{name}</a>
     },
     {
       title: "Status",
