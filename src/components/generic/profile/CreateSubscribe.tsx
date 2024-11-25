@@ -1,5 +1,7 @@
 import React, { useState, Dispatch, SetStateAction } from "react";
 import { SubscriptionService } from "../../../services/subscription/subscription.service";
+import { useNavigate } from "react-router-dom";
+import { message } from "antd";
 
 interface ButtonSubscribeProps {
   isModalOpen: boolean;
@@ -11,8 +13,18 @@ interface ButtonSubscribeProps {
 
 const ButtonSubscribe: React.FC<ButtonSubscribeProps> = ({ instructorId, isSubscribed, setIsSubscribed }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const handleSubscribe = async () => {
+    const token = localStorage.getItem("token");
+    const userInfo = localStorage.getItem("userInfo");
+
+    if (!token || !userInfo) {
+      navigate("/login");
+      message.error("Please log in to subscribe.");
+      return;
+    }
+
     try {
       setIsLoading(true);
       const response = await SubscriptionService.createSubscribe({
@@ -34,10 +46,6 @@ const ButtonSubscribe: React.FC<ButtonSubscribeProps> = ({ instructorId, isSubsc
     <button
       onClick={handleSubscribe}
       disabled={isLoading}
-      // className={`px-4 py-2 rounded-md ${isSubscribed
-      //   ? 'bg-red-500 hover:bg-red-600'
-      //   : 'bg-blue-500 hover:bg-blue-600'
-      //   } text-white transition-colors`}
       className={`rounded-md px-4 py-2 ${isSubscribed ? "un-btn" : "bg-btn"} text-white transition-colors`}
     >
       {isLoading ? "Loading..." : isSubscribed ? "Unsubscribe" : "Subscribe"}
