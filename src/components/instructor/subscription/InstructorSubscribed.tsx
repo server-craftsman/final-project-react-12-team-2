@@ -5,7 +5,7 @@ import { User } from "../../../models/api/responsive/users/users.model";
 import { Link } from "react-router-dom";
 import { SubscriptionService } from "../../../services/subscription/subscription.service";
 import { GetSubscriptionsParams } from "../../../models/api/request/subscription/sub.request.model";
-import { UserService } from "../../../services/instructor/user.service";
+// import { UserService } from "../../../services/instructor/user.service";
 import ButtonSubscribe from "../../generic/profile/CreateSubscribe";
 
 interface SearchSubscriptionCondition {
@@ -66,28 +66,28 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
     }
   }, [getSearchCondition, currentPage]);
 
-  const fetchUsers = useCallback(async () => {
-    try {
-      if (subscriptions?.pageData) {
-        const instructorIds = subscriptions.pageData.map((sub) => sub.instructor_id);
-        const promises = instructorIds.map((id) => UserService.getUserDetails(id));
-        const responses = await Promise.all(promises);
-        const validUsers = responses
-          .filter((response) => response.data?.data)
-          .map((response) => response.data.data);
-        setUsers(validUsers);
-      }
-    } catch (error) {
-      message.error("Failed to fetch users");
-    }
-  }, [subscriptions]);
+  // const fetchUsers = useCallback(async () => {
+  //   try {
+  //     if (subscriptions?.pageData) {
+  //       const instructorIds = subscriptions.pageData.map((sub) => sub.instructor_id);
+  //       const promises = instructorIds.map((id) => UserService.getUserDetails(id));
+  //       const responses = await Promise.all(promises);
+  //       const validUsers = responses
+  //         .filter((response) => response.data?.data)
+  //         .map((response) => response.data.data);
+  //       setUsers(validUsers);
+  //     }
+  //   } catch (error) {
+  //     message.error("Failed to fetch users");
+  //   }
+  // }, [subscriptions]);
 
   // Effect for fetching users when subscriptions change
-  useEffect(() => {
-    if (subscriptions?.pageData && subscriptions.pageData.length > 0) {
-      fetchUsers();
-    }
-  }, [subscriptions?.pageData, fetchUsers]);
+  // useEffect(() => {
+  //   if (subscriptions?.pageData && subscriptions.pageData.length > 0) {
+  //     fetchUsers();
+  //   }
+  // }, [subscriptions?.pageData, fetchUsers]);
 
   // Keep this effect which handles both initial load and page changes
   useEffect(() => {
