@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, Typography, Divider, message, Button } from "antd";
-import { ShoppingCartOutlined,PlayCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import { ShoppingCartOutlined, PlayCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { CourseSidebarProps } from "../../../../models/objects/course/CourseSidebarProps";
 import { helpers } from "../../../../utils";
 import { Link, useNavigate } from "react-router-dom";
@@ -46,9 +46,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course, lessons }) => {
 
   return (
     <Card className="sticky top-8 rounded-lg shadow-lg">
-      {course.is_purchased ? (
-       null
-      ) : (
+      {course.is_purchased ? null : (
         <div className="mb-6 text-center">
           <Text className="text-3xl font-bold text-[#02005dc6]">{helpers.moneyFormat(course.price * (1 - course.discount / 100))}</Text>
           {course.discount > 0 && <Text className="ml-2 text-lg text-gray-500 line-through">{helpers.moneyFormat(course.price)}</Text>}
@@ -56,12 +54,8 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course, lessons }) => {
       )}
       {course.is_purchased ? (
         <div className="mb-6 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 p-4 text-center shadow-inner">
-          <p className="text-xl font-semibold tracking-wide text-emerald-700">
-            ✨ Congratulations! You own this course ✨
-          </p>
-          <p className="mt-2 text-sm text-emerald-600">
-            Enjoy unlimited access to all course materials
-          </p>
+          <p className="text-xl font-semibold tracking-wide text-emerald-700">✨ Congratulations! You own this course ✨</p>
+          <p className="mt-2 text-sm text-emerald-600">Enjoy unlimited access to all course materials</p>
         </div>
       ) : course.instructor_id === userId ? (
         <p className="mb-4 text-center text-lg font-semibold text-gray-600">You are the instructor of this course</p>
@@ -91,14 +85,14 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course, lessons }) => {
           </div>
         </div>
       </div>
-      <div className="mb-4 mt-4 flex justify-between">
-      {lessons && lessons.length > 0 && course.is_purchased && (
-        <Link to={`/course/${course._id}/lesson/${lessons[0]._id}`}>
-          <Button type="primary" className="px-3 py-1 text-white rounded-md flex gap-1 bg-gradient-tone font-semibold mx-auto">
-            Start Learning
-          </Button>
-        </Link>
-      )}
+      <div className="relative mb-4 mt-4 flex justify-between">
+        {lessons && lessons.length > 0 && course.is_purchased && (
+          <Link to={`/course/${course._id}/lesson/${lessons[0]._id}`}>
+            <Button type="primary" className="absolute z-10 left-0 bg-gradient-tone mx-auto flex gap-1 rounded-md px-3 py-1 font-semibold text-white">
+              Start Learning
+            </Button>
+          </Link>
+        )}
 
         <ShareButton text={course.name} url={window.location.href} image={course.image_url} />
       </div>
