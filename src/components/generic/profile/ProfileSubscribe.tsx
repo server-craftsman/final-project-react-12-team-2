@@ -5,7 +5,7 @@ import { User } from "../../../models/api/responsive/users/users.model";
 import { UserService } from "../../../services/admin/user.service";
 import { useParams, useNavigate } from "react-router-dom";
 import ButtonSubscribe from "./CreateSubscribe";
-import { SubscriptionService } from "../../../services/subscription/subscription.service";
+// import { SubscriptionService } from "../../../services/subscription/subscription.service";
 import ProfileDetail from "./ProfileDetail";
 import { BackwardFilled } from "@ant-design/icons";
 import LoadingAnimation from "../../../app/UI/LoadingAnimation";
@@ -16,7 +16,7 @@ const ProfileSubscribe: React.FC = () => {
   const [, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
-  const [subscriberCount, setSubscriberCount] = useState<number>(0);
+  // const [subscriberCount, setSubscriberCount] = useState<number>(0);
   const navigate = useNavigate();
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
@@ -27,31 +27,31 @@ const ProfileSubscribe: React.FC = () => {
         const userResponse = await UserService.getUserDetails(id as string);
         setUserData(userResponse.data.data);
 
-        // Fetch subscription status and counts
-        const subscriptionResponse = await SubscriptionService.getSubscriptions({
-          pageInfo: {
-            pageNum: 1,
-            pageSize: 10
-          },
-          searchCondition: {
-            keyword: "",
-            is_delete: false
-          }
-        });
+        // // Fetch subscription status and counts
+        // const subscriptionResponse = await SubscriptionService.getSubscriptions({
+        //   pageInfo: {
+        //     pageNum: 1,
+        //     pageSize: 10
+        //   },
+        //   searchCondition: {
+        //     keyword: "",
+        //     is_delete: false
+        //   }
+        // });
 
-        const subscriptions = subscriptionResponse.data?.data.pageData || [];
+        // const subscriptions = subscriptionResponse.data?.data.pageData || [];
 
         // Count subscribers (people who subscribed to this instructor)
-        const subscribers = subscriptions.filter((sub: any) => sub.instructor_id === id).length;
-        setSubscriberCount(subscribers);
+        // const subscribers = subscriptions.filter((sub: any) => sub.instructor_id === id).length;
+        // setSubscriberCount(subscribers);
 
         // Count subscribed (instructors this user has subscribed to)
         // const subscribed = subscriptions.filter((sub: any) => sub.user_id === id).length;
         // setSubscribedCount(subscribed);
 
         // Check if this instructor is in the subscriptions list
-        const isCurrentInstructorSubscribed = subscriptionResponse.data?.data.pageData.some((sub: any) => sub.instructor_id === id);
-        setIsSubscribed(!!isCurrentInstructorSubscribed);
+        // const isCurrentInstructorSubscribed = subscriptionResponse.data?.data.pageData.some((sub: any) => sub.instructor_id === id);
+        // setIsSubscribed(!!isCurrentInstructorSubscribed);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -104,9 +104,9 @@ const ProfileSubscribe: React.FC = () => {
           </Typography.Paragraph> */}
           <Space direction="horizontal" style={{ justifyContent: 'space-between', width: '100%' }}>
             <ButtonSubscribe isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} instructorId={id as string} isSubscribed={isSubscribed} setIsSubscribed={setIsSubscribed} />
-            <Typography.Text style={{ fontWeight: 'bold', fontSize: '18px', color: 'black', marginLeft: "8px" }}>
+            {/* <Typography.Text style={{ fontWeight: 'bold', fontSize: '18px', color: 'black', marginLeft: "8px" }}>
               {subscriberCount} subscribers
-            </Typography.Text>
+            </Typography.Text> */}
           </Space>
         </Space>
       </Card>

@@ -47,7 +47,6 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 6, pageNum = 1, onTotalPag
       setLoading(true);
       try {
         const coursesData = await fetchCoursePublic({}, { pageNum, pageSize });
-        console.log("Fetched courses data:", coursesData);
         setCourses(coursesData.data);
         // setTotalPages(coursesData.data.pageInfo.totalPages || 0);
         if (onTotalPagesChange) {
@@ -122,7 +121,6 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 6, pageNum = 1, onTotalPag
           </Col>
         ) : (
           courses?.pageData.map((course: any, index: number) => {
-            console.log("Rendering course:", course);
             return (
               <Col xs={24} sm={12} lg={8} key={course._id} className="mx-auto h-full">
                 <motion.div
