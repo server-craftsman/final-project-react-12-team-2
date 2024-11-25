@@ -28,7 +28,7 @@ export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
     try {
       const response = await CartService.getCartItems({
         searchCondition: {
-          status: status || defaultStatus,
+          status: defaultStatus || status,
           is_delete: false
         },
         pageInfo: {
