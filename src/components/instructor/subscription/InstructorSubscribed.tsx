@@ -21,7 +21,7 @@ interface InstructorSubscribedProps {
 const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue }) => {
   const [subscriptions, setSubscriptions] = useState<GetSubscriptionsResponse | null>(null);
   const [users, setUsers] = useState<User[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(true);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -185,7 +185,7 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
                       marginTop: "auto"
                     }}
                   >
-                    <ButtonSubscribe isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} instructorId={user?._id || ""} isSubscribed={isSubscribed} setIsSubscribed={setIsSubscribed} />
+                    <ButtonSubscribe isLoading={loading} isSubscribed={isSubscribed} setIsSubscribed={setIsSubscribed} />
                   </div>
                 </div>
                 </Card>

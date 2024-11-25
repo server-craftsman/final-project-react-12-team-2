@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, Avatar, Row, Col, message } from "antd";
 import { Link } from "react-router-dom";
 import { GetSubscriptionsResponse } from "../../../models/api/responsive/subscription/sub.responsive.model";
@@ -14,7 +15,9 @@ interface StudentSubscriptionProps {
 }
 
 const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery }) => {
+  const navigate = useNavigate();
   const [subscriptions, setSubscriptions] = useState<GetSubscriptionsResponse | null>(null);
+  const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState<boolean>(true);
@@ -77,6 +80,33 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery }
     }
   }, [subscriptions?.pageData]);
 
+  const handleSubscribe = async (instructorId: string) => {
+    const token = localStorage.getItem("token");
+    const userInfo = localStorage.getItem("userInfo");
+
+    if (!token || !userInfo) {
+      navigate("/login");
+      message.error("Please log in to subscribe.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await SubscriptionService.createSubscribe({
+        instructor_id: instructorId
+      });
+      if (response.data?.data) {
+        const isSubscribedStatus = response.data.data.is_subscribed || false;
+        setIsSubscribed(isSubscribedStatus);
+        console.log("Subscription status updated:", isSubscribedStatus);
+      }
+    } catch (error) {
+      console.error("Error updating subscription:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Updated render section
   return (
     <div style={{ backgroundColor: "#f0f2f5" }}>
@@ -87,6 +117,7 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery }
             <Col span={8} key={subscription._id}>
               <Link to={`/profile/${subscription.instructor_id}`} style={{ textDecoration: "none" }}>
                 <Card
+                  loading={loading}
                   hoverable
                   title={
                     <div
@@ -140,7 +171,7 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery }
                       marginTop: "auto"
                     }}
                   >
-                    <ButtonSubscribe isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} instructorId={user?._id || ""} isSubscribed={isSubscribed} setIsSubscribed={setIsSubscribed} />
+                    <ButtonSubscribe isLoading={false} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} instructorId={user?._id || ""} isSubscribed={isSubscribed} setIsSubscribed={setIsSubscribed} handleSubscribe={() => handleSubscribe(user?._id || "")} />
                   </div>
                 </Card>
               </Link>
