@@ -23,6 +23,7 @@ export interface User {
   updated_at: Date;
   is_deleted: boolean;
   __v: number;
+  is_subscribed?: boolean;
 }
 
 export interface ChangePasswordResponse {
