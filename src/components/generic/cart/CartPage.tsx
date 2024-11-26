@@ -105,7 +105,6 @@ const CartPage: React.FC = () => {
       cancelText: 'Cancel',
       onOk: async () => {
         await deleteCartItem(cartId);
-        updateCartItems(activeTab); // Ensure it fetches items for the current active tab
       },
     });
   };
@@ -116,7 +115,6 @@ const CartPage: React.FC = () => {
         await updateCartStatus(itemId, CartStatusEnum.waiting_paid);
       }
       setActiveTab(CartStatusEnum.waiting_paid); // Ensure the "Waiting" tab is active
-      updateCartItems(CartStatusEnum.waiting_paid); // Fetch items for the "Waiting" status
     } catch (error) {
       console.error("Error during checkout:", error);
     }
@@ -141,7 +139,6 @@ const CartPage: React.FC = () => {
     try {
       await updateCartStatus(cartId, CartStatusEnum.completed);
       setActiveTab(CartStatusEnum.completed);
-      updateCartItems(CartStatusEnum.completed);
     } catch (error) {
       console.error("Error during confirm payment:", error);
     }
@@ -151,7 +148,6 @@ const CartPage: React.FC = () => {
     try {
       await updateCartStatus(cartId, CartStatusEnum.cancel);
       setActiveTab(CartStatusEnum.cancel); // Ensure the "Cancel" tab is active
-      updateCartItems(CartStatusEnum.cancel);
     } catch (error) {
       console.error("Error during cancel order:", error);
     }
