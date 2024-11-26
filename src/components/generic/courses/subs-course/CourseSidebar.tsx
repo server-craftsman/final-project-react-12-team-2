@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Card, Typography, Divider, message, Button } from "antd";
 import { ShoppingCartOutlined, PlayCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { CourseSidebarProps } from "../../../../models/objects/course/CourseSidebarProps";
@@ -17,7 +17,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course, lessons }) => {
   const userInfo = localStorage.getItem("userInfo");
   const userId = userInfo ? JSON.parse(userInfo)._id : null;
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       const userInfo = localStorage.getItem("userInfo");
@@ -42,7 +42,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course, lessons }) => {
     } catch (error) {
       console.error("Error handling cart operation:", error);
     }
-  };
+  }, [course._id, navigate, updateCartItems]);
 
   return (
     <Card className="sticky top-8 rounded-lg shadow-lg">

@@ -16,7 +16,7 @@ const CartPage: React.FC = () => {
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<CartStatusEnum>(CartStatusEnum.new);
-  const { cartItems, updateCartStatus, deleteCartItem, updateCartItems, countNewCartItems } = useCart(); // Use cartItems, updateCartStatus, and deleteCartItem from context
+  const { cartItems, updateCartStatus, deleteCartItem, updateCartItems } = useCart(); // Use cartItems, updateCartStatus, and deleteCartItem from context
 
   const handleBackToHome = () => {
     navigate("/");
@@ -73,19 +73,15 @@ const CartPage: React.FC = () => {
 
   const handleTabChange = useCallback(async (key: string) => {
     const status = key as CartStatusEnum;
-    if (Object.values(CartStatusEnum).includes(status)) {
+    if (status !== activeTab && Object.values(CartStatusEnum).includes(status)) {
       setActiveTab(status);
       try {
         await updateCartItems(status);
-        console.log("Counting new cart items for status:", status);
-        countNewCartItems();
       } catch (error) {
         console.error("Error updating cart items on tab change:", error);
       }
-    } else {
-      console.error("Invalid tab status:", status);
     }
-  }, [updateCartItems, countNewCartItems]);
+  }, [activeTab, updateCartItems]);
 
 // Ensure that updateCartItems is correctly implemented to fetch data based on the status
 
@@ -114,7 +110,7 @@ const CartPage: React.FC = () => {
     });
   };
 
-  const handleCheckout = async () => {
+  const handleCheckout = useCallback(async () => {
     try {
       for (const itemId of selectedItems) {
         await updateCartStatus(itemId, CartStatusEnum.waiting_paid);
@@ -124,7 +120,7 @@ const CartPage: React.FC = () => {
     } catch (error) {
       console.error("Error during checkout:", error);
     }
-  };
+  }, [selectedItems, updateCartStatus, updateCartItems]);
 
   // Tính toán lại các giá trị dựa trên các mục đã chọn
   const calculateSummary = () => {
@@ -141,7 +137,7 @@ const CartPage: React.FC = () => {
 
   const { subtotal, discount, total } = calculateSummary();
 
-  const handleConfirmPayment = async (cartId: string) => {
+  const handleConfirmPayment = useCallback(async (cartId: string) => {
     try {
       await updateCartStatus(cartId, CartStatusEnum.completed);
       setActiveTab(CartStatusEnum.completed);
@@ -149,9 +145,9 @@ const CartPage: React.FC = () => {
     } catch (error) {
       console.error("Error during confirm payment:", error);
     }
-  };
+  }, [updateCartStatus, updateCartItems]);
 
-  const handleCancelOrder = async (cartId: string) => {
+  const handleCancelOrder = useCallback(async (cartId: string) => {
     try {
       await updateCartStatus(cartId, CartStatusEnum.cancel);
       setActiveTab(CartStatusEnum.cancel); // Ensure the "Cancel" tab is active
@@ -159,7 +155,7 @@ const CartPage: React.FC = () => {
     } catch (error) {
       console.error("Error during cancel order:", error);
     }
-  };
+  }, [updateCartStatus, updateCartItems]);
 
 
   return (

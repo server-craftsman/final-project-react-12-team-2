@@ -1,25 +1,44 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { CartService } from "../services/cart/cart.service";
 import { useAuth } from "./AuthContext";
 import { CartStatusEnum } from "../models/prototype/Carts";
+import { useDispatch } from "react-redux";
+import { setCartCount } from "../app/redux/cartSlice";
 
 interface CartContextType {
   cartItems: any[];
-  updateCartItems: (status?: CartStatusEnum) => Promise<void>;
+  updateCartItems: (status?: CartStatusEnum) => Promise<any[] | undefined>;
   updateCartStatus: (cartIds: string | string[], status: CartStatusEnum) => Promise<void>;
   deleteCartItem: (cartId: string) => Promise<void>;
-  countNewCartItems: () => number;
+  getNewCartCount: () => Promise<number>;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
   const [cartItems, setCartItems] = useState<any[]>([]);
-  const [newCartItemsCount, setNewCartItemsCount] = useState<number>(0);
   const { token } = useAuth();
-  const defaultStatus = CartStatusEnum.new || "";
+  const dispatch = useDispatch();
 
-  const updateCartItems = async (status?: CartStatusEnum) => {
+  // Define a function to set cart count
+  const setCartCountInStore = (count: number) => {
+    dispatch(setCartCount(count));
+  };
+
+  const getNewCartCount = useCallback(async () => {
+    const newCartCount = await CartService.getCartItems({
+      searchCondition: {
+        status: CartStatusEnum.new,
+        is_delete: false
+      },
+      pageInfo: { pageNum: 1, pageSize: 3 }
+    });
+    const totalItems = newCartCount.data.data.pageInfo.totalItems;
+    setCartCountInStore(totalItems);
+    return totalItems;
+  }, [dispatch]);
+
+  const updateCartItems = useCallback(async (status?: CartStatusEnum) => {
     if (!token) {
       console.log("No token found, skipping cart fetch");
       return;
@@ -28,7 +47,7 @@ export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
     try {
       const response = await CartService.getCartItems({
         searchCondition: {
-          status: status ?? defaultStatus,
+          status: status ?? CartStatusEnum.new,
           is_delete: false
         },
         pageInfo: {
@@ -38,13 +57,14 @@ export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
       });
       const items = Array.isArray(response.data.data.pageData) ? response.data.data.pageData : [response.data.data.pageData];
       setCartItems(items);
-      setNewCartItemsCount(items.filter((item: any) => item.status === CartStatusEnum.new).length);
+      getNewCartCount();
+      return items;
     } catch (error) {
       console.error("Error fetching cart items:", error);
     }
-  };
+  }, [token, dispatch]);
 
-  const updateCartStatus = async (cartIds: string | string[], status: CartStatusEnum) => {
+  const updateCartStatus = useCallback(async (cartIds: string | string[], status: CartStatusEnum) => {
     try {
       const idsArray = Array.isArray(cartIds) ? cartIds : [cartIds];
 
@@ -59,35 +79,26 @@ export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
     } catch (error) {
       console.error("Error updating cart status:", error);
     }
-  };
+  }, [cartItems, dispatch]);
 
-  const deleteCartItem = async (cartId: string) => {
+  const deleteCartItem = useCallback(async (cartId: string) => {
     try {
       await CartService.deleteCart(cartId);
-      console.log(`Cart item with ID ${cartId} deleted`);
       await updateCartItems();
     } catch (error) {
       console.error("Error deleting cart item:", error);
     }
-  };
-
-  const countNewCartItems = () => {
-    // Save the count to local storage
-    // localStorage.setItem('newCartItemsCount', newCartItemsCount.toString());
-    return newCartItemsCount;
-  };
+  }, [cartItems, dispatch]);
 
   useEffect(() => {
     if (token) {
       updateCartItems();
-      countNewCartItems();
     } else {
       setCartItems([]);
-      setNewCartItemsCount(0);
     }
-  }, [token]);
+  }, [token, updateCartItems]);
 
-  return <CartContext.Provider value={{ cartItems, updateCartItems, updateCartStatus, deleteCartItem, countNewCartItems }}>{children}</CartContext.Provider>;
+  return <CartContext.Provider value={{ cartItems, updateCartItems, updateCartStatus, deleteCartItem, getNewCartCount }}>{children}</CartContext.Provider>;
 };
 
 export const useCart = () => {
