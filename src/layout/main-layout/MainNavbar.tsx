@@ -13,7 +13,7 @@ import { RootState } from "../../app/redux/store";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { getNewCartCount } = useCart();
+  const { getNewCartCount, updateCartItems } = useCart();
   const { userInfo, logout } = useAuth();
 
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -83,6 +83,7 @@ const Navbar = () => {
   };
 
   const handleDisplayCart = () => {
+    updateCartItems();
     navigate("/cart");
   };
 
