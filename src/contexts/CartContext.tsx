@@ -31,7 +31,7 @@ export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
         status: CartStatusEnum.new,
         is_delete: false
       },
-      pageInfo: { pageNum: 1, pageSize: 3 }
+      pageInfo: { pageNum: 1, pageSize: 50 }
     });
     const totalItems = newCartCount.data.data.pageInfo.totalItems;
     setCartCountInStore(totalItems);
