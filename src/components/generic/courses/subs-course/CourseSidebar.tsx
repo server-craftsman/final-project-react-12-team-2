@@ -89,14 +89,15 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course, lessons }) => {
       </div>
       <div className="relative mb-4 mt-4 flex justify-between">
         {lessons && lessons.length > 0 && course.is_purchased && (
-          <Link to={`/course/${course._id}/lesson/${lessons[0]._id}`}>
-            <Button type="primary" className="absolute z-10 left-0 bg-gradient-tone mx-auto flex gap-1 rounded-md px-3 py-1 font-semibold text-white">
-              Start Learning
-            </Button>
-          </Link>
+          <div className="flex w-full justify-between">
+            <Link to={`/course/${course._id}/lesson/${lessons[0]._id}`}>
+              <Button type="primary" className="absolute z-10 left-0 bg-gradient-tone mx-auto flex gap-1 rounded-md px-3 py-1 font-semibold text-white">
+                Start Learning
+              </Button>
+            </Link>
+            <ShareButton text={course.name} url={window.location.href} image={course.image_url} />
+          </div>
         )}
-
-        <ShareButton text={course.name} url={window.location.href} image={course.image_url} />
       </div>
     </Card>
   );
