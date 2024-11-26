@@ -6,7 +6,7 @@ interface SessionComponentProps {
 const SessionComponent = ({ refreshKey }: SessionComponentProps) => {
   return (
     <div>
-      <DisplaySession refreshKey={refreshKey} />
+      <DisplaySession searchTerm="" refreshKey={refreshKey} />
     </div>
   );
 };

@@ -9,9 +9,10 @@ import moment from "moment";
 
 interface ReviewsProps {
   searchTerm: string;
+  refreshKey: number;
 }
 
-const Reviews: React.FC<ReviewsProps> = ({ searchTerm }) => {
+const Reviews: React.FC<ReviewsProps> = ({ searchTerm, refreshKey }) => {
   const [reviews, setReviews] = useState<SearchForReviewResponseModel["pageData"]>([]);
   const [startDate, setStartDate] = useState<moment.Moment | null>(null);
   const [endDate, setEndDate] = useState<moment.Moment | null>(null);
@@ -45,7 +46,7 @@ const Reviews: React.FC<ReviewsProps> = ({ searchTerm }) => {
     };
 
     fetchReviews();
-  }, [searchTerm, startDate, endDate]);
+  }, [searchTerm, startDate, endDate, refreshKey]);
 
   const renderStars = (rating: number) => {
     const stars = [];

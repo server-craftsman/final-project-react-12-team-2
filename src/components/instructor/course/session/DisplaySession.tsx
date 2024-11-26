@@ -11,9 +11,9 @@ import { SessionService } from "../../../../services/session/session.service";
 import { formatDate } from "../../../../utils/helper";
 import { DisplaySessionResponse } from "../../../../models/api/responsive/session/session.response.model";
 import DetailModal from "./DetailModal";
-const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
+const DisplaySession = ({ searchTerm, refreshKey }: { searchTerm: string; refreshKey: number }) => {
   const [sessions, setSessions] = useState<DisplaySessionResponse[]>([]);
-  const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState(searchTerm);
   const [pageNum, setPageNum] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
@@ -74,6 +74,7 @@ const DisplaySession = ({ refreshKey }: { refreshKey: number }) => {
   const handleSearch = (searchText: string) => {
     setPageNum(1);
     setSearchKeyword(searchText);
+    fetchSessions(1, pageSize, searchText);
   };
 
   const columns = [
