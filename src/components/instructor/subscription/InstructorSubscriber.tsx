@@ -14,9 +14,10 @@ interface SearchSubscriberCondition {
 
 interface InstructorSubscriberProps {
   searchValue: string;
+  refreshKey: number;
 }
 
-const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue }) => {
+const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue, refreshKey }) => {
   const [subscriptions, setSubscriptions] = useState<GetSubscribersResponse | null>(null);
   // const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
@@ -63,7 +64,7 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
     } finally {
       setLoading(false);
     }
-  }, [getSearchCondition, currentPage, defaultParams.pageInfo]);
+  }, [getSearchCondition, currentPage, defaultParams.pageInfo, refreshKey]);
 
   // const fetchUsers = useCallback(async () => {
   //   if (!subscriptions?.pageData?.length) return;

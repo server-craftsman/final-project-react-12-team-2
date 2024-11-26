@@ -17,9 +17,10 @@ interface SearchSubscriptionCondition {
 interface InstructorSubscribedProps {
   searchValue: string;
   fetchData: () => Promise<void>;
+  refreshKey: number;
 }
 
-const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue }) => {
+const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue, refreshKey }) => {
   const [subscriptions, setSubscriptions] = useState<GetSubscriptionsResponse | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   // const [isModalOpen, setIsModalOpen] = useState(false);
@@ -77,7 +78,7 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
       setSubscriptions(null);
       setUsers([]);
     };
-  }, [fetchSubscriptions, currentPage]);
+  }, [fetchSubscriptions, currentPage, refreshKey]);
 
   const filterUsers = useCallback(() => {
     if (!users || !subscriptions?.pageData) return [];

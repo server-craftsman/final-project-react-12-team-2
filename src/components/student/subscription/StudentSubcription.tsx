@@ -12,9 +12,10 @@ import ButtonSubscribe from "../../generic/profile/CreateSubscribe";
 // ... existing interface definitions ...
 interface StudentSubscriptionProps {
   searchQuery: string;
+  refreshKey: number;
 }
 
-const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery }) => {
+const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery, refreshKey }) => {
   const navigate = useNavigate();
   const [subscriptions, setSubscriptions] = useState<GetSubscriptionsResponse | null>(null);
   const [loading, setLoading] = useState(false);
@@ -54,7 +55,7 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery }
     } catch (error) {
       message.error("No subscriptions found");
     }
-  }, [searchQuery, getSearchCondition]);
+  }, [searchQuery, getSearchCondition, refreshKey]);
 
   const fetchUsers = useCallback(async () => {
     try {

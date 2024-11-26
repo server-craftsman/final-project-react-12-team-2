@@ -9,11 +9,13 @@ const SubscriptionPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState("1");
   const [subscribedSearchValue, setSubscribedSearchValue] = useState("");
   const [subscriberSearchValue, setSubscriberSearchValue] = useState("");
-
+  const [refreshKey, setRefreshKey] = useState(0);
   const handleSearch = (value: string) => {
     if (activeTab === "1") {
+      setRefreshKey(prevKey => prevKey + 1);
       setSubscribedSearchValue(value);
     } else {
+      setRefreshKey(prevKey => prevKey + 1);
       setSubscriberSearchValue(value);
     }
   };
@@ -51,6 +53,7 @@ const SubscriptionPage: React.FC = () => {
       label: "Subscribed",
       children: activeTab === "1" ? (
         <InstructorSubscribed
+          refreshKey={refreshKey}
           key={`subscribed-${activeTab}`}
           searchValue={subscribedSearchValue}
           fetchData={fetchData}
@@ -62,6 +65,7 @@ const SubscriptionPage: React.FC = () => {
       label: "Subscriber",
       children: activeTab === "2" ? (
         <InstructorSubscriber
+          refreshKey={refreshKey}
           key={`subscriber-${activeTab}`}
           searchValue={subscriberSearchValue}
         />

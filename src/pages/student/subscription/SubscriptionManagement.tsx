@@ -10,7 +10,7 @@ import data from "../../../data/users.json";
 const SubscriptionManagement: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [,setFilteredSubscriptions] = useState<Subscriptions[]>([]);
-
+  const [refreshKey, setRefreshKey] = useState(0);
   useEffect(() => {
     const instructorSubscriptions = subscriptionData.filter((subscription: Subscriptions) => {
       const user = data.users.find((user: any) => user.id === subscription.instructor_id);
@@ -21,6 +21,7 @@ const SubscriptionManagement: React.FC = () => {
 
   const handleSearch = (value: string) => {
     setSearchQuery(value);
+    setRefreshKey(prevKey => prevKey + 1);
     const lowercasedValue = value.toLowerCase();
     const filtered = subscriptionData.filter((subscription: Subscriptions) => {
       const user = data.users.find((user: any) => user.id === subscription.instructor_id);
@@ -32,7 +33,7 @@ const SubscriptionManagement: React.FC = () => {
   return (
     <div>
       <CustomSearch onSearch={handleSearch} className="search-input" placeholder="Search by course name or instructor..." />
-      <StudentSubscription searchQuery={searchQuery} />
+      <StudentSubscription searchQuery={searchQuery} refreshKey={refreshKey} />
     </div>
   );
 };
