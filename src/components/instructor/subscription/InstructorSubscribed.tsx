@@ -7,6 +7,7 @@ import { SubscriptionService } from "../../../services/subscription/subscription
 import { GetSubscriptionsParams } from "../../../models/api/request/subscription/sub.request.model";
 // import { UserService } from "../../../services/instructor/user.service";
 import ButtonSubscribe from "../../generic/profile/CreateSubscribe";
+// import { UserService } from "../../../services/instructor/user.service";
 
 interface SearchSubscriptionCondition {
   keyword: string;
@@ -57,37 +58,17 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
         searchCondition
       };
       const response = await SubscriptionService.getSubscriptions(params);
+      console.log("Subscriptions response:", response);
       setSubscriptions(response.data?.data ? response.data.data : null);
       setTotalItems(response.data?.data?.pageInfo?.totalItems || 0);
     } catch (error) {
+      console.error("Error fetching subscriptions:", error);
       message.error("No subscriptions found");
     } finally {
       setLoading(false);
     }
   }, [getSearchCondition, currentPage]);
 
-  // const fetchUsers = useCallback(async () => {
-  //   try {
-  //     if (subscriptions?.pageData) {
-  //       const instructorIds = subscriptions.pageData.map((sub) => sub.instructor_id);
-  //       const promises = instructorIds.map((id) => UserService.getUserDetails(id));
-  //       const responses = await Promise.all(promises);
-  //       const validUsers = responses
-  //         .filter((response) => response.data?.data)
-  //         .map((response) => response.data.data);
-  //       setUsers(validUsers);
-  //     }
-  //   } catch (error) {
-  //     message.error("Failed to fetch users");
-  //   }
-  // }, [subscriptions]);
-
-  // Effect for fetching users when subscriptions change
-  // useEffect(() => {
-  //   if (subscriptions?.pageData && subscriptions.pageData.length > 0) {
-  //     fetchUsers();
-  //   }
-  // }, [subscriptions?.pageData, fetchUsers]);
 
   // Keep this effect which handles both initial load and page changes
   useEffect(() => {
@@ -112,6 +93,7 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
   }, [users, searchValue]);
 
   const filteredUsers = filterUsers();
+  console.log("Filtered users:", filteredUsers);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -120,63 +102,34 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
   return (
     <div style={{ backgroundColor: "#f0f2f5" }}>
       <Row gutter={[16, 16]}>
-        {subscriptions?.pageData.map((subscription) => {
-          const user = filteredUsers.find((user) => user._id === subscription.instructor_id);
-          if (!user) return null;
-          return (
-            <Col xs={24} sm={12} md={8} lg={8} key={subscription._id}>
-              <Link to={`/profile/${subscription.instructor_id}`} style={{ textDecoration: "none" }}>
-                <Card
-                  hoverable
-                  loading={loading}
-                  title={
-                    <div style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      textAlign: "center"
-                    }}>
-                      {/* <Avatar src={user?.avatar_url} size={64} style={{ marginBottom: "8px" }} /> */}
-                      <img src={`https://ui-avatars.com/api/?name=${subscription.instructor_name[0]}`} alt={subscription.instructor_name} className="w-12 h-12 rounded-full mr-4 mt-3" />
-
-                      <span style={{ textAlign: "center", fontSize: "18px", fontWeight: "bold", color: "#333", textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)", marginTop: "10px" }}>{subscription.instructor_name}</span>
-                    </div>
-                  }
-                  style={{
-                    height: '100%',
-                    borderRadius: "12px",
-                    border: "1px solid #000",
-                    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                    backgroundColor: "#f0f2f5",
-                    cursor: "pointer",
+        {subscriptions?.pageData?.map((subscription) => (
+          <Col xs={24} sm={12} md={8} lg={8} key={subscription._id}>
+            <Link to={`/profile/${subscription.instructor_id}`} style={{ textDecoration: "none" }}>
+              <Card
+                hoverable
+                loading={loading}
+                title={
+                  <div style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
                     textAlign: "center"
-                  }}
-                >
-                  <div style={{ padding: "10px", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                  {/* <div>
-                    <p style={{
-                      fontSize: "14px",
-                      marginBottom: "8px",
-                      display: "flex",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      gap: "4px",
-                      paddingLeft: "16px"
-                    }}>
-                      <strong>Email:</strong> {subscription.}
-                    </p>
-                    <p style={{
-                      fontSize: "14px",
-                      marginBottom: "16px",
-                      display: "flex",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      gap: "4px",
-                      paddingLeft: "16px"
-                    }}>
-                      <strong>Phone:</strong> {user?.phone_number}
-                    </p>
-                  </div> */}
+                  }}>
+                    <img src={`https://ui-avatars.com/api/?name=${subscription.instructor_name[0]}`} alt={subscription.instructor_name} className="w-12 h-12 rounded-full mr-4 mt-3" />
+                    <span style={{ textAlign: "center", fontSize: "18px", fontWeight: "bold", color: "#333", textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)", marginTop: "10px" }}>{subscription.instructor_name}</span>
+                  </div>
+                }
+                style={{
+                  height: '100%',
+                  borderRadius: "12px",
+                  border: "1px solid #000",
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                  backgroundColor: "#f0f2f5",
+                  cursor: "pointer",
+                  textAlign: "center"
+                }}
+              >
+                <div style={{ padding: "10px", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                   <div
                     onClick={(e) => e.preventDefault()}
                     style={{
@@ -188,11 +141,10 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
                     <ButtonSubscribe isLoading={loading} isSubscribed={isSubscribed} setIsSubscribed={setIsSubscribed} />
                   </div>
                 </div>
-                </Card>
-              </Link>
-            </Col>
-          );
-        })}
+              </Card>
+            </Link>
+          </Col>
+        ))}
       </Row>
       <Row justify="center" style={{ marginTop: '20px' }}>
         <Pagination
