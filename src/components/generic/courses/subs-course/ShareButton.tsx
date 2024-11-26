@@ -77,10 +77,10 @@ const ShareButton = ({ text, url, image }: { text: string; url: string; image: s
   };
 
   return (
-    <div>
+    <div className="relative right-0 flex flex-grow items-centers justify-center">
       {/* Main Share Button */}
       <button
-        className="px-3 py-1 text-white rounded-md flex gap-1 bg-blue-400 font-semibold mx-auto"
+        className="absolute z-0 right-0 w-32 px-3 py-1 text-white rounded-md flex flex-grow-0 gap-1 bg-blue-400 font-semibold mx-auto"
         onClick={() => setShareNow(!shareNow)}
       >
         <span> Share {!shareNow && <span> Now </span>} </span>
@@ -89,7 +89,7 @@ const ShareButton = ({ text, url, image }: { text: string; url: string; image: s
 
       {/* Share Options Section */}
       {shareNow && (
-        <section className="my-2">
+        <section className="my-10 w-full">
           <div className="flex flex-col items-center justify-center bg-gray-100 py-2 ">
             <h1 className="text-2xl font-bold mb-4">Share this content</h1>
                 <div className="flex flex-col items-center justify-center bg-white p-8 rounded-xl shadow-2xl">
