@@ -345,9 +345,11 @@ const CartPage: React.FC = () => {
                             </Col>
 
                             <Col xs={24} md={12} className="text-center md:text-left">
-                              <Text strong className="block text-lg md:text-xl font-bold tracking-wide text-gray-800">
-                                {item?.course_name}
-                              </Text>
+                              <Link to={`/course/${item.course_id}`}>
+                                <Text strong className="block text-lg md:text-xl font-bold tracking-wide text-gray-800 underline hover:text-[#02005dc6]">
+                                  {item?.course_name}
+                                </Text>
+                              </Link>
                               <Text className="mt-2 block text-sm md:text-base text-gray-600">By {item?.instructor_name}</Text>
                             </Col>
 

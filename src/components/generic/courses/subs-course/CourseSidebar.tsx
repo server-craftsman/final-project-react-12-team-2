@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { CartService } from "../../../../services/cart/cart.service";
 import ShareButton from "./ShareButton";
 import { useCart } from "../../../../contexts/CartContext";
+import { CartStatusEnum } from "../../../../models/prototype/Carts";
 
 const { Title, Text } = Typography;
 
@@ -29,6 +30,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course, lessons }) => {
       }
 
       if (course.is_in_cart) {
+        await updateCartItems(CartStatusEnum.new);
         navigate("/cart");
       } else {
         const response = await CartService.createCart(course._id);
