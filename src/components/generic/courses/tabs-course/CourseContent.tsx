@@ -9,6 +9,14 @@ const { Title, Paragraph } = Typography;
 import { LessonType } from "../../../../app/enums";
 
 const checkUserInfo = (course: GetPublicCourseDetailResponse) => {
+  const userInfo = localStorage.getItem("userInfo");
+  if (userInfo) {
+    const userInfoData = JSON.parse(userInfo);
+    if (userInfoData._id === course.instructor_id) {
+      return true;
+    }
+    return course?.is_purchased || userInfoData._id;
+  }
   return course?.is_purchased;
 };
 
