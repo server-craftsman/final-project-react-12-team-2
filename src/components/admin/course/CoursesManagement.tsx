@@ -296,7 +296,6 @@ const CoursesManagement: React.FC<{
           ]}
         >
           <Select
-            defaultValue={StatusType.APPROVE}
             className="w-full text-sm"
             placeholder="Select status"
             onChange={(value) => {

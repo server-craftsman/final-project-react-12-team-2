@@ -54,7 +54,7 @@ const ManagementCategory = () => {
   if(categories) {
   return (
     <div>
-      <CustomSearch onSearch={handleSearch} placeholder="Search Payout" className="search-input" />
+      <CustomSearch onSearch={handleSearch} placeholder="Search Category Name" className="search-input" />
       <ViewCategory searchQuery={searchQuery} />
     </div>
   )
