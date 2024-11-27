@@ -4,7 +4,7 @@ import { StarFilled, StarOutlined } from "@ant-design/icons";
 import { ReviewService } from "../../../services/review/review.service";
 import { SearchForReviewResponseModel } from "../../../models/api/responsive/review/review.response.model";
 import { useNavigate } from "react-router-dom";
-import { DatePicker } from "antd";
+import { DatePicker, Pagination } from "antd";
 import moment from "moment";
 
 interface ReviewsProps {
@@ -14,8 +14,12 @@ interface ReviewsProps {
 
 const Reviews: React.FC<ReviewsProps> = ({ searchTerm, refreshKey }) => {
   const [reviews, setReviews] = useState<SearchForReviewResponseModel["pageData"]>([]);
+  const [filteredReviews, setFilteredReviews] = useState<SearchForReviewResponseModel["pageData"]>([]);
   const [startDate, setStartDate] = useState<moment.Moment | null>(null);
   const [endDate, setEndDate] = useState<moment.Moment | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalItems, setTotalItems] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,7 +31,6 @@ const Reviews: React.FC<ReviewsProps> = ({ searchTerm, refreshKey }) => {
           is_instructor: true, //check token
           is_rating_order: false,
           is_deleted: false,
-          ...(searchTerm ? { comment: searchTerm } : {}),
           ...(startDate ? { start_date: startDate.format("YYYY-MM-DD") } : {}),
           ...(endDate ? { end_date: endDate.format("YYYY-MM-DD") } : {})
         };
@@ -35,18 +38,27 @@ const Reviews: React.FC<ReviewsProps> = ({ searchTerm, refreshKey }) => {
         const response = await ReviewService.searchForReview({
           searchCondition,
           pageInfo: {
-            pageNum: 1,
-            pageSize: 10
+            pageNum: currentPage,
+            pageSize: pageSize
           }
         });
         setReviews(response.data.data.pageData as unknown as SearchForReviewResponseModel["pageData"]);
+        setTotalItems(response.data.data.pageInfo.totalItems);
       } catch (error) {
         console.error("Error fetching reviews:", error);
       }
     };
 
     fetchReviews();
-  }, [searchTerm, startDate, endDate, refreshKey]);
+  }, [startDate, endDate, refreshKey, currentPage, pageSize]);
+
+  useEffect(() => {
+    const filtered = reviews.filter(review =>
+      review.reviewer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      review.comment.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredReviews(filtered);
+  }, [reviews, searchTerm]);
 
   const renderStars = (rating: number) => {
     const stars = [];
@@ -72,12 +84,19 @@ const Reviews: React.FC<ReviewsProps> = ({ searchTerm, refreshKey }) => {
     }, {});
   };
 
-  const groupedReviews = groupReviewsByDate(reviews);
+  const groupedReviews = groupReviewsByDate(filteredReviews);
+
+  const handlePageChange = (page: number, pageSize?: number) => {
+    setCurrentPage(page);
+    if (pageSize) {
+      setPageSize(pageSize);
+    }
+  };
 
   return (
     <div className="p-4">
       <div className="mb-6 text-xl font-bold text-gray-800">
-        Total Reviews: {reviews.length}
+        Total Reviews: {totalItems}
       </div>
       
       <div className="mb-4 flex gap-4">
@@ -126,6 +145,15 @@ const Reviews: React.FC<ReviewsProps> = ({ searchTerm, refreshKey }) => {
           </div>
         </div>
       ))}
+      
+      <Pagination
+        current={currentPage}
+        pageSize={pageSize}
+        total={totalItems}
+        onChange={handlePageChange}
+        showSizeChanger
+        pageSizeOptions={['10', '20', '50']}
+      />
     </div>
   );
 };
