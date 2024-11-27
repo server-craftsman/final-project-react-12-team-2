@@ -1,10 +1,9 @@
 import { Avatar, Card, Typography, Space, Button, Modal } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { User } from "../../../models/api/responsive/users/users.model";
 import { UserService } from "../../../services/admin/user.service";
 import { useParams, useNavigate } from "react-router-dom";
-import ButtonSubscribe from "./CreateSubscribe";
 import ProfileDetail from "./ProfileDetail";
 import { BackwardFilled } from "@ant-design/icons";
 import LoadingAnimation from "../../../app/UI/LoadingAnimation";
@@ -19,40 +18,33 @@ const ProfileSubscribe: React.FC = () => {
   const navigate = useNavigate();
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
-  const userInfo = localStorage.getItem("userInfo");
-  const userId = userInfo ? JSON.parse(userInfo)._id : null;
+  // const userInfo = localStorage.getItem("userInfo");
+  // const userId = userInfo ? JSON.parse(userInfo)._id : null;
 
+  const fetchUserData = useCallback(async () => {
+    try {
+      const userResponse = await UserService.getUserDetails(id as string);
+      setUserData(userResponse.data.data);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userResponse = await UserService.getUserDetails(id as string);
-        setUserData(userResponse.data.data);
-
-        const userInfo = localStorage.getItem("userInfo");
-        const userId = userInfo ? JSON.parse(userInfo)._id : null;
-        if (userId) {
-          setIsSubscribed(true);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
+      const userInfo = localStorage.getItem("userInfo");
+      const userId = userInfo ? JSON.parse(userInfo)._id : null;
+      if (userId) {
+        setIsSubscribed(true);
       }
-    };
-
-    fetchData();
+      const isSubscribed = userResponse.data.data.is_subscribed || false;
+      setIsSubscribed(isSubscribed);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
   }, [id]);
 
-  // useEffect(() => {
-  //   if (isSubscribed) {
-  //     message.success("You are subscribed!");
-  //   } else {
-  //     message.info("You are not subscribed.");
-  //   }
-  // }, [isSubscribed]);
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
 
-  const handleSubscribe = async () => {
+  const handleSubscribe = useCallback(async () => {
     const token = localStorage.getItem("token");
     const userInfo = localStorage.getItem("userInfo");
 
@@ -64,20 +56,16 @@ const ProfileSubscribe: React.FC = () => {
 
     try {
       setLoading(true);
-      const response = await SubscriptionService.createSubscribe({
+      await SubscriptionService.createSubscribe({
         instructor_id: id as string
       });
-      if (response.data?.data) {
-        const isSubscribedStatus = response.data.data.is_subscribed || false;
-        setIsSubscribed(isSubscribedStatus);
-        console.log("Subscription status updated:", isSubscribedStatus);
-      }
+      await fetchUserData();
     } catch (error) {
       console.error("Error updating subscription:", error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, fetchUserData, navigate]);
 
   if (userData === null) {
     return <LoadingAnimation />;
@@ -117,7 +105,12 @@ const ProfileSubscribe: React.FC = () => {
               {userData?.email || "Loading..."}
             </Typography.Text>
             <Space direction="horizontal" style={{ justifyContent: 'space-between', width: '100%' }}>
-              {userId !== id && <ButtonSubscribe isLoading={isLoading} isSubscribed={isSubscribed} handleSubscribe={handleSubscribe} />}
+              <Button 
+                loading={isLoading} 
+                onClick={handleSubscribe}
+              >
+                {isSubscribed ? "Unsubscribe" : "Subscribe"}
+              </Button>
             </Space>
           </Space>
         </Card>
