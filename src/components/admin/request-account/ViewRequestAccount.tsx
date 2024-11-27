@@ -29,6 +29,7 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [pageInfo, setPageInfo] = useState<any>({});
   const [loading, setLoading] = useState<boolean>(true);
+  const [comment, setComment] = useState<string>("");
 
   const defaultParams = {
     searchCondition: {
@@ -105,43 +106,85 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
       const user = filteredUsers.find((user) => user._id === userId);
 
       if (user) {
-        Modal.confirm({
-          title: `Are you sure you want to ${isVerified ? "approve" : "reject"} this user?`,
-          onOk: async () => {
-            if (isVerified && user.status === false) {
-              message.error("Cannot approve an inactive user.");
-              return;
-            }
-
-            try {
-              const statusString = isVerified ? "approve" : "reject";
-
-              const response = await UserService.reviewProfileInstructor({
-                user_id: userId,
-                status: statusString as ReviewStatus,
-                comment: ""
-              } as ReviewProfileInstructorParams);
-
-              if (response.data?.success) {
-                const updatedUserList = updatedUsers.includes(userId) ? updatedUsers : [...updatedUsers, userId];
-
-                setUpdatedUsers(updatedUserList);
-                message.success(`User ID: ${userId} has been ${statusString}`);
-              } else {
-                message.error("Failed to update user status.");
+        if (!isVerified) {
+          // Prompt for a comment when rejecting
+          Modal.confirm({
+            title: "Please provide a reason for rejection",
+            content: (
+              <Input.TextArea
+                placeholder="Enter reason for rejection"
+                autoSize={{ minRows: 3, maxRows: 5 }}
+                onChange={(e) => setComment(e.target.value)}
+              />
+            ),
+            onOk: async () => {
+              if (!comment) {
+                message.error("Comment is required for rejection.");
+                return;
               }
-            } catch (error: any) {
-              console.error("API error:", error);
-              message.error("An error occurred while updating user status.");
+
+              try {
+                const response = await UserService.reviewProfileInstructor({
+                  user_id: userId,
+                  status: "reject" as ReviewStatus,
+                  comment: comment
+                } as ReviewProfileInstructorParams);
+
+                if (response.data?.success) {
+                  const updatedUserList = updatedUsers.includes(userId) ? updatedUsers : [...updatedUsers, userId];
+
+                  setUpdatedUsers(updatedUserList);
+                  message.success(`User ID: ${userId} has been rejected`);
+                } else {
+                  message.error("Failed to update user status.");
+                }
+              } catch (error: any) {
+                console.error("API error:", error);
+                message.error("An error occurred while updating user status.");
+              }
+            },
+            onCancel: () => {
+              message.info("Action canceled.");
             }
-          },
-          onCancel: () => {
-            message.info("Action canceled.");
-          }
-        });
+          });
+        } else {
+          // Approve without comment
+          Modal.confirm({
+            title: `Are you sure you want to approve this user?`,
+            onOk: async () => {
+              if (user.status === false) {
+                message.error("Cannot approve an inactive user.");
+                return;
+              }
+
+              try {
+                const response = await UserService.reviewProfileInstructor({
+                  user_id: userId,
+                  status: "approve" as ReviewStatus,
+                  comment: comment
+                } as ReviewProfileInstructorParams);
+
+                if (response.data?.success) {
+                  const updatedUserList = updatedUsers.includes(userId) ? updatedUsers : [...updatedUsers, userId];
+
+                  setUpdatedUsers(updatedUserList);
+                  message.success(`Request has been approved`);
+                } else {
+                  message.error("Failed to update user status.");
+                }
+              } catch (error: any) {
+                console.error("API error:", error);
+                message.error("An error occurred while updating user status.");
+              }
+            },
+            onCancel: () => {
+              message.info("Action canceled.");
+            }
+          });
+        }
       }
     },
-    [filteredUsers, updatedUsers]
+    [filteredUsers, updatedUsers, comment]
   );
 
   const columns = useMemo(
