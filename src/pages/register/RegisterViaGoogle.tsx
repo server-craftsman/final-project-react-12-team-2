@@ -251,7 +251,16 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
 
   return (
     <Form form={form} layout="vertical" className="mx-auto w-full max-w-[1200px] p-6">
-      <Form.Item label="Phone Number" name="phone_number" rules={[{ required: true, message: "Please input your phone number!" }]} className="mb-4">
+      <Form.Item
+        label="Phone Number"
+        name="phone_number"
+        rules={[
+          { required: true, message: "Please input your phone number!" },
+          { pattern: /^\d{10}$/, message: "Phone number must be 10 digits!" },
+          { type: "string", message: "Phone number must be a string!" }
+        ]}
+        className="mb-4"
+      >
         <Input prefix={<PhoneOutlined className="text-gray-400" />} placeholder="Enter your phone number" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} className="h-10 rounded-lg" />
       </Form.Item>
 
@@ -264,33 +273,9 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
 
       {role === "instructor" && (
         <div className="space-y-8 rounded-xl bg-white p-8 shadow-lg">
-          {/* <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <Form.Item name="avatar_file" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
-              <div className="space-y-4">
-                <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
-                  <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingAvatar}>
-                    Select Avatar
-                  </Button>
-                </Upload>
-                {avatarPreview && <img src={avatarPreview} alt="Avatar preview" className="h-32 w-32 rounded-lg object-cover" />}
-              </div>
-            </Form.Item>
-
-            <Form.Item name="video_file" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
-              <div className="space-y-4">
-                <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList)}>
-                  <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600" loading={uploadingVideo}>
-                    Select Video
-                  </Button>
-                </Upload>
-                {videoPreview && <img src={videoPreview} alt="Video thumbnail" className="h-32 w-32 rounded-lg object-cover" />}
-              </div>
-            </Form.Item>
-          </div> */}
-
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="avatar_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
+              <Form.Item name="avatar_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }, { type: "url", message: "Avatar must be a valid URL!" }]}>
                 <div className="space-y-4">
                   <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
                     <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600">
@@ -302,7 +287,7 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
+              <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }, { type: "url", message: "Video must be a valid URL!" }]}>
                 <div className="space-y-4">
                   <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList as UploadFile<any>[])}>
                     <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-indigo-200 transition duration-200 hover:border-indigo-300 hover:text-indigo-600">
@@ -315,7 +300,15 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
             </Col>
           </Row>
 
-          <Form.Item name="description" label="Professional Description" rules={[{ required: true, message: "Please input a description!" }]}>
+          <Form.Item
+            name="description"
+            label="Professional Description"
+            rules={[
+              { required: true, message: "Please input a description!" },
+              { min: 10, message: "Description must be at least 10 characters!" },
+              { type: "string", message: "Description must be a string!" }
+            ]}
+          >
             <Editor initialValue={description} onEditorChange={handleEditorChange} />
           </Form.Item>
 

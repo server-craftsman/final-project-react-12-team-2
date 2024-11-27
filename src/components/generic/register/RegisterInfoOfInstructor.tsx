@@ -111,15 +111,33 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({ for
   return (
     <div className="space-y-8 rounded-xl bg-white p-8 shadow-lg">
       <div className="col-span-1">
-        <Form.Item name="phone_number" rules={[{ required: true, message: "Please input your phone number!" }]} className="mb-0">
-          <Input prefix={<PhoneOutlined className="text-indigo-600" />} placeholder="Phone Number" className="h-12 rounded-lg border-2 border-indigo-200 transition duration-200 hover:border-indigo-300 focus:border-indigo-500" />
+        <Form.Item
+          name="phone_number"
+          rules={[
+            { required: true, message: "Please input your phone number!" },
+            { pattern: /^\d{10}$/, message: "Phone number must be 10 digits!" }
+          ]}
+          className="mb-0"
+        >
+          <Input
+            prefix={<PhoneOutlined className="text-indigo-600" />}
+            placeholder="Phone Number"
+            className="h-12 rounded-lg border-2 border-indigo-200 transition duration-200 hover:border-indigo-300 focus:border-indigo-500"
+          />
         </Form.Item>
       </div>
 
       {/* <div className="flex flex-grow gap-6"> */}
       <Row gutter={16}>
         <Col span={12}>
-          <Form.Item name="avatar_url" label="Profile Picture" rules={[{ required: true, message: "Please upload an avatar!" }]}>
+          <Form.Item
+            name="avatar_url"
+            label="Profile Picture"
+            rules={[
+              { required: true, message: "Please upload an avatar!" },
+              { type: "url", message: "Avatar must be a valid URL!" }
+            ]}
+          >
             <div className="space-y-4">
               <Upload accept="image/*" showUploadList={false} beforeUpload={handleAvatarPreview} fileList={avatarFileList} onChange={({ fileList }) => setAvatarFileList(fileList)}>
                 <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-blue-200 hover:border-blue-300 hover:text-blue-600">
@@ -131,7 +149,14 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({ for
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item name="video_url" label="Introduction Video" rules={[{ required: true, message: "Please upload an introduction video!" }]}>
+          <Form.Item
+            name="video_url"
+            label="Introduction Video"
+            rules={[
+              { required: true, message: "Please upload an introduction video!" },
+              { type: "url", message: "Video must be a valid URL!" }
+            ]}
+          >
             <div className="space-y-4">
               <Upload accept="video/*" showUploadList={false} beforeUpload={handleVideoPreview} fileList={videoFileList} onChange={({ fileList }) => setVideoFileList(fileList as UploadFile<any>[])}>
                 <Button icon={<UploadOutlined />} className="h-12 w-full rounded-lg border-2 border-indigo-200 transition duration-200 hover:border-indigo-300 hover:text-indigo-600">
@@ -145,7 +170,15 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({ for
       </Row>
       {/* </div> */}
 
-      <Form.Item name="description" label={<span className="font-medium text-gray-700">Professional Description</span>} rules={[{ required: true, message: "Please input a description!" }]} className="mb-6">
+      <Form.Item
+        name="description"
+        label={<span className="font-medium text-gray-700">Professional Description</span>}
+        rules={[
+          { required: true, message: "Please input a description!" },
+          { min: 10, message: "Description must be at least 10 characters!" }
+        ]}
+        className="mb-6"
+      >
         <Editor key={form.getFieldValue("description")} initialValue={form.getFieldValue("description")} onEditorChange={handleEditorChange} />
       </Form.Item>
 
@@ -172,12 +205,34 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({ for
           </Select>
         </Form.Item>
 
-        <Form.Item name="bank_account_no" rules={[{ required: true, message: "Please input your bank account number!" }]} className="mb-0">
-          <Input prefix={<NumberOutlined className="text-indigo-600" />} placeholder="Account Number" className="h-12 rounded-lg border-2 border-indigo-200 transition duration-200 hover:border-indigo-300 focus:border-indigo-500" />
+        <Form.Item
+          name="bank_account_no"
+          rules={[
+            { required: true, message: "Please input your bank account number!" },
+            { pattern: /^\d+$/, message: "Account number must be numeric!" }
+          ]}
+          className="mb-0"
+        >
+          <Input
+            prefix={<NumberOutlined className="text-indigo-600" />}
+            placeholder="Account Number"
+            className="h-12 rounded-lg border-2 border-indigo-200 transition duration-200 hover:border-indigo-300 focus:border-indigo-500"
+          />
         </Form.Item>
 
-        <Form.Item name="bank_account_name" rules={[{ required: true, message: "Please input your bank account name!" }]} className="mb-0">
-          <Input prefix={<UserOutlined className="text-indigo-600" />} placeholder="Account Name" className="h-12 rounded-lg border-2 border-indigo-200 transition duration-200 hover:border-indigo-300 focus:border-indigo-500" />
+        <Form.Item
+          name="bank_account_name"
+          rules={[
+            { required: true, message: "Please input your bank account name!" },
+            { pattern: /^[a-zA-Z\s]+$/, message: "Account name must be alphabetic!" }
+          ]}
+          className="mb-0"
+        >
+          <Input
+            prefix={<UserOutlined className="text-indigo-600" />}
+            placeholder="Account Name"
+            className="h-12 rounded-lg border-2 border-indigo-200 transition duration-200 hover:border-indigo-300 focus:border-indigo-500"
+          />
         </Form.Item>
       </div>
     </div>
