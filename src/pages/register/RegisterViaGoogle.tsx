@@ -215,7 +215,14 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
       <div className="space-y-4 rounded-xl bg-gray-50 p-6">
         <h3 className="mb-4 text-lg font-semibold text-gray-800">Banking Information</h3>
 
-        <Form.Item name="bank_name" label="Bank Name">
+        <Form.Item
+          name="bank_name"
+          label="Bank Name"
+          rules={[
+            { required: true, message: "Please select your bank name!" },
+            { type: "string", message: "Bank name must be a string!" }
+          ]}
+        >
           <Select
             value={bankName}
             onChange={setBankName}
@@ -225,7 +232,6 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
                 Select Bank Name
               </div>
             }
-            // className="w-full h-12 rounded-lg border border-gray-300 px-3"
           >
             {bankData.banks.map((bank) => (
               <Select.Option key={bank.id} value={bank.name}>
@@ -237,12 +243,40 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
           </Select>
         </Form.Item>
 
-        <Form.Item name="bank_account_no" label="Account Number">
-          <Input prefix={<NumberOutlined className="text-blue-600" />} placeholder="Enter account number" value={bankAccountNo} onChange={(e) => setBankAccountNo(e.target.value)} className="h-12 rounded-lg" />
+        <Form.Item
+          name="bank_account_no"
+          label="Account Number"
+          rules={[
+            { required: true, message: "Please input your bank account number!" },
+            { pattern: /^\d+$/, message: "Account number must be numeric!" },
+            { type: "string", message: "Account number must be a string!" }
+          ]}
+        >
+          <Input
+            prefix={<NumberOutlined className="text-blue-600" />}
+            placeholder="Enter account number"
+            value={bankAccountNo}
+            onChange={(e) => setBankAccountNo(e.target.value)}
+            className="h-12 rounded-lg"
+          />
         </Form.Item>
 
-        <Form.Item name="bank_account_name" label="Account Name">
-          <Input prefix={<UserOutlined className="text-blue-600" />} placeholder="Enter account name" value={bankAccountName} onChange={(e) => setBankAccountName(e.target.value)} className="h-12 rounded-lg" />
+        <Form.Item
+          name="bank_account_name"
+          label="Account Name"
+          rules={[
+            { required: true, message: "Please input your bank account name!" },
+            { pattern: /^[a-zA-Z\s]+$/, message: "Account name must be alphabetic!" },
+            { type: "string", message: "Account name must be a string!" }
+          ]}
+        >
+          <Input
+            prefix={<UserOutlined className="text-blue-600" />}
+            placeholder="Enter account name"
+            value={bankAccountName}
+            onChange={(e) => setBankAccountName(e.target.value)}
+            className="h-12 rounded-lg"
+          />
         </Form.Item>
       </div>
     ),
