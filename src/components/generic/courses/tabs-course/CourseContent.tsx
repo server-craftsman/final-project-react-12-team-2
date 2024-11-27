@@ -12,10 +12,10 @@ const checkUserInfo = (course: GetPublicCourseDetailResponse) => {
   const userInfo = localStorage.getItem("userInfo");
   if (userInfo) {
     const userInfoData = JSON.parse(userInfo);
-    if (userInfoData._id === course.instructor_id) {
+    if (userInfoData._id === course.instructor_id ) {
       return true;
     }
-    return course?.is_purchased || userInfoData._id;
+    return course?.is_purchased;
   }
   return course?.is_purchased;
 };
