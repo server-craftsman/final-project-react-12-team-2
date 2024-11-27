@@ -4,8 +4,8 @@ import { StarFilled, StarOutlined } from "@ant-design/icons";
 import { ReviewService } from "../../../services/review/review.service";
 import { SearchForReviewResponseModel } from "../../../models/api/responsive/review/review.response.model";
 import { useNavigate } from "react-router-dom";
-import { DatePicker, Pagination } from "antd";
-import moment from "moment";
+import { Pagination } from "antd";
+// import moment from "moment";
 
 interface ReviewsProps {
   searchTerm: string;
@@ -15,8 +15,8 @@ interface ReviewsProps {
 const Reviews: React.FC<ReviewsProps> = ({ searchTerm, refreshKey }) => {
   const [reviews, setReviews] = useState<SearchForReviewResponseModel["pageData"]>([]);
   const [filteredReviews, setFilteredReviews] = useState<SearchForReviewResponseModel["pageData"]>([]);
-  const [startDate, setStartDate] = useState<moment.Moment | null>(null);
-  const [endDate, setEndDate] = useState<moment.Moment | null>(null);
+  // const [startDate, setStartDate] = useState<moment.Moment | null>(null);
+  // const [endDate, setEndDate] = useState<moment.Moment | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalItems, setTotalItems] = useState(0);
@@ -31,8 +31,8 @@ const Reviews: React.FC<ReviewsProps> = ({ searchTerm, refreshKey }) => {
           is_instructor: true, //check token
           is_rating_order: false,
           is_deleted: false,
-          ...(startDate ? { start_date: startDate.format("YYYY-MM-DD") } : {}),
-          ...(endDate ? { end_date: endDate.format("YYYY-MM-DD") } : {})
+          // ...(startDate ? { start_date: startDate.format("YYYY-MM-DD") } : {}),
+          // ...(endDate ? { end_date: endDate.format("YYYY-MM-DD") } : {})
         };
 
         const response = await ReviewService.searchForReview({
@@ -50,7 +50,7 @@ const Reviews: React.FC<ReviewsProps> = ({ searchTerm, refreshKey }) => {
     };
 
     fetchReviews();
-  }, [startDate, endDate, refreshKey, currentPage, pageSize]);
+  }, [ refreshKey, currentPage, pageSize]);
 
   useEffect(() => {
     const filtered = reviews.filter(review =>
@@ -99,7 +99,7 @@ const Reviews: React.FC<ReviewsProps> = ({ searchTerm, refreshKey }) => {
         Total Reviews: {totalItems}
       </div>
       
-      <div className="mb-4 flex gap-4">
+      {/* <div className="mb-4 flex gap-4">
         <DatePicker
           placeholder="Start Date"
           onChange={(date) => setStartDate(date)}
@@ -110,7 +110,7 @@ const Reviews: React.FC<ReviewsProps> = ({ searchTerm, refreshKey }) => {
           onChange={(date) => setEndDate(date)}
           value={endDate}
         />
-      </div>
+      </div> */}
 
       {Object.keys(groupedReviews).map((date) => (
         <div key={date} className="mb-8">
