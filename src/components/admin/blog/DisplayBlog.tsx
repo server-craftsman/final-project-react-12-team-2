@@ -11,6 +11,7 @@ import DeleteBlogModal from "./DeleteBlog";
 import BlogDetail from "./BlogDetail";
 import { helpers } from "../../../utils";
 import { ColumnType } from "antd/es/table";
+import { GetCategoryParams } from "../../../models/api/request/admin/category.request.model";
 
 const DisplayBlog: React.FC<{ searchQuery: string, refreshKey: number }> = ({ searchQuery, refreshKey }) => {
   const [blogData, setBlogData] = useState<GetBlogResponse | null>(null);
@@ -39,6 +40,30 @@ const DisplayBlog: React.FC<{ searchQuery: string, refreshKey: number }> = ({ se
     }
   };
 
+  const getParentCategoryParams: GetCategoryParams = {
+    searchCondition: {
+      keyword: "",
+      is_delete: false,
+      is_parent: true
+    },
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 100
+    }
+  };
+
+  const getChildCategoryParams: GetCategoryParams = {
+    searchCondition: {
+      keyword: "",
+      is_delete: false,
+      is_parent: false
+    },
+    pageInfo: {
+      pageNum: 1,
+      pageSize: 100
+    }
+  };
+
   const fetchBlogs = useCallback(async (pageNum: number = defaultParams.pageInfo.pageNum, pageSize: number = defaultParams.pageInfo.pageSize) => {
     try {
       const response = await BlogService.getBlog({
@@ -53,18 +78,21 @@ const DisplayBlog: React.FC<{ searchQuery: string, refreshKey: number }> = ({ se
   }, [searchQuery, refreshKey]);
 
   const fetchCategories = useCallback(async () => {
-    try {
-      const response = await CategoryService.getPublicCategory(defaultParams);
-      const pageData = response.data.data.pageData;
+     try {
+      const parentCategoriesData = await CategoryService.getCategory(getParentCategoryParams);
+      const parentCategories = parentCategoriesData.data.data.pageData;
 
-      if (Array.isArray(pageData)) {
-        setCategories(pageData);
-      } else {
-        console.error("Expected an array of categories, but got:", pageData);
-      }
+      const childCategoriesData = await CategoryService.getCategory(getChildCategoryParams);
+      const childCategories = childCategoriesData.data.data.pageData;
+
+      const categoriesWithChildren = parentCategories.map((parent) => ({
+        ...parent,
+        children: childCategories.filter((child) => child.parent_category_id === parent._id)
+      }));
+
+      setCategories(categoriesWithChildren);
     } catch (error) {
-      message.error("Failed to fetch categories");
-      console.error("Error fetching categories:", error);
+      message.error("Failed to load categories.");
     }
   }, []);
 
@@ -72,7 +100,6 @@ const DisplayBlog: React.FC<{ searchQuery: string, refreshKey: number }> = ({ se
     fetchBlogs();
     fetchCategories();
   }, [searchQuery, refreshKey, refreshKey, fetchBlogs, fetchCategories]);
-
   const filteredData = blogData?.pageData?.filter((blog: Blog) => (blog.name && blog.name.toLowerCase().includes(searchQuery.toLowerCase())) || (blog.description && blog.description.toLowerCase().includes(searchQuery.toLowerCase())));
 
   const columns = [

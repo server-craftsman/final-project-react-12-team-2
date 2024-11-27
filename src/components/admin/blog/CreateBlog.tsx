@@ -122,10 +122,10 @@ const CreateBlog: React.FC<CreateBlogProps> = ({ onBlogCreated }) => {
   return (
     <div>
       <Button className="bg-gradient-tone px-4 py-2 text-white" onClick={handleModalToggle}>
-        Create Blog Post
+        Create Blog
       </Button>
 
-      <Modal title="Create Blog Post" open={isModalVisible} onCancel={handleModalToggle} footer={null}>
+      <Modal title="Create Blog" open={isModalVisible} onCancel={handleModalToggle} footer={null}>
         <Form form={form} name="create_blog" onFinish={onFinish} layout="vertical" initialValues={{ category_id: categories[0]?.value }}>
           <Form.Item name="name" label="Post Name" rules={[{ required: true, message: "Please input the post name!" }]}>
             <Input />
@@ -152,7 +152,7 @@ const CreateBlog: React.FC<CreateBlogProps> = ({ onBlogCreated }) => {
 
           <Form.Item>
             <Button className="bg-gradient-tone px-4 py-2 text-white" htmlType="submit">
-              Create Post
+              Create Blog
             </Button>
           </Form.Item>
         </Form>
