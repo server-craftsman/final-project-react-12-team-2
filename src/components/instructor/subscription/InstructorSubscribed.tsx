@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Card, Row, Col, message, Pagination } from "antd";
+import { Card, Row, Col, message, Pagination, Button } from "antd";
 import { GetSubscriptionsResponse } from "../../../models/api/responsive/subscription/sub.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { SubscriptionService } from "../../../services/subscription/subscription.service";
 import { GetSubscriptionsParams } from "../../../models/api/request/subscription/sub.request.model";
-// import { UserService } from "../../../services/instructor/user.service";
-import ButtonSubscribe from "../../generic/profile/CreateSubscribe";
-// import { UserService } from "../../../services/instructor/user.service";
 
 interface SearchSubscriptionCondition {
   keyword: string;
@@ -21,10 +18,11 @@ interface InstructorSubscribedProps {
 }
 
 const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue, refreshKey }) => {
+  const navigate = useNavigate();
   const [subscriptions, setSubscriptions] = useState<GetSubscriptionsResponse | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   // const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSubscribed, setIsSubscribed] = useState<boolean>(true);
+  // const [isSubscribed, setIsSubscribed] = useState<boolean>(true);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
@@ -70,6 +68,10 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
     }
   }, [getSearchCondition, currentPage]);
 
+  const fetchUsers = useCallback(async () => {
+    // Implement the logic to fetch users here
+    // This is a placeholder function
+  }, []);
 
   // Keep this effect which handles both initial load and page changes
   useEffect(() => {
@@ -99,6 +101,42 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+  const handleSubscribe = useCallback(async (instructorId: string) => {
+    const token = localStorage.getItem("token");
+    const userInfo = localStorage.getItem("userInfo");
+
+    if (!token || !userInfo) {
+      navigate("/login");
+      message.error("Please log in to subscribe.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await SubscriptionService.createSubscribe({
+        instructor_id: instructorId
+      });
+      await fetchSubscriptions();
+      await fetchUsers();
+      setSubscriptions(prevSubscriptions => {
+        if (!prevSubscriptions) return null;
+        return {
+          ...prevSubscriptions,
+          pageData: prevSubscriptions.pageData.map(subscription =>
+            subscription.instructor_id === instructorId
+              ? { ...subscription, is_subscribed: !subscription.is_subscribed }
+              : subscription
+          )
+        };
+      });
+    } catch (error) {
+      console.error("Error updating subscription:", error);
+      message.error("Failed to update subscription.");
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchSubscriptions, fetchUsers, navigate]);
 
   return (
     <div style={{ backgroundColor: "#f0f2f5" }}>
@@ -139,7 +177,9 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
                       marginTop: "auto"
                     }}
                   >
-                    <ButtonSubscribe isLoading={loading} isSubscribed={isSubscribed} setIsSubscribed={setIsSubscribed} />
+                    <Button loading={loading} onClick={() => handleSubscribe(subscription.instructor_id)}>
+                      {subscription.is_subscribed ? "Unsubscribe" : "Subscribe"}
+                    </Button>
                   </div>
                 </div>
               </Card>

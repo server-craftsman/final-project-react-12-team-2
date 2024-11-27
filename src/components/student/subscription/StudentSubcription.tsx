@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, Avatar, Row, Col, message } from "antd";
+import { Card, Avatar, Row, Col, message, Button } from "antd";
 import { Link } from "react-router-dom";
 import { GetSubscriptionsResponse } from "../../../models/api/responsive/subscription/sub.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model";
 import { SubscriptionService } from "../../../services/subscription/subscription.service";
 import { GetSubscriptionsParams } from "../../../models/api/request/subscription/sub.request.model";
 import { UserService } from "../../../services/instructor/user.service";
-import ButtonSubscribe from "../../generic/profile/CreateSubscribe";
+// import ButtonSubscribe from "../../generic/profile/CreateSubscribe";
 
 // ... existing interface definitions ...
 interface StudentSubscriptionProps {
@@ -20,8 +20,8 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery, 
   const [subscriptions, setSubscriptions] = useState<GetSubscriptionsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSubscribed, setIsSubscribed] = useState<boolean>(true);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isSubscribed, setIsSubscribed] = useState<boolean>(true);
 
   // ... API calling logic ...
   const defaultParams = {
@@ -81,7 +81,7 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery, 
     }
   }, [subscriptions?.pageData]);
 
-  const handleSubscribe = async (instructorId: string) => {
+  const handleSubscribe = useCallback(async (instructorId: string) => {
     const token = localStorage.getItem("token");
     const userInfo = localStorage.getItem("userInfo");
 
@@ -93,20 +93,17 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery, 
 
     try {
       setLoading(true);
-      const response = await SubscriptionService.createSubscribe({
+      await SubscriptionService.createSubscribe({
         instructor_id: instructorId
       });
-      if (response.data?.data) {
-        const isSubscribedStatus = response.data.data.is_subscribed || false;
-        setIsSubscribed(isSubscribedStatus);
-        console.log("Subscription status updated:", isSubscribedStatus);
-      }
+      await fetchSubscriptions();
+      await fetchUsers();
     } catch (error) {
       console.error("Error updating subscription:", error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [fetchSubscriptions, fetchUsers, navigate]);
 
   // Updated render section
   return (
@@ -172,7 +169,9 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery, 
                       marginTop: "auto"
                     }}
                   >
-                    <ButtonSubscribe isLoading={false} isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} instructorId={user?._id || ""} isSubscribed={isSubscribed} setIsSubscribed={setIsSubscribed} handleSubscribe={() => handleSubscribe(user?._id || "")} />
+                    <Button loading={loading} onClick={() => handleSubscribe(subscription.instructor_id)}>
+                      {subscription.is_subscribed ? "Unsubscribe" : "Subscribe"}
+                    </Button>
                   </div>
                 </Card>
               </Link>
