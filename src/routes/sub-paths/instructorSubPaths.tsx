@@ -11,10 +11,12 @@ const Review = lazy(() => import("../../pages/instructor/review/Review"));
 const OrderPage = lazy(() => import("../../pages/instructor/order/OrderPage"));
 const SubscriptionPage = lazy(() => import("../../pages/instructor/subscription/SubscriptionPage"));
 const ManagePayout = lazy(() => import("../../pages/instructor/payout/ManagePayout"));
-
 const Purchases = lazy(() => import("../../pages/instructor/purchase/PurchasesManagement"));
 const CourseManagement = lazy(() => import("../../pages/instructor/course/CourseManagement"));
 const ManagementCategory = lazy(() => import("../../pages/instructor/category/ManagementCategory"));
+//======================================================
+
+//export instructor sub paths
 export const instructorSubPaths: Record<string, RouteObject[]> = {
   [ROUTER_URL.INSTRUCTOR.BASE]: [
     {

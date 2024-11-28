@@ -1,6 +1,5 @@
 import React from "react";
 import { Typography, Collapse, List, Button, message } from "antd";
-import { PlayCircleOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CourseContentProps } from "../../../../models/objects/course/CourseContentProps";

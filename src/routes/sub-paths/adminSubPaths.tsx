@@ -20,7 +20,9 @@ const SubscriptionPage = lazy(() => import("../../pages/instructor/subscription/
 const RequestAccountManagement = lazy(() => import("../../pages/admin/request-account/RequestAccountManagement"));
 const CourseLogManagement = lazy(() => import("../../pages/admin/courseLog/CourseLogManagement"));
 const ReviewManagement = lazy(() => import("../../pages/admin/review/ReviewManagement"));
+//======================================================
 
+//export admin sub paths
 export const adminSubPaths: Record<string, RouteObject[]> = {
   [ROUTER_URL.ADMIN.BASE]: [
     {
