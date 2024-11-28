@@ -66,7 +66,9 @@ export const ROUTER_URL = {
     BLOG: "/blog",
     BLOG_DETAILS_ID: "/blog-details/:id",
     ALL_COURSES: "/courses/all",
-    SEARCH_COURSES: "/courses/search-courses"
+    SEARCH_COURSES: "/courses/search-courses",
+    FAQ: "/faq",
+    HELP_CENTER: "/help"
   },
   UNAUTHORIZED: "/unauthorized",
   PROFILE: {

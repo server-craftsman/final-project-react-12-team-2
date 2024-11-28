@@ -85,12 +85,6 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
       if (error.response) {
         console.error("Error response:", error.response.data);
         message.error(`Error: ${error.response.data.message || "An unexpected error occurred while fetching users"}`);
-      } else if (error.request) {
-        console.error("Error request:", error.request);
-        message.error("No response received from server.");
-      } else {
-        console.error("Error message:", error.message);
-        message.error("An unexpected error occurred.");
       }
     } finally {
       setLoading(false);
@@ -134,7 +128,7 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
                   const updatedUserList = updatedUsers.includes(userId) ? updatedUsers : [...updatedUsers, userId];
 
                   setUpdatedUsers(updatedUserList);
-                  message.success(`User ID: ${userId} has been rejected`);
+                  message.success(`Request account has been rejected`);
                 } else {
                   message.error("Failed to update user status.");
                 }
@@ -168,7 +162,7 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
                   const updatedUserList = updatedUsers.includes(userId) ? updatedUsers : [...updatedUsers, userId];
 
                   setUpdatedUsers(updatedUserList);
-                  message.success(`Request has been approved`);
+                  message.success(`Request account has been approved`);
                 } else {
                   message.error("Failed to update user status.");
                 }

@@ -1,0 +1,10 @@
+{
+  "help": [
+    { "title": "Getting Started with Our Courses", "description": "Welcome to our online learning platform! Begin your journey by exploring the basics of our course offerings.", "icon": "🚀" },
+    { "title": "Navigating the Course Platform", "description": "Learn how to effectively use our platform to enhance your learning experience.", "icon": "💻" },
+    { "title": "Course Channels & Integrations", "description": "Discover how to integrate our courses with your favorite tools and platforms.", "icon": "📡" },
+    { "title": "Course Edition Options", "description": "Explore the different editions of our courses to find the one that suits your needs.", "icon": "🔗" },
+    { "title": "Additional Course Features", "description": "Uncover the extra features available to enhance your learning journey.", "icon": "🛠️" },
+    { "title": "Latest Course Updates", "description": "Stay informed about the latest updates and improvements to our courses.", "icon": "📅" }
+  ]
+}

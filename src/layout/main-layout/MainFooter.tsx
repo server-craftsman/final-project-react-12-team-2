@@ -28,22 +28,22 @@ const StudentFooter: React.FC = () => {
             <h4 className="mb-4 text-lg font-semibold">Quick Links</h4>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="hover:text-gold transition-colors duration-300">
+                <Link to="/" className="hover:text-gold transition-colors duration-300" onClick={scrollToTop}>
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/courses" className="hover:text-gold transition-colors duration-300">
+                <Link to="/courses/all" className="hover:text-gold transition-colors duration-300" onClick={scrollToTop}>
                   Courses
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-gold transition-colors duration-300">
+                <Link to="/about" className="hover:text-gold transition-colors duration-300" onClick={scrollToTop}>
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-gold transition-colors duration-300">
+                <Link to="/contact" className="hover:text-gold transition-colors duration-300" onClick={scrollToTop}>
                   Contact
                 </Link>
               </li>
@@ -53,22 +53,22 @@ const StudentFooter: React.FC = () => {
             <h4 className="mb-4 text-lg font-semibold">Support</h4>
             <ul className="space-y-2">
               <li>
-                <Link to="/faq" className="hover:text-gold transition-colors duration-300">
+                <Link to="/faq" className="hover:text-gold transition-colors duration-300" onClick={scrollToTop}>
                   FAQ
                 </Link>
               </li>
               <li>
-                <Link to="/help" className="hover:text-gold transition-colors duration-300">
+                <Link to="/help" className="hover:text-gold transition-colors duration-300" onClick={scrollToTop}>
                   Help Center
                 </Link>
               </li>
               <li>
-                <Link to="/privacy" className="hover:text-gold transition-colors duration-300">
+                <Link to="/privacy" className="hover:text-gold transition-colors duration-300" onClick={scrollToTop}>
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="hover:text-gold transition-colors duration-300">
+                <Link to="/terms" className="hover:text-gold transition-colors duration-300" onClick={scrollToTop}>
                   Terms of Service
                 </Link>
               </li>
@@ -90,7 +90,7 @@ const StudentFooter: React.FC = () => {
                 <FaLinkedin size={24} />
               </a>
             </div>
-            <Link to="/contact" className="bg-gold mt-4 inline-flex transform items-center rounded from-purple-500 to-pink-500 px-4 py-2 text-white shadow-md transition-all duration-300 hover:scale-105 hover:bg-gradient-to-r hover:shadow-lg">
+            <Link to="/contact" className="bg-gold mt-4 inline-flex transform items-center rounded from-purple-500 to-pink-500 px-4 py-2 text-white shadow-md transition-all duration-300 hover:scale-105 hover:bg-gradient-to-r hover:shadow-lg" onClick={scrollToTop}>
               <FaEnvelope className="mr-2 animate-pulse" />
               <span className="font-semibold">Contact Us</span>
             </Link>

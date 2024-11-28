@@ -1,0 +1,49 @@
+{
+  "faq": [
+    {
+      "id": "website-sale-course",
+      "icon": "💻",
+      "question": "Do you offer a course on website sales?",
+      "answer": "Yes, we offer a comprehensive course on website sales that covers everything from lead generation to closing deals. Our course is designed to help you maximize your online sales potential."
+    },
+    {
+      "general_questions": [
+        {
+          "icon": "💻",
+          "question": "How do I enroll in a course on your website?",
+          "answer": "To enroll in a course, visit our website, browse the available courses, and click on the 'Enroll Now' button. Follow the instructions to complete your registration."
+        },
+        {
+          "icon": "💳",
+          "question": "What payment methods are accepted for course purchases?",
+          "answer": "We accept various payment methods including credit/debit cards, PayPal, and bank transfers. You can choose your preferred payment option during the checkout process."
+        },
+        {
+          "icon": "📚",
+          "question": "Can I access the course materials after completion?",
+          "answer": "Yes, once you have completed a course, you will have lifetime access to the course materials, allowing you to revisit the content anytime."
+        },
+        {
+          "icon": "💰",
+          "question": "Do you offer any discounts or promotions on courses?",
+          "answer": "We occasionally offer discounts and promotions on our courses. Subscribe to our newsletter or follow us on social media to stay updated on the latest offers."
+        },
+        {
+          "icon": "💰",
+          "question": "Is there a refund policy for course purchases?",
+          "answer": "Yes, we offer a 30-day refund policy for course purchases. If you are not satisfied with a course, you can request a refund within 30 days of purchase."
+        },
+        {
+          "icon": "💰",
+          "question": "Are there any prerequisites for enrolling in a course?",
+          "answer": "Some courses may have prerequisites, which will be listed in the course description. Please review the course details to ensure you meet any necessary requirements."
+        },
+        {
+          "icon": "💰",
+          "question": "How can I contact support if I have issues with a course?",
+          "answer": "If you encounter any issues, you can contact our support team via the 'Contact Us' page on our website. We are here to assist you with any questions or concerns."
+        }
+      ]
+    }
+  ]
+}

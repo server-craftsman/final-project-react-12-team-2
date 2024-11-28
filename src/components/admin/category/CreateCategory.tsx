@@ -96,7 +96,7 @@ const CreateCategory: React.FC = () => {
           </Form.Item>
           <Form.Item label="Description" rules={[{ required: true, message: "Please input category description" }]}>
             <Editor
-              initialValue=""
+              initialValue="" 
               onEditorChange={(content: string) => {
                 setEditorContent(content);
               }}

@@ -78,6 +78,12 @@ export default defineConfig({
             return "services";
           }
         }
+      },
+      // debug lottie warning
+      onwarn(warning, warn) {
+        // Suppress eval warnings
+        if (warning.code === "EVAL") return;
+        warn(warning);
       }
     },
     chunkSizeWarningLimit: 10000
