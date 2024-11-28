@@ -6,11 +6,11 @@ import { Blog } from "../../../models/api/responsive/admin/blog.responsive.model
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
 import Editor from "../../generic/tiny/Editor";
 import { BaseService } from "../../../services/config/base.service";
-
+const { Option } = Select;
 interface EditBlogModalProps {
   visible: boolean;
   blog: Blog | null;
-  categories: Category[];
+  categories: (Category & { children?: Category[] })[];
   onClose: () => void;
   onSuccess: () => void;
 }
@@ -109,11 +109,18 @@ const EditBlogModal: React.FC<EditBlogModalProps> = ({ visible, blog, categories
 
         <Form.Item name="category_id" label="Category" rules={[{ required: true, message: "Please select a category!" }]}>
           <Select placeholder="Select a category">
-            {categories.map((category) => (
-              <Select.Option key={category._id} value={category._id}>
-                {category.name}
-              </Select.Option>
-            ))}
+          {categories.map((parent) => (
+                    <>
+                      <Option key={parent._id} value={parent._id}>
+                        {parent.name}
+                      </Option>
+                      {parent.children?.map((child) => (
+                        <Option key={child._id} value={child._id}>
+                          {child.name}
+                        </Option>
+                      ))}
+                    </>
+                  ))}
           </Select>
         </Form.Item>
 
