@@ -188,7 +188,7 @@ const LessonDetails: React.FC = () => {
                       <Col xs={12} sm={8}>
                         <Card className="text-center transition-shadow duration-300 hover:shadow-2xl border border-[#1a237e] rounded-lg p-4 flex flex-col items-center">
                           <React.Fragment>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-[#1a237e] mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-[#1a237e] mb-2 ml-7">
                               <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
                             </svg>
                             <Text className="block text-gray-500">Video Length</Text>
