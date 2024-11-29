@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaEnvelope } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaLinkedin, FaEnvelope } from "react-icons/fa";
 
 const StudentFooter: React.FC = () => {
   const scrollToTop = () => {
@@ -62,7 +62,7 @@ const StudentFooter: React.FC = () => {
                   Help Center
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link to="/privacy" className="hover:text-gold transition-colors duration-300" onClick={scrollToTop}>
                   Privacy Policy
                 </Link>
@@ -71,22 +71,22 @@ const StudentFooter: React.FC = () => {
                 <Link to="/terms" className="hover:text-gold transition-colors duration-300" onClick={scrollToTop}>
                   Terms of Service
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
           <div>
             <h4 className="mb-4 text-lg font-semibold">Connect With Us</h4>
             <div className="flex space-x-4">
-              <a href="#" className="hover:text-gold transition-colors duration-300">
+              <a href="https://www.facebook.com/danhuyspm/" className="hover:text-gold transition-colors duration-300">
                 <FaFacebook size={24} />
               </a>
-              <a href="#" className="hover:text-gold transition-colors duration-300">
+              {/* <a href="#" className="hover:text-gold transition-colors duration-300">
                 <FaTwitter size={24} />
-              </a>
-              <a href="#" className="hover:text-gold transition-colors duration-300">
+              </a> */}
+              <a href="https://www.instagram.com/huybeflorentino/" className="hover:text-gold transition-colors duration-300">
                 <FaInstagram size={24} />
               </a>
-              <a href="#" className="hover:text-gold transition-colors duration-300">
+              <a href="https://www.linkedin.com/in/it-huy-a835b531a/" className="hover:text-gold transition-colors duration-300">
                 <FaLinkedin size={24} />
               </a>
             </div>

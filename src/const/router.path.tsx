@@ -68,7 +68,8 @@ export const ROUTER_URL = {
     ALL_COURSES: "/courses/all",
     SEARCH_COURSES: "/courses/search-courses",
     FAQ: "/faq",
-    HELP_CENTER: "/help"
+    HELP_CENTER: "/help",
+    CONTACT_US: "/contact"
   },
   UNAUTHORIZED: "/unauthorized",
   PROFILE: {

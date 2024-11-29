@@ -21,6 +21,7 @@ const AllCourses = lazy(() => import("../../components/generic/home/all-courses/
 const SearchCourses = lazy(() => import("../../components/generic/home/search-courses/SearchCourses"));
 const FrequentlyAskQuestions = lazy(() => import("../../pages/faq/FrequentlyAskQuestions.page"));
 const HelpCenterPage = lazy(() => import("../../pages/help.center/HelpCenter.page"));
+const ContactUsPage = lazy(() => import("../../pages/contact.us/ContactUs.page"));
 
 //======================================================
 //export public sub paths
@@ -80,6 +81,10 @@ export const publicSubPaths: Record<string, RouteObject[]> = {
         {
           path: ROUTER_URL.COMMON.HELP_CENTER,
           element: <HelpCenterPage />
+        },
+        {
+          path: ROUTER_URL.COMMON.CONTACT_US,
+          element: <ContactUsPage />
         }
       ]
     }
