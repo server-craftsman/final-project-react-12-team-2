@@ -43,7 +43,7 @@ const DashBoard = ({ settings, totalBlogs, totalUsers, totalCourses, totalCatego
 
     return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
         {boxes.map((box, index) => (
           <BoxWrapper key={index}>
             <div className={`flex h-14 w-14 cursor-pointer items-center justify-center rounded-2xl bg-gradient-to-r ${box.gradient} shadow-xl transition-all duration-300 hover:scale-110 ${box.hoverShadow}`}>
