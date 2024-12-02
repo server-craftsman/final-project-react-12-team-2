@@ -83,14 +83,19 @@ const EditBlogModal: React.FC<EditBlogModalProps> = ({ visible, blog, categories
     }
   };
 
+  const handleCancel = () => {
+    onClose();
+    onSuccess();
+  };
+
   return (
     <Modal
       title="Update Blog"
       open={visible}
       onOk={submitUpdateBlog}
-      onCancel={onClose}
+      onCancel={handleCancel}
       footer={[
-        <Button key="back" onClick={onClose}>
+        <Button key="back" onClick={handleCancel}>
           Cancel
         </Button>,
         <Button className="bg-gradient-tone px-4 py-2 text-white" key="submit" type="primary" onClick={submitUpdateBlog} loading={uploading}>
