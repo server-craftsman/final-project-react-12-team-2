@@ -215,14 +215,14 @@ axiosInstance.interceptors.response.use(
           clearLocalStorage();
           setTimeout(() => {
             window.location.href = ROUTER_URL.LOGIN;
-          }, 10000);
+          }, 3000);
           break;
         case HTTP_STATUS.FORBIDDEN:
           message.error("Access denied. You do not have permission to perform this action.");
           clearLocalStorage();
           setTimeout(() => {
             window.location.href = ROUTER_URL.LOGIN;
-          }, 2000);
+          }, 3000);
           break;
         case HTTP_STATUS.NOT_FOUND:
           message.error("Requested resource not found.");

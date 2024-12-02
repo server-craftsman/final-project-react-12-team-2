@@ -3,7 +3,7 @@ import { Descriptions, Button } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
-import parse from "html-react-parser";
+// import parse from "html-react-parser";
 import { helpers } from "../../../utils";
 import { ROUTER_URL } from "../../../const/router.path";
 
@@ -61,7 +61,7 @@ const AdminInfo: React.FC = () => {
             {userInfo.email}
           </Descriptions.Item>
           <Descriptions.Item label="Description" className="text-base">
-            <div className="prose max-w-none">{userInfo.description ? parse(userInfo.description) : ""}</div>
+            <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: userInfo.description }}></div>
           </Descriptions.Item>
           <Descriptions.Item label="Phone Number" className="text-base">
             {helpers.formatPhoneNumber(userInfo.phone_number as string)}

@@ -3,10 +3,11 @@ import { Descriptions, Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 import { helpers } from "../../../utils";
-import parse from "html-react-parser";
+// import parse from "html-react-parser";
 import { ROUTER_URL } from "../../../const/router.path";
 import { EditOutlined } from "@ant-design/icons";
 import LoadingAnimation from "../../../app/UI/LoadingAnimation";
+
 const InstructorInfo = () => {
   const navigate = useNavigate();
   const { getCurrentUser, userInfo } = useAuth();
@@ -85,7 +86,7 @@ const InstructorInfo = () => {
             {userInfo.email}
           </Descriptions.Item>
           <Descriptions.Item label="Description" className="text-lg">
-            <div className="prose prose-lg max-w-none">{userInfo.description ? parse(userInfo.description) : ""}</div>
+            <div className="prose prose-lg max-w-none">{userInfo.description ? <span dangerouslySetInnerHTML={{ __html: userInfo.description }}></span> : ""}</div>
           </Descriptions.Item>
           <Descriptions.Item label="Phone Number" className="text-lg">
             {helpers.formatPhoneNumber(userInfo.phone_number as string)}

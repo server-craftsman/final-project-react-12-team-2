@@ -3,7 +3,7 @@ import { Col, Form, message, Modal, Row, Typography } from "antd";
 import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 import { BlogService } from "../../../services/blog/blog.service";
 import { GetBlogDetailsResponse } from "../../../models/api/responsive/admin/blog.responsive.model";
-import parse from "html-react-parser";
+// import parse from "html-react-parser";
 import { helpers } from "../../../utils";
 const BlogDetail: React.FC<{ visible: boolean; onClose: () => void; blogId: string | null }> = ({ visible, onClose, blogId }) => {
   const [blog, setBlog] = useState<GetBlogDetailsResponse | null>(null);
@@ -57,7 +57,7 @@ const BlogDetail: React.FC<{ visible: boolean; onClose: () => void; blogId: stri
              </Col>
               <Col span={12} style={{ paddingLeft: '16px', boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.1)' }}>
                 <Form.Item label="Content">
-                  <div>{parse(blog.content)}</div>
+                  <div><span dangerouslySetInnerHTML={{ __html: blog.content }}></span></div>
                 </Form.Item>
               </Col>
             </Row>

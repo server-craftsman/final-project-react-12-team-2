@@ -8,7 +8,7 @@ import { CourseService } from "../../../../services/course/course.service";
 import { helpers } from "../../../../utils";
 const { Title, Paragraph } = Typography;
 const { Meta } = Card;
-import parse from "html-react-parser";
+// import parse from "html-react-parser";
 import { useMediaQuery } from 'react-responsive';
 
 interface CoursesProps {
@@ -180,7 +180,7 @@ const Courses: React.FC<CoursesProps> = ({ pageSize = 6, pageNum = 1, onTotalPag
                             {course.name}
                           </Title>
                           <Paragraph className="mb-4 line-clamp-2 text-gray-600" ellipsis={{ rows: 2 }}>
-                            {parse(course.description)}
+                            <span dangerouslySetInnerHTML={{ __html: course.description }}></span>
                           </Paragraph>
                         </motion.div>
                         <div className={`${isMobile ? 'h-auto' : 'h-[120px]'}`}>

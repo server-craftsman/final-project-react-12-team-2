@@ -1,7 +1,7 @@
 import React from 'react'
 import { SessionDetailResponse } from '../../../models/api/responsive/session/session.response.model';
 import { Modal } from 'antd';
-import parse from 'html-react-parser';
+// import parse from 'html-react-parser';
 import { formatDate } from '../../../utils/helper';
 
 interface ModalSessionModalProps {
@@ -38,7 +38,7 @@ const ModalSessionModal: React.FC<ModalSessionModalProps> = ({ visible, onClose,
           <div className="space-y-3">
               <p className="text-gray-700 p-2 rounded hover:bg-gray-50 transition-colors">
                   <span className="text-blue-600 font-semibold mr-2">Description:</span>
-                  <span className="text-gray-800">{parse(sessionDetail.description)}</span>
+                  <span className="text-gray-800" dangerouslySetInnerHTML={{ __html: sessionDetail.description }}></span>
               </p>
               <p className="text-gray-700 p-2 rounded hover:bg-gray-50 transition-colors">
                   <span className="text-blue-600 font-semibold mr-2">Created At:</span>

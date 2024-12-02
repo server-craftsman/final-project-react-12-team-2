@@ -4,7 +4,7 @@ import { CourseVideoModalProps } from "../../../../models/objects/course/CourseV
 
 const CourseVideoModal: React.FC<CourseVideoModalProps> = ({ isModalVisible, handleCancel, videoId }) => {
   return (
-    <Modal title="Course Video" open={isModalVisible} onCancel={handleCancel} footer={null} width={800}>
+    <Modal title="Course Video" open={isModalVisible} onCancel={handleCancel} footer={null} width={600} height={300}>
       {videoId ? (
         <div className="aspect-video">
           <video width="100%" height="100%" controls style={{ border: "none" }}>

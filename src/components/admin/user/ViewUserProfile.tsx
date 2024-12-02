@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Modal, message, Button, Input, Checkbox } from "antd";
+import { Table, Modal, message, Button, Input, Radio } from "antd";
 import { useNavigate } from "react-router-dom";
 import { EditOutlined, LockOutlined, UnlockOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { userRoleColor } from "../../../utils/userRole";
@@ -218,27 +218,18 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
       }
     });
   };
-
-  const handleSelectUser = (userId: string, checked: boolean) => {
-    setSelectedUserIds((prev) => {
-      const newSet = new Set(prev);
-      if (checked) {
-        newSet.add(userId);
-      } else {
-        newSet.delete(userId);
-      }
-      return newSet;
-    });
+  const handleSelectUser = (userId: string) => {
+    setSelectedUserIds(new Set([userId]));
   };
 
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      const allUserIds = users?.pageData.map((user) => user._id) || [];
-      setSelectedUserIds(new Set(allUserIds));
-    } else {
-      setSelectedUserIds(new Set());
-    }
-  };
+  // const handleSelectAll = (checked: boolean) => {
+  //   if (checked) {
+  //     const allUserIds = users?.pageData.map((user) => user._id) || [];
+  //     setSelectedUserIds(new Set(allUserIds));
+  //   } else {
+  //     setSelectedUserIds(new Set());
+  //   }
+  // };
 
   const handleDeleteSelected = async () => {
     if (activeTab !== "blocked" && activeTab !== "all") return;
@@ -279,10 +270,16 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
   const columns = React.useMemo(() => {
     const baseColumns = [
       activeTab !== "unverified" && {
-        title: <Checkbox onChange={(e) => handleSelectAll(e.target.checked)} />,
+        title: "Select",
         dataIndex: "_id",
         key: "select",
-        render: (userId: string) => <Checkbox checked={selectedUserIds.has(userId)} onChange={(e) => handleSelectUser(userId, e.target.checked)} />
+        render: (userId: string) => (
+          <Radio
+            checked={selectedUserIds.has(userId)}
+            onChange={() => handleSelectUser(userId)}
+            disabled={users?.pageData.length === 1}
+          />
+        )
       },
       {
         title: "Avatar",
@@ -318,8 +315,8 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
         key: "role",
         render: (role: UserRoles, record: User) => (
           <div className="flex items-center gap-2">
-            <span className={`rounded-full px-3 py-1 ${userRoleColor(role)}`}>{role}</span>
-            <button onClick={() => handleChangeRole(record._id, role)} className="rounded-md bg-blue-500 px-3 py-1 text-white transition-colors duration-200 hover:bg-blue-600">
+            <span className={`rounded-full px-3 py-1 ${userRoleColor(role)}`} style={{ width: "100px", textAlign: "center" }}>{role}</span>
+            <button onClick={() => handleChangeRole(record._id, role)} className="rounded-md bg-blue-500 px-3 py-1 text-white transition-colors duration-200 hover:bg-blue-600" style={{ width: "40px" }}>
               <span className="text-sm">
                 <EditOutlined />
               </span>

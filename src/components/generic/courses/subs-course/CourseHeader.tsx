@@ -5,7 +5,7 @@ import { PlayCircleOutlined } from "@ant-design/icons";
 import { CourseHeaderProps } from "../../../../models/objects/course/CourseHeaderProps";
 import { UserService } from "../../../../services/admin/user.service";
 const { Title, Paragraph, Text } = Typography;
-import parse from "html-react-parser";
+// import parse from "html-react-parser";
 
 const CourseHeader: React.FC<CourseHeaderProps> = ({ course, instructor, showVideoModal }) => {
   const [instructorData, setInstructorData] = useState<any>(null);
@@ -40,7 +40,9 @@ const CourseHeader: React.FC<CourseHeaderProps> = ({ course, instructor, showVid
         <Title level={2} className="mb-1">
           {course.name}
         </Title>
-        <Paragraph className="mb-1 text-gray-600">{parse(course.description)}</Paragraph>
+        <Paragraph className="mb-1 text-gray-600">
+          <span dangerouslySetInnerHTML={{ __html: course.description }}></span>
+        </Paragraph>
 
         {instructorData && (
           <Link to={`/profile/${instructorData._id}`}>

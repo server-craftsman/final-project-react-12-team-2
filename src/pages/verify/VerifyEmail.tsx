@@ -37,13 +37,22 @@ const VerifyEmail: React.FC = () => {
           if (error.status === HTTP_STATUS.NOT_FOUND) {
             setIsExpired(true);
             setMessage("Token has expired. Please request a new verification link.");
+            timeoutId = setTimeout(() => {
+              navigate(ROUTER_URL.COMMON.HOME);
+            }, 3000);
           } else {
             setIsExpired(false);
             setMessage(error.message || "Verification failed. Please try again.");
+            timeoutId = setTimeout(() => {
+              navigate(ROUTER_URL.COMMON.HOME);
+            }, 3000);
           }
         } else {
           setIsExpired(false);
           setMessage("Verification failed. Please try again or request a new verification link.");
+          timeoutId = setTimeout(() => {
+            navigate(ROUTER_URL.COMMON.HOME);
+          }, 3000);
         }
       } finally {
         setIsLoading(false);
@@ -68,9 +77,12 @@ const VerifyEmail: React.FC = () => {
         } else {
           setMessage("Failed to resend verification link. Please try again.");
         }
+        setTimeout(() => {
+          navigate(ROUTER_URL.COMMON.HOME);
+        }, 3000);
       }
     },
-    [email, resendToken]
+    [email, resendToken, navigate]
   );
 
   const handleEmailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {

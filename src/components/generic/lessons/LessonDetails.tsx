@@ -6,7 +6,7 @@ import { LessonService } from "../../../services/lesson/lesson.service";
 import { GetPublicCourseDetailResponse } from "../../../models/api/responsive/course/course.response.model";
 import { LessonDetailsResponse } from "../../../models/api/responsive/lesson/lesson.response.model";
 const { Title, Paragraph, Text } = Typography;
-import parse from "html-react-parser";
+// import parse from "html-react-parser";
 import { CourseService } from "../../../services/course/course.service";
 import { LessonType } from "../../../app/enums";
 
@@ -173,7 +173,9 @@ const LessonDetails: React.FC = () => {
                     ) : null}
                   </div>
                 )}
-                <Paragraph className="mb-6 text-gray-600">{parse(lesson?.description || "")}</Paragraph>
+                <Paragraph className="mb-6 text-gray-600">
+                  <span dangerouslySetInnerHTML={{ __html: lesson?.description || "" }}></span>
+                </Paragraph>
                 <div className="mb-6 flex items-center">{/* Instructor details and other information can be added here */}</div>
               </div>
             </Card>
@@ -184,23 +186,21 @@ const LessonDetails: React.FC = () => {
                     Lesson Content
                   </Title>
                   <Row gutter={[16, 16]}>
-                    {lesson?.lesson_type === LessonType.VIDEO && (
-                      <Col xs={12} sm={8}>
-                        <Card className="text-center transition-shadow duration-300 hover:shadow-2xl border border-[#1a237e] rounded-lg p-4 flex flex-col items-center">
-                          <React.Fragment>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-[#1a237e] mb-2 ml-7">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
-                            </svg>
-                            <Text className="block text-gray-500">Video Length</Text>
-                            <Text strong className="text-lg">
-                              {lesson?.full_time} min
-                            </Text>
-                          </React.Fragment>
-                        </Card>
-                      </Col>
-                    )}
+                    <Col xs={12} sm={12}>
+                      <Card className="text-center transition-shadow duration-300 hover:shadow-2xl border border-[#1a237e] rounded-lg p-4 flex flex-col items-center">
+                        <React.Fragment>
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-[#1a237e] mb-2 ml-7">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
+                          </svg>
+                          <Text className="block text-gray-500">Video Length</Text>
+                          <Text strong className="text-lg">
+                            {lesson?.full_time} min
+                          </Text>
+                        </React.Fragment>
+                      </Card>
+                    </Col>
 
-                    <Col xs={24} sm={lesson?.lesson_type === LessonType.VIDEO ? 8 : 24}>
+                    <Col xs={12} sm={12}>
                       <Card className="text-center transition-shadow duration-300 hover:shadow-2xl border border-[#1a237e] rounded-lg p-4 flex flex-col items-center">
                         {lesson?.lesson_type === LessonType.VIDEO ? (
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-[#1a237e] mb-2 mx-auto">

@@ -4,7 +4,7 @@ import { GetCourseByIdResponse } from '../../../models/api/responsive/course/cou
 import { StatusType } from '../../../app/enums';
 import { CourseStatusBadge } from '../../../utils/courseStatus';
 import { helpers } from '../../../utils';
-import parse from 'html-react-parser';
+// import parse from 'html-react-parser';
 
 interface ModalCourseDetailProps {
   visible: boolean;
@@ -70,11 +70,11 @@ const ModalCourseDetail: React.FC<ModalCourseDetailProps> = ({ visible, onClose,
           <div className="space-y-3">
             <p className="text-gray-700 p-2 rounded hover:bg-gray-50 transition-colors">
               <span className="text-blue-600 font-semibold mr-2">Description:</span>
-              <span className="text-gray-800">{parse(courseDetail.description)}</span>
+              <span className="text-gray-800" dangerouslySetInnerHTML={{ __html: courseDetail.description }}></span>
             </p>
             <p className="text-gray-700 p-2 rounded hover:bg-gray-50 transition-colors">
               <span className="text-blue-600 font-semibold mr-2">Content:</span>
-              <span className="text-gray-800">{parse(courseDetail.content)}</span>
+              <span className="text-gray-800" dangerouslySetInnerHTML={{ __html: courseDetail.content }}></span>
             </p>
             <p className="text-gray-700 p-2 rounded hover:bg-gray-50 transition-colors">
               <span className="text-blue-600 font-semibold mr-2">Created At:</span>

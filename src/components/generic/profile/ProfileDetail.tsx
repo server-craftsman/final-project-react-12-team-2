@@ -5,7 +5,6 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { UserService } from "../../../services/admin/user.service";
 import { CourseService } from "../../../services/course/course.service";
 import { GetCourseResponsePublic } from '../../../models/api/responsive/course/course.response.model';
-import parse from 'html-react-parser';
 import './ProfileDetail.css';
 import { useMediaQuery } from 'react-responsive';
 import LoadingAnimation from '../../../app/UI/LoadingAnimation';
@@ -205,7 +204,7 @@ const ProfileDetail: React.FC = () => {
                             {course.name}
                           </Title>
                           <Paragraph className="mb-4 line-clamp-2 text-gray-600" ellipsis={{ rows: 2 }}>
-                            {parse(course.description)}
+                            <span dangerouslySetInnerHTML={{ __html: course.description }}></span>
                           </Paragraph>
                         </motion.div>
                         <div className={`${isMobile ? 'h-auto' : 'h-[120px]'}`}> {/* Increased height from 100px to 120px */}
@@ -328,7 +327,7 @@ const ProfileDetail: React.FC = () => {
                         marginTop: '16px'
                     }}>
                         <Text>
-                            {parse(userData?.description || 'No description available')}
+                            <span dangerouslySetInnerHTML={{ __html: userData?.description || "" }}></span>
                         </Text>
                     </div>
                 </Card>

@@ -10,7 +10,6 @@ import { helpers } from "../../../utils";
 import { UpdateUserParams } from "../../../models/api/request/users/user.request.model";
 import { UploadOutlined } from "@ant-design/icons";
 import { ROUTER_URL } from "../../../const/router.path";
-// import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
 import { BaseService } from "../../../services/config/base.service";
 import Editor from "../../generic/tiny/Editor";
 import LoadingAnimation from "../../../app/UI/LoadingAnimation";

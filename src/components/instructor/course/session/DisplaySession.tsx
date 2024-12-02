@@ -11,6 +11,7 @@ import { SessionService } from "../../../../services/session/session.service";
 import { formatDate } from "../../../../utils/helper";
 import { DisplaySessionResponse } from "../../../../models/api/responsive/session/session.response.model";
 import DetailModal from "./DetailModal";
+
 const DisplaySession = ({ searchTerm, refreshKey }: { searchTerm: string; refreshKey: number }) => {
   const [sessions, setSessions] = useState<DisplaySessionResponse[]>([]);
   const [searchKeyword, setSearchKeyword] = useState(searchTerm);

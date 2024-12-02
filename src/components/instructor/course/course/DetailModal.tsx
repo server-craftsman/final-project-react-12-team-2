@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal } from 'antd';
 import { CourseService } from '../../../../services/course/course.service';
 import { helpers } from '../../../../utils';
-import parse from 'html-react-parser';
+// import parse from 'html-react-parser';
 import { CourseStatusBadge } from '../../../../utils/courseStatus';
 import { StatusType } from '../../../../app/enums';
 
@@ -83,11 +83,11 @@ const DetailModal: React.FC<DetailModalProps> = ({ courseId, isVisible, onClose 
             <div className="space-y-3">
               <p className="text-gray-700 p-2 rounded hover:bg-gray-50 transition-colors">
                 <span className="text-blue-600 font-semibold mr-2">Description:</span>
-                <span className="text-gray-800">{parse(courseDetails.description)}</span>
+                <span className="text-gray-800" dangerouslySetInnerHTML={{ __html: courseDetails.description }}></span>
               </p>
               <p className="text-gray-700 p-2 rounded hover:bg-gray-50 transition-colors">
                 <span className="text-blue-600 font-semibold mr-2">Content:</span>
-                <span className="text-gray-800">{parse(courseDetails.content)}</span>
+                <span className="text-gray-800" dangerouslySetInnerHTML={{ __html: courseDetails.content }}></span>
               </p>
               <p className="text-gray-700 p-2 rounded hover:bg-gray-50 transition-colors">
                 <span className="text-blue-600 font-semibold mr-2">Created At:</span>

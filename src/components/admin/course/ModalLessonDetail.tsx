@@ -2,7 +2,7 @@ import React from 'react'
 import { LessonDetailsResponse } from '../../../models/api/responsive/lesson/lesson.response.model';
 import { LessonType } from '../../../app/enums';
 import { formatDate } from '../../../utils/helper';
-import parse from 'html-react-parser';
+// import parse from 'html-react-parser';
 import { Modal } from 'antd';
 
 interface ModalLessonDetailProps {
@@ -32,12 +32,12 @@ const ModalLessonDetail: React.FC<ModalLessonDetailProps> = ({ visible, onClose,
               </p>
               <p className="text-gray-700 p-2 rounded hover:bg-gray-50 transition-colors">
                 <span className="text-blue-600 font-semibold mr-2">Lesson Type:</span>
-                <span className="text-gray-800">{parse(lessonDetail.lesson_type)}</span>
+                <span className="text-gray-800" dangerouslySetInnerHTML={{ __html: lessonDetail.lesson_type }}></span>
               </p>
               {lessonDetail.lesson_type === LessonType.TEXT && (
                 <p className="text-gray-700 p-2 rounded hover:bg-gray-50 transition-colors">
                   <span className="text-blue-600 font-semibold mr-2">Description:</span>
-                  <span className="text-gray-800">{parse(lessonDetail.description)}</span>
+                  <span className="text-gray-800" dangerouslySetInnerHTML={{ __html: lessonDetail.description }}></span>
                 </p>
               )}
             </div>

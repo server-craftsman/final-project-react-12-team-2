@@ -6,7 +6,7 @@ import { GetCategoryResponse } from "../../../models/api/responsive/admin/catego
 import { GetCategoryParams } from "../../../models/api/request/admin/category.request.model";
 import { CategoryService } from "../../../services/category/category.service";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
-import parse from "html-react-parser";
+// import parse from "html-react-parser";
 import { HttpException } from "../../../app/exceptions";
 interface SearchCategoryCondition {
   keyword: string;
@@ -112,7 +112,7 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
       key: "description",
       render: (description: string) => {
         const limitedDescription = description.length > 100 ? description.substring(0, 100) + "..." : description;
-        return <div className="prose max-w-none">{parse(limitedDescription)}</div>;
+        return <div className="prose max-w-none"><span dangerouslySetInnerHTML={{ __html: limitedDescription }}></span></div>;
       }
     },
     {

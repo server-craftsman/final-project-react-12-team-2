@@ -3,7 +3,7 @@ import { Category, GetCategoryResponse } from '../../../models/api/responsive/ad
 import { CategoryService } from '../../../services/category/category.service';
 import { message, Table } from 'antd';
 import { GetCategoryParams } from '../../../models/api/request/admin/category.request.model';
-import parse from 'html-react-parser';
+// import parse from 'html-react-parser';
 
 interface SearchCategoryCondition {
   keyword: string;
@@ -85,7 +85,9 @@ const ViewCategory: React.FC<ViewCategoryProps> = ({ searchQuery }) => {
         render: (description: string) => {
           const maxLength = 100;
           const truncatedDescription = description.length > maxLength ? description.substring(0, maxLength) + "..." : description;
-          return <div className="prose max-w-none">{parse(truncatedDescription)}</div>;
+          return <div className="prose max-w-none">{
+            <span dangerouslySetInnerHTML={{ __html: truncatedDescription }}></span>
+          }</div>;
         }
       }
     ];

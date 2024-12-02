@@ -6,6 +6,7 @@ import { UserService } from "../../../services/instructor/user.service";
 import { helpers } from "../../../utils";
 import { HttpException } from "../../../app/exceptions";
 import { ROUTER_URL } from "../../../const/router.path";
+
 const ChangePasswordInstructor: React.FC = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();

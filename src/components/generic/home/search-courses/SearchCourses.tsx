@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useMediaQuery } from "react-responsive";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 // import FilteredAllCourses, { SortOption, CategoryOption } from './FilteredAllCourses';
-import parse from "html-react-parser";
+// import parse from "html-react-parser";
 import Pagination from "antd/es/pagination";
 // import LoadingAnimation from "../../../../app/UI/LoadingAnimation";
 // import Lottie from "lottie-react";
@@ -303,7 +303,7 @@ const SearchCourses = () => {
                                             {course.name}
                                         </Title>
                                         <Paragraph className="mb-4 line-clamp-2 text-gray-600" ellipsis={{ rows: 2 }}>
-                                            {parse(course.description)}
+                                            <span dangerouslySetInnerHTML={{ __html: course.description }}></span>
                                         </Paragraph>
                                     </motion.div>
                                     <div className={`${isMobile ? 'h-auto' : 'h-[120px]'}`}>
