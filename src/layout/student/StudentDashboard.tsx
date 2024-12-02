@@ -55,7 +55,14 @@ const StudentDashboard: React.FC = () => {
           <header className="bg-gradient-tone mb-4 rounded-lg p-6 shadow-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <Avatar size={48} src={userInfo?.avatar_url} icon={!userInfo?.avatar_url && <UserOutlined />} className="bg-indigo-400" />
+                <img
+                  src={userInfo?.avatar_url || `https://ui-avatars.com/api/?name=${userInfo?.name[0]}`}
+                  alt="Avatar"
+                  className="h-10 w-10 rounded-full"
+                  onError={(e) => {
+                    e.currentTarget.src = `https://ui-avatars.com/api/?name=${userInfo?.name[0]}`;
+                  }}
+                />
                 <div className="text-white">
                   <h2 className="text-xl font-bold">Welcome, {userInfo?.name || "Admin"}</h2>
                 </div>

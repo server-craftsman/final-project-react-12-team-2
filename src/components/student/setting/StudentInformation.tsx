@@ -29,13 +29,14 @@ const StudentInformation = () => {
     return (
       <div className="max-w-10xl animate-fade-in mx-auto rounded-xl bg-white p-8 shadow-2xl">
         <div className="mb-8 flex flex-col items-center">
-          {userInfo.avatar_url ? (
-            <img src={userInfo.avatar_url} alt="User avatar" className="h-40 w-40 rounded-full border-4 border-[#1a237e] object-cover shadow-lg transition-transform duration-300 hover:scale-105" />
-          ) : (
-            <div className="flex h-40 w-40 items-center justify-center rounded-full border-4 border-[#1a237e] bg-gray-200">
-              <span className="text-2xl text-gray-500">No Avatar</span>
-            </div>
-          )}
+          <img
+            src={userInfo.avatar_url || `https://ui-avatars.com/api/?name=${userInfo.name[0]}`}
+            alt="Avatar"
+            className="h-10 w-10 rounded-full"
+            onError={(e) => {
+              e.currentTarget.src = `https://ui-avatars.com/api/?name=${userInfo.name[0]}`;
+            }}
+          />
           <h2 className="mt-4 text-2xl font-bold text-[#1a237e]">{userInfo.name}</h2>
           <p className="italic text-gray-600">{userInfo.role}</p>
         </div>
