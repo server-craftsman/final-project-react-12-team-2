@@ -233,13 +233,16 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
               <Form.Item name="category_id" label="Category" rules={[{ required: true, message: "Please select a category!" }]}>
                 <Select placeholder="Select a category">
                   {categories.map((parent) => (
-                    <Select.OptGroup key={parent._id} label={parent.name}>
+                    <>
+                      <Option key={parent._id} value={parent._id}>
+                        {parent.name}
+                      </Option>
                       {parent.children?.map((child: any) => (
                         <Option key={child._id} value={child._id}>
                           {child.name}
                         </Option>
                       ))}
-                    </Select.OptGroup>
+                    </>
                   ))}
                 </Select>
               </Form.Item>
