@@ -6,6 +6,7 @@ import PurchaseCheckbox from "./PurchaseCheckbox";
 import { PurchaseService } from "../../../services/purchase/purchase.service";
 import { SearchForInstructorPurchaseRequestModel } from "../../../models/api/request/purchase/purchase.request.model";
 import { SearchForInstructorPurchaseResponseModel } from "../../../models/api/responsive/purchase/purchase.reponse.model";
+
 interface ViewPurchaseProps {
   searchQuery: string;
   filterStatus: string;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Modal, message, Button, Input, Radio } from "antd";
+import { Table, Modal, Button, Input, Radio } from "antd";
 import { useNavigate } from "react-router-dom";
 import { EditOutlined, LockOutlined, UnlockOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { userRoleColor } from "../../../utils/userRole";
@@ -11,7 +11,6 @@ import { User } from "../../../models/api/responsive/users/users.model";
 import { ROUTER_URL } from "../../../const/router.path";
 // Utils
 import { helpers } from "../../../utils";
-
 // handle request - response
 import { UserRoles } from "../../../app/enums";
 import { ColumnType } from "antd/es/table";
@@ -133,7 +132,7 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
         // if (error instanceof HttpException) {
         //   message.error(error.message);
         // } else {
-        message.error("An unexpected error occurred while fetching user details");
+        helpers.notificationMessage("An unexpected error occurred while fetching user details", "error");
       }
     },
     [navigate]
@@ -155,13 +154,13 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
           //   throw new HttpException(`Failed to ${status ? "unblock" : "block"} account`, HTTP_STATUS.BAD_REQUEST);
           // }
 
-          message.success(`Account has been successfully ${status ? "unblocked" : "blocked"}.`);
+          helpers.notificationMessage(`Account has been successfully ${status ? "unblocked" : "blocked"}.`, "success");
           fetchUsers();
         } catch (error) {
           // if (error instanceof HttpException) {
           //   message.error(error.message);
           // } else {
-          message.error(`An unexpected error occurred while ${status ? "unblocking" : "blocking"} the account`);
+          helpers.notificationMessage(`An unexpected error occurred while ${status ? "unblocking" : "blocking"} the account`, "error");
           // }
         }
       }
@@ -204,13 +203,13 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
               //   throw new HttpException("Failed to update role", HTTP_STATUS.BAD_REQUEST);
               // }
 
-              message.success(`Role updated to ${newRole.toUpperCase()}`);
+              helpers.notificationMessage(`Role updated to ${newRole.toUpperCase()}`);
               fetchUsers();
             } catch (error) {
               // if (error instanceof HttpException) {
               //   message.error(error.message);
               // } else {
-              message.error("An unexpected error occurred while updating role");
+              helpers.notificationMessage("An unexpected error occurred while updating role", "error");
               // }
             }
           }
@@ -253,13 +252,13 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
             }
           }
 
-          message.success("Selected accounts have been successfully deleted.");
+          helpers.notificationMessage("Selected accounts have been successfully deleted.", "success");
           fetchUsers(); // Refresh the user list
         } catch (error) {
           // if (error instanceof HttpException) {
           //   message.error(error.message);
           // } else {
-          message.error("An error occurred while deleting accounts.");
+          helpers.notificationMessage("An error occurred while deleting accounts.", "error");
           // }
         }
       }

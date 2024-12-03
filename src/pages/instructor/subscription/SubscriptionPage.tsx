@@ -3,8 +3,7 @@ import { Tabs } from "antd";
 import InstructorSubscriber from "../../../components/instructor/subscription/InstructorSubscriber";
 import InstructorSubscribed from "../../../components/instructor/subscription/InstructorSubscribed";
 import CustomSearch from "../../../components/generic/search/CustomSearch";
-import { message } from "antd";
-
+import { helpers } from "../../../utils";
 const SubscriptionPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState("1");
   const [subscribedSearchValue, setSubscribedSearchValue] = useState("");
@@ -43,7 +42,7 @@ const SubscriptionPage: React.FC = () => {
       // const response = await api.fetchSubscribedData();
       // return response.data;
     } catch (error) {
-      message.error("Failed to fetch data");
+      helpers.notificationMessage("Failed to fetch data", "error");
     }
   };
 

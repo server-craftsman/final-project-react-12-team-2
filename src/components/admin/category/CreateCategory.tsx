@@ -1,10 +1,11 @@
-import { Button, Form, Input, message, Modal, Select } from "antd";
+import { Button, Form, Input, Modal, Select } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { useEffect, useState } from "react";
 import { GetCategoryResponse } from "../../../models/api/responsive/admin/category.responsive.model";
 import { CategoryService } from "../../../services/category/category.service";
 // import TinyMCEEditor from "../../../components/generic/tiny/TinyMCEEditor";
 import Editor from "../../generic/tiny/Editor";
+import { notificationMessage } from "../../../utils/helper";
 
 const CreateCategory: React.FC = () => {
   const [categories, setCategories] = useState<GetCategoryResponse | null>(null);
@@ -20,7 +21,7 @@ const CreateCategory: React.FC = () => {
       });
       setCategories(response.data?.data ? response.data.data : null);
     } catch (error) {
-      message.error("An unexpected error occurred while fetching categories");
+      notificationMessage("An unexpected error occurred while fetching categories", "error");
     }
   };
 
@@ -70,10 +71,10 @@ const CreateCategory: React.FC = () => {
       setEditorContent("");
       setOpen(false);
       window.location.reload();
-      message.success("Category created successfully!");
+      notificationMessage("Category created successfully!", "success");
     } catch (error) {
       console.error("Error creating category:", error);
-      message.error("Failed to create category. Please try again.");
+      notificationMessage("Failed to create category. Please try again.", "error");
     }
   };
 

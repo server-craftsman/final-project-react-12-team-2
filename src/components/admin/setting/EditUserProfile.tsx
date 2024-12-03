@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Form, Input, Button, message, DatePicker, Avatar, Upload } from "antd";
+import { Form, Input, Button, DatePicker, Avatar, Upload } from "antd";
 import { Rule } from "antd/es/form";
 import moment from "moment";
 import dayjs from "dayjs";
@@ -88,7 +88,7 @@ const EditUserProfile = () => {
           dob: userData.dob ? moment(userData.dob) : null
         });
       } catch (error) {
-        message.error("Failed to fetch user details. Please try again.");
+        helpers.notificationMessage("Failed to fetch user details. Please try again.", "error");
       }
     },
     [form]
@@ -129,10 +129,10 @@ const EditUserProfile = () => {
         };
 
         await UserService.updateUser(id as string, updatedValues as UpdateUserParams);
-        message.success("Profile updated successfully");
+        helpers.notificationMessage("Profile updated successfully", "success");
         navigate(ROUTER_URL.ADMIN.INFO);
       } catch (error: any) {
-        message.error("Failed to update profile. Please try again.");
+        helpers.notificationMessage("Failed to update profile. Please try again.", "error");
       } finally {
         setState((prev) => ({ ...prev, uploading: false }));
       }
@@ -143,13 +143,13 @@ const EditUserProfile = () => {
   const handleImageUpload = useCallback((file: File) => {
     const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
-      message.error("File size should not exceed 5MB");
+      helpers.notificationMessage("File size should not exceed 5MB", "error");
       return false;
     }
 
     const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
     if (!allowedTypes.includes(file.type)) {
-      message.error("Please upload an image file (JPEG, PNG, or GIF)");
+      helpers.notificationMessage("Please upload an image file (JPEG, PNG, or GIF)", "error");
       return false;
     }
 

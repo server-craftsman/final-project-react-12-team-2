@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Form, Input, Select, Button, Upload, message } from "antd";
+import { Modal, Form, Input, Select, Button, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { BlogService } from "../../../services/blog/blog.service";
 import { Blog } from "../../../models/api/responsive/admin/blog.responsive.model";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
 import Editor from "../../generic/tiny/Editor";
 import { BaseService } from "../../../services/config/base.service";
+import { notificationMessage } from "../../../utils/helper";
 const { Option } = Select;
+
 interface EditBlogModalProps {
   visible: boolean;
   blog: Blog | null;
@@ -30,28 +32,27 @@ const EditBlogModal: React.FC<EditBlogModalProps> = ({ visible, blog, categories
   const handleImageUpload = async (file: File) => {
     const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
-      message.error("File size should not exceed 5MB");
+      notificationMessage("File size should not exceed 5MB", "error");
       return false;
     }
 
     const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
     if (!allowedTypes.includes(file.type)) {
-      message.error("Please upload an image file (JPEG, PNG, or GIF)");
+      notificationMessage("Please upload an image file (JPEG, PNG, or GIF)", "error");
       return false;
     }
 
     setUploading(true);
-
     try {
       const uploadedUrl = await BaseService.uploadFile(file, "image", true);
       if (uploadedUrl) {
         setImageUrl(uploadedUrl);
-        message.success("Image uploaded successfully");
+        notificationMessage("Image uploaded successfully", "success");
       } else {
-        message.error("Failed to upload image");
+        notificationMessage("Failed to upload image", "error");
       }
     } catch (error) {
-      message.error("Image upload failed");
+      notificationMessage("Image upload failed", "error");
       console.error("Image upload error:", error);
     } finally {
       setUploading(false);
@@ -71,12 +72,12 @@ const EditBlogModal: React.FC<EditBlogModalProps> = ({ visible, blog, categories
         user_id: blog?.user_id
       });
       if (response.data.success) {
-        message.success("Blog updated successfully.");
+        notificationMessage("Blog updated successfully.", "success");
         onClose();
         onSuccess();
       }
     } catch (error) {
-      message.error("Failed to update blog");
+      notificationMessage("Failed to update blog", "error");
       console.error("Error updating blog:", error);
     } finally {
       setUploading(false);

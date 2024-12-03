@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Card, Typography, Rate, Form, Input, Button, Modal, message, Progress } from "antd";
+import { Card, Typography, Rate, Form, Input, Button, Modal, Progress } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 // import { CourseReviewsProps } from "../../../../models/objects/course/CourseReviewsProps";
@@ -8,6 +8,7 @@ import { ReviewService } from "../../../../services/review/review.service";
 import { GetPublicCourseDetailResponse } from "../../../../models/api/responsive/course/course.response.model";
 import { useAuth } from "../../../../contexts/AuthContext";
 import { helpers } from "../../../../utils";
+
 const CourseReviews: React.FC<any & { courseId: string, course: any, averageRating: number, reviewCount: number, onReviewUpdate: () => void }> = ({ reviews, courseId, course, averageRating, reviewCount, onReviewUpdate }) => {
   const [fetchedReviews, setFetchedReviews] = useState(reviews);
   const [form] = Form.useForm();
@@ -74,7 +75,7 @@ const CourseReviews: React.FC<any & { courseId: string, course: any, averageRati
           rating: values.rating,
           comment: values.comment
         });
-        message.success("Review updated successfully!");
+        helpers.notificationMessage("Review updated successfully!", "success");
         setEditingReview(null);
       } else {
         await ReviewService.createReview({
@@ -82,7 +83,7 @@ const CourseReviews: React.FC<any & { courseId: string, course: any, averageRati
           rating: values.rating,
           comment: values.comment
         });
-        message.success("Review created successfully!");
+        helpers.notificationMessage("Review created successfully!", "success");
       }
       setFetchedReviews([]);
       await fetchReviews();
@@ -93,7 +94,7 @@ const CourseReviews: React.FC<any & { courseId: string, course: any, averageRati
       onReviewUpdate();
     } catch (error) {
       console.error("Failed to submit review", error);
-      message.error("Failed to submit review. Please try again.");
+      helpers.notificationMessage("Failed to submit review. Please try again.", "error");
     }
   };
 

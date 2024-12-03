@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { Table, Modal, message, Button, Input } from "antd";
+import { Table, Modal, Button, Input } from "antd";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { UserRoles } from "../../../app/enums";
 import { userStatusColor } from "../../../utils/userStatus";
@@ -11,6 +11,7 @@ import { HttpException } from "../../../app/exceptions";
 import { helpers } from "../../../utils";
 import { userRoleColor } from "../../../utils/userRole";
 import { ColumnType } from "antd/es/table";
+import { notificationMessage } from "../../../utils/helper";
 interface ViewRequestAccountProps {
   searchQuery: string;
   refreshKey: number;
@@ -84,7 +85,7 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
     } catch (error: any) {
       if (error.response) {
         console.error("Error response:", error.response.data);
-        message.error(`Error: ${error.response.data.message || "An unexpected error occurred while fetching users"}`);
+        notificationMessage(`Error: ${error.response.data.message || "An unexpected error occurred while fetching users"}`, "error");
       }
     } finally {
       setLoading(false);
@@ -113,7 +114,7 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
             ),
             onOk: async () => {
               if (!comment) {
-                message.error("Comment is required for rejection.");
+                notificationMessage("Comment is required for rejection.", "error");
                 return;
               }
 
@@ -128,17 +129,17 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
                   const updatedUserList = updatedUsers.includes(userId) ? updatedUsers : [...updatedUsers, userId];
 
                   setUpdatedUsers(updatedUserList);
-                  message.success(`Request account has been rejected`);
+                  notificationMessage(`Request account has been rejected`, "success");
                 } else {
-                  message.error("Failed to update user status.");
+                  notificationMessage("Failed to update user status.", "error");
                 }
               } catch (error: any) {
                 console.error("API error:", error);
-                message.error("An error occurred while updating user status.");
+                notificationMessage("An error occurred while updating user status.", "error");
               }
             },
             onCancel: () => {
-              message.info("Action canceled.");
+              notificationMessage("Action canceled.", "info");
             }
           });
         } else {
@@ -147,7 +148,7 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
             title: `Are you sure you want to approve this user?`,
             onOk: async () => {
               if (user.status === false) {
-                message.error("Cannot approve an inactive user.");
+                notificationMessage("Cannot approve an inactive user.", "error");
                 return;
               }
 
@@ -162,17 +163,17 @@ const ViewRequestAccount: React.FC<ViewRequestAccountProps> = ({ searchQuery, re
                   const updatedUserList = updatedUsers.includes(userId) ? updatedUsers : [...updatedUsers, userId];
 
                   setUpdatedUsers(updatedUserList);
-                  message.success(`Request account has been approved`);
+                  notificationMessage(`Request account has been approved`, "success");
                 } else {
-                  message.error("Failed to update user status.");
+                  notificationMessage("Failed to update user status.", "error");
                 }
               } catch (error: any) {
                 console.error("API error:", error);
-                message.error("An error occurred while updating user status.");
+                notificationMessage("An error occurred while updating user status.", "error");
               }
             },
             onCancel: () => {
-              message.info("Action canceled.");
+              notificationMessage("Action canceled.", "info");
             }
           });
         }

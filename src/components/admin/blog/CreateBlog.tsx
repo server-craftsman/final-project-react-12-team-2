@@ -1,5 +1,5 @@
 import { useCallback, useState, useEffect } from "react";
-import { Form, Input, Button, Modal, Select, Upload, message } from "antd";
+import { Form, Input, Button, Modal, Select, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useForm } from "antd/lib/form/Form";
 import { BlogService } from "../../../services/blog/blog.service";
@@ -7,6 +7,7 @@ import { BlogService } from "../../../services/blog/blog.service";
 import { CategoryService } from "../../../services/category/category.service";
 import { BaseService } from "../../../services/config/base.service";
 import Editor from "../../generic/tiny/Editor";
+import { notificationMessage } from "../../../utils/helper";
 
 interface CreateBlogProps {
   onBlogCreated: () => void;
@@ -63,7 +64,7 @@ const CreateBlog: React.FC<CreateBlogProps> = ({ onBlogCreated }) => {
       const uploadedUrl = await BaseService.uploadFile(imageFile, "image", true);
       return uploadedUrl;
     } catch (error) {
-      message.error("Failed to upload image");
+      notificationMessage("Failed to upload image", "error");
       return "";
     } finally {
       console.log('Success');
@@ -81,11 +82,11 @@ const CreateBlog: React.FC<CreateBlogProps> = ({ onBlogCreated }) => {
           image_url: imageUrl
         });
 
-        message.success("Blog post created successfully!");
+        notificationMessage("Blog post created successfully!", "success");
         handleModalToggle();
         onBlogCreated();
       } catch (error: any) {
-        message.error(error.message || "Failed to create blog post");
+        notificationMessage(error.message || "Failed to create blog post", "error");
       } finally {
         console.log('Success');
       }

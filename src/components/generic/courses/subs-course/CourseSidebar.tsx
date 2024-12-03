@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Card, Typography, Divider, message, Button } from "antd";
+import { Card, Typography, Divider, Button } from "antd";
 import { ShoppingCartOutlined, PlayCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { CourseSidebarProps } from "../../../../models/objects/course/CourseSidebarProps";
 import { helpers } from "../../../../utils";
@@ -24,7 +24,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ course, lessons }) => {
       const userInfo = localStorage.getItem("userInfo");
 
       if (!token || !userInfo) {
-        message.error("Please log in to add items to your cart.");
+        helpers.notificationMessage("Please log in to add items to your cart.", "error");
         navigate("/login");
         return;
       }

@@ -4,6 +4,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { HTTP_STATUS } from "../../app/enums";
 import { HttpException } from "../../app/exceptions";
 import { ROUTER_URL } from "../../const/router.path";
+import { helpers } from "../../utils";
 
 const VerifyEmail: React.FC = () => {
   const { token } = useParams();
@@ -11,7 +12,7 @@ const VerifyEmail: React.FC = () => {
   const [status, setStatus] = useState(false);
   const [isExpired, setIsExpired] = useState(false);
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  // const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -26,7 +27,7 @@ const VerifyEmail: React.FC = () => {
         const response = await verifyToken({ token });
         setStatus(true);
         setIsExpired(false);
-        setMessage(response.data || "Email verified successfully!");
+        helpers.notificationMessage(response.data || "Email verified successfully!", "success");
 
         timeoutId = setTimeout(() => {
           navigate(ROUTER_URL.LOGIN);
@@ -36,20 +37,20 @@ const VerifyEmail: React.FC = () => {
         if (error instanceof HttpException) {
           if (error.status === HTTP_STATUS.NOT_FOUND) {
             setIsExpired(true);
-            setMessage("Token has expired. Please request a new verification link.");
+            helpers.notificationMessage("Token has expired. Please request a new verification link.", "error");
             timeoutId = setTimeout(() => {
               navigate(ROUTER_URL.COMMON.HOME);
             }, 3000);
           } else {
             setIsExpired(false);
-            setMessage(error.message || "Verification failed. Please try again.");
+            helpers.notificationMessage(error.message || "Verification failed. Please try again.", "error");
             timeoutId = setTimeout(() => {
               navigate(ROUTER_URL.COMMON.HOME);
             }, 3000);
           }
         } else {
           setIsExpired(false);
-          setMessage("Verification failed. Please try again or request a new verification link.");
+          helpers.notificationMessage("Verification failed. Please try again or request a new verification link.", "error");
           timeoutId = setTimeout(() => {
             navigate(ROUTER_URL.COMMON.HOME);
           }, 3000);
@@ -70,12 +71,12 @@ const VerifyEmail: React.FC = () => {
       e.preventDefault();
       try {
         const response = await resendToken({ email });
-        setMessage(response.data || "New verification link has been sent to your email.");
+        helpers.notificationMessage(response.data || "New verification link has been sent to your email.", "success");
       } catch (error) {
         if (error instanceof HttpException) {
-          setMessage(error.message || "Failed to resend verification link.");
+          helpers.notificationMessage(error.message || "Failed to resend verification link.", "error");
         } else {
-          setMessage("Failed to resend verification link. Please try again.");
+          helpers.notificationMessage("Failed to resend verification link. Please try again.", "error");
         }
         setTimeout(() => {
           navigate(ROUTER_URL.COMMON.HOME);
@@ -116,7 +117,7 @@ const VerifyEmail: React.FC = () => {
     () => (
       <div>
         <h1 className="mb-5 text-3xl font-bold text-[#1a237e]">Verification Failed</h1>
-        <p className="mb-6 text-lg text-gray-600">{message}</p>
+        {/* <p className="mb-6 text-lg text-gray-600">{message}</p> */}
         <form onSubmit={handleResend} className="flex flex-col gap-4">
           <input type="email" value={email} onChange={handleEmailChange} placeholder="Enter your email" required className="rounded-lg border-2 border-gray-300 p-4 text-lg transition-all focus:border-[#1a237e] focus:outline-none focus:ring-2 focus:ring-[#1a237e] focus:ring-opacity-50" />
           <button type="submit" className="bg-gradient-tone transform cursor-pointer rounded-lg px-8 py-4 text-lg font-semibold text-white transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
@@ -125,7 +126,7 @@ const VerifyEmail: React.FC = () => {
         </form>
       </div>
     ),
-    [message, email, handleResend, handleEmailChange]
+    [email, handleResend, handleEmailChange]
   );
 
   return (

@@ -9,8 +9,7 @@ import { AuthService } from "../../services/authentication/auth.service";
 import loginAnimation from "../../data/loginAnimation.json";
 import Lottie from "lottie-react";
 import { CLIENT_ID } from "../../const/authentication";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { notificationMessage } from "../../utils/helper";
 import { useNavigate } from "react-router-dom";
 import { ROUTER_URL } from "../../const/router.path";
 import { HTTP_STATUS } from "../../app/enums";
@@ -51,17 +50,7 @@ const LoginPage = () => {
         const defaultPath = getDefaultPath(userRole || "");
         if (typeof defaultPath === "string") {
           // Show toast notification before navigation
-          toast.success("Login Success", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            style: { backgroundColor: "#1a237e" }
-          });
+          notificationMessage("Login Success", "success");
 
           // Add small delay to ensure toast is visible
           setTimeout(() => {
@@ -92,17 +81,7 @@ const LoginPage = () => {
         const userRole = localStorage.getItem("role");
         const defaultPath = getDefaultPath(userRole || "");
         if (typeof defaultPath === "string") {
-          toast.success("Login Success", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            style: { backgroundColor: "#1a237e" }
-          });
+          notificationMessage("Login Success", "success");
 
           // Add small delay to ensure toast is visible
           setTimeout(() => {
@@ -208,7 +187,6 @@ const LoginPage = () => {
 
   return (
     <div className="bg-gradient-tone/90 flex min-h-screen flex-col items-center justify-center backdrop-blur-md">
-      <ToastContainer />
       <div className="relative flex w-full max-w-7xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl md:flex-row">
         <div className="bg-gradient-tone flex w-full flex-col items-center justify-center p-12 md:w-1/2">
           <Link to="/">

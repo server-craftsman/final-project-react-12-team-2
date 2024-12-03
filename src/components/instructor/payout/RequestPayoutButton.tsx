@@ -1,7 +1,8 @@
 import React from "react";
-import { Modal, message } from "antd";
+import { Modal } from "antd";
 import { PayoutService } from "../../../services/payout/payout.service";
 import { PayoutStatus } from "../../../app/enums";
+import { helpers } from "../../../utils";
 interface RequestPayoutButtonProps {
   disabled: boolean;
   payoutId: string; // Add payoutId prop
@@ -30,7 +31,7 @@ const RequestPayoutButton: React.FC<RequestPayoutButtonProps> = ({ disabled, pay
       content: "Are you sure you want to request a payout?",
       onOk: () => {
         handleRequestPayout();
-        message.success("Payout request successful");
+        helpers.notificationMessage("Payout request successful", "success");
       },
       onCancel() {}
     });

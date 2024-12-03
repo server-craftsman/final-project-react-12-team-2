@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { Button, Form, Input, message, Modal, Select, Upload } from "antd";
+import { Button, Form, Input, Modal, Select, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import Editor from "../../../generic/tiny/Editor";
 import { LessonService } from "../../../../services/lesson/lesson.service";
@@ -7,6 +7,7 @@ import { LessonService } from "../../../../services/lesson/lesson.service";
 import { BaseService } from "../../../../services/config/base.service";
 import { LessonType } from "../../../../app/enums";
 const { Option } = Select;
+import { helpers } from "../../../../utils";
 
 const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
   const [form] = Form.useForm();
@@ -75,9 +76,7 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
       console.log("API Response:", response);
 
       if (response.data?.success) {
-        setTimeout(() => {
-          message.success("Lesson updated successfully");
-        }, 1000);
+        helpers.notificationMessage("Lesson updated successfully", "success");
         onClose();
         form.resetFields();
         onLessonCreated();
@@ -87,7 +86,7 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
       }
     } catch (error: any) {
       console.error("Error updating lesson:", error.response?.data || error.message);
-      message.error(error.response?.data?.message || error.message || "Failed to update lesson");
+      helpers.notificationMessage(error.response?.data?.message || error.message || "Failed to update lesson", "error");
     }
   };
 
@@ -126,7 +125,7 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
         };
         reader.readAsDataURL(file);
       } catch (error: any) {
-        message.error(error.message);
+        helpers.notificationMessage(error.message, "error");
       }
       return false; // Prevent default upload behavior
     },
@@ -140,7 +139,7 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
         form.setFieldsValue({ video_url: String(url) });
         setVideoPreview(url);
       } catch (error: any) {
-        message.error(error.message);
+        helpers.notificationMessage(error.message, "error");
       }
       return false; // Prevent default upload behavior
     },

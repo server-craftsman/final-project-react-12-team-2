@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table, message } from "antd";
+import { Button, Table } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import { formatDate } from "../../../utils/helper";
 import { SessionService } from "../../../services/session/session.service";
 import { SessionResponsePageData } from "../../../models/api/responsive/session/session.response.model";
 import { SessionRequestModel } from "../../../models/api/request/session/session.request.model";
 import ModalSessionModal from "./ModalSessionDetail";
+import { notificationMessage } from "../../../utils/helper";
+
 interface SessionManagementProps {
   searchTerm: string;
   activeKey: string;
@@ -37,7 +39,7 @@ const SessionManagement: React.FC<SessionManagementProps> = ({ searchTerm, activ
         setSessionData(response.data.data.pageData as unknown as SessionResponsePageData[]);
         setTotalItems(response.data.data.pageInfo.totalItems);
       } catch (error) {
-        message.error("Failed to fetch sessions");
+        notificationMessage("Failed to fetch sessions", "error");
       }
     };
 

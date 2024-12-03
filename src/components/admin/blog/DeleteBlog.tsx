@@ -1,8 +1,8 @@
 // DeleteBlogModal.tsx
 import React from "react";
-import { Modal, message } from "antd";
+import { Modal } from "antd";
 import { BlogService } from "../../../services/blog/blog.service";
-
+import { notificationMessage } from "../../../utils/helper";
 interface DeleteBlogModalProps {
   visible: boolean;
   blogId: string | null;
@@ -16,13 +16,13 @@ const DeleteBlogModal: React.FC<DeleteBlogModalProps> = ({ visible, blogId, onCl
       if (blogId) {
         const response = await BlogService.deleteBlog(blogId);
         if (response.data.success) {
-          message.success("Blog deleted successfully.");
+          notificationMessage("Blog deleted successfully.", "success");
           onClose();
           onSuccess();
         }
       }
     } catch (error) {
-      message.error("An error occurred while deleting the blog");
+      notificationMessage("An error occurred while deleting the blog", "error");
       console.error("Failed to delete blog:", error);
     }
   };

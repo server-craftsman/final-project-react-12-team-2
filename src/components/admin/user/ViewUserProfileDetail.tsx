@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useMemo, memo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Row, Col, Form, Input, Button, Modal, message, Spin } from "antd";
+import { Row, Col, Form, Input, Button, Modal, Spin } from "antd";
 import { ArrowLeftOutlined, DeleteOutlined, LockOutlined, UnlockOutlined, EditOutlined } from "@ant-design/icons";
 import { userStatusColor } from "../../../utils/userStatus";
 import { userRoleColor } from "../../../utils/userRole";
@@ -36,7 +36,7 @@ const ViewUserProfileDetail = () => {
       }
     } catch (error) {
       if (error instanceof HttpException) {
-        message.error(error.status === HTTP_STATUS.NOT_FOUND ? "User not found" : "Failed to fetch user details");
+        helpers.notificationMessage(error.status === HTTP_STATUS.NOT_FOUND ? "User not found" : "Failed to fetch user details", "error");
       }
       console.error("Failed to fetch user details:", error);
       setUser(null);
@@ -58,11 +58,11 @@ const ViewUserProfileDetail = () => {
           try {
             const response = await UserService.changeStatus(id as string, { user_id: id, status } as ChangeStatusParams);
             if (response.data.success) {
-              message.success(`User status changed successfully to ${status ? "ON" : "OFF"}.`);
+              helpers.notificationMessage(`User status changed successfully to ${status ? "ON" : "OFF"}.`, "success");
               setUser((prev) => (prev ? { ...prev, status } : null));
             }
           } catch (error) {
-            message.error(error instanceof HttpException ? error.message : "Failed to change user status");
+            helpers.notificationMessage(error instanceof HttpException ? error.message : "Failed to change user status", "error");
             console.error("Failed to change user status:", error);
           }
         }
@@ -95,11 +95,11 @@ const ViewUserProfileDetail = () => {
               try {
                 const response = await UserService.changeRole(id as string, { user_id: id, role: newRole } as ChangeRoleParams);
                 if (response.data.success) {
-                  message.success(`Role updated to ${newRole.toUpperCase()}`);
+                  helpers.notificationMessage(`Role updated to ${newRole.toUpperCase()}`);
                   setUser((prev) => (prev ? { ...prev, role: newRole } : null));
                 }
               } catch {
-                message.error("Failed to update role");
+                helpers.notificationMessage("Failed to update role", "error");
               }
             }
           });
@@ -113,11 +113,11 @@ const ViewUserProfileDetail = () => {
     try {
       const response = await UserService.deleteUser(id as string);
       if (response.data.success) {
-        message.success("User deleted successfully.");
+        helpers.notificationMessage("User deleted successfully.", "success");
         navigate(ROUTER_URL.ADMIN.MANAGE_USER);
       }
     } catch (error) {
-      message.error(error instanceof HttpException ? error.message : "An error occurred while deleting the user");
+      helpers.notificationMessage(error instanceof HttpException ? error.message : "An error occurred while deleting the user", "error");
       console.error("Failed to delete user:", error);
     }
   }, [id, navigate]);

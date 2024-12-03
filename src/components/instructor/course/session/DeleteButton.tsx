@@ -1,7 +1,7 @@
-import { Button, message, Modal } from "antd";
+import { Button, Modal } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { SessionService } from "../../../../services/session/session.service";
-
+import { helpers } from "../../../../utils";
 interface DeleteButtonProps {
   data: {
     _id: string;
@@ -35,23 +35,13 @@ const DeleteButton = ({ data, onSessionDeleted }: DeleteButtonProps) => {
       onOk: async () => {
         try {
           await SessionService.deleteSession(data._id);
-          message.success({
-            content: "Session deleted successfully",
-            style: {
-              marginTop: "20vh"
-            }
-          });
+          helpers.notificationMessage("Session deleted successfully", "success");
           if (onSessionDeleted) {
             onSessionDeleted();
           }
         } catch (error) {
           console.error("Error deleting session:", error);
-          message.error({
-            content: "Failed to delete session",
-            style: {
-              marginTop: "20vh"
-            }
-          });
+          helpers.notificationMessage("Failed to delete session", "error");
         }
       }
     });

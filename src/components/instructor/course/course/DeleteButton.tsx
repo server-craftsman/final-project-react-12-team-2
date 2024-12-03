@@ -1,6 +1,7 @@
-import { Button, message, Modal } from "antd";
+import { Button, Modal } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { CourseService } from "../../../../services/course/course.service";
+import { helpers } from "../../../../utils";
 interface DeleteButtonProps {
   courseId: string;
   onDeleteSuccess?: () => void;
@@ -33,22 +34,12 @@ const DeleteButton = ({ courseId, onDeleteSuccess }: DeleteButtonProps) => {
       onOk: async () => {
         try {
           await CourseService.deleteCourse(courseId);
-          message.success({
-            content: "Course deleted successfully",
-            style: {
-              marginTop: "20vh"
-            }
-          });
+          helpers.notificationMessage("Course deleted successfully", "success");
           if (onDeleteSuccess) {
             onDeleteSuccess();
           }
         } catch (error) {
-          message.error({
-            content: "Failed to delete course",
-            style: {
-              marginTop: "20vh"
-            }
-          });
+          helpers.notificationMessage("Failed to delete course", "error");
         }
       }
     });

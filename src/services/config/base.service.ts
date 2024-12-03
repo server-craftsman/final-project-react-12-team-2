@@ -1,7 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import { ApiRequestModel } from "../../models/api/interceptor/ApiRequestModel";
-// import { toast } from "react-toastify";
-import { message } from "antd";
 import { clearLocalStorage, getItemInLocalStorage } from "../../utils/storage";
 import { DOMAIN_ADMIN, LOCAL_STORAGE } from "../../const/domain";
 import { ROUTER_URL } from "../../const/router.path";
@@ -9,6 +7,7 @@ import { store } from "../../app/redux/store";
 import { toggleLoading } from "../../app/redux/loadingSlice";
 import { HTTP_STATUS } from "../../app/enums";
 import { HttpException } from "../../app/exceptions";
+import { notificationMessage } from "../../utils/helper";
 import { handleUploadFile, deleteFileFromCloudinary } from "../../utils/upload"; // Import the handleUploadFile and deleteFileFromCloudinary functions
 
 export const axiosInstance = axios.create({
@@ -143,14 +142,14 @@ export const BaseService = {
     try {
       const url = await handleUploadFile(file, type);
       if (url) {
-        message.success(`${type} uploaded successfully`);
+        notificationMessage(`${type} uploaded successfully`);
         return url;
       } else {
         throw new Error("Upload failed");
       }
     } catch (error) {
       console.error("Upload error:", error);
-      message.error(error instanceof Error ? error.message : "Upload failed");
+      notificationMessage(error instanceof Error ? error.message : "Upload failed", "error");
       return null;
     } finally {
       if (isLoading) store.dispatch(toggleLoading(false));
@@ -161,14 +160,14 @@ export const BaseService = {
     try {
       const success = await deleteFileFromCloudinary(publicId, type);
       if (success) {
-        message.success(`${type} deleted successfully`);
+        notificationMessage(`${type} deleted successfully`);
         return true;
       } else {
         throw new Error("Delete failed");
       }
     } catch (error) {
       console.error("Delete error:", error);
-      message.error(error instanceof Error ? error.message : "Delete failed");
+      notificationMessage(error instanceof Error ? error.message : "Delete failed", "error");
       return false;
     } finally {
       if (isLoading) store.dispatch(toggleLoading(false));
@@ -218,26 +217,26 @@ axiosInstance.interceptors.response.use(
           }, 3000);
           break;
         case HTTP_STATUS.FORBIDDEN:
-          message.error("Access denied. You do not have permission to perform this action.");
+          notificationMessage("Access denied. You do not have permission to perform this action.", "error");
           clearLocalStorage();
           setTimeout(() => {
             window.location.href = ROUTER_URL.LOGIN;
           }, 3000);
           break;
         case HTTP_STATUS.NOT_FOUND:
-          message.error("Requested resource not found.");
+          notificationMessage("Requested resource not found.", "error");
           // setTimeout(() => {
           //   window.location.href = ROUTER_URL.LOGIN;
           // }, 2000);
           break;
         case HTTP_STATUS.INTERNAL_SERVER_ERROR:
-          message.error("Internal server error. Please try again later.");
+          notificationMessage("Internal server error. Please try again later.", "error");
           break;
         default:
-          message.error(response.data?.message || "An error occurred. Please try again.");
+          notificationMessage(response.data?.message || "An error occurred. Please try again.", "error");
       }
     } else {
-      message.error(err.message || "An error occurred. Please try again.");
+      notificationMessage(err.message || "An error occurred. Please try again.", "error");
     }
     return Promise.reject(new HttpException(err.message, response?.status || HTTP_STATUS.INTERNAL_SERVER_ERROR));
   }
@@ -245,6 +244,6 @@ axiosInstance.interceptors.response.use(
 
 const handleErrorByToast = (error: any) => {
   const message = error.response?.data?.message || error.message;
-  message.error(message);
+  notificationMessage(message, "error");
   return Promise.reject(error);
 };

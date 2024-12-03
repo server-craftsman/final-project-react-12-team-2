@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, Avatar, Row, Col, message, Button } from "antd";
+import { Card, Avatar, Row, Col, Button } from "antd";
 import { Link } from "react-router-dom";
 import { GetSubscriptionsResponse } from "../../../models/api/responsive/subscription/sub.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model";
 import { SubscriptionService } from "../../../services/subscription/subscription.service";
 import { GetSubscriptionsParams } from "../../../models/api/request/subscription/sub.request.model";
 import { UserService } from "../../../services/instructor/user.service";
+import { helpers } from "../../../utils";
 // import ButtonSubscribe from "../../generic/profile/CreateSubscribe";
 
 // ... existing interface definitions ...
@@ -53,7 +54,7 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery, 
       const response = await SubscriptionService.getSubscriptions(params);
       setSubscriptions(response.data?.data ? response.data.data : null);
     } catch (error) {
-      message.error("No subscriptions found");
+      helpers.notificationMessage("No subscriptions found", "error");
     }
   }, [searchQuery, getSearchCondition, refreshKey]);
 
@@ -67,7 +68,7 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery, 
         setUsers(validUsers);
       }
     } catch (error) {
-      message.error("Failed to fetch users");
+      helpers.notificationMessage("Failed to fetch users", "error");
     }
   }, [subscriptions]);
 
@@ -87,7 +88,7 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery, 
 
     if (!token || !userInfo) {
       navigate("/login");
-      message.error("Please log in to subscribe.");
+      helpers.notificationMessage("Please log in to subscribe.", "error");
       return;
     }
 
@@ -99,7 +100,7 @@ const StudentSubscription: React.FC<StudentSubscriptionProps> = ({ searchQuery, 
       await fetchSubscriptions();
       await fetchUsers();
     } catch (error) {
-      console.error("Error updating subscription:", error);
+      helpers.notificationMessage("Error updating subscription", "error");
     } finally {
       setLoading(false);
     }

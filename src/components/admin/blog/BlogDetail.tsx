@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Col, Form, message, Modal, Row, Typography } from "antd";
+import { Col, Form, Modal, Row, Typography } from "antd";
 import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 import { BlogService } from "../../../services/blog/blog.service";
 import { GetBlogDetailsResponse } from "../../../models/api/responsive/admin/blog.responsive.model";
+import { notificationMessage } from "../../../utils/helper";
+
 // import parse from "html-react-parser";
 import { helpers } from "../../../utils";
 const BlogDetail: React.FC<{ visible: boolean; onClose: () => void; blogId: string | null }> = ({ visible, onClose, blogId }) => {
@@ -15,7 +17,7 @@ const BlogDetail: React.FC<{ visible: boolean; onClose: () => void; blogId: stri
         const response = await BlogService.getBlogDetails(blogId!);
         setBlog(response.data.data);
       } catch (error) {
-        message.error("Failed to fetch blog details");
+        notificationMessage("Failed to fetch blog details", "error");
         console.error("Failed to fetch blog details:", error);
       } finally {
         setLoading(false);

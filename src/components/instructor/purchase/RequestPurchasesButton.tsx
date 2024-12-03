@@ -1,7 +1,8 @@
 import React from "react";
-import { Modal, notification } from "antd";
+import { Modal } from "antd";
 import { PayoutService } from "../../../services/payout/payout.service";
 import { CreatePayoutRequestModel } from "../../../models/api/request/payout/payout.request.model";
+import { helpers } from "../../../utils";
 
 interface RequestPurchasesProps {
   onRequestComplete: () => void;
@@ -22,16 +23,10 @@ const RequestPurchases: React.FC<RequestPurchasesProps> = ({ onRequestComplete, 
 
       await PayoutService.createPayout(params);
       onRequestComplete();
-      notification.success({
-        message: "Success",
-        description: "Payout request completed successfully."
-      });
+      helpers.notificationMessage("Payout request completed successfully", "success");
     } catch (error) {
       console.error("Error requesting purchases:", error);
-      notification.error({
-        message: "Error",
-        description: "Failed to complete payout request."
-      });
+      helpers.notificationMessage("Failed to complete payout request.", "error");
     } 
     // finally {
     //   setIsRequesting(false);

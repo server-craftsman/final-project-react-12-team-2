@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Form, Input, Button, message, DatePicker, Avatar, Upload } from "antd";
+import { Form, Input, Button, DatePicker, Avatar, Upload } from "antd";
 import { Rule } from "antd/es/form";
 import moment from "moment";
 import dayjs from "dayjs";
@@ -95,7 +95,7 @@ const EditUserProfile = () => {
           // bank_account_name: userData.bank_account_name || ""
         });
       } catch (error) {
-        message.error("Failed to fetch user details. Please try again.");
+        helpers.notificationMessage("Failed to fetch user details. Please try again.", "error");
       }
     },
     [form]
@@ -142,10 +142,10 @@ const EditUserProfile = () => {
         };
         await UserService.updateUser(id as string, updatedValues as UpdateUserParams);
 
-        message.success("Profile updated successfully");
+        helpers.notificationMessage("Profile updated successfully", "success");
         navigate(ROUTER_URL.INSTRUCTOR.SETTING);
       } catch (error: any) {
-        message.error(error.message || "Failed to update profile. Please try again.");
+        helpers.notificationMessage(error.message || "Failed to update profile. Please try again.", "error");
       } finally {
         setState((prev) => ({ ...prev, uploading: false }));
       }
@@ -161,13 +161,13 @@ const EditUserProfile = () => {
     const isVideo = file.type.startsWith("video/");
 
     if ((isImage && file.size > maxAvatarSize) || (isVideo && file.size > maxVideoSize)) {
-      message.error(`File size should not exceed ${isImage ? "5MB" : "100MB"}`);
+      helpers.notificationMessage(`File size should not exceed ${isImage ? "5MB" : "100MB"}`, "error");
       return false;
     }
 
     const allowedTypes = ["image/jpeg", "image/png", "image/gif", "video/mp4", "video/quicktime", "video/x-m4v", "video/webm", "video/ogg"];
     if (!allowedTypes.includes(file.type)) {
-      message.error("Please upload an image or video file (JPEG, PNG, GIF, MP4, M4V, WEBM, OGG)");
+      helpers.notificationMessage("Please upload an image or video file (JPEG, PNG, GIF, MP4, M4V, WEBM, OGG)", "error");
       return false;
     }
 
@@ -195,7 +195,7 @@ const EditUserProfile = () => {
         }));     
       }
     } catch (error) {
-      message.error("Failed to upload file. Please try again.");
+      helpers.notificationMessage("Failed to upload file. Please try again.", "error");
     }
 
     return false;

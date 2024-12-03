@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { Card, Row, Col, message, Pagination } from "antd";
+import { Card, Row, Col, Pagination } from "antd";
 // import { User } from "../../../models/api/responsive/users/users.model";
 import { SubscriberService } from "../../../services/subscriber/subscriber.service";
 import { GetSubscribersParams } from "../../../models/api/request/subscriber/subscriber.request.model";
 // import { UserService } from "../../../services/instructor/user.service";
 import { Link } from "react-router-dom";
 import { GetSubscribersResponse } from "../../../models/api/responsive/subscriber/subscriber.response.model";
-
+import { helpers } from "../../../utils";
 interface SearchSubscriberCondition {
   keyword: string;
   is_delete: boolean;
@@ -60,7 +60,7 @@ const InstructorSubscriber: React.FC<InstructorSubscriberProps> = ({ searchValue
         setTotalItems(response.data.data.pageInfo?.totalItems || 0);
       }
     } catch (error) {
-      message.error("No subscriptions found");
+      helpers.notificationMessage("No subscriptions found", "error");
     } finally {
       setLoading(false);
     }

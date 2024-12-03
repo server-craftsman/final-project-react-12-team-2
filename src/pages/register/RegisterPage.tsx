@@ -135,10 +135,10 @@ const RegisterPage = () => {
         }
 
         await register(params);
-        helpers.notification(getRegistrationSuccessMessage(params.role));
+        helpers.notificationMessage(getRegistrationSuccessMessage(params.role));
         navigate(ROUTER_URL.LOGIN);
       } catch (error: any) {
-        helpers.notification(getErrorMessage(error));
+        helpers.notificationMessage(getErrorMessage(error), "error");
       } finally {
         // setIsLoading(false);
         console.log("finish");

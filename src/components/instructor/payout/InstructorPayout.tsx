@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { message, Table} from "antd";
+import { Table} from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import { formatDate, moneyFormat } from "../../../utils/helper";
 const ViewTransactions = React.lazy(() => import("./ViewTransactions"));
@@ -8,6 +8,8 @@ import { PayoutService } from "../../../services/payout/payout.service";
 import { GetPayoutResponseModel } from "../../../models/api/responsive/payout/payout.response.model";
 import { payoutColorStatus } from "../../../utils/payoutStatus";
 import { PayoutStatus } from "../../../app/enums/payout.status";
+import { helpers } from "../../../utils";
+
 interface InstructorPayoutProps {
   refreshKey: number;
   searchQuery: string;
@@ -46,7 +48,7 @@ const InstructorPayout: React.FC<InstructorPayoutProps> = ({ refreshKey, searchQ
       setPayouts(pageData);
       setTotalItems(response.data.data.pageInfo.totalItems);
     } catch (error) {
-      message.error("Failed to fetch payouts.");
+      helpers.notificationMessage("Failed to fetch payouts.", "error");
     } finally {
       setLoading(false);
     }

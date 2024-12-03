@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { CourseService } from "../../../services/course/course.service";
-import { Button, Modal, Table, message } from "antd";
+import { Button, Modal, Table } from "antd";
 import { GetCourseResponsePageData } from "../../../models/api/responsive/course/course.response.model";
 import { formatDate } from "../../../utils/helper";
 import { CourseStatusEnum } from "../../../models/prototype/Course";
 import { courseStatusColor } from "../../../utils/courseStatus";
 import { CourseLogService } from "../../../services/courselog/courselog.service";
 import { CourseLogs } from "../../../models/api/responsive/admin/courselog.responsive";
+import { notificationMessage } from "../../../utils/helper";
 
 const CourseLog: React.FC<{ searchQuery: string; statusFilter: string; refreshKey: number }> = ({ searchQuery, statusFilter, refreshKey }) => {
   const [courses, setCourses] = useState<GetCourseResponsePageData[]>([]);
@@ -41,7 +42,7 @@ const CourseLog: React.FC<{ searchQuery: string; statusFilter: string; refreshKe
           setPageInfo(response.data.data.pageInfo);
         }
       } catch (error) {
-        message.error("Error loading course log");
+        notificationMessage("Error loading course log", "error");
         console.error("Error fetching courses:", error);
       }
     };
@@ -72,7 +73,7 @@ const CourseLog: React.FC<{ searchQuery: string; statusFilter: string; refreshKe
         setIsCourseLogModalVisible(true);
       }
     } catch (error) {
-      message.error("Error loading course log");
+      notificationMessage("Error loading course log", "error");
       console.error("Error fetching course logs:", error);
     }
   };

@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState, useEffect } from "react";
-import { Form, Input, Button, Modal, message, Select, Upload, UploadFile, Row, Col } from "antd";
+import { Form, Input, Button, Modal, Select, Upload, UploadFile, Row, Col } from "antd";
 // import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
 import { UserService } from "../../../services/admin/user.service";
 import { AuthService } from "../../../services/authentication/auth.service";
@@ -8,7 +8,7 @@ import { BankOutlined, UserOutlined, PhoneOutlined, MailOutlined, LockOutlined, 
 import { useForm } from "antd/lib/form/Form";
 import { Rule } from "antd/lib/form";
 import { BaseService } from "../../../services/config/base.service";
-
+import { notificationMessage } from "../../../utils/helper";
 const CreateUserProfile = () => {
   const [form] = useForm();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -49,10 +49,7 @@ const CreateUserProfile = () => {
         setSelectedBankLogo(options[0].logo);
       }
     } catch {
-      message.error({
-        content: "Failed to fetch bank details",
-        key: "bank-fetch-error"
-      });
+      notificationMessage("Failed to fetch bank details", "error");
     }
   }, [form]);
 
@@ -84,7 +81,7 @@ const CreateUserProfile = () => {
         };
         reader.readAsDataURL(file);
       } catch (error: any) {
-        message.error(error.message);
+        notificationMessage(error.message, "error");
       } finally {
         console.log("handleAvatarPreview");
       }
@@ -103,7 +100,7 @@ const CreateUserProfile = () => {
         videoElement.src = URL.createObjectURL(file);
         setVideoPreview(videoElement.outerHTML);
       } catch (error: any) {
-        message.error(error.message);
+        notificationMessage(error.message, "error");
       } finally {
         console.log("handleVideoPreview");
       }
@@ -120,11 +117,7 @@ const CreateUserProfile = () => {
           ...values
         });
 
-        message.success({
-          content: "User created successfully!",
-          className: "custom-success-message",
-          duration: 3
-        });
+        notificationMessage("User created successfully!", "success");
         handleModalToggle();
         form.resetFields();
         setVideoFileList([]);
@@ -132,11 +125,7 @@ const CreateUserProfile = () => {
         setAvatarPreview("");
         setVideoPreview("");
       } catch (error: any) {
-        message.error({
-          content: error.message || "Failed to create user",
-          className: "custom-error-message",
-          duration: 5
-        });
+        notificationMessage(error.message || "Failed to create user", "error");
       } finally {
         // setUploading(false);
         console.log("uploading false");

@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, InputNumber, message, Modal, Row, Select, Upload } from "antd";
+import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Upload } from "antd";
 const { Option } = Select;
 import { useState, useEffect, useCallback } from "react";
 import { EditOutlined, UploadOutlined } from "@ant-design/icons";
@@ -9,7 +9,7 @@ import { CourseService } from "../../../../services/course/course.service";
 import { UpdateCourseParams } from "../../../../models/api/request/course/course.request.model";
 import { CategoryService } from "../../../../services/category/category.service";
 import { GetCategoryParams } from "../../../../models/api/request/admin/category.request.model";
-// import { handleUploadFile } from "../../../../utils/upload";
+import { helpers } from "../../../../utils";
 
 interface EditButtonProps {
   data: any;
@@ -87,7 +87,7 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
         }));
         setCategories(categoriesWithChildren);
       } catch (error) {
-        message.error("Failed to load categories.");
+        helpers.notificationMessage("Failed to load categories.", "error");
       }
     };
 
@@ -115,7 +115,7 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
         }
       } catch (error) {
         console.error("Error fetching course details:", error);
-        message.error("Failed to fetch course details");
+        helpers.notificationMessage("Failed to fetch course details", "error");
       }
     }
   };
@@ -139,7 +139,7 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
       const response = await CourseService.updateCourse(data._id, updateParams);
 
       if (response.data?.data) {
-        message.success("Course updated successfully");
+        helpers.notificationMessage("Course updated successfully", "success");
         setIsOpen(false);
         form.resetFields();
         setDescription("");
@@ -150,7 +150,7 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
       }
     } catch (error: any) {
       console.error("Update error:", error);
-      message.error(error.message || "Failed to update course");
+      helpers.notificationMessage(error.message || "Failed to update course", "error");
     }
   };
 
@@ -182,7 +182,7 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
         };
         reader.readAsDataURL(file);
       } catch (error: any) {
-        message.error(error.message);
+        helpers.notificationMessage(error.message, "error");
       }
       return false; // Prevent default upload behavior
     },
@@ -199,7 +199,7 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
         videoElement.src = URL.createObjectURL(file);
         setVideoPreview(videoElement.outerHTML);
       } catch (error: any) {
-        message.error(error.message);
+        helpers.notificationMessage(error.message, "error");
       }
       return false; // Prevent default upload behavior
     },

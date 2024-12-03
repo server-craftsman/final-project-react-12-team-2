@@ -1,4 +1,4 @@
-import { Button, Form, Input, InputNumber, message, Modal, Select } from "antd";
+import { Button, Form, Input, InputNumber, Modal, Select } from "antd";
 const { Option } = Select;
 import { useState, useEffect, useCallback } from "react";
 import { EditOutlined } from "@ant-design/icons";
@@ -6,7 +6,7 @@ import { EditOutlined } from "@ant-design/icons";
 import { SessionService } from "../../../../services/session/session.service";
 import { useCallbackCourse } from "../../../../hooks/useCallback";
 import { GetCourseResponsePageData } from "../../../../models/api/responsive/course/course.response.model";
-
+import { helpers } from "../../../../utils";
 const EditButton = ({ data, onSessionEdited, fetchSessionDetails }: any) => {
   const [isOpen, setIsOpen] = useState(false);
   const [form] = Form.useForm();
@@ -37,7 +37,7 @@ const EditButton = ({ data, onSessionEdited, fetchSessionDetails }: any) => {
       }
     } catch (error) {
       console.error("Error fetching session details:", error);
-      message.error("Failed to load session details");
+      helpers.notificationMessage("Failed to load session details", "error");
     }
   };
 
@@ -58,9 +58,7 @@ const EditButton = ({ data, onSessionEdited, fetchSessionDetails }: any) => {
       }
 
       await SessionService.updateSession(payload, data._id);
-      setTimeout(() => {
-        message.success("Session edited successfully");
-      }, 1000);
+      helpers.notificationMessage("Session edited successfully", "success");
       setIsOpen(false);
       form.resetFields();
       if (onSessionEdited) {
@@ -68,7 +66,7 @@ const EditButton = ({ data, onSessionEdited, fetchSessionDetails }: any) => {
       }
     } catch (error) {
       console.error("Error updating session:", error);
-      message.error("Failed to edit session");
+      helpers.notificationMessage("Failed to edit session", "error");
     }
   };
 

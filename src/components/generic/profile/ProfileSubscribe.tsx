@@ -8,7 +8,7 @@ import ProfileDetail from "./ProfileDetail";
 import { BackwardFilled } from "@ant-design/icons";
 import LoadingAnimation from "../../../app/UI/LoadingAnimation";
 import { SubscriptionService } from "../../../services/subscription/subscription.service";
-import { message } from "antd";
+import { helpers } from "../../../utils";
 
 const ProfileSubscribe: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -50,7 +50,7 @@ const ProfileSubscribe: React.FC = () => {
 
     if (!token || !userInfo) {
       navigate("/login");
-      message.error("Please log in to subscribe.");
+      helpers.notificationMessage("Please log in to subscribe.", "error");
       return;
     }
 

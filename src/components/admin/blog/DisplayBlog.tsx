@@ -1,6 +1,6 @@
 // DisplayBlog.tsx
 import React, { useEffect, useState, useCallback } from "react";
-import { Table, Space, message, Button } from "antd";
+import { Table, Space, Button } from "antd";
 import { Blog, GetBlogResponse } from "../../../models/api/responsive/admin/blog.responsive.model";
 import { BlogService } from "../../../services/blog/blog.service";
 import { CategoryService } from "../../../services/category/category.service";
@@ -12,6 +12,7 @@ import BlogDetail from "./BlogDetail";
 import { helpers } from "../../../utils";
 import { ColumnType } from "antd/es/table";
 import { GetCategoryParams } from "../../../models/api/request/admin/category.request.model";
+import { notificationMessage } from "../../../utils/helper";
 
 const DisplayBlog: React.FC<{ searchQuery: string, refreshKey: number }> = ({ searchQuery, refreshKey }) => {
   const [blogData, setBlogData] = useState<GetBlogResponse | null>(null);
@@ -73,7 +74,7 @@ const DisplayBlog: React.FC<{ searchQuery: string, refreshKey: number }> = ({ se
       setBlogData(response.data.data);
       setPageInfo(response.data.data.pageInfo);
     } catch (error) {
-      message.error("An unexpected error occurred while fetching blogs");
+      notificationMessage("An unexpected error occurred while fetching blogs", "error");
     }
   }, [searchQuery, refreshKey]);
 
@@ -92,7 +93,7 @@ const DisplayBlog: React.FC<{ searchQuery: string, refreshKey: number }> = ({ se
 
       setCategories(categoriesWithChildren);
     } catch (error) {
-      message.error("Failed to load categories.");
+      notificationMessage("Failed to load categories.", "error");
     }
   }, []);
 

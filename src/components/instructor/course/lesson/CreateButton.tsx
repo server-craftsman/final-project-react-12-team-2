@@ -1,4 +1,4 @@
-import { Button, Form, Input, message, Modal, Select, Upload } from "antd";
+import { Button, Form, Input, Modal, Select, Upload } from "antd";
 import { useState, useEffect } from "react";
 // import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
 import { LessonService } from "../../../../services/lesson/lesson.service";
@@ -9,6 +9,7 @@ import Editor from "../../../generic/tiny/Editor";
 import { LessonType } from "../../../../app/enums";
 import { UploadOutlined } from "@ant-design/icons";
 const { Option } = Select;
+import { helpers } from "../../../../utils";
 
 const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,9 +56,7 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
       values.full_time = Number(values.full_time);
       values.position_order = Number(values.position_order);
       await LessonService.createLesson(values);
-      setTimeout(() => {
-        message.success("Lesson created successfully");
-      }, 1000);
+      helpers.notificationMessage("Lesson created successfully", "success");
       setIsOpen(false);
 
       form.resetFields();
@@ -68,7 +67,7 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
         onLessonCreated();
       }
     } catch (error) {
-      message.error("Failed to create lesson");
+      helpers.notificationMessage("Failed to create lesson", "error");
     }
   };
 
@@ -87,7 +86,7 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
         });
       }
     } catch (error) {
-      message.error("Failed to fetch sessions");
+      helpers.notificationMessage("Failed to fetch sessions", "error");
     }
   };
 

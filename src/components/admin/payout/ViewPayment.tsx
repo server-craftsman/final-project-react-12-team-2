@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Table, message, Modal } from "antd";
+import { Table, Modal } from "antd";
+import { notificationMessage } from "../../../utils/helper";
 import { EyeOutlined, CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import { PayoutStatus } from "../../../app/enums";
 import { formatDate, moneyFormat } from "../../../utils/helper";
@@ -62,7 +63,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
       })
       .catch(() => {
         if (!isMounted) return;
-        message.error("Failed to fetch payments.");
+        notificationMessage("Failed to fetch payments.", "error");
       });
 
     return () => {
@@ -89,12 +90,12 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
         const payout = payments.find((payment) => payment._id === id);
         
         if (!payout) {
-          message.error("Payout not found.");
+          notificationMessage("Payout not found.", "error");
           return;
         }
 
         if (payout.status !== PayoutStatus.REQUEST_PAYOUT) {
-          message.error("Cannot update status. Current status is not 'request_paid'.");
+          notificationMessage("Cannot update status. Current status is not 'request_paid'.", "error");
           return;
         }
 
@@ -106,12 +107,12 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
           )
         );
 
-        message.success(`Payment ${newStatus === PayoutStatus.COMPLETED ? "approved" : "rejected"} successfully.`);
-        
+        notificationMessage(`Payment ${newStatus === PayoutStatus.COMPLETED ? "approved" : "rejected"} successfully.`, "success");
+          
         onStatusChange(newStatus === PayoutStatus.COMPLETED ? "2" : "3");
       } catch (error) {
         console.error("Error updating payment status:", error);
-        message.error("Failed to update payment status.");
+        notificationMessage("Failed to update payment status.", "error");
       }
     };
 
@@ -129,7 +130,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
         ),
         onOk: () => updateStatus(comment),
         onCancel: () => {
-          message.info("Action canceled.");
+          notificationMessage("Action canceled.", "info");
         }
       });
     } else {
@@ -137,7 +138,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
         title: "Are you sure you want to approve this payment?",
         onOk: updateStatus,
         onCancel: () => {
-          message.info("Action canceled.");
+          notificationMessage("Action canceled.", "info");
         }
       });
     }
@@ -175,7 +176,7 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
         setPageInfo(response.data.data.pageInfo);
       })
       .catch(() => {
-        message.error("Failed to fetch payments.");
+        notificationMessage("Failed to fetch payments.", "error");
       })
       .finally(() => {
         setIsLoading(false);

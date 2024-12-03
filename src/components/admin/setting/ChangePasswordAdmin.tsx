@@ -1,7 +1,6 @@
 import { Form, Input, Button } from "antd";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
-import { message } from "antd";
 import { helpers } from "../../../utils";
 import { ROUTER_URL } from "../../../const/router.path";
 
@@ -16,7 +15,7 @@ const ChangePasswordAdmin = ({ visible }: { visible: boolean }) => {
 
       // Kiểm tra confirm password
       if (values.new_password !== values.confirm_password) {
-        message.error("New password and confirm password do not match");
+        helpers.notificationMessage("New password and confirm password do not match", "error");
         return;
       }
 
@@ -29,13 +28,13 @@ const ChangePasswordAdmin = ({ visible }: { visible: boolean }) => {
 
       const response = await changePassword(params);
       if (response) {
-        message.success("Password changed successfully");
+        helpers.notificationMessage("Password changed successfully", "success");
         logout();
         form.resetFields();
         navigate(ROUTER_URL.ADMIN.INFO);
       }
     } catch (error) {
-      message.error("Please check the information you entered");
+      helpers.notificationMessage("Please check the information you entered", "error");
     }
   };
 

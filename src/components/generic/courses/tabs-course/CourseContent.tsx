@@ -1,12 +1,12 @@
 import React from "react";
-import { Typography, Collapse, List, Button, message } from "antd";
+import { Typography, Collapse, List, Button } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CourseContentProps } from "../../../../models/objects/course/CourseContentProps";
 import { GetPublicCourseDetailResponse } from "../../../../models/api/responsive/course/course.response.model";
 const { Title, Paragraph } = Typography;
 import { LessonType } from "../../../../app/enums";
-
+import { notificationMessage } from "../../../../utils/helper";
 const checkUserInfo = (course: GetPublicCourseDetailResponse) => {
   const userInfo = localStorage.getItem("userInfo");
   if (userInfo) {
@@ -53,7 +53,7 @@ const CourseContent: React.FC<CourseContentProps & { course: GetPublicCourseDeta
                           onClick={(e) => {
                             if (!checkUserInfo(course)) {
                               e.preventDefault();
-                              message.warning("Please purchase this course to access the lessons");
+                              notificationMessage("Please purchase this course to access the lessons", "warning");
                               setTimeout(() => {
                                 navigate(`/courses/all`);
                               }, 2000);

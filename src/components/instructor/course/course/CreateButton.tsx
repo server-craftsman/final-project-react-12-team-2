@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Button, Col, Form, Input, InputNumber, message, Modal, Row, Select, Upload, UploadFile } from "antd";
+import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, Upload, UploadFile } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 const { Option } = Select;
 import { CourseService } from "../../../../services/course/course.service";
@@ -9,6 +9,7 @@ import { CreateCourseParams } from "../../../../models/api/request/course/course
 import { BaseService } from "../../../../services/config/base.service";
 import { GetCategoryParams } from "../../../../models/api/request/admin/category.request.model";
 import Editor from "../../../generic/tiny/Editor";
+import { helpers } from "../../../../utils";
 
 const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -60,7 +61,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
 
       setCategories(categoriesWithChildren);
     } catch (error) {
-      message.error("Failed to load categories.");
+      helpers.notificationMessage("Failed to load categories.", "error");
     }
   };
 
@@ -90,7 +91,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
         };
         reader.readAsDataURL(file);
       } catch (error: any) {
-        message.error(error.message);
+        helpers.notificationMessage(error.message, "error");
       }
       return false; // Prevent default upload behavior
     },
@@ -107,7 +108,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
         videoElement.src = URL.createObjectURL(file);
         setVideoPreview(videoElement.outerHTML);
       } catch (error: any) {
-        message.error(error.message);
+        helpers.notificationMessage(error.message, "error");
       }
       return false; // Prevent default upload behavior
     },
@@ -162,7 +163,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
 
       if (courseResponse) {
         setTimeout(() => {
-          message.success("Course created successfully!");
+          helpers.notificationMessage("Course created successfully!", "success");
         }, 2000);
 
         // Reset form and state after successful creation
@@ -182,7 +183,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
       }
     } catch (error) {
       console.error("Error creating course:", error);
-      message.error("Failed to create course. Please try again.");
+      helpers.notificationMessage("Failed to create course. Please try again.", "error");
     }
   };
 

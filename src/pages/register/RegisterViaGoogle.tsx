@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { Form, Input, Upload, Button, UploadFile, Select, Col, Row } from "antd";
 import { UploadOutlined, PhoneOutlined, NumberOutlined, BankOutlined, UserOutlined } from "@ant-design/icons";
-import { message } from "antd";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { ROUTER_URL } from "../../const/router.path";
@@ -10,6 +9,7 @@ import { BaseService } from "../../services/config/base.service";
 import { AuthService } from "../../services/authentication/auth.service";
 // import TinyMCEEditor from "../../components/generic/tiny/TinyMCEEditor";
 import Editor from "../../components/generic/tiny/Editor";
+import { helpers } from "../../utils";
 interface RegisterViaGoogleProps extends React.HTMLAttributes<HTMLFormElement> {
   googleId: string;
 }
@@ -59,7 +59,7 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
       } catch (error) {
         console.error("Error fetching banks:", error);
         if (isMounted) {
-          message.error("Failed to load bank list");
+          helpers.notificationMessage("Failed to load bank list", "error");
         }
       }
     };
@@ -79,7 +79,7 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
         setPassword(decodedToken.sub);
       } catch (error) {
         console.error("Error decoding Google token:", error);
-        message.error("Failed to process Google authentication");
+        helpers.notificationMessage("Failed to process Google authentication", "error");
       }
     }
   }, []);
@@ -110,7 +110,7 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
         };
         reader.readAsDataURL(file);
       } catch (error: any) {
-        message.error(error.message);
+        helpers.notificationMessage(error.message, "error");
       } finally {
         // setUploadingAvatar(false);
         console.log("handleAvatarPreview");
@@ -131,7 +131,7 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
         videoElement.src = URL.createObjectURL(file);
         setVideoPreview(videoElement.outerHTML);
       } catch (error: any) {
-        message.error(error.message);
+        helpers.notificationMessage(error.message, "error");
       } finally {
         // setUploadingVideo(false);
         console.log("handleVideoPreview");
@@ -190,17 +190,17 @@ const RegisterViaGoogle: React.FC<RegisterViaGoogleProps> = React.memo(({ google
       const response = await AuthService.registerGooglePublic(commonParams as any);
 
       if (response.data.success) {
-        message.success("Registration successful! Please wait for admin review.");
+        helpers.notificationMessage("Registration successful! Please wait for admin review.", "success");
         navigate(ROUTER_URL.LOGIN);
       } else {
         throw new Error("Registration failed. Please try again.");
       }
     } catch (error: any) {
       if (error.response?.data?.code === 11000) {
-        message.error("This email is already registered");
+        helpers.notificationMessage("This email is already registered", "error");
       } else {
         console.error("Registration failed:", error);
-        message.error(error.message || "Registration failed");
+        helpers.notificationMessage(error.message || "Registration failed", "error");
       }
     } finally {
       // setIsLoading(false);

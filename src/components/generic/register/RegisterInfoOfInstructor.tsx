@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Form, Input, Upload, Button, UploadFile, Select, Col, Row } from "antd";
 import { UploadOutlined, PhoneOutlined, BankOutlined, NumberOutlined, UserOutlined } from "@ant-design/icons";
-import { message } from "antd";
+import { helpers } from "../../../utils";
 import { AuthService } from "../../../services/authentication/auth.service";
 import { BaseService } from "../../../services/config/base.service";
 // import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
@@ -77,7 +77,7 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({ for
         };
         reader.readAsDataURL(file);
       } catch (error: any) {
-        message.error(error.message);
+        helpers.notificationMessage(error.message, "error");
       } finally {
         // setUploadingAvatar(false);
         console.log("handleAvatarPreview");
@@ -98,7 +98,7 @@ const RegisterInfoOfInstructor: React.FC<RegisterInfoOfInstructorProps> = ({ for
         videoElement.src = URL.createObjectURL(file);
         setVideoPreview(videoElement.outerHTML);
       } catch (error: any) {
-        message.error(error.message);
+        helpers.notificationMessage(error.message, "error");
       } finally {
         // setUploadingVideo(false);
         console.log("handleVideoPreview");

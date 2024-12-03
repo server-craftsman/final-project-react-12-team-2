@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import { message, Table, Button, Avatar, Popconfirm } from 'antd';
+import { Table, Button, Avatar, Popconfirm } from 'antd';
 import { DeleteOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { ReviewService } from '../../../services/review/review.service';
 import { helpers } from '../../../utils';
@@ -8,6 +8,7 @@ import CustomSearch from '../../../components/generic/search/CustomSearch';
 import { Link } from 'react-router-dom';
 import { Review } from '../../../models/prototype/Review';
 import { ColumnType } from 'antd/es/table';
+import { notificationMessage } from '../../../utils/helper';
 
 interface DisplayReviewProps {
   search: string;
@@ -89,10 +90,10 @@ const DisplayReview: React.FC<DisplayReviewProps> = ({ search, dateRange, isDele
     try {
       await ReviewService.deleteReview(id);
       setReviews(prevReviews => prevReviews.filter(review => review._id !== id));
-      message.success('Review deleted successfully');
+      notificationMessage('Review deleted successfully', "success");
     } catch (error) {
       console.error('Error deleting review:', error);
-      message.error('Failed to delete review');
+      notificationMessage('Failed to delete review', "error");
     }
   }, []);
 

@@ -9,8 +9,8 @@ import { HTTP_STATUS } from "../app/enums";
 import { HttpException } from "../app/exceptions";
 import { User } from "../models/api/responsive/users/users.model";
 import { ResponseSuccess } from "../app/interface";
-
-import { toast } from "react-toastify";
+import { helpers } from "../utils";
+// import { toast } from "react-toastify";
 
 interface AuthContextType {
   role: UserRole | null;
@@ -121,17 +121,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("role");
     localStorage.removeItem("userInfo");
     navigate("/login");
-    toast.success("Logout successfully!", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-      style: { backgroundColor: "#1a237e" }
-    });  };
+    helpers.notificationMessage("Logout successfully!", "success");
+  };
 
   //handle login
   const handleLogin = async (token: string) => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { moneyFormat, formatDate } from "../../../utils/helper";
 import { courseStatusColor } from "../../../utils/courseStatus";
-import { message, Table, Modal, Input, Button, Select } from "antd";
+import { Table, Modal, Input, Button, Select } from "antd";
 import {  CarryOutOutlined, ContainerOutlined, EyeOutlined } from "@ant-design/icons";
 import { GetCourseParams } from "../../../models/api/request/course/course.request.model";
 import { CourseService } from "../../../services/course/course.service";
@@ -12,7 +12,9 @@ import { StatusType } from "../../../app/enums";
 import ModalCourseDetail from "./ModalCourseDetail";
 import { GetCourseByIdResponse } from "../../../models/api/responsive/course/course.response.model";
 import { TableRowSelection } from "antd/es/table/interface";
+import { notificationMessage } from "../../../utils/helper";
 const { confirm } = Modal;
+
 const defaultParams = {
   pageInfo: {
     pageNum: 1,
@@ -55,7 +57,7 @@ const CoursesManagement: React.FC<{
       setCourses(response.data.data.pageData);
       setPageInfo(response.data.data.pageInfo);
     } catch (error) {
-      message.error("Failed to fetch courses");
+      notificationMessage("Failed to fetch courses", "error");
     }
   };
 
@@ -75,10 +77,10 @@ const CoursesManagement: React.FC<{
       });
       setCourses(updatedCourses);
       setSelectedRowKeysState([]); // Clear all selected checkboxes
-      message.success(`Course status changed to ${newStatus} successfully`);
+      notificationMessage(`Course status changed to ${newStatus} successfully`, "success");
       setRejectComment("");
     } catch (error) {
-      message.error("Failed to change course status");
+      notificationMessage("Failed to change course status", "error");
     }
   };
 
@@ -93,7 +95,7 @@ const CoursesManagement: React.FC<{
       setSelectedCourseDetail(response.data.data);
       setIsCourseDetailModalVisible(true);
     } catch (error) {
-      message.error("Failed to fetch course details");
+      notificationMessage("Failed to fetch course details", "error");
     }
   };
 
@@ -130,7 +132,7 @@ const CoursesManagement: React.FC<{
         setIsLessonModalVisible(true);
       }
     } catch (error) {
-      message.error("Failed to fetch lessons");
+      notificationMessage("Failed to fetch lessons", "error");
     }
   };
 
@@ -151,7 +153,7 @@ const CoursesManagement: React.FC<{
         setIsSessionModalVisible(true);
       }
     } catch (error) {
-      message.error("Failed to fetch sessions");
+      notificationMessage("Failed to fetch sessions", "error");
     }
   };
 

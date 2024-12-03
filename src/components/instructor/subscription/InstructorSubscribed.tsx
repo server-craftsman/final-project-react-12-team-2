@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Card, Row, Col, message, Pagination, Button } from "antd";
+import { Card, Row, Col, Pagination, Button } from "antd";
 import { GetSubscriptionsResponse } from "../../../models/api/responsive/subscription/sub.responsive.model";
 import { User } from "../../../models/api/responsive/users/users.model";
 import { Link, useNavigate } from "react-router-dom";
 import { SubscriptionService } from "../../../services/subscription/subscription.service";
 import { GetSubscriptionsParams } from "../../../models/api/request/subscription/sub.request.model";
+import { helpers } from "../../../utils";
 
 interface SearchSubscriptionCondition {
   keyword: string;
@@ -62,7 +63,7 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
       setTotalItems(response.data?.data?.pageInfo?.totalItems || 0);
     } catch (error) {
       console.error("Error fetching subscriptions:", error);
-      message.error("No subscriptions found");
+      helpers.notificationMessage("No subscriptions found", "error");
     } finally {
       setLoading(false);
     }
@@ -108,7 +109,7 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
 
     if (!token || !userInfo) {
       navigate("/login");
-      message.error("Please log in to subscribe.");
+      helpers.notificationMessage("Please log in to subscribe.", "error");
       return;
     }
 
@@ -132,7 +133,7 @@ const InstructorSubscribed: React.FC<InstructorSubscribedProps> = ({ searchValue
       });
     } catch (error) {
       console.error("Error updating subscription:", error);
-      message.error("Failed to update subscription.");
+      helpers.notificationMessage("Failed to update subscription.", "error");
     } finally {
       setLoading(false);
     }

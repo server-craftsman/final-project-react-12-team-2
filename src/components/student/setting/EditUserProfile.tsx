@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Form, Input, Button, message, DatePicker, Avatar, Upload } from "antd";
+import { Form, Input, Button, DatePicker, Avatar, Upload } from "antd";
 import { Rule } from "antd/es/form";
 import moment from "moment";
 import dayjs from "dayjs";
@@ -11,7 +11,7 @@ import { UpdateUserParams } from "../../../models/api/request/users/user.request
 import { UploadOutlined } from "@ant-design/icons";
 import { BaseService } from "../../../services/config/base.service";
 import { ROUTER_URL } from "../../../const/router.path";
-import { HTTP_STATUS } from "../../../app/enums";
+// import { HTTP_STATUS } from "../../../app/enums";
 import { HttpException } from "../../../app/exceptions";
 import Editor from "../../generic/tiny/Editor";
 
@@ -97,9 +97,9 @@ const EditUserProfile = () => {
         });
       } catch (error) {
         if (error instanceof HttpException) {
-          message.error(error.message);
+          helpers.notificationMessage(error.message, "error");
         } else {
-          message.error("Failed to fetch user details. Please try again.");
+          helpers.notificationMessage("Failed to fetch user details. Please try again.", "error");
         }
       }
     },
@@ -145,7 +145,7 @@ const EditUserProfile = () => {
         };
         reader.readAsDataURL(file);
       } catch (error: any) {
-        message.error(error.message);
+        helpers.notificationMessage(error.message, "error");
       }
       return false; // Prevent default upload behavior
     },
@@ -169,19 +169,10 @@ const EditUserProfile = () => {
         };
 
         await UserService.updateUser(id as string, updatedValues as UpdateUserParams);
-        message.success("Profile updated successfully");
+        helpers.notificationMessage("Profile updated successfully", "success");
         navigate(ROUTER_URL.STUDENT.SETTING);
       } catch (error: any) {
-        console.error("Error updating profile:", error);
-        if (error instanceof HttpException) {
-          message.error(`Failed to update profile: ${error.message}`);
-        } else if (error.response?.status === HTTP_STATUS.UNAUTHORIZED || error.response?.status === HTTP_STATUS.FORBIDDEN) {
-          message.error("Unauthorized access. Please login again.");
-        } else if (error.response?.status === HTTP_STATUS.BAD_REQUEST) {
-          message.error(error.response.data.message || "Invalid input data");
-        } else {
-          message.error("Failed to update profile. Please try again.");
-        }
+        helpers.notificationMessage(error.message, "error");
       } finally {
         setState((prev) => ({ ...prev, uploading: false }));
       }

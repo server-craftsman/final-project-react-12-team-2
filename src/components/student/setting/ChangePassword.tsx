@@ -1,4 +1,4 @@
-import { Form, Input, Button, message } from "antd";
+import { Form, Input, Button } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useEffect } from "react";
@@ -6,6 +6,7 @@ import { UserService } from "../../../services/student/user.service";
 import { HttpException } from "../../../app/exceptions";
 import { ROUTER_URL } from "../../../const/router.path";
 import { helpers } from "../../../utils";
+
 interface ChangePasswordProps {
   visible: boolean;
   currentPassword: string;
@@ -32,16 +33,16 @@ const ChangePassword: React.FC<ChangePasswordProps> = () => {
         new_password: values.new_password
       });
       if (response) {
-        message.success("Password changed successfully");
+        helpers.notificationMessage("Password changed successfully", "success");
         passwordForm.resetFields();
         logout();
         navigate(ROUTER_URL.LOGIN);
       }
     } catch (error) {
       if (error instanceof HttpException) {
-        message.error(error.message || "Cannot change password");
+        helpers.notificationMessage(error.message || "Cannot change password", "error");
       } else {
-        message.error("Please check the information you entered");
+        helpers.notificationMessage("Please check the information you entered", "error");
         console.error("Error changing password:", error);
       }
     }

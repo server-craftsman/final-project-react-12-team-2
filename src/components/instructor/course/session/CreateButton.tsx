@@ -1,4 +1,4 @@
-import { Button, Form, Input, message, Modal, Select } from "antd";
+import { Button, Form, Input, Modal, Select } from "antd";
 const { Option } = Select;
 import { useState } from "react";
 // import TinyMCEEditor from "../../../generic/tiny/TinyMCEEditor";
@@ -7,6 +7,7 @@ import { SessionService } from "../../../../services/session/session.service";
 import { CreateSessionRequestModel } from "../../../../models/api/request/session/session.request.model";
 import { CourseService } from "../../../../services/course/course.service";
 import { GetCourseResponse } from "../../../../models/api/responsive/course/course.response.model";
+import { helpers } from "../../../../utils";
 
 const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +28,7 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
       });
       setCourses(courseData.data.data.pageData.map((course) => ({ ...course, id: course._id })) || []);
     } catch (error) {
-      message.error("Failed to load courses");
+      helpers.notificationMessage("Failed to load courses", "error");
       console.error(error);
     }
   };
@@ -48,9 +49,7 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
       const createSessionResponse = await SessionService.createSession(requestData);
 
       if (createSessionResponse) {
-        setTimeout(() => {
-          message.success("Session created successfully");
-        }, 1000);
+        helpers.notificationMessage("Session created successfully", "success");
         setIsOpen(false);
         form.resetFields();
         // setDescription("");
@@ -60,7 +59,7 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
       }
     } catch (error) {
       console.error("Failed to create session:", error);
-      message.error("Failed to create session");
+      helpers.notificationMessage("Failed to create session", "error");
     }
   };
 

@@ -1,7 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button, Form, Input, Row, Col } from "antd";
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { message } from "antd";
 import { CategoryService } from "../../../services/category/category.service";
 import { UpdateCategoryParams } from "../../../models/api/request/admin/category.request.model";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
@@ -11,6 +10,7 @@ import Editor from "../../generic/tiny/Editor";
 import { Rule } from "antd/es/form";
 import { ROUTER_URL } from "../../../const/router.path";
 import { ResponseSuccess } from "../../../app/interface";
+import { notificationMessage } from "../../../utils/helper";
 
 const EditCategory = () => {
   const { id } = useParams<{ id: string }>();
@@ -48,10 +48,10 @@ const EditCategory = () => {
           }));
           form.setFieldsValue(categoryData);
         } else {
-          message.error("No page data available for this category.");
+          notificationMessage("No page data available for this category.", "error");
         }
       } catch (error) {
-        message.error("Failed to fetch category details. Please try again.");
+        notificationMessage("Failed to fetch category details. Please try again.", "error");
       }
     },
     [form]
@@ -69,9 +69,9 @@ const EditCategory = () => {
       try {
         await CategoryService.updateCategory(id as string, values);
         navigate(ROUTER_URL.ADMIN.CATEGORIES);
-        message.success("Category updated successfully");
+        notificationMessage("Category updated successfully", "success");
       } catch (error) {
-        message.error("Failed to update category. Please try again.");
+        notificationMessage("Failed to update category. Please try again.", "error");
       } finally {
         setState((prev) => ({ ...prev, loading: false }));
       }

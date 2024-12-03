@@ -1,4 +1,4 @@
-import { Table, Space, message, Modal, Button } from "antd";
+import { Table, Space, Modal, Button } from "antd";
 import React, { useEffect, useState, useCallback } from "react";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,8 @@ import { CategoryService } from "../../../services/category/category.service";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
 // import parse from "html-react-parser";
 import { HttpException } from "../../../app/exceptions";
+import { notificationMessage } from "../../../utils/helper";
+
 interface SearchCategoryCondition {
   keyword: string;
   is_parent: boolean;
@@ -57,7 +59,7 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
       setCategory(response.data?.data ? response.data.data : null);
       setPageInfo(response.data.data.pageInfo);
     } catch (error) {
-      message.error("An unexpected error occurred while fetching categories");
+      notificationMessage("An unexpected error occurred while fetching categories", "error");
     }
   }, [searchQuery, getSearchCondition]);
 
@@ -74,10 +76,10 @@ const AdminCategory: React.FC<AdminCategoryProps> = ({ searchQuery }) => {
             const response = await CategoryService.deleteCategory(categoryId);
             if (response.data.success) {
               window.location.reload();
-              message.success("Category deleted successfully.");
+              notificationMessage("Category deleted successfully.", "success");
             }
           } catch (error) {
-            message.error(error instanceof HttpException ? error.message : "An error occurred while deleting the category");
+            notificationMessage(error instanceof HttpException ? error.message : "An error occurred while deleting the category", "error");
             console.error("Failed to delete category:", error);
           }
         }
