@@ -7,16 +7,21 @@ import { CategoryService } from "../../../services/category/category.service";
 import Editor from "../../generic/tiny/Editor";
 import { notificationMessage } from "../../../utils/helper";
 
-const CreateCategory: React.FC = () => {
+interface CreateCategoryProps {
+  onCategoryCreated: () => void;
+}
+
+const CreateCategory: React.FC<CreateCategoryProps> = ({ onCategoryCreated }) => {
   const [categories, setCategories] = useState<GetCategoryResponse | null>(null);
   const [isOpen, setOpen] = useState(false);
   const [form] = useForm();
   const [editorContent, setEditorContent] = useState("");
+  const [editorKey, setEditorKey] = useState(0);
 
   const fetchCategories = async () => {
     try {
       const response = await CategoryService.getCategory({
-        pageInfo: { pageNum: 1, pageSize: 100 }, // Adjust pageSize as needed
+        pageInfo: { pageNum: 1, pageSize: 10 }, // Adjust pageSize as needed
         searchCondition: { keyword: "", is_parent: false, is_delete: false }
       });
       setCategories(response.data?.data ? response.data.data : null);
@@ -70,8 +75,8 @@ const CreateCategory: React.FC = () => {
       form.resetFields();
       setEditorContent("");
       setOpen(false);
-      window.location.reload();
       notificationMessage("Category created successfully!", "success");
+      onCategoryCreated();
     } catch (error) {
       console.error("Error creating category:", error);
       notificationMessage("Failed to create category. Please try again.", "error");
@@ -80,9 +85,10 @@ const CreateCategory: React.FC = () => {
 
   const handleOpenModal = () => {
     form.resetFields();
-    setEditorContent("");
     fetchCategories();
+    setEditorContent("");
     setCategories(null);
+    setEditorKey(prevKey => prevKey + 1);
     setOpen(true);
   };
 
@@ -91,14 +97,22 @@ const CreateCategory: React.FC = () => {
       <Button className="bg-gradient-tone mb-4 text-white" onClick={handleOpenModal}>
         Create New Category
       </Button>
-      <Modal open={isOpen} onCancel={() => setOpen(false)} onOk={() => form.submit()}>
+      <Modal open={isOpen} onCancel={() => setOpen(false)} footer={[
+        <Button key="back" onClick={() => setOpen(false)}>
+          Cancel
+        </Button>,
+        <Button key="submit" type="primary" className="bg-gradient-tone" onClick={() => form.submit()}>
+          OK
+        </Button>
+      ]} width={800}>
         <Form form={form} labelCol={{ span: 24 }} onFinish={handleSubmit}>
           <Form.Item label="Name" name="name" rules={[{ required: true, message: "Please input category name" }]}>
             <Input />
           </Form.Item>
           <Form.Item label="Description" rules={[{ required: true, message: "Please input category description" }]}>
             <Editor
-              initialValue="" 
+              key={editorKey}
+              initialValue={editorContent}
               onEditorChange={(content: string) => {
                 setEditorContent(content);
               }}
