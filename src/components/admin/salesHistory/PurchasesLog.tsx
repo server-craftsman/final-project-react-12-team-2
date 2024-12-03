@@ -77,7 +77,7 @@ const PurchasesLog: React.FC<PurchasesLogProps> = ({ onSelectionChange, onInstru
     if (newSelectedPurchases.has(purchaseId)) {
       newSelectedPurchases.delete(purchaseId);
     } else {
-      if (newSelectedPurchases.size === 0 || Array.from(newSelectedPurchases).every(instructor_id => filteredPurchases.find(p => p.instructor_id === instructor_id)?.instructor_id === instructorId)) {
+      if (newSelectedPurchases.size === 0 || Array.from(newSelectedPurchases).every(id => filteredPurchases.find(p => p._id === id)?.instructor_id === instructorId)) {
         newSelectedPurchases.add(purchaseId);
       } else {
         notificationMessage("You can only select purchases from the same instructor.", "warning");
