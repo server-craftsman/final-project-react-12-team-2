@@ -239,27 +239,23 @@ const ViewUserProfile: React.FC<ViewUserProfileProps> = ({ searchQuery, selected
       onOk: async () => {
         try {
           const userIdsToDelete = users?.pageData
-            .filter((user) => selectedUserIds.has(user._id)) // Consider all selected users
+            .filter((user) => selectedUserIds.has(user._id))
             .map((user) => user._id);
 
           if (userIdsToDelete) {
             for (const userId of userIdsToDelete) {
               await UserService.deleteUser(userId);
-
-              // if (!response.data?.success) {
-              //   throw new HttpException("Failed to delete selected accounts", HTTP_STATUS.BAD_REQUEST);
-              // }
             }
           }
 
           helpers.notificationMessage("Selected accounts have been successfully deleted.", "success");
+          
+          // Clear selected user IDs after successful deletion
+          setSelectedUserIds(new Set()); //debug
+
           fetchUsers(); // Refresh the user list
         } catch (error) {
-          // if (error instanceof HttpException) {
-          //   message.error(error.message);
-          // } else {
           helpers.notificationMessage("An error occurred while deleting accounts.", "error");
-          // }
         }
       }
     });

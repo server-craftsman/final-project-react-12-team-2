@@ -1,28 +1,25 @@
-import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button, Form, Input, Row, Col } from "antd";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { CategoryService } from "../../../services/category/category.service";
 import { UpdateCategoryParams } from "../../../models/api/request/admin/category.request.model";
 import { Category } from "../../../models/api/responsive/admin/category.responsive.model";
-// import TinyMCEEditor from "../../generic/tiny/TinyMCEEditor";
 import Editor from "../../generic/tiny/Editor";
-// import { parseTinyEditor } from "../../../utils";
 import { Rule } from "antd/es/form";
-import { ROUTER_URL } from "../../../const/router.path";
-import { ResponseSuccess } from "../../../app/interface";
 import { notificationMessage } from "../../../utils/helper";
 
-const EditCategory = () => {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+interface EditCategoryProps {
+  categoryId: string;
+  onCategoryUpdated: () => void;
+  onClose: () => void;
+}
+
+const EditCategory: React.FC<EditCategoryProps> = ({ categoryId, onCategoryUpdated, onClose }) => {
   const [form] = Form.useForm();
   const [state, setState] = useState<{
-    category: ResponseSuccess<Category> | null;
-    categoryData: Category | null;
+    category: Category | null;
     loading: boolean;
   }>({
     category: null,
-    categoryData: null,
     loading: false
   });
 
@@ -35,7 +32,7 @@ const EditCategory = () => {
   );
 
   const fetchCategoryDetails = useCallback(
-    async (categoryId: string) => {
+    async () => {
       try {
         const res = await CategoryService.getCategoryDetails(categoryId);
         const categoryData = res.data?.data;
@@ -43,8 +40,7 @@ const EditCategory = () => {
         if (categoryData) {
           setState((prev) => ({
             ...prev,
-            category: res.data,
-            categoryData: categoryData
+            category: categoryData
           }));
           form.setFieldsValue(categoryData);
         } else {
@@ -54,29 +50,30 @@ const EditCategory = () => {
         notificationMessage("Failed to fetch category details. Please try again.", "error");
       }
     },
-    [form]
+    [categoryId, form]
   );
 
   useEffect(() => {
-    if (id) {
-      fetchCategoryDetails(id);
+    if (categoryId) {
+      fetchCategoryDetails();
     }
-  }, [id, fetchCategoryDetails]);
+  }, [categoryId, fetchCategoryDetails]);
 
   const handleFormSubmit = useCallback(
     async (values: UpdateCategoryParams) => {
       setState((prev) => ({ ...prev, loading: true }));
       try {
-        await CategoryService.updateCategory(id as string, values);
-        navigate(ROUTER_URL.ADMIN.CATEGORIES);
+        await CategoryService.updateCategory(categoryId, values);
         notificationMessage("Category updated successfully", "success");
+        onCategoryUpdated();
+        onClose();
       } catch (error) {
         notificationMessage("Failed to update category. Please try again.", "error");
       } finally {
         setState((prev) => ({ ...prev, loading: false }));
       }
     },
-    [id, navigate]
+    [categoryId, onCategoryUpdated, onClose]
   );
 
   const editChange = (value: string) => {
@@ -97,7 +94,7 @@ const EditCategory = () => {
         </Col>
         <Col span={24}>
           <Form.Item label={<span className="font-medium text-[#1a237e]">Description</span>} name="description" rules={validationRules.description as Rule[]}>
-            <Editor initialValue={state.categoryData?.description || ""} onEditorChange={editChange} />
+            <Editor initialValue={state.category?.description || ""} onEditorChange={editChange} />
           </Form.Item>
         </Col>
       </Row>
@@ -105,9 +102,7 @@ const EditCategory = () => {
         <Button type="primary" htmlType="submit" loading={state.loading} className="bg-gradient-tone">
           Save
         </Button>
-        <Link to={ROUTER_URL.ADMIN.CATEGORIES}>
-          <Button className="ml-3">Back</Button>
-        </Link>
+        <Button onClick={onClose} className="ml-3">Cancel</Button>
       </Form.Item>
     </Form>
   );

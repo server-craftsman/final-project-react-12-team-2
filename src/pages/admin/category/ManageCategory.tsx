@@ -39,6 +39,7 @@ function ManageCategory() {
           }
         });
 
+
         if (response && response.success) {
           setCategories(response.data.pageData);
         }
@@ -55,6 +56,11 @@ function ManageCategory() {
     setSearchQuery(query);
   };
 
+  const handleCategoryCreated = () => {
+    setSearchQuery("");
+    fetchCategoriesData();
+  };
+
   if (categories) {
     return (
       <Content>
@@ -66,9 +72,9 @@ function ManageCategory() {
         >
           <div className="mb-4 flex items-center justify-between">
             <CustomSearch onSearch={handleSearch} placeholder="Search by name or description" className="search-input" />
-            <CreateCategory />
+            <CreateCategory onCategoryCreated={handleCategoryCreated} />
           </div>
-          <AdminCategory searchQuery={searchQuery} />
+          <AdminCategory searchQuery={searchQuery} onCategoryCreated={handleCategoryCreated} onCategoryUpdated={handleCategoryCreated} />
         </Card>
       </Content>
     );
