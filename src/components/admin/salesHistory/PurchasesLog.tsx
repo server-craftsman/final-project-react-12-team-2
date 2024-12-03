@@ -9,6 +9,7 @@ import { PurchaseStatus } from "../../../app/enums/purchase.status";
 import PurchaseCheckbox from "../../instructor/purchase/PurchaseCheckbox";
 import moment from "moment";
 import { ColumnType } from "antd/es/table";
+import { notificationMessage } from "../../../utils/helper";
 
 interface PurchasesLogProps {
   onSelectionChange: (selected: Set<string>) => void;
@@ -27,6 +28,10 @@ const PurchasesLog: React.FC<PurchasesLogProps> = ({ onSelectionChange, onInstru
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [pageInfo, setPageInfo] = useState<any>({});
+
+  useEffect(() => {
+    setSelectedPurchases(new Set());
+  }, [refreshKey]);
 
   const fetchPurchases = async () => {
     const params: SearchForAdminPurchasesRequestModel = {
@@ -72,7 +77,12 @@ const PurchasesLog: React.FC<PurchasesLogProps> = ({ onSelectionChange, onInstru
     if (newSelectedPurchases.has(purchaseId)) {
       newSelectedPurchases.delete(purchaseId);
     } else {
-      newSelectedPurchases.add(purchaseId);
+      if (newSelectedPurchases.size === 0 || Array.from(newSelectedPurchases).every(instructor_id => filteredPurchases.find(p => p.instructor_id === instructor_id)?.instructor_id === instructorId)) {
+        newSelectedPurchases.add(purchaseId);
+      } else {
+        notificationMessage("You can only select purchases from the same instructor.", "warning");
+        return;
+      }
     }
     setSelectedPurchases(newSelectedPurchases);
     onSelectionChange(newSelectedPurchases);

@@ -37,6 +37,7 @@ const PurchasesLogManagement: React.FC = () => {
 
   const handleRequestComplete = () => {
     console.log("Purchases requested successfully");
+    setSelectedPurchases(new Set());
     setRefreshKey(prevKey => prevKey + 1);
   };
 
