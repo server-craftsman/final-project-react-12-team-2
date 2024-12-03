@@ -1,7 +1,7 @@
 import React, { lazy, useEffect } from "react";
 import { Avatar, Dropdown, Layout } from "antd";
 import { UserOutlined, LogoutOutlined, DownOutlined, HomeOutlined } from "@ant-design/icons";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 const InstructorNavbar = lazy(() => import("./InstructorNavbar"));
 const StudentFooter = lazy(() => import("../main-layout/MainFooter"));
 import { useAuth } from "../../contexts/AuthContext";
@@ -73,16 +73,18 @@ const Instructor: React.FC = () => {
                     {
                       key: "profile",
                       label: (
-                        <div className="p-2">
-                          <div className="mb-2 flex items-center space-x-3">
+                        <Link to="/instructor/setting">
+                          <div className="p-2">
+                            <div className="mb-2 flex items-center space-x-3">
                             <Avatar size={40} src={userInfo?.avatar_url} icon={!userInfo?.avatar_url && <UserOutlined />} />
                             <div>
                               <div className="font-semibold">{userInfo?.name || "Instructor"}</div>
                               <div className="text-sm text-gray-500">{userInfo?.email}</div>
                             </div>
+                            </div>
+                            <div className="mt-2 border-t pt-2" />
                           </div>
-                          <div className="mt-2 border-t pt-2" />
-                        </div>
+                        </Link>
                       )
                     },
                     {

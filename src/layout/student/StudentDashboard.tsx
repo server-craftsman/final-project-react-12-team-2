@@ -1,6 +1,6 @@
 import React, { lazy, useEffect } from "react";
 import { Layout } from "antd";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import StudentDashboardNavbar from "./StudentDashboardNavbar";
 import { Content } from "antd/es/layout/layout";
 const StudentFooter = lazy(() => import("../main-layout/MainFooter"));
@@ -74,16 +74,18 @@ const StudentDashboard: React.FC = () => {
                     {
                       key: "profile",
                       label: (
-                        <div className="p-2">
-                          <div className="mb-2 flex items-center space-x-3">
+                        <Link to="/dashboard-student/student-setting">
+                          <div className="p-2">
+                            <div className="mb-2 flex items-center space-x-3">
                             <Avatar size={40} src={userInfo?.avatar_url} icon={!userInfo?.avatar_url && <UserOutlined />} />
                             <div>
                               <div className="font-semibold">{userInfo?.name || "Admin"}</div>
                               <div className="text-sm text-gray-500">{userInfo?.email}</div>
+                              </div>
                             </div>
+                            <div className="mt-2 border-t pt-2" />
                           </div>
-                          <div className="mt-2 border-t pt-2" />
-                        </div>
+                        </Link>
                       )
                     },
                     {

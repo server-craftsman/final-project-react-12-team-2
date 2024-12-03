@@ -1,5 +1,5 @@
 import React, { lazy, useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { Layout } from "antd";
 import { Dropdown } from "antd";
 import { LogoutOutlined, DownOutlined, HomeOutlined } from "@ant-design/icons";
@@ -74,8 +74,9 @@ const Admin: React.FC = () => {
                     {
                       key: "profile",
                       label: (
-                        <div className="p-2">
-                          <div className="mb-2 flex items-center space-x-3">
+                        <Link to="/admin/admin-info">
+                          <div className="p-2">
+                            <div className="mb-2 flex items-center space-x-3">
                             <img
                               src={userInfo?.avatar_url || `https://ui-avatars.com/api/?name=${userInfo?.name[0]}`}
                               alt="Avatar"
@@ -90,7 +91,8 @@ const Admin: React.FC = () => {
                             </div>
                           </div>
                           <div className="mt-2 border-t pt-2" />
-                        </div>
+                          </div>
+                        </Link>
                       )
                     },
                     {
