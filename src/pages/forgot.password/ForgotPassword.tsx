@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import { toast } from "react-toastify";
+import { helpers } from "../../utils";
 import { ROUTER_URL } from "../../const/router.path";
 
 const ForgotPassword: React.FC = () => {
@@ -15,9 +15,9 @@ const ForgotPassword: React.FC = () => {
 
   useEffect(() => {
     if (error) {
-      toast.error(error);
+      helpers.notificationMessage(error, "error");
     } else if (success) {
-      toast.success(success);
+      helpers.notificationMessage(success, "success");
       setTimeout(() => {
         setCountdown(3); // Start 3 second countdown after showing toast
       }, 1000); // Delay starting countdown to allow toast to display
