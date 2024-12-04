@@ -57,7 +57,7 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
       values.full_time = Number(values.full_time);
       values.position_order = Number(values.position_order);
       await LessonService.createLesson(values);
-      helpers.notificationMessage("Lesson created successfully", "success");
+      helpers.notificationMessage(`Lesson "${values.name}" created successfully`, "success");
       setIsOpen(false);
 
       form.resetFields();

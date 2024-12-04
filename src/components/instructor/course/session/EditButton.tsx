@@ -58,7 +58,7 @@ const EditButton = ({ data, onSessionEdited, fetchSessionDetails }: any) => {
       }
 
       await SessionService.updateSession(payload, data._id);
-      helpers.notificationMessage("Session edited successfully", "success");
+      helpers.notificationMessage(`Session "${values.name}" edited successfully`, "success");
       setIsOpen(false);
       form.resetFields();
       if (onSessionEdited) {

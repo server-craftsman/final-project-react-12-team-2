@@ -139,7 +139,7 @@ const EditButton = ({ data, onEditSuccess, fetchCourseDetails }: EditButtonProps
       const response = await CourseService.updateCourse(data._id, updateParams);
 
       if (response.data?.data) {
-        helpers.notificationMessage("Course updated successfully", "success");
+        helpers.notificationMessage(`Course "${formValues.name}" updated successfully`, "success");
         setIsOpen(false);
         form.resetFields();
         setDescription("");

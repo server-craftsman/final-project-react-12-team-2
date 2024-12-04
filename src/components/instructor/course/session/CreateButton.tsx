@@ -49,7 +49,7 @@ const CreateButton = ({ onSessionCreated }: { onSessionCreated?: () => void }) =
       const createSessionResponse = await SessionService.createSession(requestData);
 
       if (createSessionResponse) {
-        helpers.notificationMessage("Session created successfully", "success");
+        helpers.notificationMessage(`Session "${values.name}" created successfully`, "success");
         setIsOpen(false);
         form.resetFields();
         // setDescription("");

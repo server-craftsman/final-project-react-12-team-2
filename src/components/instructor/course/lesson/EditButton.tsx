@@ -70,13 +70,10 @@ const EditButton = ({ data, isOpen, onClose, onLessonCreated }: any) => {
         position_order: formValues.position_order ? Number(formValues.position_order) : null
       };
 
-      console.log("Update parameters:", params);
-
       const response = await LessonService.updateLesson(lessonId, params);
-      console.log("API Response:", response);
 
       if (response.data?.success) {
-        helpers.notificationMessage("Lesson updated successfully", "success");
+        helpers.notificationMessage(`Lesson "${formValues.name}" updated successfully`, "success");
         onClose();
         form.resetFields();
         onLessonCreated();

@@ -163,7 +163,7 @@ const CreateCourseButton = ({ onCourseCreated }: { onCourseCreated?: () => void 
 
       if (courseResponse) {
         setTimeout(() => {
-          helpers.notificationMessage("Course created successfully!", "success");
+          helpers.notificationMessage(`Course "${params.name}" created successfully!`, "success");
         }, 2000);
 
         // Reset form and state after successful creation
