@@ -4,8 +4,8 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import StudentDashboardNavbar from "./StudentDashboardNavbar";
 import { Content } from "antd/es/layout/layout";
 const StudentFooter = lazy(() => import("../main-layout/MainFooter"));
-import { Avatar, Dropdown } from "antd";
-import { UserOutlined, LogoutOutlined, DownOutlined, HomeOutlined } from "@ant-design/icons";
+import { Dropdown } from "antd";
+import { LogoutOutlined, DownOutlined, HomeOutlined } from "@ant-design/icons";
 import { useAuth } from "../../contexts/AuthContext";
 import { AuthService } from "../../services/authentication/auth.service";
 
