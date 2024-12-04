@@ -1,10 +1,10 @@
 import Table, { ColumnsType } from "antd/es/table";
 // import { FormOutlined, SendOutlined } from "@ant-design/icons";
-import { formatDate, moneyFormat } from "../../../../utils/helper";
+import { formatDate, moneyFormat, notificationMessage } from "../../../../utils/helper";
 import { CourseStatusBadge } from "../../../../utils/courseStatus";
 import { StatusType } from "../../../../app/enums";
 import { useEffect, useState, useCallback } from "react";
-import { Button, message, Modal, Switch } from "antd";
+import { Button, Modal, Switch } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import CustomSearch from "../../../generic/search/CustomSearch";
 import EditButton from "./EditButton";
@@ -94,11 +94,11 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       if (details && details.data && details.data.data) {
         return details.data.data; // Return the fetched course details
       } else {
-        message.error("Course details not found");
+        notificationMessage("Course details not found", "error");
         return null;
       }
     } catch (error) {
-      message.error("Failed to fetch course details");
+      notificationMessage("Failed to fetch course details", "error");
       return null;
     }
   };
@@ -113,10 +113,10 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       // window.location.reload();
       await handleCourseCreated();
       setTimeout(() => {
-        message.success("Course approved and activated");
+        notificationMessage("Course approved and activated", "success");
       }, 1000);
     } catch (error) {
-      message.error("Failed to approve course");
+      notificationMessage("Failed to approve course", "error");
     }
   };
 
@@ -129,10 +129,10 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       });
       await handleCourseCreated();
       setTimeout(() => {
-        message.success("Course inactivated");
+        notificationMessage("Course inactivated", "success");
       }, 1000);
     } catch (error) {
-      message.error("Failed to inactivate course");
+      notificationMessage("Failed to inactivate course", "error");
     }
   };
 
@@ -244,7 +244,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       const validCourses = courses?.filter((course) => selectedCourse.includes(Number(course._id)) && (course.status === StatusType.NEW || course.status === StatusType.REJECT) && (course.lesson_count ?? 0) > 0 && (course.session_count ?? 0) > 0);
 
       if (!validCourses?.length) {
-        message.warning("No valid courses selected to send");
+        notificationMessage("No valid courses selected to send", "warning");
         return;
       }
 
@@ -268,10 +268,10 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
 
       setIsModalVisible(false);
       setSelectedRowKeys([]);
-      message.success("Successfully sent courses to admin");
+      notificationMessage("Successfully sent courses to admin", "success");
       handleCourseCreated();
     } catch (error) {
-      message.error("Failed to send courses to admin");
+      notificationMessage("Failed to send courses to admin", "error");
     }
   }, [courses, selectedCourse, setIsModalVisible, setSelectedRowKeys, handleCourseCreated]); //debug
 
@@ -291,7 +291,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       const validCourses = courses?.filter((course) => selectedRowKeys.includes(course._id as unknown as number) && (course.status === StatusType.NEW || course.status === StatusType.REJECT) && (course.lesson_count ?? 0) > 0 && (course.session_count ?? 0) > 0);
 
       if (!validCourses?.length) {
-        message.warning("No valid courses selected to send");
+        notificationMessage("No valid courses selected to send", "warning");
         return;
       }
 
@@ -315,15 +315,15 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
 
       handleCourseCreated();
       setSelectedRowKeys([]); // Clear all selected checkboxes
-      message.success("Successfully sent courses to admin");
+      notificationMessage("Successfully sent courses to admin", "success");
     } catch (error) {
-      message.error("Failed to send courses to admin");
+      notificationMessage("Failed to send courses to admin", "error");
     }
   }, [courses, selectedRowKeys, handleCourseCreated, setSelectedRowKeys]);
 
   const confirmSendToAdmin = () => {
     if (selectedRowKeys.length === 0) {
-      message.warning("Please select at least one course to send to admin.");
+      notificationMessage("Please select at least one course to send to admin.", "warning");
       return;
     }
 
@@ -332,7 +332,7 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       content: "Are you sure you want to send the selected courses to the admin?",
       onOk: sendToAdmin, // Chỉ gọi hàm sendToAdmin khi người dùng xác nhận
       onCancel() {
-        message.info("Send to admin cancelled");
+        notificationMessage("Send to admin cancelled", "info");
       }
     });
   };
