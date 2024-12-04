@@ -205,19 +205,19 @@ const DisplayCourse = ({ searchTerm, statusFilter, onSearch, onStatusChange, ref
       title: "Price",
       key: "price",
       dataIndex: "price",
-      render: (price: number) => <div className="flex justify-end">{moneyFormat(price)}</div>
+      render: (price: number) => <div className="flex justify-end font-semibold text-emerald-600">{moneyFormat(price)}</div>
     },
     {
       title: "Discount",
       key: "discount",
       dataIndex: "discount",
-      render: (discount: number) => <div className="flex justify-end">{discount + "% OFF"}</div>
+      render: (discount: number) => <div className="flex justify-end font-semibold text-indigo-600">{discount + "% OFF"}</div>
     },
     {
       title: "Created At",
       key: "created_at",
       dataIndex: "created_at",
-      render: (text: Date) => formatDate(text)
+      render: (text: Date) => <span className="font-bold">{formatDate(text)}</span>
     },
     {
       title: "Actions",
