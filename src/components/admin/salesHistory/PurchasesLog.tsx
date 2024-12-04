@@ -135,14 +135,6 @@ const PurchasesLog: React.FC<PurchasesLogProps> = ({ onSelectionChange, onInstru
       key: "instructor_name",
       render: (instructor_name: string) => (
         <div className="flex items-center">
-          <img
-            src={`https://ui-avatars.com/api/?name=${instructor_name[0]}`}
-            alt="Avatar"
-            className="h-10 w-10 rounded-full"
-            onError={(e) => {
-              e.currentTarget.src = `https://ui-avatars.com/api/?name=${instructor_name[0]}`;
-            }}
-          />
           <span className="ml-2">{instructor_name}</span>
         </div>
       )
@@ -151,14 +143,14 @@ const PurchasesLog: React.FC<PurchasesLogProps> = ({ onSelectionChange, onInstru
       title: "Price Paid",
       dataIndex: "price_paid",
       key: "price_paid",
-      render: (price_paid: number) => <div style={{ textAlign: "right" }}>{moneyFormat(price_paid)}</div>
+      render: (price_paid: number) => <div className="flex justify-end font-semibold text-emerald-600">{moneyFormat(price_paid)}</div>
     },
     {
       title: "Discount",
       dataIndex: "discount",
       key: "discount",
       render: (discount: number) => {
-        return <div style={{ textAlign: "right" }}>{`${discount}% OFF`}</div>;
+        return <div className="flex justify-end font-semibold text-indigo-600">{`${discount}% OFF`}</div>;
       },
     },
     {
@@ -166,7 +158,7 @@ const PurchasesLog: React.FC<PurchasesLogProps> = ({ onSelectionChange, onInstru
       dataIndex: "created_at",
       key: "created_at",
       render: (created_at: Date) => {
-        return formatDate(created_at);
+        return <span className="font-bold">{formatDate(created_at)}</span>;
       }
     }
   ];

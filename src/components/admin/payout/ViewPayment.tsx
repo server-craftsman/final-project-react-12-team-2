@@ -195,14 +195,6 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
       key: "instructor_name",
       render: (instructor_name: string) => (
         <div className="flex items-center">
-          <img
-            src={`https://ui-avatars.com/api/?name=${instructor_name[0]}`}
-            alt="Avatar"
-            className="h-10 w-10 rounded-full"
-            onError={(e) => {
-              e.currentTarget.src = `https://ui-avatars.com/api/?name=${instructor_name[0]}`;
-            }}
-          />
           <span className="ml-2">{instructor_name}</span>
         </div>
       )
@@ -232,25 +224,25 @@ const ViewPayment: React.FC<ViewPaymentProps> = ({ searchQuery, status, onStatus
       title: "Balance Origin",
       dataIndex: "balance_origin",
       key: "balance_origin",
-      render: (money: number) => <div style={{ textAlign: "right" }}>{moneyFormat(money)}</div>
+      render: (money: number) => <div className="flex justify-end font-semibold text-emerald-600">{moneyFormat(money)}</div>
     },
     {
       title: "Balance Instructor Paid",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
-      render: (money: number) => <div style={{ textAlign: "right" }}>{moneyFormat(money)}</div>
+      render: (money: number) => <div className="flex justify-end font-semibold text-gray-600">{moneyFormat(money)}</div>
     },
     {
       title: "Balance Instructor Received",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
-      render: (money: number) => <div style={{ textAlign: "right" }}>{moneyFormat(money)}</div>
+      render: (money: number) => <div className="flex justify-end font-semibold text-indigo-600">{moneyFormat(money)}</div>
     },
     {
       title: "Date Created",
       dataIndex: "created_at",
       key: "created_at",
-      render: (date: string) => formatDate(new Date(date))
+      render: (date: string) => <span className="font-bold">{formatDate(new Date(date))}</span>
     },
     {
       title: "Change Status",

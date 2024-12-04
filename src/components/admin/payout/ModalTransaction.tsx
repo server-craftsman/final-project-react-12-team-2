@@ -21,22 +21,28 @@ const ModalTransaction: React.FC<ModalTransactionProps> = ({ isVisible, onClose,
     //   key: "purchase_id"
     // },
     {
-      title: "Balance Amount",
+      title: "Price Original",
       dataIndex: "price",
       key: "price",
-      render: (money: number) => moneyFormat(money)
+      render: (money: number) => <div className="flex justify-end font-semibold text-emerald-600">{moneyFormat(money)}</div>
     },
     {
-      title: "Balance Amount Paid",
+      title: "Price Paid",
       dataIndex: "price_paid",
       key: "price_paid",
-      render: (money: number) => moneyFormat(money)
+      render: (money: number) => <div className="flex justify-end font-semibold text-gray-600">{moneyFormat(money)}</div>
+    },
+    {
+      title: "Discount",
+      dataIndex: "discount",
+      key: "discount",
+      render: (discount: number) => <div className="flex justify-end font-semibold text-indigo-600">{discount + "% OFF"}</div>
     },
     {
       title: "Date Created",
       dataIndex: "created_at",
       key: "created_at",
-      render: (date: string) => formatDate(new Date(date))
+      render: (date: string) => <span className="font-bold">{formatDate(new Date(date))}</span>
     }
   ];
 

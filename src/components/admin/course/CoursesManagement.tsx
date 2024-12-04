@@ -193,19 +193,19 @@ const CoursesManagement: React.FC<{
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (money: number) => <div style={{ textAlign: "right" }}>{moneyFormat(money)}</div>
+      render: (money: number) => <div className="flex justify-end font-semibold text-emerald-600">{moneyFormat(money)}</div>
     },
     {
       title: "Discount",
       dataIndex: "discount",
       key: "discount",
-      render: (discount: string) => <div style={{ textAlign: "right" }}>{`${discount}% OFF`}</div>
+      render: (discount: string) => <div className="flex justify-end font-semibold text-indigo-600">{`${discount}% OFF`}</div>
     },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (date: string) => formatDate(new Date(date))
+      render: (date: string) => <span className="font-bold">{formatDate(new Date(date))}</span>
     },
     {
       title: "Action",
