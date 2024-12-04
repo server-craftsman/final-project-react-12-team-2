@@ -31,7 +31,7 @@ const ChangePasswordAdmin = ({ visible }: { visible: boolean }) => {
         helpers.notificationMessage("Password changed successfully", "success");
         logout();
         form.resetFields();
-        navigate(ROUTER_URL.ADMIN.INFO);
+        navigate(ROUTER_URL.LOGIN);
       }
     } catch (error) {
       helpers.notificationMessage("Please check the information you entered", "error");
