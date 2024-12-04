@@ -3,15 +3,19 @@ import { BookOutlined, UserOutlined, DollarOutlined } from "@ant-design/icons";
 import { CourseService } from "../../../services/course/course.service";
 import { SubscriberService } from "../../../services/subscriber/subscriber.service";
 import { useAuth } from "../../../contexts/AuthContext";
-import { useEffect, useState } from "react";
+import { useState, useCallback } from "react";
 import DetailCourseModal from "./DetailCourseModal";
 import DetailSubscribersModal from "./DetailSubscribersModal";
 import { GetCourseResponsePageData } from "../../../models/api/responsive/course/course.response.model";
 import { GetSubscribersResponse } from "../../../models/api/responsive/subscriber/subscriber.response.model";
 const { Title } = Typography;
 import { helpers } from "../../../utils";
+import { useFetchDashboardInstructor } from "../../../hooks/useFetchDashboardInstructor";
 
-const Introduction = () => {
+interface IntroductionProps {
+  isLoading: boolean;
+}
+const Introduction = ({ isLoading }: IntroductionProps) => {
   const [totalCourses, setTotalCourses] = useState<number>(0);
   const [totalSubscribers, setTotalSubscribers] = useState<number>(0);
   const [courses, setCourses] = useState<GetCourseResponsePageData[]>();
@@ -21,9 +25,8 @@ const Introduction = () => {
   const [balance, setBalance] = useState<number>(0);
   const [totalBalance, setTotalBalance] = useState<number>(0);
   const { userInfo } = useAuth();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const fetchCourses = async () => {
+  const fetchCourses = useCallback(async () => {
     let totalCoursesCount = 0;
     let pageNum = 1;
     const pageSize = 10;
@@ -55,9 +58,9 @@ const Introduction = () => {
 
     setTotalCourses(totalCoursesCount);
     setCourses(allCourses);
-  };
+  }, []);
 
-  const fetchSubscribers = async () => {
+  const fetchSubscribers = useCallback(async () => {
     let totalSubscribersCount = 0;
     let pageNum = 1;
     const pageSize = 10;
@@ -92,9 +95,9 @@ const Introduction = () => {
 
     setTotalSubscribers(totalSubscribersCount);
     setSubscribers(allSubscribers as unknown as GetSubscribersResponse[]);
-  };
+  }, []);
 
-  const fetchUserBalance = async () => {
+  const fetchUserBalance = useCallback(async () => {
     try {
       const balanceTotal = userInfo?.balance_total ?? 0;
       const balanceCurrent = userInfo?.balance ?? 0;
@@ -103,19 +106,9 @@ const Introduction = () => {
     } catch (error) {
       console.error("Failed to fetch user balance:", error);
     }
-  };
+  }, [userInfo]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      await fetchCourses();
-      await fetchSubscribers();
-      await fetchUserBalance();
-      setIsLoading(false);
-    };
-
-    fetchData();
-  }, []);
+  useFetchDashboardInstructor(fetchCourses, fetchSubscribers, fetchUserBalance);
 
   return (
     <Spin spinning={isLoading} tip="Loading...">

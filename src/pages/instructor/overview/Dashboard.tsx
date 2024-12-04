@@ -3,7 +3,7 @@ import LatestTransaction from "../../../components/instructor/overview/LatestTra
 const Dashboard = () => {
   return (
     <div>
-      <Introduction />
+      <Introduction isLoading={false} />
       <LatestTransaction />
     </div>
   );
