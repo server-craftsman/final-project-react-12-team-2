@@ -81,10 +81,10 @@ const Admin: React.FC = () => {
                               src={userInfo?.avatar_url || `https://ui-avatars.com/api/?name=${userInfo?.name[0]}`}
                               alt="Avatar"
                               className="h-10 w-10 rounded-full"
-                              onError={(e) => {
-                                e.currentTarget.src = `https://ui-avatars.com/api/?name=${userInfo?.name[0]}`;
-                              }}
-                            />
+                                onError={(e) => {
+                                  e.currentTarget.src = `https://ui-avatars.com/api/?name=${userInfo?.name[0]}`;
+                                }}
+                              />
                             <div>
                               <div className="font-semibold">{userInfo?.name || "Admin"}</div>
                               <div className="text-sm text-gray-500">{userInfo?.email}</div>

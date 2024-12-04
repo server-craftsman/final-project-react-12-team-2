@@ -32,7 +32,7 @@ const StudentInformation = () => {
           <img
             src={userInfo.avatar_url || `https://ui-avatars.com/api/?name=${userInfo.name[0]}`}
             alt="Avatar"
-            className="h-10 w-10 rounded-full"
+            className="h-52 w-52 rounded-full"
             onError={(e) => {
               e.currentTarget.src = `https://ui-avatars.com/api/?name=${userInfo.name[0]}`;
             }}

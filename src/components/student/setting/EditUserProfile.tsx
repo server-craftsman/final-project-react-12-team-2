@@ -37,13 +37,13 @@ const EditUserProfile = () => {
           message: "Please enter a valid email address. Please include a @ symbol."
         }
       ],
-      phone_number: [
-        { required: true, message: "Please enter the phone number." },
-        {
-          pattern: /^[0-9]+$/,
-          message: "Please enter a valid phone number. Only numbers are allowed."
-        }
-      ],
+      // phone_number: [
+      //   { required: true, message: "Please enter the phone number." },
+      //   {
+      //     pattern: /^[0-9]+$/,
+      //     message: "Please enter a valid phone number. Only numbers are allowed."
+      //   }
+      // ],
       description: [{ required: true, message: "Please enter the description" }],
       dob: [
         { required: true, message: "Please enter the date of birth" },
@@ -255,7 +255,7 @@ const EditUserProfile = () => {
           <Form.Item label={<span className="font-medium text-[#1a237e]">Email Address</span>} name="email" rules={validationRules.email as Rule[]}>
             <Input className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
           </Form.Item>
-          <Form.Item label={<span className="font-medium text-[#1a237e]">Phone Number</span>} name="phone_number" rules={validationRules.phone_number as Rule[]}>
+          <Form.Item label={<span className="font-medium text-[#1a237e]">Phone Number</span>} name="phone_number">
             <Input className="rounded-lg border-[#1a237e] hover:border-[#1a237e] focus:border-[#1a237e]" />
           </Form.Item>
           <Form.Item label={<span className="font-medium text-[#1a237e]">Description</span>} name="description" rules={validationRules.description as Rule[]}>

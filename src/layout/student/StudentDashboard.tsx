@@ -77,10 +77,17 @@ const StudentDashboard: React.FC = () => {
                         <Link to="/dashboard-student/student-setting">
                           <div className="p-2">
                             <div className="mb-2 flex items-center space-x-3">
-                            <Avatar size={40} src={userInfo?.avatar_url} icon={!userInfo?.avatar_url && <UserOutlined />} />
-                            <div>
-                              <div className="font-semibold">{userInfo?.name || "Admin"}</div>
-                              <div className="text-sm text-gray-500">{userInfo?.email}</div>
+                            <img
+                              src={userInfo?.avatar_url || `https://ui-avatars.com/api/?name=${userInfo?.name[0]}`}
+                              alt="Avatar"
+                              className="h-10 w-10 rounded-full"
+                              onError={(e) => {
+                                e.currentTarget.src = `https://ui-avatars.com/api/?name=${userInfo?.name[0]}`;
+                              }}
+                              />
+                              <div>
+                                <div className="font-semibold">{userInfo?.name || "Admin"}</div>
+                                <div className="text-sm text-gray-500">{userInfo?.email}</div>
                               </div>
                             </div>
                             <div className="mt-2 border-t pt-2" />

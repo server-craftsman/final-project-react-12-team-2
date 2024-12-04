@@ -30,12 +30,19 @@ const InstructorInfo = () => {
             <div className="group relative">
               {userInfo.avatar_url ? (
                 <div className="relative mt-6">
-                  <div className="bg-gradient-tone absolute -inset-0.5 rounded-full opacity-75 blur"></div>
-                  <img src={userInfo.avatar_url} alt="User avatar" className="relative h-52 w-52 rounded-full border-4 border-white object-cover shadow-2xl transition-all duration-300 group-hover:scale-105" />
-                </div>
-              ) : (
+                  {/* <div className="bg-gradient-tone absolute -inset-0.5 rounded-full opacity-75 blur"></div> */}
+                  <img
+                    src={userInfo.avatar_url || `https://ui-avatars.com/api/?name=${userInfo.name[0]}`}
+                    alt="Avatar"
+                    className="h-52 w-52 rounded-full"
+                    onError={(e) => {
+                      e.currentTarget.src = `https://ui-avatars.com/api/?name=${userInfo.name[0]}`;
+                    }}
+                  />
+              </div>
+            ) : (
                 <div className="relative">
-                  <div className="bg-gradient-tone absolute -inset-0.5 rounded-full opacity-75 blur"></div>
+                  {/* <div className="bg-gradient-tone absolute -inset-0.5 rounded-full opacity-75 blur"></div> */}
                   <div className="bg-gradient-tone relative flex h-52 w-52 items-center justify-center rounded-full border-4 border-white">
                     <span className="text-3xl font-medium text-white drop-shadow-lg">No Avatar</span>
                   </div>
