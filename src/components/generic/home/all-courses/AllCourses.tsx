@@ -11,11 +11,8 @@ import { CategoryService } from '../../../../services/category/category.service'
 import { useMediaQuery } from "react-responsive";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import FilteredAllCourses, { SortOption, CategoryOption } from './FilteredAllCourses';
-// import parse from "html-react-parser";
+
 import Pagination from "antd/es/pagination";
-import LoadingAnimation from "../../../../app/UI/LoadingAnimation";
-import Lottie from "lottie-react";
-import animationData from "../../../../data/courseAnimation.json";
 
 const { Title, Paragraph } = Typography;
 const { Meta } = Card;
@@ -28,7 +25,6 @@ const AllCourses = () => {
     const [pageSize ] = useState<number>(6);
     const [pageNum, setPageNum] = useState<number>(1);
     const [totalItems, setTotalItems] = useState<number>(0);
-    const [loading, setLoading] = useState<boolean>(true);  
     const location = useLocation();
     const [isHovered, setIsHovered] = useState(location.state?.triggerHover || false);
     const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1023 });
@@ -62,7 +58,7 @@ const AllCourses = () => {
     }, []);
 
     const fetchCourses = useCallback(async () => {
-        setLoading(true);
+        
         try {
             const params: GetPublicCourseParams = {
                 pageInfo: {
@@ -94,7 +90,7 @@ const AllCourses = () => {
         } catch (err) {
             console.error(err);
         } finally {
-            setLoading(false);
+            console.log("fetchCourses completed");
         }
     }, [selectedSort, selectedCategory, pageNum, pageSize]);
 
@@ -167,10 +163,6 @@ const AllCourses = () => {
         return '300px';
     };
     
- if (courses.length === 0 && categories.length === 0) {
-        return <LoadingAnimation />;
-  } 
-  else{ 
     return ( 
         <div className="p-6">
             <div className="mb-6 flex justify-start">
@@ -193,18 +185,9 @@ const AllCourses = () => {
                 selectedSort={selectedSort}
                 selectedCategory={selectedCategory}
             />       
-            <Row gutter={getResponsiveGutter()}>
+            <Row gutter={getResponsiveGutter()} className="flex justify-start">
                 <AnimatePresence>
-                 {loading ? (
-                   <div className="flex h-full w-full items-center justify-center">
-                     <Lottie 
-                        height={isMobile ? 200 : 400} 
-                        width={isMobile ? 200 : 400} 
-                        animationData={animationData} 
-                    />
-                    </div>
-                  ) : (
-                  courses.map((course, index) => (
+                 {courses.map((course, index) => (
                     <Col xs={24} sm={12} lg={8} key={course._id} className="mx-auto h-full">
                         <motion.div
                             variants={itemVariants}
@@ -371,7 +354,7 @@ const AllCourses = () => {
                         </motion.div>
                             </Col>
                         ))
-                    )}
+                    }
                 </AnimatePresence>
             </Row>
             <div className="mt-5 flex justify-start">
@@ -390,7 +373,6 @@ const AllCourses = () => {
             </div>
         </div>
     );
-  }
 };
 
 export default AllCourses;

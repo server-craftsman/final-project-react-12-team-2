@@ -243,7 +243,7 @@ const SearchCourses = () => {
                 selectedSort={selectedSort}
                 selectedCategory={selectedCategory}
             />        */}
-            <Row gutter={getResponsiveGutter()}>
+            <Row gutter={getResponsiveGutter()} className="flex justify-start">
                 <AnimatePresence mode="wait" initial={false}>
                   {courses.map((course, index) => (
                     <Col xs={24} sm={12} lg={8} key={course._id} className="mx-auto h-full">
@@ -273,11 +273,12 @@ const SearchCourses = () => {
                                         transition={{ duration: 0.3 }}
                                     />
                                 }
-                                className="group relative flex flex-col overflow-hidden rounded-lg bg-white shadow-lg"
+                                className="group relative flex flex-col overflow-hidden rounded-lg bg-white shadow-lg justify-start"
                                 style={{
                                     height: isMobile ? 'auto' : '720px',
                                     display: "flex",
-                                    flexDirection: "column"
+                                    flexDirection: "column",
+                                    justifyContent: "left"
                                 }}
                             >
                                 {course.discount > 0 && (
