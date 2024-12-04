@@ -24,21 +24,44 @@ const ViewTransactions: React.FC<ViewTransactionsProps> = ({ isVisible, onClose,
     //   key: "purchase_id"
     // },
     {
-      title: "Price",
+      title: "Price Original",
       dataIndex: "price",
       key: "price",
-      render: (amount: number | undefined) => (amount !== undefined ? moneyFormat(amount) : "N/A")
+      render: (amount: number | undefined) => (
+        <span className="font-semibold text-emerald-600 flex justify-end">
+          {amount !== undefined ? moneyFormat(amount) : "N/A"}
+        </span>
+      )
+    },
+    {
+      title: "Price Paid",
+      dataIndex: "price_paid",
+      key: "price_paid",
+      render: (amount: number | undefined) => (
+        <span className="font-semibold text-gray-600 flex justify-end">
+          {amount !== undefined ? moneyFormat(amount) : "N/A"}
+        </span>
+      )
     },
     {
       title: "Discount",
       dataIndex: "discount",
-      key: "discount"
+      key: "discount",
+      render: (amount: number | undefined) => (
+        <span className="font-semibold text-indigo-600 flex justify-end">
+          {amount !== undefined ? `${amount} % OFF` : "N/A"}
+        </span>
+      )
     },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (date: string) => (date ? formatDate(new Date(date)) : "N/A")
+      render: (date: string) => (
+        <span className="font-bold">
+          {date ? formatDate(new Date(date)) : "N/A"}
+        </span>
+      )
     }
   ];
 

@@ -122,25 +122,25 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
       title: "Price Paid",
       dataIndex: "price_paid",
       key: "price_paid",
-      render: (money: number) => <div className="flex justify-end">{moneyFormat(money)}</div>
+      render: (money: number) => <div className="flex justify-end font-semibold text-emerald-600">{moneyFormat(money)}</div>
     },
     {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (money: number) => <div className="flex justify-end">{moneyFormat(money)}</div>
+      render: (money: number) => <div className="flex justify-end font-semibold text-gray-600">{moneyFormat(money)}</div>
     },
     {
       title: "Discount",
       dataIndex: "discount",
       key: "discount",
-      render: (money: number) => <div className="flex justify-end">{money + "% OFF"}</div>
+      render: (money: number) => <div className="flex justify-end font-semibold text-indigo-600">{money + "% OFF"}</div>
     },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (date: Date) => formatDate(date)
+      render: (date: Date) => <span className="font-bold">{formatDate(date)}</span>
     },
   ];
     return (

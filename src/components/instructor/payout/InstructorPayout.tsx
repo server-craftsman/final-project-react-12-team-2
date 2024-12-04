@@ -135,25 +135,25 @@ const InstructorPayout: React.FC<InstructorPayoutProps> = ({ refreshKey, searchQ
       title: "Balance Origin",
       dataIndex: "balance_origin",
       key: "balance_origin",
-      render: (money: number | undefined) => <div className="flex justify-end">{money !== undefined ? moneyFormat(money) : "N/A"}</div>
+      render: (money: number | undefined) => <div className="flex justify-end font-semibold text-emerald-600">{money !== undefined ? moneyFormat(money) : "N/A"}</div>
     },
     {
       title: "Instructor Paid",
       dataIndex: "balance_instructor_paid",
       key: "balance_instructor_paid",
-      render: (money: number | undefined) => <div className="flex justify-end">{money !== undefined ? moneyFormat(money) : "N/A"}</div>
+      render: (money: number | undefined) => <div className="flex justify-end font-semibold text-gray-600">{money !== undefined ? moneyFormat(money) : "N/A"}</div>
     },
     {
       title: "Instructor Received",
       dataIndex: "balance_instructor_received",
       key: "balance_instructor_received",
-      render: (money: number | undefined) => <div className="flex justify-end">{money !== undefined ? moneyFormat(money) : "N/A"}</div>
+      render: (money: number | undefined) => <div className="flex justify-end font-semibold text-indigo-600">{money !== undefined ? moneyFormat(money) : "N/A"}</div>
     },
     {
       title: "Created At",
       dataIndex: "created_at",
       key: "created_at",
-      render: (date: Date) => formatDate(date)
+      render: (date: Date) => <span className="font-bold">{formatDate(date)}</span>
     }
   ];
 
