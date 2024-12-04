@@ -58,6 +58,10 @@ const InstructorPayout: React.FC<InstructorPayoutProps> = ({ refreshKey, searchQ
     fetchPayouts();
   }, [searchQuery, filterStatus, refreshKey, currentPage, pageSize]);
 
+  useEffect(() => {
+    setSelectedPayouts(new Set());
+  }, [refreshKey]);
+
   const showModal = (payoutId: string) => {
     const payout = payouts.find((payment) => payment._id === payoutId);
     if (payout) {
