@@ -111,6 +111,11 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
       dataIndex: "course_name"
     },
     {
+      title: "Session Name",
+      key: "session_name",
+      dataIndex: "session_name"
+    },
+    {
       title: "Full Time",
       key: "full_time",
       dataIndex: "full_time"
@@ -124,7 +129,8 @@ const DisplayLesson = ({ refreshKey }: { refreshKey: number }) => {
     {
       title: "Lesson Type",
       key: "lesson_type",
-      dataIndex: "lesson_type"
+      dataIndex: "lesson_type",
+      render: (text: string) => text.toUpperCase()
     },
     {
       title: "Actions",

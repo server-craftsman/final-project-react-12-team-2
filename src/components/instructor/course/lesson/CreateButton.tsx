@@ -38,11 +38,12 @@ const CreateButton = ({ onLessonCreated }: { onLessonCreated?: () => void }) => 
 
   const clearModalData = () => {
     form.resetFields();
+    form.setFieldValue("image_url", "");
+    form.setFieldValue("video_url", "");
     setDescription("");
     setImagePreview("");
     setVideoPreview("");
-    form.setFieldValue("image_url", "");
-    form.setFieldValue("video_url", "");
+    
   };
 
   const handleCancel = () => {
