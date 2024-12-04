@@ -111,14 +111,16 @@ const CartPage: React.FC = () => {
 
   const handleCheckout = useCallback(async () => {
     try {
-      for (const itemId of selectedItems) {
-        await updateCartStatus(itemId, CartStatusEnum.waiting_paid);
+      if (selectedItems.length > 0) {
+        await updateCartStatus(selectedItems, CartStatusEnum.waiting_paid);
+        setActiveTab(CartStatusEnum.waiting_paid); // Ensure the "Waiting" tab is active
+      } else {
+        helpers.notificationMessage("Please select at least one item to checkout.", "warning");
       }
-      setActiveTab(CartStatusEnum.waiting_paid); // Ensure the "Waiting" tab is active
     } catch (error) {
       console.error("Error during checkout:", error);
     }
-  }, [selectedItems, updateCartStatus, updateCartItems]);
+  }, [selectedItems, updateCartStatus]);
 
   // Tính toán lại các giá trị dựa trên các mục đã chọn
   const calculateSummary = () => {
@@ -137,7 +139,7 @@ const CartPage: React.FC = () => {
 
   const handleConfirmPayment = useCallback(async (cartId: string) => {
     try {
-      await updateCartStatus(cartId, CartStatusEnum.completed);
+      await updateCartStatus([cartId], CartStatusEnum.completed);
       setActiveTab(CartStatusEnum.completed);
     } catch (error) {
       console.error("Error during confirm payment:", error);
@@ -146,7 +148,7 @@ const CartPage: React.FC = () => {
 
   const handleCancelOrder = useCallback(async (cartId: string) => {
     try {
-      await updateCartStatus(cartId, CartStatusEnum.cancel);
+      await updateCartStatus([cartId], CartStatusEnum.cancel);
       setActiveTab(CartStatusEnum.cancel); // Ensure the "Cancel" tab is active
     } catch (error) {
       console.error("Error during cancel order:", error);

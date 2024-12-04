@@ -8,7 +8,7 @@ import { setCartCount } from "../app/redux/cartSlice";
 interface CartContextType {
   cartItems: any[];
   updateCartItems: (status?: CartStatusEnum) => Promise<any[] | undefined>;
-  updateCartStatus: (cartIds: string | string[], status: CartStatusEnum) => Promise<void>;
+  updateCartStatus: (cartIds: string[], status: CartStatusEnum) => Promise<void>;
   deleteCartItem: (cartId: string) => Promise<void>;
   getNewCartCount: () => Promise<number>;
 }
@@ -64,17 +64,15 @@ export const CartProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }
     }
   }, [token, dispatch]);
 
-  const updateCartStatus = useCallback(async (cartIds: string | string[], status: CartStatusEnum) => {
+  const updateCartStatus = useCallback(async (cartIds: string[], status: CartStatusEnum) => {
     try {
-      const idsArray = Array.isArray(cartIds) ? cartIds : [cartIds];
-
-      const itemsToUpdate = cartItems.filter((item) => idsArray.includes(item._id));
+      const itemsToUpdate = cartItems.filter((item) => cartIds.includes(item._id));
       if (itemsToUpdate.length > 0) {
         const items = itemsToUpdate.map((item) => ({ _id: item._id, cart_no: item.cart_no }));
         await CartService.updateCartStatus({ status, items });
         await updateCartItems(status);
       } else {
-        console.error(`No cart items found for the provided IDs: ${idsArray.join(", ")}`);
+        console.error(`No cart items found for the provided IDs: ${cartIds.join(", ")}`);
       }
     } catch (error) {
       console.error("Error updating cart status:", error);
