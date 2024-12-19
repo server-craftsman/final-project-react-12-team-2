@@ -52,6 +52,9 @@ const ViewPurchase: React.FC<ViewPurchaseProps> = ({ searchQuery, filterStatus, 
   useEffect(() => {
     fetchPurchases();
   }, [searchQuery, filterStatus, refreshKey, currentPage, pageSize]);
+  useEffect(() => {
+    setSelectedPurchases(new Set());
+  }, [refreshKey]);
 
   const handleSelectAllChange = (checked: boolean) => {
     setSelectedPurchases(checked ? new Set(purchases.map((purchase) => purchase._id)) : new Set());
