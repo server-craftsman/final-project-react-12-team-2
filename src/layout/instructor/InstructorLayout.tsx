@@ -30,11 +30,17 @@ const Instructor: React.FC = () => {
         logout();
       }
     };
+    const shouldFetchUserInfo = !userInfo && token;
 
-    if (!userInfo && token) {
-      fetchUserInfo();
-    }
-  }, [token, userInfo, setUserInfo, logout]);
+    if (shouldFetchUserInfo) {
+      fetchUserInfo()
+        .then(() => {
+          console.log("User info fetched successfully");
+        })
+        .catch((error) => {
+          console.error("Failed to fetch user info:", error);
+        });
+    }  }, [token, userInfo, setUserInfo, logout]);
 
   const handleLogout = async () => {
     try {

@@ -32,8 +32,15 @@ const Admin: React.FC = () => {
       }
     };
 
-    if (!userInfo && token) {
-      fetchUserInfo();
+    const shouldFetchUserInfo = !userInfo && token;
+    if (shouldFetchUserInfo) {
+      fetchUserInfo()
+        .then(() => {
+          console.log("User info fetched successfully");
+        })
+        .catch((error) => {
+          console.error("Failed to fetch user info:", error);
+        });
     }
   }, [token, userInfo, setUserInfo, logout]);
 
